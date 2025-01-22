@@ -1,0 +1,18 @@
+---
+title: "1. TGI model minimal workflow"
+author:
+  - Francois Mercier
+  - Daniel Sabanes Bove
+date: last-modified
+editor_options: 
+  chunk_output_type: inline
+  
+format:
+  html:
+    code-fold: show
+---
+
+
+# Note
+
+The purpose of this document is to show a minimal workflow for fitting a TGI model using the `brms` package.

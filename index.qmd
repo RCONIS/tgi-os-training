@@ -1,0 +1,22 @@
+---
+title: "Index"
+format:
+  html:
+    theme: sandstone
+    code-fold: true
+    code-summary: "Show the code"
+    code-tools: true
+    toc: true
+    toc_float: true
+listing:
+  id: listings
+  contents: session-tgi
+  type: table
+  sort: title
+execute:
+  freeze: auto # see https://quarto.org/docs/projects/code-execution.html#using-freeze
+---
+
+
+::: {#listings}
+:::
