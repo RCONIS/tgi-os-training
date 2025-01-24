@@ -23,12 +23,12 @@ Here is an overview of the required setup steps, which are described in more det
 1. Open the folder in RStudio or VSCode
 1. [Install `RTools`](#install-rtools) (if you are on Windows)
 1. [Install necessary R packages](#install-necessary-r-packages)
-1. [[Optional but highly recommended] Install `cmdstanr`](#optional-install-cmdstanr)
+1. [Install `cmdstanr`](#optional-install-cmdstanr) (optional but highly recommended)
 
 ## Install `RTools`
 
-If you are running the examples on a Windows PC, you will need to install `RTools`: 
-[Link to RTools](https://cran.r-project.org/bin/windows/Rtools/).
+If you are running the examples on a Windows PC, you will need to install `RTools`, see  
+[here](https://cran.r-project.org/bin/windows/Rtools/).
 
 You need to use the version of `RTools` that matches your R version.
 You can check your R version by running `R.Version()$version.string`.
@@ -45,8 +45,7 @@ pkgbuild::has_build_tools()
 The following code will install the packages that are required to run the examples in this repository.
 
 ```r
-install_if_not_available <-
-  function(pkg, min_version = NULL) {
+install_if_not_available <- function(pkg, min_version = NULL) {
     is_installed <- suppressWarnings(suppressPackageStartupMessages(
       require(pkg, character.only = TRUE)
     ))
@@ -57,8 +56,19 @@ install_if_not_available <-
         install.packages(pkg)
     }
   }
-packages <- c("tidyverse", "tidybayes", "bayesplot", "brms", "here", "tictoc", "gt")
+packages <- c(
+  "tidyverse", 
+  "tidybayes", 
+  "bayesplot", 
+  "brms", 
+  "here", 
+  "tictoc", 
+  "gt",
+  "readxl",
+  "janitor"
+)
 sapply(packages, install_if_not_available)
+remotes::install_github("genentech/jmpost")
 ```
 
 ## [Optional] Install `cmdstanr`
@@ -107,7 +117,10 @@ Here is a brief summary:
     
     ```r
     library(cmdstanr)
-    file <- file.path(cmdstan_path(), "examples", "bernoulli", "bernoulli.stan")
+    file <- file.path(
+      cmdstan_path(), 
+      "examples", "bernoulli", "bernoulli.stan"
+    )
     mod <- cmdstan_model(file)
     data_list <- list(N = 10, y = c(0, 1, 0, 0, 0, 0, 0, 0, 0, 1))
     

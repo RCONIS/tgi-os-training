@@ -14,7 +14,7 @@ listing:
   type: table
   sort: title
 execute:
-  freeze: auto # see https://quarto.org/docs/projects/code-execution.html#using-freeze
+  cache: true
 ---
 
 

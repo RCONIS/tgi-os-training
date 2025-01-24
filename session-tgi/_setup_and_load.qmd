@@ -1,0 +1,38 @@
+First we need to load the necessary packages and set some default options for the MCMC sampling. We also set the theme for the plots to `theme_bw` with a base size of 12.
+
+```{r}
+#| output: FALSE
+#| message: FALSE
+
+library(tidyverse)
+library(tidybayes)
+library(bayesplot)
+library(modelr)
+library(here)
+library(tictoc)
+library(gt)
+library(readxl)
+library(janitor)
+
+library(brms)
+if (require(cmdstanr)) {
+  # If cmdstanr is available, instruct brms to use cmdstanr as backend 
+  # and cache all Stan binaries
+  options(brms.backend = "cmdstanr", cmdstanr_write_stan_file_dir = here("_brms-cache"))
+  dir.create(here("_brms-cache"), FALSE) # create cache directory if not yet available
+} else {
+  rstan::rstan_options(auto_write = TRUE)
+}
+
+# MCMC options
+options(mc.cores = 4)
+ITER <- 3000 # number of iterations
+WARMUP <- 2000 # number of warm up iterations
+CHAINS <- 4
+BAYES.SEED <- 878
+THIN <- 10
+CONTROL <- list(adapt_delta = 0.99, max_treedepth = 15)
+REFRESH <- 500
+
+theme_set(theme_bw(base_size = 12))
+```

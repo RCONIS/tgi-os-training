@@ -1,0 +1,31 @@
+We will use the publicly published tumor size data from the OAK study, see [here](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1009822). In particular we are using the [S1 data set](https://doi.org/10.1371/journal.pcbi.1009822.s006), which is the fully anonymized data set used in the publication. For simplicity, we have copied the data set in this GitHub repository.
+
+```{r}
+file_path <- "../data/journal.pcbi.1009822.s006.xlsx"
+
+read_one_sheet <- function(sheet) {
+    read_excel(file_path, sheet = sheet) |> 
+    clean_names() |> 
+    mutate(
+        id = factor(as.character(patient_anonmyized)),
+        day = as.integer(treatment_day),
+        target_lesion_long_diam_mm = case_match(
+            target_lesion_long_diam_mm,
+            "TOO SMALL TO MEASURE" ~ "0.1",
+            "NOT EVALUABLE" ~ NA_character_,
+            .default = target_lesion_long_diam_mm
+        ),
+        sld = as.numeric(target_lesion_long_diam_mm),
+        study = factor(gsub("^Study_(\\d+)_Arm_\\d+$", "\\1", study_arm)),
+        arm = factor(gsub("^Study_\\d+_Arm_(\\d+)$", "\\1", study_arm))
+    ) |> 
+    select(id, day, sld, study, arm)
+}
+
+tumor_data <- excel_sheets(file_path) |> 
+    map(read_one_sheet) |> 
+    bind_rows()
+
+head(tumor_data)
+summary(tumor_data)
+```
