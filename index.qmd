@@ -20,3 +20,12 @@ execute:
 
 ::: {#listings}
 :::
+
+## License
+
+The training material is licensed under a [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/).
+If you wish to reuse any part of this material, please ensure proper attribution is given to the original authors as specified by the [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/).
+
+## Copyright
+
+&copy; 2025 Genentech Inc. All rights reserved.

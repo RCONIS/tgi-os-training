@@ -1,0 +1,121 @@
+---
+title: "0. Setup"
+author:
+  - Francois Mercier
+  - Kenta Yoshida
+  - Daniel Sabanés Bové
+date: last-modified
+editor_options: 
+  chunk_output_type: inline
+  
+format:
+  html:
+    code-fold: show
+---
+
+# Setup
+
+This is a repository with training material for Tumor Growth Inhibition (TGI) and joint TGI-OS (Overall Survival) modeling.
+
+Here is an overview of the required setup steps, which are described in more detail below:
+
+1. Clone the repository from GitHub
+1. Open the folder in RStudio or VSCode
+1. [Install `RTools`](#install-rtools) (if you are on Windows)
+1. [Install necessary R packages](#install-necessary-r-packages)
+1. [[Optional but highly recommended] Install `cmdstanr`](#optional-install-cmdstanr)
+
+## Install `RTools`
+
+If you are running the examples on a Windows PC, you will need to install `RTools`: 
+[Link to RTools](https://cran.r-project.org/bin/windows/Rtools/).
+
+You need to use the version of `RTools` that matches your R version.
+You can check your R version by running `R.Version()$version.string`.
+
+You can then afterwards check the installation of `RTools` with:
+
+```r
+if(!require(pkgbuild)) install.packages("pkgbuild")
+pkgbuild::has_build_tools()
+```
+
+## Install necessary R packages
+
+The following code will install the packages that are required to run the examples in this repository.
+
+```r
+install_if_not_available <-
+  function(pkg, min_version = NULL) {
+    is_installed <- suppressWarnings(suppressPackageStartupMessages(
+      require(pkg, character.only = TRUE)
+    ))
+    if (is_installed & !is.null(min_version)) {
+      version_ok <- packageVersion(pkg) >= min_version
+    }    
+    if (!is_installed | !version_ok) {
+        install.packages(pkg)
+    }
+  }
+packages <- c("tidyverse", "tidybayes", "bayesplot", "brms", "here", "tictoc", "gt")
+sapply(packages, install_if_not_available)
+```
+
+## [Optional] Install `cmdstanr`
+
+Optionally, you can use `cmdstanr` as the backend of `brms` for fitting the models.
+
+There are a few advantages of using `cmdstanr` over the default `rstan`:
+
+- With `cmdstanr`, you can cache the compiled model, therefore you don't need to recompile the model as long as the same formula is used, even after restarting R session (or re-opening RStudio).
+- `cmdstanr` is more up-to-date and more actively maintained compared to `rstan`.
+
+A detailed installation guide for `cmdstanr` is available [here](https://mc-stan.org/cmdstanr/articles/cmdstanr.html).
+Here is a brief summary:
+
+1. Install `cmdstanr` with:
+
+    ```r
+    # Typically, you install cmdstanr from the R-universe as follows:
+    install.packages("cmdstanr", repos = c('https://stan-dev.r-universe.dev', getOption("repos")))
+
+    # If the above does not work, e.g. because you in a company network or VPN, you can install cmdstanr from GitHub instead:
+    remotes::install_github("stan-dev/cmdstanr@*release")    
+    ```
+    
+1. Check the compiler toolchain with:
+
+    ```r
+    cmdstanr::check_cmdstan_toolchain()
+    ```
+    
+    - This should not be a problem on Mac and Linux (including RStudio Cloud instances), but might be a problem on Windows.
+    - If you have problems, please check the [installation guide](https://mc-stan.org/docs/cmdstan-guide/installation.html#windows) for Windows. 
+      - `RTools` is the easiest way. 
+      - Even if you have `RTools`, you might still see an error like `"Rtools44 installation found but the toolchain was not installed."`. 
+      - In this case, you can run `cmdstanr::check_cmdstan_toolchain(fix = TRUE)` and this will likely resolve the issue.
+      
+1. Install the `CmdStan` backend with:
+
+    ```r
+    cmdstanr::install_cmdstan(cores = 2)
+    ```
+
+1.  Testing the `cmdstanr` installation
+
+    - If the above installation was successful, you should now be able to run the following simple model.
+    
+    ```r
+    library(cmdstanr)
+    file <- file.path(cmdstan_path(), "examples", "bernoulli", "bernoulli.stan")
+    mod <- cmdstan_model(file)
+    data_list <- list(N = 10, y = c(0, 1, 0, 0, 0, 0, 0, 0, 0, 1))
+    
+    fit <- mod$sample(
+      data = data_list,
+      seed = 123,
+      chains = 4,
+      parallel_chains = 4,
+      refresh = 500
+    )
+    ```
