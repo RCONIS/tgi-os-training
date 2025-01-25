@@ -171,11 +171,6 @@ formula <- bf(sld ~ eta, nl = TRUE) +
   lf(ls ~ 1 + (1 | id)) +
   lf(lg ~ 1 + (1 | id))
 
-# Good to check the stan code:
-# (This also helps to find the names of the parameters
-# for which to define the initial values below)
-stancode(formula, data = df, family = gaussian())
-
 # Define the priors
 priors <- c(
   prior(normal(log(34), 5), nlpar = "lmu0"),
@@ -189,21 +184,27 @@ priors <- c(
   prior(normal(0.1, 1), nlpar = "ltau")
 )
 
+# Good to check the stan code:
+# (This also helps to find the names of the parameters
+# for which to define the initial values below)
+stancode(formula, prior = priors, data = df, family = gaussian())
+
 # Initial values to avoid problems at the beginning
+n_patients <- nlevels(df$id)
 inits <- list(
-  b_ltau = log(0.1),
-  b_lmu0 = log(34),
-  b_tphi = 0,
-  b_ls = log(0.1),
-  b_lg = log(0.1),
-  sd_1 = 1,
-  sd_2 = 1,
-  sd_3 = 1,
-  sd_4 = 1,
-  z_1 = 0,
-  z_2 = 0,
-  z_3 = 0,
-  z_4 = 0
+  b_ltau = array(log(0.1)),
+  b_lmu0 = array(log(34)),
+  b_tphi = array(0),
+  b_ls = array(log(0.1)),
+  b_lg = array(log(0.1)),
+  sd_1 = array(1),
+  sd_2 = array(1),
+  sd_3 = array(1),
+  sd_4 = array(1),
+  z_1 = matrix(0, nrow = 1, ncol = n_patients),
+  z_2 = matrix(0, nrow = 1, ncol = n_patients),
+  z_3 = matrix(0, nrow = 1, ncol = n_patients),
+  z_4 = matrix(0, nrow = 1, ncol = n_patients)
 )
 
 # Fit the model
@@ -214,7 +215,8 @@ fit <- brm(
   family = gaussian(),
   init = rep(list(inits), CHAINS),
   chains = CHAINS, iter = ITER, warmup = WARMUP, seed = BAYES.SEED,
-  control = CONTROL, refresh = REFRESH, thin = THIN
+  control = CONTROL, refresh = REFRESH, thin = 2, # THIN,
+  backend = "cmdstanr"
 )
 
 # Summarize the fit
