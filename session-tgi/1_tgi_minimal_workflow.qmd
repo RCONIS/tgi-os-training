@@ -94,7 +94,7 @@ For the prior on the average baseline $\mu_0$ and its standard deviation $\omega
 
 ```{r}
 baseline <- df |>
-  filter(day <= 0) |> 
+  filter(day <= 0, day > -7) |> 
   group_by(id) |> 
   summarize(mean_sld = mean(sld)) |> 
   pull(mean_sld)
@@ -113,15 +113,15 @@ $$
 For the coefficient of variation $\sigma$, we try to use a non-informative prior:
 
 $$
-\sigma \sim \text{Gamma}(0.01, 0.01)
+\sigma \sim \text{LogNormal}(\log(0.1), 1)
 $$
 
 For the average shrinkage and growth rates, $\mu_s$ and $\mu_g$, we consider that these are per day rates, so should be rather small. 
 
 $$
 \begin{align*}
-\mu_{s} &\sim \text{LogNormal}(\log(0.1), 10) \\
-\mu_{g} &\sim \text{LogNormal}(\log(0.1), 10) 
+\mu_{s} &\sim \text{LogNormal}(\log(0.001), 1) \\
+\mu_{g} &\sim \text{LogNormal}(\log(0.001), 1) 
 \end{align*}
 $$
 
@@ -173,15 +173,15 @@ formula <- bf(sld ~ eta, nl = TRUE) +
 
 # Define the priors
 priors <- c(
-  prior(normal(log(34), 5), nlpar = "lmu0"),
-  prior(normal(log(0.1), 1), nlpar = "ls"),
-  prior(normal(log(0.1), 1), nlpar = "lg"),
-  prior(normal(0, 5), nlpar = "tphi"),
-  prior(normal(log(20), 1), nlpar = "lmu0", class = "sd"),
-  prior(normal(log(0.1), 1), nlpar = "ls", class = "sd"),
-  prior(normal(log(0.1), 1), nlpar = "lg", class = "sd"),
-  prior(normal(log(0.1), 1), nlpar = "tphi", class = "sd"),
-  prior(normal(0.1, 1), nlpar = "ltau")
+  prior(normal(log(34), 1), nlpar = "lmu0"),
+  prior(normal(log(0.001), 1), nlpar = "ls"),
+  prior(normal(log(0.001), 1), nlpar = "lg"),
+  prior(normal(0, 1), nlpar = "tphi"),
+  prior(lognormal(log(20), 1), nlpar = "lmu0", class = "sd"),
+  prior(lognormal(log(0.1), 1), nlpar = "ls", class = "sd"),
+  prior(lognormal(log(0.1), 1), nlpar = "lg", class = "sd"),
+  prior(lognormal(log(0.1), 1), nlpar = "tphi", class = "sd"),
+  prior(normal(log(0.1), 1), nlpar = "ltau")
 )
 
 # Good to check the stan code:
@@ -192,15 +192,15 @@ stancode(formula, prior = priors, data = df, family = gaussian())
 # Initial values to avoid problems at the beginning
 n_patients <- nlevels(df$id)
 inits <- list(
-  b_ltau = array(log(0.1)),
   b_lmu0 = array(log(34)),
+  b_ls = array(log(0.001)),
+  b_lg = array(log(0.001)),
   b_tphi = array(0),
-  b_ls = array(log(0.1)),
-  b_lg = array(log(0.1)),
-  sd_1 = array(1),
-  sd_2 = array(1),
-  sd_3 = array(1),
-  sd_4 = array(1),
+  sd_1 = array(log(20)),
+  sd_2 = array(log(0.1)),
+  sd_3 = array(log(0.1)),
+  sd_4 = array(log(0.1)),
+  b_ltau = array(log(0.1)),
   z_1 = matrix(0, nrow = 1, ncol = n_patients),
   z_2 = matrix(0, nrow = 1, ncol = n_patients),
   z_3 = matrix(0, nrow = 1, ncol = n_patients),
@@ -215,13 +215,23 @@ fit <- brm(
   family = gaussian(),
   init = rep(list(inits), CHAINS),
   chains = CHAINS, iter = ITER, warmup = WARMUP, seed = BAYES.SEED,
-  control = CONTROL, refresh = REFRESH, thin = 2, # THIN,
+  control = CONTROL, refresh = REFRESH, thin = THIN,
   backend = "cmdstanr"
 )
 
 # Summarize the fit
 summary(fit)
 
+# Save the fit
+save(fit, file = "fit.RData")
+
 post_df <- as_draws_df(fit)
-plot(post_df$b_lmu0_Intercept)
+plot(exp(post_df$b_lmu0_Intercept))
+plot(post_df$sd_id__lmu0_Intercept)
+plot(post_df$sd_id__lg_Intercept)
+plot(post_df$sd_id__ls_Intercept)
+plot(post_df$sd_id__tphi_Intercept)
+plot(post_df$b_ltau_Intercept)
 ```
+
+Total execution time: 4306.2 seconds.
