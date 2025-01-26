@@ -22,7 +22,7 @@ The purpose of this document is to show a minimal workflow for fitting a TGI mod
 
 {{< include _load_data.qmd >}}
 
-For simplicity, we will for now just use studies 1 and 3, which are both on Atezolizumab in NSCLC, and we rename the patient IDs:
+For simplicity, we will for now just use studies 1 and 3 (Atezolizumab in NSCLC), and we rename the patient IDs:
 
 ```{r}
 df <- tumor_data |> 
@@ -116,19 +116,19 @@ $$
 \sigma \sim \text{LogNormal}(\log(0.1), 1)
 $$
 
-For the average shrinkage and growth rates, $\mu_s$ and $\mu_g$, we consider that these are per day rates, so should be rather small. 
+For the average shrinkage and growth rates, $\mu_s$ and $\mu_g$, we consider that these are per day rates, so should be rather small. Since the growth will be more and more dominant for larger times $t$, we can assume that the growth rate is smaller than the shrinkage rate. Therefore, we can use the following priors:
 
 $$
 \begin{align*}
-\mu_{s} &\sim \text{LogNormal}(\log(0.001), 1) \\
+\mu_{s} &\sim \text{LogNormal}(\log(0.01), 1) \\
 \mu_{g} &\sim \text{LogNormal}(\log(0.001), 1) 
 \end{align*}
 $$
 
-For the average shrinkage proportion $\mu_{\phi}$, we center the prior around 0.5, i.e. the logit normal distribution is centered around 0:
+For the average shrinkage proportion $\mu_{\phi}$, we center the prior around $\text{logit}^{-1}(-1) \approx `r round(plogis(-1), 2)`$ and truncate the normal prior to be below 0. This means $\phi < 0.5$. This turned out here to be necessary to avoid divergences in the model fitting - with an unconstrained prior, the model would sometimes converge to a value of $\phi$ close to 1 with corresponding very large growth samples to compensate.
 
 $$
-\mu_{\phi} \sim \text{LogitNormal}(0, 1)
+\mu_{\phi} \sim \text{LogitNormalNegative}(-1, 0.5)
 $$
 
 For the standard deviations, we use:
@@ -136,8 +136,8 @@ For the standard deviations, we use:
 $$
 \begin{align*}
 \omega_{s} &\sim \text{LogNormal}(\log(0.1), 1) \\
-\omega_{g} &\sim \text{LogNormal}(\log(0.1), 1) \\
-\omega_{\phi} &\sim \text{LogNormal}(\log(0.1), 1)
+\omega_{g} &\sim \text{LogNormal}(\log(1), 0.5) \\
+\omega_{\phi} &\sim \text{LogNormal}(\log(1), 0.5)
 \end{align*}
 $$
 
@@ -173,14 +173,14 @@ formula <- bf(sld ~ eta, nl = TRUE) +
 
 # Define the priors
 priors <- c(
-  prior(normal(log(34), 1), nlpar = "lmu0"),
-  prior(normal(log(0.001), 1), nlpar = "ls"),
+  prior(normal(log(39), 1), nlpar = "lmu0"),
+  prior(normal(log(0.01), 0.1), nlpar = "ls"),
   prior(normal(log(0.001), 1), nlpar = "lg"),
-  prior(normal(0, 1), nlpar = "tphi"),
-  prior(lognormal(log(20), 1), nlpar = "lmu0", class = "sd"),
+  prior(normal(-1, 0.5), nlpar = "tphi", ub = 0),
+  prior(lognormal(log(25), 1), nlpar = "lmu0", class = "sd"),
   prior(lognormal(log(0.1), 1), nlpar = "ls", class = "sd"),
-  prior(lognormal(log(0.1), 1), nlpar = "lg", class = "sd"),
-  prior(lognormal(log(0.1), 1), nlpar = "tphi", class = "sd"),
+  prior(lognormal(0, 0.5), nlpar = "lg", class = "sd"),
+  prior(lognormal(1, 0.5), nlpar = "tphi", class = "sd"),
   prior(normal(log(0.1), 1), nlpar = "ltau")
 )
 
@@ -193,13 +193,13 @@ stancode(formula, prior = priors, data = df, family = gaussian())
 n_patients <- nlevels(df$id)
 inits <- list(
   b_lmu0 = array(log(34)),
-  b_ls = array(log(0.001)),
+  b_ls = array(log(0.01)),
   b_lg = array(log(0.001)),
-  b_tphi = array(0),
-  sd_1 = array(log(20)),
-  sd_2 = array(log(0.1)),
-  sd_3 = array(log(0.1)),
-  sd_4 = array(log(0.1)),
+  b_tphi = array(-1),
+  sd_1 = array(10),
+  sd_2 = array(0.1),
+  sd_3 = array(1),
+  sd_4 = array(1),
   b_ltau = array(log(0.1)),
   z_1 = matrix(0, nrow = 1, ncol = n_patients),
   z_2 = matrix(0, nrow = 1, ncol = n_patients),
@@ -208,30 +208,37 @@ inits <- list(
 )
 
 # Fit the model
-fit <- brm(
-  formula = formula,
-  data = df,
-  prior = priors,
-  family = gaussian(),
-  init = rep(list(inits), CHAINS),
-  chains = CHAINS, iter = ITER, warmup = WARMUP, seed = BAYES.SEED,
-  control = CONTROL, refresh = REFRESH, thin = THIN,
-  backend = "cmdstanr"
-)
+save_file <- "fit3.RData"
+if (file.exists(save_file)) {
+  load(save_file)
+} else {
+  fit <- brm(
+    formula = formula,
+    data = df,
+    prior = priors,
+    family = gaussian(),
+    init = rep(list(inits), CHAINS),
+    chains = CHAINS, iter = ITER, warmup = WARMUP, seed = BAYES.SEED,
+    control = CONTROL, refresh = REFRESH, thin = THIN
+  )
+  save(fit, file = save_file)
+}
 
 # Summarize the fit
 summary(fit)
-
-# Save the fit
-save(fit, file = "fit.RData")
-
-post_df <- as_draws_df(fit)
-plot(exp(post_df$b_lmu0_Intercept))
-plot(post_df$sd_id__lmu0_Intercept)
-plot(post_df$sd_id__lg_Intercept)
-plot(post_df$sd_id__ls_Intercept)
-plot(post_df$sd_id__tphi_Intercept)
-plot(post_df$b_ltau_Intercept)
 ```
 
-Total execution time: 4306.2 seconds.
+In total this took 77 minutes on my laptop. 
+
+```{r}
+post_df <- as_draws_df(fit)
+plot(exp(post_df$b_lmu0_Intercept))
+plot(post_df$b_ls_Intercept)
+plot(post_df$b_lg_Intercept)
+plot(plogis(post_df$b_tphi_Intercept))
+plot(log(post_df$sd_id__lmu0_Intercept))
+plot(log(post_df$sd_id__lg_Intercept))
+plot(log(post_df$sd_id__ls_Intercept))
+plot(log(post_df$sd_id__tphi_Intercept))
+plot(post_df$b_ltau_Intercept)
+```

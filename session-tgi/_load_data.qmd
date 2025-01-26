@@ -1,7 +1,7 @@
 We will use the publicly published tumor size data from the OAK study, see [here](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1009822). In particular we are using the [S1 data set](https://doi.org/10.1371/journal.pcbi.1009822.s006), which is the fully anonymized data set used in the publication. For simplicity, we have copied the data set in this GitHub repository.
 
 ```{r}
-file_path <- "../data/journal.pcbi.1009822.s006.xlsx"
+file_path <- here("data/journal.pcbi.1009822.s006.xlsx")
 
 read_one_sheet <- function(sheet) {
     read_excel(file_path, sheet = sheet) |> 
