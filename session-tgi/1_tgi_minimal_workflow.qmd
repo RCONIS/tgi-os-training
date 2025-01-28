@@ -343,13 +343,15 @@ Let's apply this to the samples of patient number 1:
 
 ```{r}
 post_ind_1 <- post_ind |>
-  filter(id == "1") |> 
+  filter(id == "1")
+
+sum_ind_1 <- post_ind_1 |> 
   cross_join(data.frame(day = (-7):100)) |> 
   mutate(mu = gsf_mean(mu0, phi, s, g, day)) |> 
   group_by(day) |> 
   summarize(med = median(mu), avg = mean(mu))
 
-post_ind_1 |> 
+sum_ind_1 |> 
   ggplot(aes(x = day)) +
   geom_line(aes(y = med), color = "deepskyblue") +
   geom_line(aes(y = avg), color = "tomato") +
