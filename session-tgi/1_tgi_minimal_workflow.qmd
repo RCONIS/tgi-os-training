@@ -225,17 +225,71 @@ summary(fit)
 
 In total this took 77 minutes on my laptop. 
 
+## Parameter estimates
+
+Here we extract all parameter estimates using the `as_draws_df` method for `brmsfit` objects. Note that we could also just extract a subset of parameters, see `?as_draws.brmsfit` for more information.
+
 ```{r}
 post_df <- as_draws_df(fit)
-plot(exp(post_df$b_lmu0_Intercept))
-plot(post_df$b_ls_Intercept)
-plot(post_df$b_lg_Intercept)
-plot(plogis(post_df$b_tphi_Intercept))
-plot(log(post_df$sd_id__lmu0_Intercept))
-plot(log(post_df$sd_id__lg_Intercept))
-plot(log(post_df$sd_id__ls_Intercept))
-plot(log(post_df$sd_id__tphi_Intercept))
-plot(post_df$b_ltau_Intercept)
+head(names(post_df), 10)
+
+post_df <- post_df |>
+  mutate(
+    mu_0 = exp(b_lmu0_Intercept),
+    mu_phi = plogis(b_tphi_Intercept),
+    mu_s = exp(b_ls_Intercept),
+    mu_g = exp(b_lg_Intercept),
+    omega_0 = sd_id__lmu0_Intercept,
+    omega_phi = sd_id__tphi_Intercept,
+    omega_s = sd_id__ls_Intercept,
+    omega_g = sd_id__lg_Intercept,
+    sigma = exp(b_ltau_Intercept)
+  )
+```
+
+Let's first look at the population level parameters:
+
+```{r}
+mcmc_trace(post_df, pars = c("mu_0", "mu_phi", "mu_s", "mu_g", "sigma"))
+mcmc_pairs(post_df, pars = c("mu_0", "mu_phi", "mu_s", "mu_g", "sigma"))
+
+post_sum <- post_df |>
+  select(mu_0, mu_phi, mu_s, mu_g, omega_0, omega_phi, omega_s, omega_g, sigma) |>
+  summarize_draws() |>
+  gt() |>
+  fmt_number(decimals = 3)
+```
+
+## Observation vs model fit
+
+We can now compare the model fit to the observations. Let's do this for the first 20 patients again:
+
+```{r}
+pt_subset <- as.character(1:20)
+df_subset <- df |> 
+  filter(id %in% pt_subset)
+
+df_sim <- df_subset |> 
+  data_grid(
+    id = pt_subset, 
+    day = seq_range(day, 101)
+  ) |>
+  add_epred_draws(fit) |>
+  median_qi()
+
+df_sim |>
+  ggplot(aes(x = day, y = sld)) +
+  facet_wrap(~ id) +
+  geom_ribbon(
+    aes(y = .epred, ymin = .lower, ymax = .upper), 
+    alpha = 0.3, 
+    fill = "deepskyblue"
+  ) +
+  geom_line(aes(y = .epred), color = "deepskyblue") +
+  geom_point(data = df_subset, color = "tomato") +
+  coord_cartesian(ylim = range(df_subset$sld)) +
+  scale_fill_brewer(palette = "Greys") +
+  labs(title = "GSF model fit")
 ```
 
 

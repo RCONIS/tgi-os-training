@@ -13,6 +13,7 @@ library(tictoc)
 library(gt)
 library(readxl)
 library(janitor)
+library(posterior)
 
 library(brms)
 if (require(cmdstanr)) {
