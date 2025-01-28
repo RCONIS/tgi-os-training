@@ -260,6 +260,43 @@ post_sum <- post_df |>
   fmt_number(decimals = 3)
 ```
 
+We can also look at individual level parameters. This is simplified by using the `spread_draws()` function:
+
+```{r}
+head(get_variables(fit), 20)
+post_ind <- fit |> 
+  spread_draws(
+    b_lmu0_Intercept,
+    r_id__lmu0[id, ],
+    b_tphi_Intercept, 
+    r_id__tphi[id, ],
+    b_ls_Intercept,
+    r_id__ls[id, ],
+    b_lg_Intercept,
+    r_id__lg[id, ]
+  ) |> 
+  mutate(
+    mu0 = exp(b_lmu0_Intercept + r_id__lmu0),
+    phi = plogis(b_tphi_Intercept + r_id__tphi),
+    s = exp(b_ls_Intercept + r_id__ls),
+    g = exp(b_lg_Intercept + r_id__lg)
+  ) |> 
+  select(
+    .chain, .iteration, .draw,
+    id, mu0, phi, s, g    
+  )
+```
+
+With this we can e.g. report the estimates for the first patient:
+
+```{r}
+post_sum_id1 <- post_ind |>
+  filter(id == "1") |>
+  summarize_draws() |>
+  gt() |>
+  fmt_number(n_sigfig = 3)
+```
+
 ## Observation vs model fit
 
 We can now compare the model fit to the observations. Let's do this for the first 20 patients again:
@@ -290,6 +327,33 @@ df_sim |>
   coord_cartesian(ylim = range(df_subset$sld)) +
   scale_fill_brewer(palette = "Greys") +
   labs(title = "GSF model fit")
+```
+
+This does not look right. 
+
+Let's code the function that gives the GSF mean:
+
+```{r}
+gsf_mean <- function(mu0, phi, s, g, day) {
+  ifelse(day < 0, mu0 * exp(g * day), mu0 * (phi * exp(-s * day) + (1 - phi) * exp(g * day)))
+}
+```
+
+Let's apply this to the samples of patient number 1:
+
+```{r}
+post_ind_1 <- post_ind |>
+  filter(id == "1") |> 
+  cross_join(data.frame(day = (-7):100)) |> 
+  mutate(mu = gsf_mean(mu0, phi, s, g, day)) |> 
+  group_by(day) |> 
+  summarize(med = median(mu), avg = mean(mu))
+
+post_ind_1 |> 
+  ggplot(aes(x = day)) +
+  geom_line(aes(y = med), color = "deepskyblue") +
+  geom_line(aes(y = avg), color = "tomato") +
+  geom_point(data = df_subset |> filter(id == "1"), aes(y = sld), color = "black")
 ```
 
 
