@@ -22,11 +22,11 @@ The purpose of this document is to show a minimal workflow for fitting a TGI mod
 
 {{< include _load_data.qmd >}}
 
-For simplicity, we will for now just use studies 1 and 3 (Atezolizumab in NSCLC), and we rename the patient IDs:
+For simplicity, we will for now just use study 4 (this is the OAK study), and we rename the patient IDs:
 
 ```{r}
 df <- tumor_data |> 
-  filter(study %in% c("1", "3")) |> 
+  filter(study == "4") |> 
   na.omit() |>
   droplevels() |> 
   mutate(id = factor(as.numeric(id)))
@@ -37,7 +37,7 @@ Here we have `r nlevels(df$id)` patients. It is always a good idea to make a plo
 ```{r}
 df |> 
   filter(as.integer(id) <= 20) |>
-  ggplot(aes(x = day, y = sld, group = id)) +
+  ggplot(aes(x = year, y = sld, group = id)) +
   geom_line() +
   geom_point() +
   facet_wrap(~ id) +
@@ -50,7 +50,7 @@ df |>
 We start from the Stein-Fojo model as shown in the slides:
 
 $$
-\mu(t_{ij}) = \mu_{0i} \{\exp(-s_i \cdot t_{ij}) + \exp(g_i \cdot t_{ij}) - 1\}
+y^{*}(t_{ij}) = \psi_{b_{0}i} \{\exp(- \psi_{k_{s}i} \cdot t_{ij}) + \exp(\psi_{k_{g}i} \cdot t_{ij}) - 1\}
 $$
 
 ### Mean
@@ -58,30 +58,46 @@ $$
 We will make one more tweak here. If the time $t$ is negative, i.e. the treatment has not started yet, then it is reasonable to assume that the tumor cannot shrink yet. Therefore, the final model for the mean SLD is:
 
 $$
-\mu(t_{ij}) = 
+y^{*}(t_{ij}) = 
 \begin{cases} 
-\mu_{0i} \exp(g_i \cdot t_{ij}) & \text{if } t_{ij} < 0 \\
-\mu_{0i} \{\exp(-s_i \cdot t_{ij}) + \exp(g_i \cdot t_{ij}) - 1\} & \text{if } t_{ij} \geq 0 
+\psi_{b_{0}i} \exp(\psi_{k_{g}i} \cdot t_{ij}) & \text{if } t_{ij} < 0 \\
+\psi_{b_{0}i} \{\exp(-\psi_{k_{s}i} \cdot t_{ij}) + \exp(\psi_{k_{g}i} \cdot t_{ij}) - 1\} & \text{if } t_{ij} \geq 0 
 \end{cases}
 $$
 
 ### Likelihood
 
-For the likelihood given the mean SLD, we will assume a normal distribution with a constant coefficient of variation $\sigma$:
+For the likelihood given the mean SLD $y^{*}$, we will assume a normal distribution with a constant coefficient of variation $\sigma$:
 
 $$
-y(t_{ij}) \sim \text{N}(\mu(t_{ij}), (\mu(t_{ij})\sigma)^2)
+y(t_{ij}) \sim \text{N}(y^{*}(t_{ij}), (y^{*}(t_{ij})\sigma)^2)
 $$
+
+This can also be written as:
+
+$$
+y(t_{ij}) = (1 + \epsilon_{ij}) \cdot y^{*}(t_{ij})
+$$
+
+where $\epsilon_{ij} \sim \text{N}(0, \sigma^2)$.
+
+Note that also the additive model is a possible choice, where
+
+$$
+y(t_{ij}) = y^{*}(t_{ij}) + \epsilon_{ij}
+$$
+
+such that the error does not depend on the scale of the SLD any longer.
 
 ### Random effects
 
-Next, we define the distributions of the random effects $\mu_{0i}$, $s_i$, $g_i$, for $i = 1, \dotsc, n$:
+Next, we define the distributions of the random effects $\psi_{b_{0}i}$, $\psi_{k_{s}i}$, $\psi_{k_{g}i}$, for $i = 1, \dotsc, n$:
 
 $$
 \begin{align*}
-\mu_{0i} &\sim \text{LogNormal}(\mu_{0}, \omega_{0}^2) \\
-s_i &\sim \text{LogNormal}(\mu_{s}, \omega_{s}^2) \\
-g_i &\sim \text{LogNormal}(\mu_{g}, \omega_{g}^2)
+\psi_{b_{0}i} &\sim \text{LogNormal}(b_{0}, \omega_{0}^2) \\
+\psi_{k_{s}i} &\sim \text{LogNormal}(k_{s}, \omega_{s}^2) \\
+\psi_{k_{g}i} &\sim \text{LogNormal}(k_{g}, \omega_{g}^2)
 \end{align*}
 $$
 
@@ -93,7 +109,7 @@ For the prior on the average baseline $\mu_0$ and its standard deviation $\omega
 
 ```{r}
 baseline <- df |>
-  filter(day <= 0, day > -7) |> 
+  filter(year <= 0) |> 
   group_by(id) |> 
   summarize(mean_sld = mean(sld)) |> 
   pull(mean_sld)
@@ -105,7 +121,7 @@ Therefore we take the priors as log normal priors around the log values as means
 
 $$
 \begin{align*}
-\mu_{0} &\sim \text{LogNormal}(`r round(log(mean_bl))`, 5) \\
+b_{0} &\sim \text{LogNormal}(`r round(log(mean_bl))`, 5) \\
 \omega_{0} &\sim \text{LogNormal}(`r round(log(sd_bl))`, 1) \\
 $$
 
@@ -115,12 +131,12 @@ $$
 \sigma \sim \text{LogNormal}(\log(0.1), 1)
 $$
 
-For the average shrinkage and growth rates, $\mu_s$ and $\mu_g$, we consider that these are per day rates, so should be rather small. Since the growth will be more and more dominant for larger times $t$, we can assume that the growth rate is smaller than the shrinkage rate. Therefore, we can use the following priors:
+For the average shrinkage and growth rates, $k_s$ and $k_g$, we parametrize the time $t$ in years, such that these are per year rates. Since the growth will be more and more dominant for larger times $t$, we can assume that the growth rate is smaller than the shrinkage rate. Therefore, we can use the following priors:
 
 $$
 \begin{align*}
-\mu_{s} &\sim \text{LogNormal}(\log(0.01), 1) \\
-\mu_{g} &\sim \text{LogNormal}(\log(0.001), 1) 
+k_{s} &\sim \text{LogNormal}(\log(1), 1) \\
+k_{g} &\sim \text{LogNormal}(\log(0.1), 1) 
 \end{align*}
 $$
 
@@ -142,10 +158,10 @@ formula <- bf(sld ~ eta, nl = TRUE) +
   # Define the mean for the likelihood
   nlf(
     eta ~ 
-      step(day > 0) * 
-        (mu0 * (exp(-s * day) + exp(g * day) -  1)) +
-      step(day <= 0) * 
-        (mu0 * exp(g * day))
+      step(year > 0) * 
+        (b0 * (exp(-ks * year) + exp(kg * year) -  1)) +
+      step(year <= 0) * 
+        (b0 * exp(kg * year))
   ) +
   # Define the standard deviation as a 
   # coefficient tau times the mean.
@@ -153,31 +169,31 @@ formula <- bf(sld ~ eta, nl = TRUE) +
   nlf(sigma ~ ltau + log(eta)) +
   lf(ltau ~ 1) +
   # Define nonlinear parameter transformations
-  nlf(mu0 ~ exp(lmu0)) +
-  nlf(s ~ exp(ls)) +
-  nlf(g ~ exp(lg)) +
+  nlf(b0 ~ exp(lb0)) +
+  nlf(ks ~ exp(lks)) +
+  nlf(kg ~ exp(lkg)) +
   # Define random effect structure
-  lf(lmu0 ~ 1 + (1 | id)) + 
-  lf(ls ~ 1 + (1 | id)) +
-  lf(lg ~ 1 + (1 | id))
+  lf(lb0 ~ 1 + (1 | id)) + 
+  lf(lks ~ 1 + (1 | id)) +
+  lf(lkg ~ 1 + (1 | id))
 
 # Define the priors
 priors <- c(
-  prior(normal(log(39), 1), nlpar = "lmu0"),
-  prior(normal(log(0.01), 0.1), nlpar = "ls"),
-  prior(normal(log(0.001), 1), nlpar = "lg"),
-  prior(lognormal(log(25), 1), nlpar = "lmu0", class = "sd"),
-  prior(lognormal(log(0.1), 1), nlpar = "ls", class = "sd"),
-  prior(lognormal(0, 0.5), nlpar = "lg", class = "sd"),
+  prior(normal(log(43), 1), nlpar = "lb0"),
+  prior(normal(log(1), 0.1), nlpar = "lks"),
+  prior(normal(log(0.1), 1), nlpar = "lkg"),
+  prior(lognormal(log(26), 1), nlpar = "lb0", class = "sd"),
+  prior(lognormal(log(0.1), 1), nlpar = "lks", class = "sd"),
+  prior(lognormal(0, 0.5), nlpar = "lkg", class = "sd"),
   prior(normal(log(0.1), 1), nlpar = "ltau")
 )
 
 # Initial values to avoid problems at the beginning
 n_patients <- nlevels(df$id)
 inits <- list(
-  b_lmu0 = array(log(34)),
-  b_ls = array(log(0.01)),
-  b_lg = array(log(0.001)),
+  b_lb0 = array(log(43)),
+  b_lks = array(log(1)),
+  b_lkg = array(log(0.1)),
   sd_1 = array(10),
   sd_2 = array(0.1),
   sd_3 = array(1),
@@ -188,7 +204,7 @@ inits <- list(
 )
 
 # Fit the model
-save_file <- here("session-tgi/fit4.RData")
+save_file <- here("session-tgi/fit5.RData")
 if (file.exists(save_file)) {
   load(save_file)
 } else {
@@ -208,7 +224,7 @@ if (file.exists(save_file)) {
 summary(fit)
 ```
 
-In total this took 37 minutes on my laptop. 
+In total this took .. minutes on my laptop. 
 
 ## Parameter estimates
 
@@ -220,12 +236,12 @@ head(names(post_df), 10)
 
 post_df <- post_df |>
   mutate(
-    mu_0 = exp(b_lmu0_Intercept),
-    mu_s = exp(b_ls_Intercept),
-    mu_g = exp(b_lg_Intercept),
-    omega_0 = sd_id__lmu0_Intercept,
-    omega_s = sd_id__ls_Intercept,
-    omega_g = sd_id__lg_Intercept,
+    b0 = exp(b_lb0_Intercept),
+    ks = exp(b_lks_Intercept),
+    kg = exp(b_lkg_Intercept),
+    omega_0 = sd_id__lb0_Intercept,
+    omega_s = sd_id__lks_Intercept,
+    omega_g = sd_id__lkg_Intercept,
     sigma = exp(b_ltau_Intercept)
   )
 ```
@@ -233,11 +249,11 @@ post_df <- post_df |>
 Let's first look at the population level parameters:
 
 ```{r}
-mcmc_trace(post_df, pars = c("mu_0", "mu_s", "mu_g", "sigma"))
-mcmc_pairs(post_df, pars = c("mu_0", "mu_s", "mu_g", "sigma"))
+mcmc_trace(post_df, pars = c("b0", "ks", "kg", "sigma"))
+mcmc_pairs(post_df, pars = c("b0", "ks", "kg", "sigma"))
 
 post_sum <- post_df |>
-  select(mu_0, mu_s, mu_g, omega_0, omega_s, omega_g, sigma) |>
+  select(b0, ks, kg, omega_0, omega_s, omega_g, sigma) |>
   summarize_draws() |>
   gt() |>
   fmt_number(n_sigfig = 3)
@@ -249,21 +265,21 @@ We can also look at individual level parameters. This is simplified by using the
 head(get_variables(fit), 20)
 post_ind <- fit |> 
   spread_draws(
-    b_lmu0_Intercept,
-    r_id__lmu0[id, ],
-    b_ls_Intercept,
-    r_id__ls[id, ],
-    b_lg_Intercept,
-    r_id__lg[id, ]
+    b_lb0_Intercept,
+    r_id__lb0[id, ],
+    b_lks_Intercept,
+    r_id__lks[id, ],
+    b_lkg_Intercept,
+    r_id__lkg[id, ]
   ) |> 
   mutate(
-    mu0 = exp(b_lmu0_Intercept + r_id__lmu0),
-    s = exp(b_ls_Intercept + r_id__ls),
-    g = exp(b_lg_Intercept + r_id__lg)
+    b0 = exp(b_lb0_Intercept + r_id__lb0),
+    ks = exp(b_ls_Intercept + r_id__ls),
+    kg = exp(b_lg_Intercept + r_id__lg)
   ) |> 
   select(
     .chain, .iteration, .draw,
-    id, mu0, s, g    
+    id, b0, ks, kg    
   )
 ```
 
@@ -289,13 +305,13 @@ df_subset <- df |>
 df_sim <- df_subset |> 
   data_grid(
     id = pt_subset, 
-    day = seq_range(day, 101)
+    year = seq_range(year, 101)
   ) |>
   add_epred_draws(fit) |>
   median_qi()
 
 df_sim |>
-  ggplot(aes(x = day, y = sld)) +
+  ggplot(aes(x = year, y = sld)) +
   facet_wrap(~ id) +
   geom_ribbon(
     aes(y = .epred, ymin = .lower, ymax = .upper), 
@@ -306,38 +322,8 @@ df_sim |>
   geom_point(data = df_subset, color = "tomato") +
   coord_cartesian(ylim = range(df_subset$sld)) +
   scale_fill_brewer(palette = "Greys") +
-  labs(title = "GSF model fit")
+  labs(title = "SF model fit")
 ```
-
-This does not look so good. 
-
-Let's code the function that gives the SF mean:
-
-```{r}
-sf_mean <- function(mu0, s, g, day) {
-  ifelse(day < 0, mu0 * exp(g * day), mu0 * (exp(-s * day) + exp(g * day) - 1))
-}
-```
-
-Let's apply this to the samples of patient number 1:
-
-```{r}
-post_ind_1 <- post_ind |>
-  filter(id == "1")
-
-sum_ind_1 <- post_ind_1 |> 
-  cross_join(data.frame(day = (-7):100)) |> 
-  mutate(mu = sf_mean(mu0, s, g, day)) |> 
-  group_by(day) |> 
-  summarize(med = median(mu), avg = mean(mu))
-
-sum_ind_1 |> 
-  ggplot(aes(x = day)) +
-  geom_line(aes(y = med), color = "deepskyblue") +
-  geom_line(aes(y = avg), color = "tomato") +
-  geom_point(data = df_subset |> filter(id == "1"), aes(y = sld), color = "black")
-```
-
 
 ## Tips and tricks
 

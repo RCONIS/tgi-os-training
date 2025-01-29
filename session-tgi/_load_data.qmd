@@ -9,6 +9,7 @@ read_one_sheet <- function(sheet) {
     mutate(
         id = factor(as.character(patient_anonmyized)),
         day = as.integer(treatment_day),
+        year = day / 365.25,
         target_lesion_long_diam_mm = case_match(
             target_lesion_long_diam_mm,
             "TOO SMALL TO MEASURE" ~ "0.1",
@@ -19,7 +20,7 @@ read_one_sheet <- function(sheet) {
         study = factor(gsub("^Study_(\\d+)_Arm_\\d+$", "\\1", study_arm)),
         arm = factor(gsub("^Study_\\d+_Arm_(\\d+)$", "\\1", study_arm))
     ) |> 
-    select(id, day, sld, study, arm)
+    select(id, year, sld, study, arm)
 }
 
 tumor_data <- excel_sheets(file_path) |> 

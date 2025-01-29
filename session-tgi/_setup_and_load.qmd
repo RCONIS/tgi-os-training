@@ -33,7 +33,9 @@ WARMUP <- 2000 # number of warm up iterations
 CHAINS <- 4
 BAYES.SEED <- 878
 THIN <- 10
-CONTROL <- list(adapt_delta = 0.99, max_treedepth = 15)
+ADAPT_DELTA <- 0.99
+MAX_TREEDEPTH <- 15
+CONTROL <- list(adapt_delta = ADAPT_DELTA, max_treedepth = MAX_TREEDEPTH)
 REFRESH <- 500
 
 theme_set(theme_bw(base_size = 12))
