@@ -12,11 +12,12 @@ read_one_sheet <- function(sheet) {
         year = day / 365.25,
         target_lesion_long_diam_mm = case_match(
             target_lesion_long_diam_mm,
-            "TOO SMALL TO MEASURE" ~ "0.1",
+            "TOO SMALL TO MEASURE" ~ "2",
             "NOT EVALUABLE" ~ NA_character_,
             .default = target_lesion_long_diam_mm
         ),
         sld = as.numeric(target_lesion_long_diam_mm),
+        sld = ifelse(sld == 0, 2, sld),
         study = factor(gsub("^Study_(\\d+)_Arm_\\d+$", "\\1", study_arm)),
         arm = factor(gsub("^Study_\\d+_Arm_(\\d+)$", "\\1", study_arm))
     ) |> 
