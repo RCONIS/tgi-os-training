@@ -10,6 +10,7 @@ format:
   html:
     code-fold: show
 math: true
+cache: true
 ---
 
 Let's try to fit the same model now with `jmpost`. We will use the same data as in the previous notebook.
@@ -183,9 +184,6 @@ Let's check the prior vs. posterior for the parameters:
 ```{r}
 #| label: plot_prior_post
 
-mcmc_hist(vars_draws)
-
-# But now we want to overlay the posterior and prior:
 post_samples <- as_draws_df(vars_draws) |> 
   rename(
     mu_bsld = "lm_sf_mu_bsld[1]",
@@ -210,8 +208,6 @@ prior_samples <- data.frame(
     sigma = rtruncnorm(n_prior_samples, a = 0, mean = 0, sd = 3)
   ) |> 
   mutate(type = "prior")
-
-mcmc_hist(prior_samples)
 
 # Combine the two
 combined_samples <- rbind(post_samples, prior_samples) |> 
@@ -242,6 +238,7 @@ post_sum <- post_samples |>
   summarize_draws() |>
   gt() |>
   fmt_number(n_sigfig = 3)
+post_sum
 ```
 
 ## Model comparison with LOO
@@ -254,6 +251,7 @@ With `jmpost`, it is easy to compute the LOO criterion:
 #| label: loo
 
 loo_res <- mcmc_res_cmdstan$loo(r_eff = FALSE)
+loo_res
 ```
 
 Underneath this is using the [$loo()](https://mc-stan.org/cmdstanr/reference/fit-method-loo.html) method from `cmdstanr`. A helpful glossary explaining the LOO statistics can be found [here](https://mc-stan.org/cmdstanr/reference/loo-glossary.html).
