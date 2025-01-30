@@ -15,6 +15,7 @@ library(readxl)
 library(janitor)
 library(posterior)
 library(jmpost)
+library(truncnorm)
 
 library(brms)
 if (require(cmdstanr)) {

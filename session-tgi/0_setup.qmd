@@ -65,7 +65,8 @@ packages <- c(
   "gt",
   "readxl",
   "janitor",
-  "posterior"
+  "posterior",
+  "truncnorm"
 )
 sapply(packages, install_if_not_available)
 remotes::install_github("genentech/jmpost")

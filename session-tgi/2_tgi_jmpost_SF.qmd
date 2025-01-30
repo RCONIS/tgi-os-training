@@ -1,5 +1,5 @@
 ---
-title: "1. TGI model with `jmpost` (SF)"
+title: "2. TGI model with `jmpost` (SF)"
 author:
   - Daniel Sabanés Bové
   - Francois Mercier
@@ -20,11 +20,12 @@ Let's try to fit the same model now with `jmpost`. We will use the same data as 
 
 {{< include _load_data.qmd >}}
 
-For simplicity, we will for now just use studies 1 and 3 (Atezolizumab in NSCLC), and we rename the patient IDs:
+For simplicity, we will for now just use study 4 (this is the OAK study), and we rename the patient IDs:
 
 ```{r}
+#| label: subset_oak
 df <- tumor_data |> 
-  filter(study %in% c("1", "3")) |> 
+  filter(study == "4") |> 
   na.omit() |>
   droplevels() |> 
   mutate(id = factor(as.numeric(id)))
@@ -36,6 +37,8 @@ We start with the subject level data set.
 In this case we want to treat all observations as if they come from a single arm and single study for now. Therefore we insert constant study and arm values here.
 
 ```{r}
+#| label: subj_df_prep
+
 subj_df <- data.frame(
   id = unique(df$id),
   arm = "arm",
@@ -52,17 +55,21 @@ subj_data <- DataSubject(
 Next we prepare the longitudinal data object.
 
 ```{r}
+#| label: long_df_prep
+
 long_df <- df |>
-  select(id, day, sld)
+  select(id, year, sld)
 long_data <- DataLongitudinal(
   data = long_df,
-  formula = sld ~ day
+  formula = sld ~ year
 )
 ```
 
 Now we can create the `JointData` object:
 
 ```{r}
+#| label: joint_data_prep
+
 joint_data <- DataJoint(
     subject = subj_data,
     longitudinal = long_data
@@ -71,41 +78,49 @@ joint_data <- DataJoint(
 
 ## Model specification
 
+The statistical model is specified in the `jmpost` vignette [here](https://genentech.github.io/jmpost/main/articles/statistical-specification.html#stein-fojo-model).
+
 Here we just want to fit the longitudinal data, therefore:
 
 ```{r}
+#| label: tgi_mod_spec
+
 tgi_mod <- JointModel(
     longitudinal = LongitudinalSteinFojo(
-        mu_bsld = prior_normal(log(39), 1),
-        mu_ks = prior_normal(log(0.01), 0.1),
-        mu_kg = prior_normal(log(0.001), 1),
-        omega_bsld = prior_lognormal(log(25), 1),
-        omega_ks = prior_lognormal(log(0.1), 1),
-        omega_kg = prior_lognormal(log(1), 0.5),
-        sigma = prior_lognormal(log(0.1), 1)
+        mu_bsld = prior_normal(log(65), 1),
+        mu_ks = prior_normal(log(0.52), 1),
+        mu_kg = prior_normal(log(1.04), 1),
+        omega_bsld = prior_normal(0, 3),
+        omega_ks = prior_normal(0, 3),
+        omega_kg = prior_normal(0, 3),
+        sigma = prior_normal(0, 3)
     )
 )
 ```
+
+Note that the priors on the standard deviations, `omega_*` and `sigma`, are truncated to the positive domain. So we used here truncated normal priors.
 
 ## Fit model
 
 We can now fit the model using `jmpost`. 
 
 ```{r}
-save_file <- here("session-tgi/jm1.RData")
+save_file <- here("session-tgi/jm2.RData")
 if (file.exists(save_file)) {
   load(save_file)
 } else {
   mcmc_results <- sampleStanModel(
       tgi_mod,
       data = joint_data,
-      iter_sampling = ITER,
-      iter_warmup = WARMUP,
+      iter_sampling = 1000,
+      iter_warmup = 2000,
       chains = CHAINS,
       parallel_chains = CHAINS,
       seed = BAYES.SEED,
-      refresh = REFRESH,
-      thin = THIN
+      refresh = REFRESH
+      # thin = THIN,
+      # adapt_delta = ADAPT_DELTA,
+      # max_treedepth = MAX_TREEDEPTH
   )
   save(mcmc_results, file = save_file)
 }
@@ -118,15 +133,113 @@ vars <- c(
     "lm_sf_mu_bsld",
     "lm_sf_mu_ks",
     "lm_sf_mu_kg",
-    "lm_sf_sigma"
+    "lm_sf_sigma",
+    "lm_sf_omega_bsld",
+    "lm_sf_omega_ks",
+    "lm_sf_omega_kg"
 )
-cmdstanr::as.CmdStanMCMC(mcmc_results)$summary(vars)
+mcmc_res_cmdstan <- cmdstanr::as.CmdStanMCMC(mcmc_results)
+mcmc_res_cmdstan$summary(vars)
 ```
 
-Unfortunately that does not look good, because the `rhat` values are far above 1.
-Let's check traceplots for these:
+This looks good, let's check the traceplots:
 
 ```{r}
-vars_draws <- cmdstanr::as.CmdStanMCMC(mcmc_results)$draws(vars)
+vars_draws <- mcmc_res_cmdstan$draws(vars)
 mcmc_trace(vars_draws)
 ```
+
+They also look ok, all chains are mixing well in the same range of parameter values.
+
+## Observation vs. model fit
+
+Let's check the fit of the model to the data:
+
+```{r}
+#| label: plot_fit
+#| 
+pt_subset <- as.character(1:20)
+fit_subset <- LongitudinalQuantities(
+  mcmc_results, 
+  grid = GridObserved(subjects = pt_subset)
+)
+
+autoplot(fit_subset)+
+  labs(x = "Time (years)", y = "SLD (mm)")
+```
+
+So this works very nicely.
+
+## Prior vs. posterior
+
+Let's check the prior vs. posterior for the parameters:
+
+```{r}
+#| label: plot_prior_post
+
+mcmc_hist(vars_draws)
+
+# But now we want to overlay the posterior and prior:
+post_samples <- as_draws_df(vars_draws) |> 
+  rename(
+    mu_bsld = "lm_sf_mu_bsld[1]",
+    mu_ks = "lm_sf_mu_ks[1]",
+    mu_kg = "lm_sf_mu_kg[1]",
+    omega_bsld = "lm_sf_omega_bsld[1]",
+    omega_ks = "lm_sf_omega_ks[1]",
+    omega_kg = "lm_sf_omega_kg[1]",
+    sigma = lm_sf_sigma
+  ) |> 
+  mutate(type = "posterior") |> 
+  select(mu_bsld, mu_ks, mu_kg, omega_bsld, omega_ks, omega_kg, sigma, type)
+
+n_prior_samples <- nrow(post_samples)
+prior_samples <- data.frame(
+    mu_bsld = rnorm(n_prior_samples, log(65), 1),
+    mu_ks = rnorm(n_prior_samples, log(0.52), 1),
+    mu_kg = rnorm(n_prior_samples, log(1.04), 1),
+    omega_bsld = rtruncnorm(n_prior_samples, a = 0, mean = 0, sd = 3),
+    omega_ks = rtruncnorm(n_prior_samples, a = 0, mean = 0, sd = 3),
+    omega_kg = rtruncnorm(n_prior_samples, a = 0, mean = 0, sd = 3),
+    sigma = rtruncnorm(n_prior_samples, a = 0, mean = 0, sd = 3)
+  ) |> 
+  mutate(type = "prior")
+
+mcmc_hist(prior_samples)
+
+# Combine the two
+combined_samples <- rbind(post_samples, prior_samples) |> 
+  pivot_longer(cols = -type, names_to = "parameter", values_to = "value")
+
+ggplot(combined_samples, aes(x = value, fill = type)) +
+  geom_density(alpha = 0.5) +
+  facet_wrap(~parameter, scales = "free") +
+  theme_minimal()
+```
+
+This looks good, because the priors are covering the range of the posterior samples and are not too informative.
+
+## Model comparison with LOO
+
+The LOO criterion is a widely used method for comparing models. It is based on the idea of leave-one-out cross-validation, but is more efficient to compute. 
+
+With `jmpost`, it is easy to compute the LOO criterion:
+
+```{r}
+loo_res <- mcmc_res_cmdstan$loo(r_eff = FALSE)
+```
+
+Underneath this is using the [$loo()](https://mc-stan.org/cmdstanr/reference/fit-method-loo.html) method from `cmdstanr`. A helpful glossary explaining the LOO statistics can be found [here](https://mc-stan.org/cmdstanr/reference/loo-glossary.html).
+
+Different criteria are available, for example the `elpd_loo` is the expected log pointwise predictive density, and the `looic = -2 * elpd_loo` is the LOO information criterion. For comparing models, the `looic` is often used, where smaller numbers are better. it is kind of an equivalent to the AIC, but based on the LOO criterion.
+
+## Tipps and tricks
+
+- Also here it is possible to look at the underlying Stan code:
+  ```{r}
+  #| eval: false
+
+  tmp <- tempfile()
+  write_stan(tgi_mod, destination = tmp)
+  file.edit(tmp) # opens the Stan file in the default editor
+  ```
