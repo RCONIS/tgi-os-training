@@ -308,8 +308,9 @@ We can now compare the model fit to the observations. Let's do this for the firs
 
 ```{r}
 #| label: obs_vs_fit_plots
+# pp <- posterior_predict(fit)
 
-pt_subset <- as.character(21:40)
+pt_subset <- as.character(1:20)
 df_subset <- df |> 
   filter(id %in% pt_subset)
 
@@ -321,8 +322,6 @@ df_sim <- df_subset |>
   add_linpred_draws(fit) |> 
   median_qi() |> 
   mutate(sld_pred = .linpred)
-
-df_sim_30 <- df_sim |> filter(id == "30")
 
 df_sim |>
   ggplot(aes(x = year, y = sld)) +
@@ -369,3 +368,107 @@ df_sim |>
 - Providing manually realistic initial values for the model parameters can help to speed up the convergence of the Markov chains. This is especially important for the nonlinear parameters. You can get the names of the parameters from the Stan code above - note that you cannot use the names of the `brms` R code. 
 - Sometimes it is not easy to get the dimensions of the inital values right. Here it can be helpful to change the backend to `rstan`, which provides more detailed error messages. You can do this by setting `backend = "rstan"` in the `brm` call.
 - The priors for this model are not really subjective Bayesian priors. Here, it took me a couple of tries, where I started with one prior, ran the model, saw where the parameter samples were, and then adjusted the priors to be in a similar range. Ideally, we could avoid this by either knowing more about the parameters e.g. from previous clinical trial analyses in the same molecule and therapeutic area, or by having some simple ad-hoc calculations for each subject which can then translate to the population level (in a similar way as we did for the baseline SLD).
+
+## Fitting the additive model
+
+For comparison, let's fit the additive model to see if that gives a better fit.
+
+```{r}
+#| label: fit_brms
+formula <- bf(sld ~ step(year > 0) * 
+        (b0 * (exp(-ks * year) + exp(kg * year) -  1)) +
+      step(year <= 0) * 
+        (b0 * exp(kg * year)), nl = TRUE) +
+  # Define nonlinear parameter transformations
+  nlf(b0 ~ exp(lb0)) +
+  nlf(ks ~ exp(lks)) +
+  nlf(kg ~ exp(lkg)) +
+  # Define random effect structure
+  lf(lb0 ~ 1 + (1 | id)) + 
+  lf(lks ~ 1 + (1 | id)) +
+  lf(lkg ~ 1 + (1 | id))
+
+# Define the priors
+priors <- c(
+  prior(normal(log(43), 1), nlpar = "lb0"),
+  prior(normal(log(1), 0.1), nlpar = "lks"),
+  prior(normal(log(0.1), 1), nlpar = "lkg"),
+  prior(lognormal(log(26), 1), nlpar = "lb0", class = "sd"),
+  prior(lognormal(log(0.1), 1), nlpar = "lks", class = "sd"),
+  prior(lognormal(0, 0.5), nlpar = "lkg", class = "sd")
+)
+
+# Initial values to avoid problems at the beginning
+n_patients <- nlevels(df$id)
+inits <- list(
+  b_lb0 = array(log(43)),
+  b_lks = array(log(1)),
+  b_lkg = array(log(0.1)),
+  sd_1 = array(10),
+  sd_2 = array(0.1),
+  sd_3 = array(1),
+  z_1 = matrix(0, nrow = 1, ncol = n_patients),
+  z_2 = matrix(0, nrow = 1, ncol = n_patients),
+  z_3 = matrix(0, nrow = 1, ncol = n_patients),
+  sigma = 1
+)
+
+# Fit the model
+save_file <- here("session-tgi/fit7.RData")
+if (file.exists(save_file)) {
+  load(save_file)
+} else {
+  fit <- brm(
+    formula = formula,
+    data = df,
+    prior = priors,
+    family = gaussian(),
+    init = rep(list(inits), CHAINS),
+    chains = CHAINS, iter = 2000, warmup = 1000, seed = BAYES.SEED, 
+    refresh = REFRESH, thin = 2
+  )
+  save(fit, file = save_file)
+}
+
+# Summarize the fit
+summary(fit)
+```
+
+Let's look again at the model fit:
+
+
+```{r}
+#| label: obs_vs_add_fit_plots
+pp <- posterior_predict(fit)
+nrow(df)
+pm <- colMeans(pp)
+df$pm <- pm
+
+pt_subset <- as.character(1:20)
+df_subset <- df |> 
+  filter(id %in% pt_subset)
+
+df_sim <- df_subset |> 
+  data_grid(
+    id = pt_subset, 
+    year = seq_range(year, 101)
+  ) |>
+  add_linpred_draws(fit) |> 
+  median_qi() |> 
+  mutate(sld_pred = .linpred)
+
+df_sim |>
+  ggplot(aes(x = year, y = sld)) +
+  facet_wrap(~ id) +
+  geom_ribbon(
+    aes(y = sld_pred, ymin = .lower, ymax = .upper),
+    alpha = 0.3, 
+    fill = "deepskyblue"
+  ) +
+  geom_line(aes(y = sld_pred), color = "deepskyblue") +
+  geom_point(data = df_subset, color = "tomato") +
+  geom_point(data = df_subset, aes(y = pm), color = "green") +
+  coord_cartesian(ylim = range(df_subset$sld)) +
+  scale_fill_brewer(palette = "Greys") +
+  labs(title = "SF model fit")
+```
