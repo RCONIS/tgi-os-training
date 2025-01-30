@@ -228,8 +228,6 @@ if (file.exists(save_file)) {
 summary(fit)
 ```
 
-In total this took .. minutes on my laptop. 
-
 ## Parameter estimates
 
 Here we extract all parameter estimates using the `as_draws_df` method for `brmsfit` objects. Note that we could also just extract a subset of parameters, see `?as_draws.brmsfit` for more information.
@@ -283,8 +281,8 @@ post_ind <- fit |>
   ) |> 
   mutate(
     b0 = exp(b_lb0_Intercept + r_id__lb0),
-    ks = exp(b_ls_Intercept + r_id__ls),
-    kg = exp(b_lg_Intercept + r_id__lg)
+    ks = exp(b_lks_Intercept + r_id__lks),
+    kg = exp(b_lkg_Intercept + r_id__lkg)
   ) |> 
   select(
     .chain, .iteration, .draw,
@@ -311,7 +309,7 @@ We can now compare the model fit to the observations. Let's do this for the firs
 ```{r}
 #| label: obs_vs_fit_plots
 
-pt_subset <- as.character(1:20)
+pt_subset <- as.character(21:40)
 df_subset <- df |> 
   filter(id %in% pt_subset)
 
@@ -320,18 +318,21 @@ df_sim <- df_subset |>
     id = pt_subset, 
     year = seq_range(year, 101)
   ) |>
-  add_epred_draws(fit) |>
-  median_qi()
+  add_linpred_draws(fit) |> 
+  median_qi() |> 
+  mutate(sld_pred = .linpred)
+
+df_sim_30 <- df_sim |> filter(id == "30")
 
 df_sim |>
   ggplot(aes(x = year, y = sld)) +
   facet_wrap(~ id) +
   geom_ribbon(
-    aes(y = .epred, ymin = .lower, ymax = .upper), 
+    aes(y = sld_pred, ymin = .lower, ymax = .upper),
     alpha = 0.3, 
     fill = "deepskyblue"
   ) +
-  geom_line(aes(y = .epred), color = "deepskyblue") +
+  geom_line(aes(y = sld_pred), color = "deepskyblue") +
   geom_point(data = df_subset, color = "tomato") +
   coord_cartesian(ylim = range(df_subset$sld)) +
   scale_fill_brewer(palette = "Greys") +
@@ -357,7 +358,7 @@ df_sim |>
 
   ```{r}
   #| label: traceplot_example
-  
+
   fit_save <- fit
   load(here("session-tgi/fit.RData"))
   plot(fit, pars = "b_tphi")
