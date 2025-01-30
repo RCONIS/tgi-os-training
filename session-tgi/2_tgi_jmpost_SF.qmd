@@ -105,6 +105,8 @@ Note that the priors on the standard deviations, `omega_*` and `sigma`, are trun
 We can now fit the model using `jmpost`. 
 
 ```{r}
+#| label: fit_model
+
 save_file <- here("session-tgi/jm2.RData")
 if (file.exists(save_file)) {
   load(save_file)
@@ -129,6 +131,8 @@ if (file.exists(save_file)) {
 Let's check the convergence with a few parameters:
 
 ```{r}
+#| label: check_convergence
+
 vars <- c(
     "lm_sf_mu_bsld",
     "lm_sf_mu_ks",
@@ -145,6 +149,8 @@ mcmc_res_cmdstan$summary(vars)
 This looks good, let's check the traceplots:
 
 ```{r}
+#| label: plot_trace
+
 vars_draws <- mcmc_res_cmdstan$draws(vars)
 mcmc_trace(vars_draws)
 ```
@@ -157,7 +163,7 @@ Let's check the fit of the model to the data:
 
 ```{r}
 #| label: plot_fit
-#| 
+
 pt_subset <- as.character(1:20)
 fit_subset <- LongitudinalQuantities(
   mcmc_results, 
@@ -219,6 +225,25 @@ ggplot(combined_samples, aes(x = value, fill = type)) +
 
 This looks good, because the priors are covering the range of the posterior samples and are not too informative.
 
+## Parameter estimates
+
+Here we need to be careful: We are interested in the posterior mean estimates of the baseline, shrinkage and growth population rates on the original scale. Because we model them on the log scale as normal distributed, we need to use the mean of the log-normal distribution to get the mean on the original scale.
+
+```{r}
+#| label: par_estimates
+
+post_sum <- post_samples |>
+  mutate(
+    b0 = exp(mu_bsld + omega_bsld^2 / 2), 
+    ks = exp(mu_ks + omega_ks^2 / 2), 
+    kg = exp(mu_kg + omega_kg^2 / 2)
+  ) |>
+  select(b0, ks, kg, omega_bsld, omega_ks, omega_kg, sigma) |>
+  summarize_draws() |>
+  gt() |>
+  fmt_number(n_sigfig = 3)
+```
+
 ## Model comparison with LOO
 
 The LOO criterion is a widely used method for comparing models. It is based on the idea of leave-one-out cross-validation, but is more efficient to compute. 
@@ -226,6 +251,8 @@ The LOO criterion is a widely used method for comparing models. It is based on t
 With `jmpost`, it is easy to compute the LOO criterion:
 
 ```{r}
+#| label: loo
+
 loo_res <- mcmc_res_cmdstan$loo(r_eff = FALSE)
 ```
 
