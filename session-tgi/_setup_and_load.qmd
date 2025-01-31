@@ -29,14 +29,10 @@ if (require(cmdstanr)) {
 
 # MCMC options
 options(mc.cores = 4)
-ITER <- 3000 # number of iterations
+ITER <- 1000 # number of sampling iterations after warm up
 WARMUP <- 2000 # number of warm up iterations
 CHAINS <- 4
 BAYES.SEED <- 878
-THIN <- 10
-ADAPT_DELTA <- 0.99
-MAX_TREEDEPTH <- 15
-CONTROL <- list(adapt_delta = ADAPT_DELTA, max_treedepth = MAX_TREEDEPTH)
 REFRESH <- 500
 
 theme_set(theme_bw(base_size = 12))

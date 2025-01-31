@@ -115,21 +115,18 @@ if (file.exists(save_file)) {
   mcmc_results <- sampleStanModel(
       tgi_mod,
       data = joint_data,
-      iter_sampling = 1000,
-      iter_warmup = 2000,
+      iter_sampling = ITER,
+      iter_warmup = WARMUP,
       chains = CHAINS,
       parallel_chains = CHAINS,
       seed = BAYES.SEED,
       refresh = REFRESH
-      # thin = THIN,
-      # adapt_delta = ADAPT_DELTA,
-      # max_treedepth = MAX_TREEDEPTH
   )
   save(mcmc_results, file = save_file)
 }
 ```
 
-Let's check the convergence with a few parameters:
+Let's check the convergence of the population parameters:
 
 ```{r}
 #| label: check_convergence
