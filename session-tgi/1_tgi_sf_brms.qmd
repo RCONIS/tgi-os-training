@@ -379,9 +379,9 @@ formula_by_arm <- bf(sld ~ eta, nl = TRUE) +
   lf(lkg ~ 1 + arm + (1 | id))
 ```
 
-It is instructive to see that the Stan code that is generated in the background is actually identical to the previous model. This is because `brms` uses a design matrix to model the fixed effects, and the `arm` variable is just added to this design matrix, which before only contained the intercept column with `1`s. 
+It is instructive to see that the Stan code that is generated in the background is actually identical to the previous model, except for the prior specification. This is because `brms` uses a design matrix to model the fixed effects, and the `arm` variable is just added to this design matrix, which before only contained the intercept column with `1`s. 
 
-However, now the coefficient vector is no longer of length 1 but of length 2, with the first element corresponding to the intercept and the second element to the effect of the `arm` variable. For the latter, we want to assume a standard normal prior on the log scale. 
+However, now the coefficient vector is no longer of length 1 but of length 2, with the first element corresponding to the intercept and the second element to the effect of the `arm` variable (for the level "2"). For the latter, we want to assume a standard normal prior on the log scale. 
 
 So we need to adjust the prior and initial values accordingly:
 
@@ -390,10 +390,12 @@ So we need to adjust the prior and initial values accordingly:
 
 priors_by_arm <- c(
   prior(normal(log(65), 1), nlpar = "lb0"),
+  # Note the changes here:
   prior(normal(log(0.52), 0.1), nlpar = "lks", coef = "Intercept"),
-  prior(normal(0, 1), nlpar = "lks", coef = "arm2"),
+  prior(normal(0, 1), nlpar = "lks", coef = "arm2"), 
   prior(normal(log(1.04), 1), nlpar = "lkg", coef = "Intercept"),
   prior(normal(0, 1), nlpar = "lkg", coef = "arm2"),
+  # Same as before:
   prior(normal(0, 3), lb = 0, nlpar = "lb0", class = "sd"),
   prior(normal(0, 3), lb = 0, nlpar = "lks", class = "sd"),
   prior(normal(0, 3), lb = 0, nlpar = "lkg", class = "sd"),
@@ -401,8 +403,10 @@ priors_by_arm <- c(
 )
 inits_by_arm <- list(
   b_lb0 = array(3.61),
+  # Note the changes here:
   b_lks = array(c(-1.25, 0)),
   b_lkg = array(c(-1.33, 0)),
+  # Same as before:
   sd_1 = array(0.58),
   sd_2 = array(1.6),
   sd_3 = array(0.994),

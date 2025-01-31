@@ -24,7 +24,7 @@ Let's try to fit the same model now with `jmpost`. We will use the same data as 
 ## Data preparation
 
 We start with the subject level data set.
-In this case we want to treat all observations as if they come from a single arm and single study for now. Therefore we insert constant study and arm values here.
+For the beginning, we want to treat all observations as if they come from a single arm and single study for now. Therefore we insert constant study and arm values here.
 
 ```{r}
 #| label: subj_df_prep
@@ -231,6 +231,60 @@ post_sum
 ```
 
 We can see that these are consistent with the estimates from the `brms` model earlier.
+
+## Separate arm estimates
+
+While there is no general covariates support in `jmpost` for the longitudinal models as of now, we can obtain separate estimates for the longitudinal model parameters: As detailed in the model specification [here](https://genentech.github.io/jmpost/main/articles/statistical-specification.html#stein-fojo-model), as soon as we have the arm defined, then separate estimates for the arm-specific shrinkage and growth parameters will be obtained.
+
+So we need to define the subject data accordingly now with the arm information:
+
+```{r}
+#| label: subj_df_prep_arm
+
+subj_df_by_arm <- df |>
+  select(id, arm) |>
+  distinct() |> 
+  mutate(study = "study")
+
+subj_data_by_arm <- DataSubject(
+  data = subj_df_by_arm,
+  subject = "id",
+  arm = "arm",
+  study = "study"
+)
+```
+
+We redefine the `JointData` object and can then fit the model, because the prior specification does not need to change: We assume iid priors on the arm-specific parameters here.
+
+```{r}
+#| label: joint_data_prep_arm
+
+joint_data_by_arm <- DataJoint(
+    subject = subj_data_by_arm,
+    longitudinal = long_data
+)
+```
+
+```{r}
+#| label: fit_model_arm
+
+save_file <- here("session-tgi/jm3.RData")
+if (file.exists(save_file)) {
+  load(save_file)
+} else {
+  mcmc_results_by_arm <- sampleStanModel(
+      tgi_mod,
+      data = joint_data_by_arm,
+      iter_sampling = ITER,
+      iter_warmup = WARMUP,
+      chains = CHAINS,
+      parallel_chains = CHAINS,
+      seed = BAYES.SEED,
+      refresh = REFRESH
+  )
+  save(mcmc_results_by_arm, file = save_file)
+}
+```
 
 ## Model comparison with LOO
 
