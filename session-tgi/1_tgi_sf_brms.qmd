@@ -334,6 +334,22 @@ df_sim |>
   labs(title = "SF model fit")
 ```
 
+## Model comparison with LOO
+
+The LOO criterion is a widely used method for comparing models. It is based on the idea of leave-one-out cross-validation, but is more efficient to compute. 
+
+With `brms`, it is easy to compute the LOO criterion:
+
+```{r}
+#| label: loo
+
+loo(fit)
+```
+
+A helpful glossary explaining the LOO statistics can be found [here](https://mc-stan.org/cmdstanr/reference/loo-glossary.html).
+
+Different criteria are available, for example the `elpd_loo` is the expected log pointwise predictive density, and the `looic = -2 * elpd_loo` is the LOO information criterion. For comparing models, the `looic` is often used, where smaller numbers are better. it is kind of an equivalent to the AIC, but based on the LOO criterion.
+
 ## Tips and tricks
 
 - When the model breaks down completely, that is a sign that likely the model specification is wrong. For example, in above code I first did not understand how to model the `sigma` parameter correctly, which led to a model where each chain was completely stuck at its initial values.

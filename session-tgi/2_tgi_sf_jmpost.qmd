@@ -230,11 +230,11 @@ post_sum <- post_samples |>
 post_sum
 ```
 
+We can see that these are consistent with the estimates from the `brms` model earlier.
+
 ## Model comparison with LOO
 
-The LOO criterion is a widely used method for comparing models. It is based on the idea of leave-one-out cross-validation, but is more efficient to compute. 
-
-With `jmpost`, it is easy to compute the LOO criterion:
+As we have seen for `brms`, also for `jmpost` we can easily compute the LOO criterion:
 
 ```{r}
 #| label: loo
@@ -243,9 +243,7 @@ loo_res <- mcmc_res_cmdstan$loo(r_eff = FALSE)
 loo_res
 ```
 
-Underneath this is using the [$loo()](https://mc-stan.org/cmdstanr/reference/fit-method-loo.html) method from `cmdstanr`. A helpful glossary explaining the LOO statistics can be found [here](https://mc-stan.org/cmdstanr/reference/loo-glossary.html).
-
-Different criteria are available, for example the `elpd_loo` is the expected log pointwise predictive density, and the `looic = -2 * elpd_loo` is the LOO information criterion. For comparing models, the `looic` is often used, where smaller numbers are better. it is kind of an equivalent to the AIC, but based on the LOO criterion.
+Underneath this is using the [$loo()](https://mc-stan.org/cmdstanr/reference/fit-method-loo.html) method from `cmdstanr`. 
 
 ## Tipps and tricks
 
