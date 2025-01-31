@@ -218,9 +218,12 @@ post_sum <- post_samples |>
   mutate(
     b0 = exp(mu_bsld + omega_bsld^2 / 2), 
     ks = exp(mu_ks + omega_ks^2 / 2), 
-    kg = exp(mu_kg + omega_kg^2 / 2)
+    kg = exp(mu_kg + omega_kg^2 / 2),
+    cv_0 = sqrt(exp(omega_bsld^2) - 1),
+    cv_s = sqrt(exp(omega_ks^2) - 1),
+    cv_g = sqrt(exp(omega_kg^2) - 1)
   ) |>
-  select(b0, ks, kg, omega_bsld, omega_ks, omega_kg, sigma) |>
+  select(b0, ks, kg, omega_bsld, omega_ks, omega_kg, cv_0, cv_s, cv_g, sigma) |>
   summarize_draws() |>
   gt() |>
   fmt_number(n_sigfig = 3)
