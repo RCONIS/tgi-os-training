@@ -16,8 +16,8 @@ library(janitor)
 library(posterior)
 library(jmpost)
 library(truncnorm)
-
 library(brms)
+
 if (require(cmdstanr)) {
   # If cmdstanr is available, instruct brms to use cmdstanr as backend 
   # and cache all Stan binaries
