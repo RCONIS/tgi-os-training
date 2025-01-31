@@ -38,7 +38,8 @@ jobs:
             "janitor",
             "posterior",
             "truncnorm",
-            "brms"
+            "brms",
+            "rstan"
           ), repos = "https://cloud.r-project.org")
         shell: Rscript {0}
 
