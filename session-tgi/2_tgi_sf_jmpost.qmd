@@ -119,6 +119,7 @@ Let's check the convergence of the population parameters:
 
 ```{r}
 #| label: check_convergence
+#| dependson: fit_model
 
 vars <- c(
     "lm_sf_mu_bsld",
@@ -137,6 +138,7 @@ This looks good, let's check the traceplots:
 
 ```{r}
 #| label: plot_trace
+#| dependson: check_convergence
 
 vars_draws <- mcmc_res_cmdstan$draws(vars)
 mcmc_trace(vars_draws)
@@ -150,6 +152,7 @@ Let's check the fit of the model to the data:
 
 ```{r}
 #| label: plot_fit
+#| dependson: fit_model
 
 pt_subset <- as.character(1:20)
 fit_subset <- LongitudinalQuantities(
@@ -169,6 +172,7 @@ Let's check the prior vs. posterior for the parameters:
 
 ```{r}
 #| label: plot_prior_post
+#| dependson: plot_trace
 
 post_samples <- as_draws_df(vars_draws) |> 
   rename(
@@ -213,6 +217,7 @@ Here we need again to be careful: We are interested in the posterior mean estima
 
 ```{r}
 #| label: par_estimates
+#| dependson: plot_prior_post
 
 post_sum <- post_samples |>
   mutate(
@@ -290,6 +295,7 @@ Let's again check the convergence:
 
 ```{r}
 #| label: check_convergence_arm
+#| dependson: fit_model_arm
 
 vars <- c(
     "lm_sf_mu_bsld",
@@ -308,6 +314,7 @@ Let's again tabulate the parameter estimates:
 
 ```{r}
 #| label: par_estimates_arm
+#| dependson: check_convergence_arm
 
 post_samples_by_arm <- as_draws_df(mcmc_res_cmdstan_by_arm$draws(vars)) |> 
   rename(
@@ -362,6 +369,7 @@ As we have seen for `brms`, also for `jmpost` we can easily compute the LOO crit
 
 ```{r}
 #| label: loo
+#| dependson: check_convergence
 
 loo_res <- mcmc_res_cmdstan$loo(r_eff = FALSE)
 loo_res
@@ -373,6 +381,7 @@ And we can compare this to the LOO of the model with separate arm estimates:
 
 ```{r}
 #| label: loo_arm
+#| dependson: check_convergence_arm
 
 loo_res_by_arm <- mcmc_res_cmdstan_by_arm$loo(r_eff = FALSE)
 loo_res_by_arm
