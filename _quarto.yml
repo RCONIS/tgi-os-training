@@ -6,8 +6,7 @@ website:
   sidebar:
     contents:
       - index.qmd
-      - section: session-tgi
-        title: "Session 1: TGI"
+      - section: "Session 1: TGI"
         contents: session-tgi/*
     tools:
       - icon: github
