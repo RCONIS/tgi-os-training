@@ -235,6 +235,8 @@ if (file.exists(save_file)) {
 summary(fit)
 ```
 
+Note that it is crucial to use here `int_step()` to properly define the two pieces of the linear predictor for negative and non-negative time values: If you used `step()` like I did for a few days, then you will have the wrong model! This is because in Stan, `step(false) = step(0) = 1` and not 0 as you would expect. Only `int_step(0) = 0` as we need it here. 
+
 ## Parameter estimates
 
 Here we extract all parameter estimates using the `as_draws_df` method for `brmsfit` objects. Note that we could also just extract a subset of parameters, see `?as_draws.brmsfit` for more information.
@@ -326,7 +328,7 @@ post_sum_id1
 
 ## Observation vs model fit
 
-We can now compare the model fit to the observations. Let's do this for the first 20 patients again:
+We can now compare the model fit to the observations. Let's do this for the first 20 patients again.
 
 ```{r}
 #| label: obs_vs_fit_plots

@@ -37,3 +37,12 @@ REFRESH <- 500
 
 theme_set(theme_bw(base_size = 12))
 ```
+
+We also need a small function definition, which is still missing in `brms`:
+
+```{r}
+int_step <- function(x) {
+  stopifnot(is.logical(x))
+  ifelse(x, 1, 0)
+}
+```
