@@ -439,7 +439,51 @@ if (file.exists(save_file)) {
   )
   save(fit_by_arm, file = save_file)
 }
+summary(fit_by_arm)
 ```
+
+Let's have a look at the parameter estimates then:
+
+```{r}
+#| label: extract_parameters
+post_df_by_arm <- as_draws_df(fit_by_arm)
+head(names(post_df_by_arm), 10)
+
+post_df_by_arm <- post_df_by_arm |>
+  mutate(
+    b0 = exp(b_lb0_Intercept + sd_id__lb0_Intercept^2 / 2),
+    ks_arm1 = exp(b_lks_Intercept + sd_id__lks_Intercept^2 / 2),
+    ks_arm2 = exp(b_lks_Intercept + b_lks_arm2 + sd_id__lks_Intercept^2 / 2),
+    kg_arm1 = exp(b_lkg_Intercept + sd_id__lkg_Intercept^2 / 2),
+    kg_arm2 = exp(b_lkg_Intercept + b_lkg_arm2 + sd_id__lkg_Intercept^2 / 2),
+    omega_0 = sd_id__lb0_Intercept,
+    omega_s = sd_id__lks_Intercept,
+    omega_g = sd_id__lkg_Intercept,
+    cv_0 = sqrt(exp(sd_id__lb0_Intercept^2) - 1),
+    cv_s = sqrt(exp(sd_id__lks_Intercept^2) - 1),
+    cv_g = sqrt(exp(sd_id__lkg_Intercept^2) - 1),
+    sigma = b_tau_Intercept
+  )
+
+post_sum_by_arm <- post_df_by_arm |>
+  select(b0, ks_arm1, ks_arm2, kg_arm1, kg_arm2, omega_0, omega_s, omega_g, cv_0, cv_s, cv_g, sigma) |>
+  summarize_draws() |>
+  gt() |>
+  fmt_number(n_sigfig = 3)
+post_sum_by_arm
+```
+
+So we see that the shrinkage is stronger in arm 1 compared to arm 2, while the growth rates are similar. We could also calculate the posterior probability that the growth rate is different between the two arms, for example:
+
+```{r}
+#| label: posterior_prob_diff
+
+post_df_by_arm |>
+  mutate(diff_pos = ks_arm1 - ks_arm2 > 0) |>
+  summarize(diff_prob = mean(diff_pos))
+```
+
+So we see that the posterior probability that the shrinkage rate is higher in arm 1 compared to arm 2 is quite high.
 
 ## Model comparison with LOO
 
@@ -462,8 +506,12 @@ Let's e.g. compare the two models we fitted above, one for the whole dataset and
 ```{r}
 #| label: loo_compare
 
+fit <- add_criterion(fit, "loo")
+fit_by_arm <- add_criterion(fit_by_arm, "loo")
 loo_compare(fit, fit_by_arm)
 ```
+
+So the model without treatment arm seems to be very slightly preferred here by the LOO criterion. Nevertheless, the model with treatment arm might answer exactly the question we need to answer, so it is important to consider the context of the analysis.
 
 ## Tips and tricks
 
