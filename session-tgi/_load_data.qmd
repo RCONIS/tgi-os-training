@@ -31,3 +31,30 @@ tumor_data <- excel_sheets(file_path) |>
 head(tumor_data)
 summary(tumor_data)
 ```
+
+For simplicity, we will for now just use study 4 (this is the OAK study), and we rename the patient IDs:
+
+```{r}
+#| label: subset_oak
+
+df <- tumor_data |> 
+  filter(study == "4") |> 
+  na.omit() |>
+  droplevels() |> 
+  mutate(id = factor(as.numeric(id)))
+```
+
+Here we have `r nlevels(df$id)` patients. It is always a good idea to make a plot of the data. Let's look at the first 20 patients e.g.:
+
+```{r}
+#| label: plot_data
+
+df |> 
+  filter(as.integer(id) <= 20) |>
+  ggplot(aes(x = year, y = sld, group = id)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~ id) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  theme(legend.position = "none")
+```
