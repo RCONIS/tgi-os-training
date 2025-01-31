@@ -1,15 +1,15 @@
 ---
 title: "3. Generalized Stein-Fojo model"
 author:
-  - Francois Mercier
   - Daniel Sabanés Bové
+  - Francois Mercier
 date: last-modified
 editor_options: 
   chunk_output_type: inline
 format:
   html:
     code-fold: show
-math: true
+    html-math-method: mathjax
 cache: true
 ---
 
@@ -23,7 +23,7 @@ This appendix shows how the generalized Stein-Fojo model can be implemented in a
 
 ## Generalized Stein-Fojo model
 
-Here we have an additional parameter $\phi$ which is the weight for the shrinkage in the double exponential model. The model is then:
+Here we have an additional parameter $\phi$, which is the weight for the shrinkage in the double exponential model. The model is then:
 
 $$
 y^{*}(t_{ij}) = \psi_{b_{0}i} \{
@@ -47,7 +47,7 @@ $$
 
 In terms of likelihood and priors, we can use the same assumptions as in the previous model. The only difference is that we have to model the $\phi$ parameter. We can use a logit-normal distribution for this parameter. This is a normal distribution on the logit scale, which is then transformed to the unit interval.
 $$
-\psi_{\phi i} \sim \text{LogitNormal}(\logit(0.5) = 0, 0.5)
+\psi_{\phi i} \sim \text{LogitNormal}(\text{logit}(0.5) = 0, 0.5)
 $$
 
 ## Fit model
@@ -55,6 +55,8 @@ $$
 We can now fit the model using `brms`. The structure is determined by the model formula:
 
 ```{r}
+#| label: specify_gsf_model
+
 formula <- bf(sld ~ eta, nl = TRUE) +
   # Define the mean for the likelihood
   nlf(
@@ -140,6 +142,8 @@ In total this took 76 minutes on my laptop.
 ## Parameter estimates
 
 ```{r}
+#| label: gsf_post_processing
+
 post_df <- as_draws_df(fit)
 head(names(post_df), 10)
 
@@ -163,6 +167,8 @@ post_df <- post_df |>
 Let's first look at the population level parameters:
 
 ```{r}
+#| label: gsf_pop_params
+
 mcmc_trace(post_df, pars = c("b0", "ks", "kg", "phi", "sigma"))
 mcmc_pairs(post_df, pars = c("b0", "ks", "kg", "phi", "sigma"))
 ```
@@ -170,6 +176,8 @@ mcmc_pairs(post_df, pars = c("b0", "ks", "kg", "phi", "sigma"))
 The trace plots look good. The chains seem to have converged and the pairs plot shows no strong correlations between the parameters. Let's check the table:
 
 ```{r}
+#| label: gsf_post_summary
+
 post_sum <- post_df |>
   select(b0, ks, kg, phi, omega_0, omega_s, omega_g, omega_phi, sigma) |>
   summarize_draws() |>
@@ -185,6 +193,8 @@ So $\phi$ is estimated around 0.5. The other parameters are similar to the previ
 We can now compare the model fit to the observations. Let's do this for the first 20 patients again:
 
 ```{r}
+#| label: gsf_model_fit
+
 pt_subset <- as.character(1:20)
 df_subset <- df |> 
   filter(id %in% pt_subset)

@@ -9,11 +9,9 @@ editor_options:
 format:
   html:
     code-fold: show
-math: true
+    html-math-method: mathjax
 cache: true
 ---
-
-## Note
 
 The purpose of this document is to show a minimal workflow for fitting a TGI model using the `brms` package.
 
@@ -421,7 +419,8 @@ inits_by_arm <- list(
 Now we can fit the model as before:
 
 ```{r}
-# Fit the model
+#| label: fit_brms_by_arm
+
 save_file <- here("session-tgi/fit10.RData")
 if (file.exists(save_file)) {
   load(save_file)
@@ -446,7 +445,8 @@ summary(fit_by_arm)
 Let's have a look at the parameter estimates then:
 
 ```{r}
-#| label: extract_parameters
+#| label: extract_parameters_by_arm
+
 post_df_by_arm <- as_draws_df(fit_by_arm)
 head(names(post_df_by_arm), 10)
 

@@ -1,6 +1,7 @@
 First we need to load the necessary packages and set some default options for the MCMC sampling. We also set the theme for the plots to `theme_bw` with a base size of 12.
 
 ```{r}
+#| label: load_packages
 #| output: FALSE
 #| message: FALSE
 
@@ -41,6 +42,8 @@ theme_set(theme_bw(base_size = 12))
 We also need a small function definition, which is still missing in `brms`:
 
 ```{r}
+#| label: int_step_function
+
 int_step <- function(x) {
   stopifnot(is.logical(x))
   ifelse(x, 1, 0)

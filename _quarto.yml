@@ -7,6 +7,7 @@ website:
     contents:
       - index.qmd
       - section: session-tgi
+        title: "Session 1: TGI"
         contents: session-tgi/*
     tools:
       - icon: github
@@ -24,6 +25,3 @@ format:
     toc_float: true
 
 date-format: iso
-
-execute:
-  freeze: true

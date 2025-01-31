@@ -9,7 +9,7 @@ editor_options:
 format:
   html:
     code-fold: show
-math: true
+    html-math-method: mathjax
 cache: true
 ---
 
@@ -209,7 +209,7 @@ This looks good, because the priors are covering the range of the posterior samp
 
 ## Parameter estimates
 
-Here we need to be careful: We are interested in the posterior mean estimates of the baseline, shrinkage and growth population rates on the original scale. Because we model them on the log scale as normal distributed, we need to use the mean of the log-normal distribution to get the mean on the original scale.
+Here we need again to be careful: We are interested in the posterior mean estimates of the baseline, shrinkage and growth population rates on the original scale. Because we model them on the log scale as normal distributed, we need to use the mean of the log-normal distribution to get the mean on the original scale.
 
 ```{r}
 #| label: par_estimates
@@ -385,6 +385,7 @@ So the model by treatment arm performs here better than the model without treatm
 - Also here it is possible to look at the underlying Stan code:
   ```{r}
   #| eval: false
+  #| label: show_stan_code
 
   tmp <- tempfile()
   write_stan(tgi_mod, destination = tmp)
