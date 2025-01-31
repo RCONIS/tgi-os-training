@@ -10,6 +10,7 @@ format:
   html:
     code-fold: show
 math: true
+cache: true
 ---
 
 This appendix shows how the generalized Stein-Fojo model can be implemented in a Bayesian framework using the `brms` package in R.
@@ -212,3 +213,7 @@ df_sim |>
 ```
 
 This also looks good. The model seems to capture the data well.
+
+## With `jmpost`
+
+This model can also be fit with the `jmpost` package. The corresponding function is `LongitudinalGSF`. The statistical model is specified in the vignette [here](https://genentech.github.io/jmpost/main/articles/statistical-specification.html#generalized-stein-fojo-gsf-model).

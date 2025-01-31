@@ -1,5 +1,5 @@
 ---
-title: "2. TGI model with `jmpost` (SF)"
+title: "2. TGI model minimal workflow with `jmpost`"
 author:
   - Daniel Sabanés Bové
   - Francois Mercier
@@ -234,7 +234,7 @@ We can see that these are consistent with the estimates from the `brms` model ea
 
 ## Separate arm estimates
 
-While there is no general covariates support in `jmpost` for the longitudinal models as of now, we can obtain separate estimates for the longitudinal model parameters: As detailed in the model specification [here](https://genentech.github.io/jmpost/main/articles/statistical-specification.html#stein-fojo-model), as soon as we have the arm defined, then separate estimates for the arm-specific shrinkage and growth parameters will be obtained.
+While there is no general covariates support in `jmpost` for the longitudinal models as of now, we can obtain separate estimates for the longitudinal model parameters: As detailed in the model specification [here](https://genentech.github.io/jmpost/main/articles/statistical-specification.html#stein-fojo-model), as soon as we have the arm defined, then separate estimates for the arm-specific shrinkage and growth parameters will be obtained: Both the population means and standard deviation parameters are here arm-specific. (Note that this is slightly different from `brms` where we assumed earlier the same standard deviation independent of the treatment arm.)
 
 So we need to define the subject data accordingly now with the arm information:
 
@@ -286,6 +286,76 @@ if (file.exists(save_file)) {
 }
 ```
 
+Let's again check the convergence:
+
+```{r}
+#| label: check_convergence_arm
+
+vars <- c(
+    "lm_sf_mu_bsld",
+    "lm_sf_mu_ks",
+    "lm_sf_mu_kg",
+    "lm_sf_sigma",
+    "lm_sf_omega_bsld",
+    "lm_sf_omega_ks",
+    "lm_sf_omega_kg"
+)
+mcmc_res_cmdstan_by_arm <- cmdstanr::as.CmdStanMCMC(mcmc_results_by_arm)
+mcmc_res_cmdstan_by_arm$summary(vars)
+```
+
+Let's again tabulate the parameter estimates:
+
+```{r}
+#| label: par_estimates_arm
+
+post_samples_by_arm <- as_draws_df(mcmc_res_cmdstan_by_arm$draws(vars)) |> 
+  rename(
+    mu_bsld = "lm_sf_mu_bsld[1]",
+    mu_ks1 = "lm_sf_mu_ks[1]",
+    mu_ks2 = "lm_sf_mu_ks[2]",
+    mu_kg1 = "lm_sf_mu_kg[1]",
+    mu_kg2 = "lm_sf_mu_kg[2]",
+    omega_bsld = "lm_sf_omega_bsld[1]",
+    omega_ks1 = "lm_sf_omega_ks[1]",
+    omega_ks2 = "lm_sf_omega_ks[2]",
+    omega_kg1 = "lm_sf_omega_kg[1]",
+    omega_kg2 = "lm_sf_omega_kg[2]",
+    sigma = lm_sf_sigma
+  ) |> 
+  mutate(
+    b0 = exp(mu_bsld + omega_bsld^2 / 2), 
+    ks1 = exp(mu_ks1 + omega_ks1^2 / 2), 
+    ks2 = exp(mu_ks2 + omega_ks2^2 / 2),
+    kg1 = exp(mu_kg1 + omega_kg1^2 / 2),
+    kg2 = exp(mu_kg2 + omega_kg2^2 / 2),
+    cv_0 = sqrt(exp(omega_bsld^2) - 1),
+    cv_s1 = sqrt(exp(omega_ks1^2) - 1),
+    cv_s2 = sqrt(exp(omega_ks2^2) - 1),
+    cv_g1 = sqrt(exp(omega_kg1^2) - 1),
+    cv_g2 = sqrt(exp(omega_kg2^2) - 1)
+  ) 
+  
+post_sum_by_arm <- post_samples_by_arm |>
+  select(
+    b0, ks1, ks2, kg1, kg2, 
+    omega_bsld, omega_ks1, omega_ks2, omega_kg1, omega_kg2, 
+    cv_0, cv_s1, cv_s2, cv_g1, cv_g2, sigma) |>
+  summarize_draws() |>
+  gt() |>
+  fmt_number(n_sigfig = 3)
+post_sum_by_arm
+```
+
+Here again the shrinkage rate in the treatment arm 1 seems higher than in the treatment arm 2. However, the difference is not as pronounced as in the `brms` model before with the same standard deviation for both arms. We can again calculate the posterior probability that the shrinkage rate in arm 1 is higher than in arm 2:
+
+```{r}
+prob_ks1_greater_ks2 <- mean(post_samples_by_arm$ks1 > post_samples_by_arm$ks2)
+prob_ks1_greater_ks2
+```
+
+So the posterior probability is now only around `r round(prob_ks1_greater_ks2 * 100)`%. 
+
 ## Model comparison with LOO
 
 As we have seen for `brms`, also for `jmpost` we can easily compute the LOO criterion:
@@ -298,6 +368,17 @@ loo_res
 ```
 
 Underneath this is using the [$loo()](https://mc-stan.org/cmdstanr/reference/fit-method-loo.html) method from `cmdstanr`. 
+
+And we can compare this to the LOO of the model with separate arm estimates:
+
+```{r}
+#| label: loo_arm
+
+loo_res_by_arm <- mcmc_res_cmdstan_by_arm$loo(r_eff = FALSE)
+loo_res_by_arm
+```
+
+So the model by treatment arm performs here better than the model without treatment arm specific growth and shrinkage parameters.
 
 ## Tipps and tricks
 

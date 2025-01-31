@@ -1,5 +1,5 @@
 ---
-title: "1. TGI model minimal workflow (SF)"
+title: "1. TGI model minimal workflow with `brms`"
 author:
   - Daniel Sabanés Bové
   - Francois Mercier
@@ -10,6 +10,7 @@ format:
   html:
     code-fold: show
 math: true
+cache: true
 ---
 
 ## Note
