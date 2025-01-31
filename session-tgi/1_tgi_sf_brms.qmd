@@ -334,6 +334,109 @@ df_sim |>
   labs(title = "SF model fit")
 ```
 
+## Adding covariates
+
+With `brms` it is straightforward to add covariates to the model. In this example, an obvious choice for a covariate is the treatment the patients received in the study:
+
+```{r}
+#| label: arms_distribution
+
+df |> 
+  select(id, arm) |> 
+  distinct() |>
+  pull(arm) |> 
+  table()
+```
+
+Here it makes sense to assume that only the shrinkage and growth parameters differ systematically between the two arms. For example, the baseline SLD should be the same in expectation, because of the randomization between the treatment arms.
+
+Therefore we can add this as follows as a fixed effect for the two parameters:
+
+```{r}
+#| label: formula_covariates
+
+formula_by_arm <- bf(sld ~ eta, nl = TRUE) +
+  # Define the mean for the likelihood
+  nlf(
+    eta ~ 
+      int_step(year > 0) * 
+        (b0 * (exp(-ks * year) + exp(kg * year) -  1)) +
+      int_step(year <= 0) * 
+        (b0 * exp(kg * year))
+  ) +
+  # Define the standard deviation (called sigma in brms) as a 
+  # coefficient tau times the mean.
+  # sigma is modelled on the log scale though, therefore:
+  nlf(sigma ~ log(tau) + log(eta)) +
+  lf(tau ~ 1) +
+  # Define nonlinear parameter transformations
+  nlf(b0 ~ exp(lb0)) +
+  nlf(ks ~ exp(lks)) +
+  nlf(kg ~ exp(lkg)) +
+  # Define random effect structure
+  lf(lb0 ~ 1 + (1 | id)) + 
+  lf(lks ~ 1 + arm + (1 | id)) +
+  lf(lkg ~ 1 + arm + (1 | id))
+```
+
+It is instructive to see that the Stan code that is generated in the background is actually identical to the previous model. This is because `brms` uses a design matrix to model the fixed effects, and the `arm` variable is just added to this design matrix, which before only contained the intercept column with `1`s. 
+
+However, now the coefficient vector is no longer of length 1 but of length 2, with the first element corresponding to the intercept and the second element to the effect of the `arm` variable. For the latter, we want to assume a standard normal prior on the log scale. 
+
+So we need to adjust the prior and initial values accordingly:
+
+```{r}
+#| label: priors_covariates
+
+priors_by_arm <- c(
+  prior(normal(log(65), 1), nlpar = "lb0"),
+  prior(normal(log(0.52), 0.1), nlpar = "lks", coef = "Intercept"),
+  prior(normal(0, 1), nlpar = "lks", coef = "arm2"),
+  prior(normal(log(1.04), 1), nlpar = "lkg", coef = "Intercept"),
+  prior(normal(0, 1), nlpar = "lkg", coef = "arm2"),
+  prior(normal(0, 3), lb = 0, nlpar = "lb0", class = "sd"),
+  prior(normal(0, 3), lb = 0, nlpar = "lks", class = "sd"),
+  prior(normal(0, 3), lb = 0, nlpar = "lkg", class = "sd"),
+  prior(normal(0, 3), lb = 0, nlpar = "tau")
+)
+inits_by_arm <- list(
+  b_lb0 = array(3.61),
+  b_lks = array(c(-1.25, 0)),
+  b_lkg = array(c(-1.33, 0)),
+  sd_1 = array(0.58),
+  sd_2 = array(1.6),
+  sd_3 = array(0.994),
+  b_tau = array(0.161),
+  z_1 = matrix(0, nrow = 1, ncol = n_patients),
+  z_2 = matrix(0, nrow = 1, ncol = n_patients),
+  z_3 = matrix(0, nrow = 1, ncol = n_patients)
+)
+```
+
+Now we can fit the model as before:
+
+```{r}
+# Fit the model
+save_file <- here("session-tgi/fit10.RData")
+if (file.exists(save_file)) {
+  load(save_file)
+} else {
+  fit_by_arm <- brm(
+    formula = formula_by_arm,
+    data = df,
+    prior = priors_by_arm,
+    family = gaussian(),
+    init = rep(list(inits_by_arm), CHAINS),
+    chains = CHAINS, 
+    iter = ITER + WARMUP, 
+    warmup = WARMUP, 
+    seed = BAYES.SEED,
+    refresh = REFRESH
+  )
+  save(fit_by_arm, file = save_file)
+}
+```
+
 ## Model comparison with LOO
 
 The LOO criterion is a widely used method for comparing models. It is based on the idea of leave-one-out cross-validation, but is more efficient to compute. 
@@ -349,6 +452,14 @@ loo(fit)
 A helpful glossary explaining the LOO statistics can be found [here](https://mc-stan.org/cmdstanr/reference/loo-glossary.html).
 
 Different criteria are available, for example the `elpd_loo` is the expected log pointwise predictive density, and the `looic = -2 * elpd_loo` is the LOO information criterion. For comparing models, the `looic` is often used, where smaller numbers are better. it is kind of an equivalent to the AIC, but based on the LOO criterion.
+
+Let's e.g. compare the two models we fitted above, one for the whole dataset and one with the treatment arm as a covariate for the shrinkage and growth rates:
+
+```{r}
+#| label: loo_compare
+
+loo_compare(fit, fit_by_arm)
+```
 
 ## Tips and tricks
 
@@ -392,4 +503,4 @@ Different criteria are available, for example the `elpd_loo` is the expected log
   We see that two chains led to a $\log(\mu_{\phi})$ value below 0, while two chains hovered around much larger values between 5 and 15, which corresponds to $\mu_{\phi} = 1$. This shows that the model is rather overparametrized. By restricting the range of the prior for $\log(\mu_{\phi})$ to be below 0, we could avoid this problem.
 - Providing manually realistic initial values for the model parameters can help to speed up the convergence of the Markov chains. This is especially important for the nonlinear parameters. You can get the names of the parameters from the Stan code above - note that you cannot use the names of the `brms` R code. 
 - Sometimes it is not easy to get the dimensions of the inital values right. Here it can be helpful to change the backend to `rstan`, which provides more detailed error messages. You can do this by setting `backend = "rstan"` in the `brm` call.
-- The priors for this model are not really subjective Bayesian priors. Here, it took me a couple of tries, where I started with one prior, ran the model, saw where the parameter samples were, and then adjusted the priors to be in a similar range. Ideally, we could avoid this by either knowing more about the parameters e.g. from previous clinical trial analyses in the same molecule and therapeutic area, or by having some simple ad-hoc calculations for each subject which can then translate to the population level (in a similar way as we did for the baseline SLD).
+- When the Stan compiler gives you an error, that can be very informative: Just open the Stan code file that is mentioned in the error message and look at the line number that is mentioned. This can give you a good idea of what went wrong: Maybe a typo in the prior definition, or a missing semicolon, or a wrong dimension in the data block. With VScode e.g. this is very easy: Just hold `Ctrl` and click on the file name and number, and you will be taken to the right line in the Stan code.
