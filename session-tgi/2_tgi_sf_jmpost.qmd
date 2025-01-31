@@ -130,8 +130,18 @@ vars <- c(
     "lm_sf_omega_ks",
     "lm_sf_omega_kg"
 )
-mcmc_res_cmdstan <- cmdstanr::as.CmdStanMCMC(mcmc_results)
-mcmc_res_cmdstan$summary(vars)
+
+save_overall_file <- here("session-tgi/jm2_more.RData")
+if (file.exists(save_overall_file)) {
+  load(save_overall_file)
+} else {
+  mcmc_res_cmdstan <- cmdstanr::as.CmdStanMCMC(mcmc_results)
+  mcmc_res_sum <- mcmc_res_cmdstan$summary(vars)
+  vars_draws <- mcmc_res_cmdstan$draws(vars)
+  loo_res <- mcmc_res_cmdstan$loo(r_eff = FALSE)
+  save(mcmc_res_sum, vars_draws, loo_res, file = save_overall_file)
+}
+mcmc_res_sum
 ```
 
 This looks good, let's check the traceplots:
@@ -140,7 +150,7 @@ This looks good, let's check the traceplots:
 #| label: plot_trace
 #| dependson: check_convergence
 
-vars_draws <- mcmc_res_cmdstan$draws(vars)
+# vars_draws <- mcmc_res_cmdstan$draws(vars)
 mcmc_trace(vars_draws)
 ```
 
@@ -155,10 +165,17 @@ Let's check the fit of the model to the data:
 #| dependson: fit_model
 
 pt_subset <- as.character(1:20)
-fit_subset <- LongitudinalQuantities(
-  mcmc_results, 
-  grid = GridObserved(subjects = pt_subset)
-)
+
+save_fit_file <- here("session-tgi/jm2_fit.RData")
+if (file.exists(save_fit_file)) {
+  load(save_fit_file)
+} else {
+  fit_subset <- LongitudinalQuantities(
+    mcmc_results, 
+    grid = GridObserved(subjects = pt_subset)
+  )
+  save(fit_subset, file = save_fit_file)
+}
 
 autoplot(fit_subset)+
   labs(x = "Time (years)", y = "SLD (mm)")
@@ -306,8 +323,18 @@ vars <- c(
     "lm_sf_omega_ks",
     "lm_sf_omega_kg"
 )
-mcmc_res_cmdstan_by_arm <- cmdstanr::as.CmdStanMCMC(mcmc_results_by_arm)
-mcmc_res_cmdstan_by_arm$summary(vars)
+
+save_arm_file <- here("session-tgi/jm3_more.RData")
+if (file.exists(save_arm_file)) {
+  load(save_arm_file)
+} else {
+  mcmc_res_cmdstan_by_arm <- cmdstanr::as.CmdStanMCMC(mcmc_results_by_arm)
+  mcmc_res_sum_by_arm <- mcmc_res_cmdstan_by_arm$summary(vars)
+  vars_draws_by_arm <- mcmc_res_cmdstan_by_arm$draws(vars)
+  loo_by_arm <- mcmc_res_cmdstan_by_arm$loo(r_eff = FALSE)
+  save(mcmc_res_sum_by_arm, vars_draws_by_arm, loo_by_arm, file = save_arm_file)
+}
+mcmc_res_sum_by_arm
 ```
 
 Let's again tabulate the parameter estimates:
@@ -316,7 +343,7 @@ Let's again tabulate the parameter estimates:
 #| label: par_estimates_arm
 #| dependson: check_convergence_arm
 
-post_samples_by_arm <- as_draws_df(mcmc_res_cmdstan_by_arm$draws(vars)) |> 
+post_samples_by_arm <- as_draws_df(vars_draws_by_arm) |> 
   rename(
     mu_bsld = "lm_sf_mu_bsld[1]",
     mu_ks1 = "lm_sf_mu_ks[1]",
@@ -371,7 +398,7 @@ As we have seen for `brms`, also for `jmpost` we can easily compute the LOO crit
 #| label: loo
 #| dependson: check_convergence
 
-loo_res <- mcmc_res_cmdstan$loo(r_eff = FALSE)
+# loo_res <- mcmc_res_cmdstan$loo(r_eff = FALSE)
 loo_res
 ```
 
@@ -383,8 +410,8 @@ And we can compare this to the LOO of the model with separate arm estimates:
 #| label: loo_arm
 #| dependson: check_convergence_arm
 
-loo_res_by_arm <- mcmc_res_cmdstan_by_arm$loo(r_eff = FALSE)
-loo_res_by_arm
+# loo_by_arm <- mcmc_res_cmdstan_by_arm$loo(r_eff = FALSE)
+loo_by_arm
 ```
 
 So the model by treatment arm performs here better than the model without treatment arm specific growth and shrinkage parameters.
@@ -400,3 +427,4 @@ So the model by treatment arm performs here better than the model without treatm
   write_stan(tgi_mod, destination = tmp)
   file.edit(tmp) # opens the Stan file in the default editor
   ```
+- It is not trivial to transport saved models from one computer to another. This is because `cmdstanr` only loads the results it currently needs from disk into memory, and thus into the R session. If you want to transport the model to another computer, you need to save the Stan code and the data, and then re-run the model on the other computer. This is because the model object in R is only a reference to the model on disk, not the model itself. Note that there is the `$save_object()` method, see [here](https://mc-stan.org/cmdstanr/reference/fit-method-save_object.html), however this leads to very large files (here about 300 MB for one fit) and can thus not be uploaded to typical git repositories. Therefore above we saved interim result objects separately as needed.
