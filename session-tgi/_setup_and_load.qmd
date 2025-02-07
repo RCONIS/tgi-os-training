@@ -10,11 +10,13 @@ library(bayesplot)
 library(modelr)
 library(here)
 library(tictoc)
+library(rlang)
 library(gt)
 library(readxl)
 library(janitor)
 library(posterior)
 library(jmpost)
+library(cmdstanr)
 
 library(brms)
 if (require(cmdstanr)) {
