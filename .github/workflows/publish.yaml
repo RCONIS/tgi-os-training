@@ -1,0 +1,75 @@
+---
+# Github Action Workflow to publish
+# the Quarto website to GitHub Pages
+on:
+  workflow_dispatch:
+  push:
+    branches:
+     - main
+
+name: Publish Site
+
+env:
+  QUARTO_DIR: "."
+
+jobs:
+  publish:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/insightsengineering/rstudio:latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Install CRAN dependencies
+        run: >
+          install.packages(c(
+            "tidyverse",
+            "tidybayes",
+            "bayesplot",
+            "modelr",
+            "here",
+            "tictoc",
+            "gt",
+            "readxl",
+            "janitor",
+            "posterior",
+            "truncnorm",
+            "brms",
+            "rstan"
+          ), repos = "https://cloud.r-project.org")
+        shell: Rscript {0}
+
+      - name: Install GitHub dependencies
+        run: remotes::install_github(c("genentech/jmpost"))
+        shell: Rscript {0}
+        env:
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Install cmdstanr
+        run: >
+          install.packages(
+            "cmdstanr", 
+            repos = c(
+              "https://stan-dev.r-universe.dev", 
+              "https://cloud.r-project.org"
+            )
+          )
+        shell: Rscript {0}
+        
+      - name: Render Quarto Project
+        run: quarto render --output-dir _site
+        shell: bash
+        working-directory: ${{ env.QUARTO_DIR }}
+        env:
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish Project
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./${{ env.QUARTO_DIR }}/_site
+          destination_dir: ${{ env.QUARTO_DIR }}

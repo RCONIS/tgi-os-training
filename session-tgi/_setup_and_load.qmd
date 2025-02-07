@@ -1,6 +1,7 @@
 First we need to load the necessary packages and set some default options for the MCMC sampling. We also set the theme for the plots to `theme_bw` with a base size of 12.
 
 ```{r}
+#| label: load_packages
 #| output: FALSE
 #| message: FALSE
 
@@ -17,8 +18,10 @@ library(janitor)
 library(posterior)
 library(jmpost)
 library(cmdstanr)
-
+library(truncnorm)
 library(brms)
+library(rstan)
+
 if (require(cmdstanr)) {
   # If cmdstanr is available, instruct brms to use cmdstanr as backend 
   # and cache all Stan binaries
@@ -30,13 +33,22 @@ if (require(cmdstanr)) {
 
 # MCMC options
 options(mc.cores = 4)
-ITER <- 3000 # number of iterations
+ITER <- 1000 # number of sampling iterations after warm up
 WARMUP <- 2000 # number of warm up iterations
 CHAINS <- 4
 BAYES.SEED <- 878
-THIN <- 10
-CONTROL <- list(adapt_delta = 0.99, max_treedepth = 15)
 REFRESH <- 500
 
 theme_set(theme_bw(base_size = 12))
+```
+
+We also need a small function definition, which is still missing in `brms`:
+
+```{r}
+#| label: int_step_function
+
+int_step <- function(x) {
+  stopifnot(is.logical(x))
+  ifelse(x, 1, 0)
+}
 ```

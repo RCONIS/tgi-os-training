@@ -2,7 +2,6 @@
 title: "0. Setup"
 author:
   - Francois Mercier
-  - Kenta Yoshida
   - Daniel Sabanés Bové
 date: last-modified
 editor_options: 
@@ -65,7 +64,9 @@ packages <- c(
   "tictoc", 
   "gt",
   "readxl",
-  "janitor"
+  "janitor",
+  "posterior",
+  "truncnorm"
 )
 sapply(packages, install_if_not_available)
 remotes::install_github("genentech/jmpost")
