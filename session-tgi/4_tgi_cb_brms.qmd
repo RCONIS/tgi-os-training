@@ -1,5 +1,5 @@
 ---
-title: "3. Generalized Stein-Fojo model"
+title: "3. Claret-Bruno model"
 author:
   - Daniel Sabanés Bové
   - Francois Mercier
@@ -13,7 +13,7 @@ format:
 cache: true
 ---
 
-This appendix shows how the generalized Stein-Fojo model can be implemented in a Bayesian framework using the `brms` package in R.
+This appendix shows how the Claret-Bruno model can be implemented in a Bayesian framework using the `brms` package in R.
 
 ## Setup and load data
 
@@ -21,34 +21,31 @@ This appendix shows how the generalized Stein-Fojo model can be implemented in a
 
 {{< include _load_data.qmd >}}
 
-## Generalized Stein-Fojo model
+## Claret-Bruno model
 
-Here we have an additional parameter $\phi$, which is the weight for the shrinkage in the double exponential model. The model is then:
+In the Claret-Bruno model we have again the baseline SLD and the growth rate as in the Stein-Fojo model. Then in addition we have the inhibition response rate $\psi_{p}$ and the treatment resistance rate $\psi_{c}$. The model is then:
 
 $$
-y^{*}(t_{ij}) = \psi_{b_{0}i} \{
-  \psi_{\phi i} \exp(- \psi_{k_{s}i} \cdot t_{ij}) +
-  (1 - \psi_{\phi i}) \exp(\psi_{k_{g}i} \cdot t_{ij}) 
-\}
+y^{*}(t_{ij}) = \psi_{b_{0}i} \exp \left\{
+  \psi_{k_{g}i} t_{ij} -
+  \frac{\psi_{pi}}{\psi_{ci}} (1 - \exp(-\psi_{ci} t_{ij}))
+\right\}
 $$
 
-for positive times $t_{ij}$. Again, if the time $t$ is negative, i.e. the treatment has not started yet, then it is reasonable to assume that the tumor cannot shrink yet. That is, we have then $\phi_i = 0$. Therefore, the final model for the mean SLD is:
+for positive times $t_{ij}$. Again, if the time $t$ is negative, i.e. the treatment has not started yet, then it is reasonable to assume that the tumor cannot shrink yet. That is, we have then $\psi_{pi} = 0$. Therefore, the final model for the mean SLD is:
 
 $$
 y^{*}(t_{ij}) = 
 \begin{cases} 
-\psi_{b_{0}i} \exp(\psi_{k_{g}i} \cdot t_{ij}) & \text{if } t_{ij} < 0 \\
-\psi_{b_{0}i} \{
-  \psi_{\phi i} \exp(- \psi_{k_{s}i} \cdot t_{ij}) +
-  (1 - \psi_{\phi i}) \exp(\psi_{k_{g}i} \cdot t_{ij}) 
+\psi_{b_{0}i} \exp(\psi_{k_{g}i} t_{ij}) & \text{if } t_{ij} < 0 \\
+\psi_{b_{0}i} \exp \{
+  \psi_{k_{g}i} t_{ij} -
+  \frac{\psi_{pi}}{\psi_{ci}} (1 - \exp(-\psi_{ci} t_{ij}))
 \} & \text{if } t_{ij} \geq 0 
 \end{cases}
 $$
 
-In terms of likelihood and priors, we can use the same assumptions as in the previous model. The only difference is that we have to model the $\phi$ parameter. We can use a logit-normal distribution for this parameter. This is a normal distribution on the logit scale, which is then transformed to the unit interval.
-$$
-\psi_{\phi i} \sim \text{LogitNormal}(\text{logit}(0.5) = 0, 0.5)
-$$
+For the new model parameters we can again use log-normal prior distributions.
 
 ## Fit model
 
@@ -57,41 +54,41 @@ We can now fit the model using `brms`. The structure is determined by the model 
 ```{r}
 #| label: specify_gsf_model
 
-formula <- bf(sld ~ eta, nl = TRUE) +
+formula <- bf(sld ~ ystar, nl = TRUE) +
   # Define the mean for the likelihood
   nlf(
-    eta ~ 
+    ystar ~ 
       int_step(year > 0) * 
-        (b0 * (phi * exp(-ks * year) + (1 - phi) * exp(kg * year))) +
+        (b0 * exp(kg * year - (p / c) * (1 - exp(-c * year)))) +
       int_step(year <= 0) * 
         (b0 * exp(kg * year))
   ) +
   # Define the standard deviation (called sigma in brms) as a 
   # coefficient tau times the mean.
-  # sigma is modelled on the log scale though, therefore:
-  nlf(sigma ~ log(tau) + log(eta)) +
+  # sigma = tau * ystar is modelled on the log scale though, therefore:
+  nlf(sigma ~ log(tau) + log(ystar)) +
   lf(tau ~ 1) +
   # Define nonlinear parameter transformations
   nlf(b0 ~ exp(lb0)) +
-  nlf(phi ~ inv_logit(tphi)) +
-  nlf(ks ~ exp(lks)) +
   nlf(kg ~ exp(lkg)) +
+  nlf(p ~ exp(lp)) +
+  nlf(c ~ exp(lc)) +
   # Define random effect structure
   lf(lb0 ~ 1 + (1 | id)) + 
-  lf(tphi ~ 1 + (1 | id)) + 
-  lf(lks ~ 1 + (1 | id)) +
-  lf(lkg ~ 1 + (1 | id))
+  lf(lkg ~ 1 + (1 | id)) +
+  lf(lp ~ 1 + (1 | id)) + 
+  lf(lc ~ 1 + (1 | id))
 
 # Define the priors
 priors <- c(
   prior(normal(log(65), 1), nlpar = "lb0"),
-  prior(normal(log(0.52), 0.1), nlpar = "lks"),
   prior(normal(log(1.04), 1), nlpar = "lkg"),
-  prior(normal(0, 0.5), nlpar = "tphi"),
+  prior(normal(log(0.5), 0.1), nlpar = "lp"),
+  prior(normal(log(0.5), 0.1), nlpar = "lc"),
   prior(normal(0, 3), lb = 0, nlpar = "lb0", class = "sd"),
-  prior(normal(0, 3), lb = 0, nlpar = "lks", class = "sd"),
   prior(normal(0, 3), lb = 0, nlpar = "lkg", class = "sd"),
-  prior(student_t(3, 0, 22.2), lb = 0, nlpar = "tphi", class = "sd"),
+  prior(normal(0, 3), lb = 0, nlpar = "lp", class = "sd"),
+  prior(normal(0, 3), lb = 0, nlpar = "lc", class = "sd"),
   prior(normal(0, 3), lb = 0, nlpar = "tau")
 )
 
@@ -99,9 +96,9 @@ priors <- c(
 n_patients <- nlevels(df$id)
 inits <- list(
   b_lb0 = array(3.61),
-  b_lks = array(-1.25),
   b_lkg = array(-1.33),
-  b_tphi = array(0),
+  b_lp = array(-0.69),
+  b_lc = array(-0.69),
   sd_1 = array(0.58),
   sd_2 = array(1.6),
   sd_3 = array(0.994),
@@ -114,7 +111,7 @@ inits <- list(
 )
 
 # Fit the model
-save_file <- here("session-tgi/gsf1.RData")
+save_file <- here("session-tgi/cb1.RData")
 if (file.exists(save_file)) {
   load(save_file)
 } else {
@@ -137,7 +134,7 @@ if (file.exists(save_file)) {
 summary(fit)
 ```
 
-In total this took 76 minutes on my laptop. 
+todo cont here
 
 ## Parameter estimates
 
@@ -226,4 +223,4 @@ This also looks good. The model seems to capture the data well.
 
 ## With `jmpost`
 
-This model can also be fit with the `jmpost` package. The corresponding function is `LongitudinalGSF`. The statistical model is specified in the vignette [here](https://genentech.github.io/jmpost/main/articles/statistical-specification.html#generalized-stein-fojo-gsf-model).
+This model can also be fit with the `jmpost` package. The corresponding function is `LongitudinalClaretBruno`. The statistical model is specified in the vignette [here](https://genentech.github.io/jmpost/main/articles/statistical-specification.html#claret-bruno-model).
