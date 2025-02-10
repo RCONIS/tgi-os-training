@@ -52,7 +52,7 @@ For the new model parameters we can again use log-normal prior distributions.
 We can now fit the model using `brms`. The structure is determined by the model formula:
 
 ```{r}
-#| label: specify_gsf_model
+#| label: specify_cb_model
 
 formula <- bf(sld ~ ystar, nl = TRUE) +
   # Define the mean for the likelihood
@@ -82,26 +82,26 @@ formula <- bf(sld ~ ystar, nl = TRUE) +
 # Define the priors
 priors <- c(
   prior(normal(log(65), 1), nlpar = "lb0"),
-  prior(normal(log(1.04), 1), nlpar = "lkg"),
-  prior(normal(log(0.5), 0.1), nlpar = "lp"),
+  prior(normal(log(0.5), 0.1), nlpar = "lkg"),
+  prior(normal(0, 1), nlpar = "lp"),
   prior(normal(log(0.5), 0.1), nlpar = "lc"),
-  prior(normal(0, 3), lb = 0, nlpar = "lb0", class = "sd"),
-  prior(normal(0, 3), lb = 0, nlpar = "lkg", class = "sd"),
-  prior(normal(0, 3), lb = 0, nlpar = "lp", class = "sd"),
-  prior(normal(0, 3), lb = 0, nlpar = "lc", class = "sd"),
-  prior(normal(0, 3), lb = 0, nlpar = "tau")
+  prior(normal(2, 1), lb = 0, nlpar = "lb0", class = "sd"),
+  prior(normal(1, 1), lb = 0, nlpar = "lkg", class = "sd"),
+  prior(normal(0, 0.5), lb = 0, nlpar = "lp", class = "sd"),
+  prior(normal(0, 0.5), lb = 0, nlpar = "lc", class = "sd"),
+  prior(normal(0, 1), lb = 0, nlpar = "tau")
 )
 
 # Initial values to avoid problems at the beginning
 n_patients <- nlevels(df$id)
 inits <- list(
   b_lb0 = array(3.61),
-  b_lkg = array(-1.33),
-  b_lp = array(-0.69),
+  b_lkg = array(-0.69),
+  b_lp = array(0),
   b_lc = array(-0.69),
-  sd_1 = array(0.58),
-  sd_2 = array(1.6),
-  sd_3 = array(0.994),
+  sd_1 = array(0.5),
+  sd_2 = array(0.5),
+  sd_3 = array(0.1),
   sd_4 = array(0.1),
   b_tau = array(0.161),
   z_1 = matrix(0, nrow = 1, ncol = n_patients),
@@ -111,7 +111,7 @@ inits <- list(
 )
 
 # Fit the model
-save_file <- here("session-tgi/cb1.RData")
+save_file <- here("session-tgi/cb3.RData")
 if (file.exists(save_file)) {
   load(save_file)
 } else {
@@ -122,10 +122,12 @@ if (file.exists(save_file)) {
     family = gaussian(),
     init = rep(list(inits), CHAINS),
     chains = CHAINS, 
-    iter = WARMUP + ITER, 
+    iter = WARMUP + 2 * ITER, 
     warmup = WARMUP, 
     seed = BAYES.SEED,
-    refresh = REFRESH
+    refresh = REFRESH,
+    adapt_delta = 0.9,
+    max_treedepth = 15
   )
   save(fit, file = save_file)
 }
@@ -134,29 +136,31 @@ if (file.exists(save_file)) {
 summary(fit)
 ```
 
+
 todo cont here
 
 ## Parameter estimates
 
 ```{r}
-#| label: gsf_post_processing
+#| label: cb_post_processing
 
 post_df <- as_draws_df(fit)
 head(names(post_df), 10)
 
 post_df <- post_df |>
   mutate(
-    b0 = exp(b_lb0_Intercept + sd_id__lb0_Intercept^2 / 2),
-    ks = exp(b_lks_Intercept + sd_id__lks_Intercept^2 / 2),
-    kg = exp(b_lkg_Intercept + sd_id__lkg_Intercept^2 / 2),
-    phi = plogis(b_tphi_Intercept),
+    theta_b0 = exp(b_lb0_Intercept + sd_id__lb0_Intercept^2 / 2),
+    theta_kg = exp(b_lkg_Intercept + sd_id__lkg_Intercept^2 / 2),
+    theta_poverc = exp(b_lpoverc_Intercept + sd_id__lpoverc_Intercept^2 / 2),
+    theta_c = exp(b_lc_Intercept + sd_id__lc_Intercept^2 / 2),
     omega_0 = sd_id__lb0_Intercept,
-    omega_s = sd_id__lks_Intercept,
     omega_g = sd_id__lkg_Intercept,
-    omega_phi = sd_id__tphi_Intercept,
+    omega_p = sd_id__lpoverc_Intercept,
+    omega_c = sd_id__lc_Intercept,
     cv_0 = sqrt(exp(sd_id__lb0_Intercept^2) - 1),
-    cv_s = sqrt(exp(sd_id__lks_Intercept^2) - 1),
     cv_g = sqrt(exp(sd_id__lkg_Intercept^2) - 1),
+    cv_p = sqrt(exp(sd_id__lpoverc_Intercept^2) - 1),
+    cv_c = sqrt(exp(sd_id__lc_Intercept^2) - 1),
     sigma = b_tau_Intercept
   )
 ```
@@ -166,8 +170,10 @@ Let's first look at the population level parameters:
 ```{r}
 #| label: gsf_pop_params
 
-mcmc_trace(post_df, pars = c("b0", "ks", "kg", "phi", "sigma"))
-mcmc_pairs(post_df, pars = c("b0", "ks", "kg", "phi", "sigma"))
+mcmc_trace(post_df, pars = c("theta_b0", "theta_kg", "theta_poverc", "theta_c", "sigma"))
+mcmc_dens_overlay(post_df, pars = c("b_lb0_Intercept", "b_lkg_Intercept", "b_lpoverc_Intercept", "b_lc_Intercept", "b_tau_Intercept"))
+
+mcmc_pairs(post_df, pars = c("theta_b0", "theta_kg", "theta_poverc", "theta_c", "sigma"))
 ```
 
 The trace plots look good. The chains seem to have converged and the pairs plot shows no strong correlations between the parameters. Let's check the table:

@@ -94,7 +94,7 @@ where $\eta_{b_{0}i}$, $\eta_{k_{s}i}$, $\eta_{k_{g}i}$ are the standard normal 
 This is important for two reasons:
 
 1. This parametrization can help the sampler to converge faster. See [here](https://mc-stan.org/docs/stan-users-guide/efficiency-tuning.html#non-centered-parameterization) for more information.
-2. This shows a bit more explicitly that the population mean of the random effects is not equal to the $\mu$ parameter, but to $\exp(\mu + \omega^2 / 2)$, because they are log-normally distributed (see e.g. [Wikipedia](https://en.wikipedia.org/wiki/Log-normal_distribution#Arithmetic_moments) for the formulas). This is important for the interpretation of the parameter estimates.
+2. This shows a bit more explicitly that the population mean of the random effects is not equal to the $\mu$ parameter, but to $\theta = \exp(\mu + \omega^2 / 2)$, because they are log-normally distributed (see e.g. [Wikipedia](https://en.wikipedia.org/wiki/Log-normal_distribution#Arithmetic_moments) for the formulas). This is important for the interpretation of the parameter estimates.
 
 ### Priors
 
@@ -134,25 +134,27 @@ We can now fit the model using `brms`. The structure is determined by the model 
 
 ```{r}
 #| label: fit_brms
-formula <- bf(sld ~ eta, nl = TRUE) +
-  # Define the mean for the likelihood
+
+formula <- bf(sld ~ ystar, nl = TRUE) +
+  # Define the mean for the likelihood:
   nlf(
-    eta ~ 
+    ystar ~ 
       int_step(year > 0) * 
         (b0 * (exp(-ks * year) + exp(kg * year) -  1)) +
       int_step(year <= 0) * 
         (b0 * exp(kg * year))
   ) +
   # Define the standard deviation (called sigma in brms) as a 
-  # coefficient tau times the mean.
+  # coefficient tau times the mean ystar.
   # sigma is modelled on the log scale though, therefore:
-  nlf(sigma ~ log(tau) + log(eta)) +
+  nlf(sigma ~ log(tau) + log(ystar)) +
+  # This line is needed to declare tau as a model parameter:
   lf(tau ~ 1) +
-  # Define nonlinear parameter transformations
+  # Define nonlinear parameter transformations:
   nlf(b0 ~ exp(lb0)) +
   nlf(ks ~ exp(lks)) +
   nlf(kg ~ exp(lkg)) +
-  # Define random effect structure
+  # Define random effect structure:
   lf(lb0 ~ 1 + (1 | id)) + 
   lf(lks ~ 1 + (1 | id)) +
   lf(lkg ~ 1 + (1 | id))
@@ -213,7 +215,7 @@ Note that it is crucial to use here `int_step()` to properly define the two piec
 
 Here we extract all parameter estimates using the `as_draws_df` method for `brmsfit` objects. Note that we could also just extract a subset of parameters, see `?as_draws.brmsfit` for more information.
 
-As mentioned above, we use the expectation of the log-normal distribution to get the population level estimates for the $b_0$, $k_s$, and $k_g$ parameters. We also calculate the coefficient of variation for each parameter.
+As mentioned above, we use the expectation of the log-normal distribution to get the population level estimates (called $\theta$ with the corresponding subscript) for the $b_0$, $k_s$, and $k_g$ parameters. We also calculate the coefficient of variation for each parameter.
 
 ```{r}
 #| label: extract_parameters
@@ -222,9 +224,9 @@ head(names(post_df), 10)
 
 post_df <- post_df |>
   mutate(
-    b0 = exp(b_lb0_Intercept + sd_id__lb0_Intercept^2 / 2),
-    ks = exp(b_lks_Intercept + sd_id__lks_Intercept^2 / 2),
-    kg = exp(b_lkg_Intercept + sd_id__lkg_Intercept^2 / 2),
+    theta_b0 = exp(b_lb0_Intercept + sd_id__lb0_Intercept^2 / 2),
+    theta_ks = exp(b_lks_Intercept + sd_id__lks_Intercept^2 / 2),
+    theta_kg = exp(b_lkg_Intercept + sd_id__lkg_Intercept^2 / 2),
     omega_0 = sd_id__lb0_Intercept,
     omega_s = sd_id__lks_Intercept,
     omega_g = sd_id__lkg_Intercept,
@@ -240,8 +242,8 @@ For a graphical check of the convergence, we can use the `mcmc_trace` and `mcmc_
 ```{r}
 #| label: plot_convergence
 
-mcmc_trace(post_df, pars = c("b0", "ks", "kg", "omega_0", "omega_s", "omega_g", "sigma"))
-mcmc_pairs(post_df, pars = c("b0", "ks", "kg", "omega_0", "omega_s", "omega_g", "sigma"))
+mcmc_trace(post_df, pars = c("theta_b0", "theta_ks", "theta_kg", "omega_0", "omega_s", "omega_g", "sigma"))
+mcmc_pairs(post_df, pars = c("theta_b0", "theta_ks", "theta_kg", "omega_0", "omega_s", "omega_g", "sigma"))
 ```
 
 Next, we can create a nice summary table of the parameter estimates, using `summarize_draws` from the `posterior` package in combination with functions from the `gt` package:
@@ -250,7 +252,7 @@ Next, we can create a nice summary table of the parameter estimates, using `summ
 #| label: summarize_parameters
 
 post_sum <- post_df |>
-  select(b0, ks, kg, omega_0, omega_s, omega_g, cv_0, cv_s, cv_g, sigma) |>
+  select(theta_b0, theta_ks, theta_kg, omega_0, omega_s, omega_g, cv_0, cv_s, cv_g, sigma) |>
   summarize_draws() |>
   gt() |>
   fmt_number(n_sigfig = 3)
@@ -284,6 +286,8 @@ post_ind <- fit |>
     id, b0, ks, kg    
   )
 ```
+
+Note that here we do *not* need to use the log-normal expectation formula, because we just calculate the individual random effects here, in contrast to the population level parameters above.
 
 With this we can e.g. report the estimates for the first patient:
 
@@ -333,6 +337,46 @@ df_sim |>
   labs(title = "SF model fit")
 ```
 
+## Summary statistics
+
+The time-to-growth formula is:
+
+$$
+\max \left(
+    \frac{
+        \log(k_s) - \log(k_g)
+    }{
+        k_s + k_g
+    },
+    0
+\right)
+$$
+
+Similary, we can look at the tumor-ratio at time $t$:
+
+$$
+\frac{y^{*}(t)}{y^{*}(0)} = \exp(-k_s \cdot t) + \exp(k_g \cdot t) - 1
+$$
+
+So with the posterior samples from above, we can calculate these statistics, separate for each patient, with the tumor-ratio e.g. for 12 weeks (and being careful with the year time scale we used in this model):
+
+```{r}
+#| label: post_ind_stats
+
+post_ind_stat <- post_ind |> 
+  mutate(
+    ttg = pmax((log(ks) - log(kg)) / (ks + kg), 0),
+    tr12 = exp(-ks * 12/52) + exp(kg * 12/52) - 1
+  )
+
+post_ind_stat_sum <- post_ind_stat |>
+  filter(id %in% c("1", "2", "3")) |>
+  summarize_draws() |>
+  gt() |>
+  fmt_number(n_sigfig = 3)
+post_ind_stat_sum
+```
+
 ## Adding covariates
 
 With `brms` it is straightforward to add covariates to the model. In this example, an obvious choice for a covariate is the treatment the patients received in the study:
@@ -354,25 +398,23 @@ Therefore we can add this as follows as a fixed effect for the two parameters:
 ```{r}
 #| label: formula_covariates
 
-formula_by_arm <- bf(sld ~ eta, nl = TRUE) +
-  # Define the mean for the likelihood
+formula_by_arm <- bf(sld ~ ystar, nl = TRUE) +
+  # Define the mean for the likelihood:
   nlf(
-    eta ~ 
+    ystar ~ 
       int_step(year > 0) * 
         (b0 * (exp(-ks * year) + exp(kg * year) -  1)) +
       int_step(year <= 0) * 
         (b0 * exp(kg * year))
   ) +
-  # Define the standard deviation (called sigma in brms) as a 
-  # coefficient tau times the mean.
-  # sigma is modelled on the log scale though, therefore:
-  nlf(sigma ~ log(tau) + log(eta)) +
+  # As above we also use these formulas here:
+  nlf(sigma ~ log(tau) + log(ystar)) +
   lf(tau ~ 1) +
-  # Define nonlinear parameter transformations
+  # Define nonlinear parameter transformations:
   nlf(b0 ~ exp(lb0)) +
   nlf(ks ~ exp(lks)) +
   nlf(kg ~ exp(lkg)) +
-  # Define random effect structure
+  # Define random effect structure:
   lf(lb0 ~ 1 + (1 | id)) + 
   lf(lks ~ 1 + arm + (1 | id)) +
   lf(lkg ~ 1 + arm + (1 | id))
@@ -452,11 +494,11 @@ head(names(post_df_by_arm), 10)
 
 post_df_by_arm <- post_df_by_arm |>
   mutate(
-    b0 = exp(b_lb0_Intercept + sd_id__lb0_Intercept^2 / 2),
-    ks_arm1 = exp(b_lks_Intercept + sd_id__lks_Intercept^2 / 2),
-    ks_arm2 = exp(b_lks_Intercept + b_lks_arm2 + sd_id__lks_Intercept^2 / 2),
-    kg_arm1 = exp(b_lkg_Intercept + sd_id__lkg_Intercept^2 / 2),
-    kg_arm2 = exp(b_lkg_Intercept + b_lkg_arm2 + sd_id__lkg_Intercept^2 / 2),
+    theta_b0 = exp(b_lb0_Intercept + sd_id__lb0_Intercept^2 / 2),
+    theta_ks_arm1 = exp(b_lks_Intercept + sd_id__lks_Intercept^2 / 2),
+    theta_ks_arm2 = exp(b_lks_Intercept + b_lks_arm2 + sd_id__lks_Intercept^2 / 2),
+    theta_kg_arm1 = exp(b_lkg_Intercept + sd_id__lkg_Intercept^2 / 2),
+    theta_kg_arm2 = exp(b_lkg_Intercept + b_lkg_arm2 + sd_id__lkg_Intercept^2 / 2),
     omega_0 = sd_id__lb0_Intercept,
     omega_s = sd_id__lks_Intercept,
     omega_g = sd_id__lkg_Intercept,
@@ -467,7 +509,10 @@ post_df_by_arm <- post_df_by_arm |>
   )
 
 post_sum_by_arm <- post_df_by_arm |>
-  select(b0, ks_arm1, ks_arm2, kg_arm1, kg_arm2, omega_0, omega_s, omega_g, cv_0, cv_s, cv_g, sigma) |>
+  select(
+    theta_b0, theta_ks_arm1, theta_ks_arm2, theta_kg_arm1, theta_kg_arm2, 
+    omega_0, omega_s, omega_g, cv_0, cv_s, cv_g, sigma
+  ) |>
   summarize_draws() |>
   gt() |>
   fmt_number(n_sigfig = 3)
@@ -480,7 +525,7 @@ So we see that the shrinkage is stronger in arm 1 compared to arm 2, while the g
 #| label: posterior_prob_diff
 
 post_df_by_arm |>
-  mutate(diff_pos = ks_arm1 - ks_arm2 > 0) |>
+  mutate(diff_pos = theta_ks_arm1 - theta_ks_arm2 > 0) |>
   summarize(diff_prob = mean(diff_pos))
 ```
 
