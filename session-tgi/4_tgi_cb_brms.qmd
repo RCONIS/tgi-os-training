@@ -114,7 +114,7 @@ inits <- list(
 save_file <- here("session-tgi/cb3.RData")
 if (file.exists(save_file)) {
   load(save_file)
-} else {
+} else if (interactive()) {
   fit <- brm(
     formula = formula,
     data = df,
@@ -122,7 +122,7 @@ if (file.exists(save_file)) {
     family = gaussian(),
     init = rep(list(inits), CHAINS),
     chains = CHAINS, 
-    iter = WARMUP + 2 * ITER, 
+    iter = WARMUP + ITER, 
     warmup = WARMUP, 
     seed = BAYES.SEED,
     refresh = REFRESH,
@@ -133,33 +133,53 @@ if (file.exists(save_file)) {
 }
 
 # Summarize the fit
-summary(fit)
+save_fit_sum_file <- here("session-tgi/cb3_fit_sum.RData")
+if (file.exists(save_fit_sum_file)) {
+  load(save_fit_sum_file)
+} else {
+  fit_sum <- summary(fit)
+  save(fit_sum, file = save_fit_sum_file)
+}
+fit_sum
 ```
 
+We did obtain here a warning about divergent transitions, see [stan documentation](http://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup) for details:
 
-todo cont here
+````
+Warning message:
+There were 4489 divergent transitions after warmup. Increasing adapt_delta above 0.9 may help. See http://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup 
+````
+
+However, the effective sample size is high, i.e. the Rhat values are close to 1. This indicates that the chains have converged. We can proceed with the post-processing.
 
 ## Parameter estimates
 
 ```{r}
 #| label: cb_post_processing
 
-post_df <- as_draws_df(fit)
+post_df_file <- here("session-tgi/cb3_post_df.RData")
+if (file.exists(post_df_file)) {
+  load(post_df_file)
+} else {
+  post_df <- as_draws_df(fit) |> 
+    subset_draws(iteration = (1:1000) * 2)
+  save(post_df, file = post_df_file)
+}
 head(names(post_df), 10)
 
 post_df <- post_df |>
   mutate(
     theta_b0 = exp(b_lb0_Intercept + sd_id__lb0_Intercept^2 / 2),
     theta_kg = exp(b_lkg_Intercept + sd_id__lkg_Intercept^2 / 2),
-    theta_poverc = exp(b_lpoverc_Intercept + sd_id__lpoverc_Intercept^2 / 2),
+    theta_p = exp(b_lp_Intercept + sd_id__lp_Intercept^2 / 2),
     theta_c = exp(b_lc_Intercept + sd_id__lc_Intercept^2 / 2),
     omega_0 = sd_id__lb0_Intercept,
     omega_g = sd_id__lkg_Intercept,
-    omega_p = sd_id__lpoverc_Intercept,
+    omega_p = sd_id__lp_Intercept,
     omega_c = sd_id__lc_Intercept,
     cv_0 = sqrt(exp(sd_id__lb0_Intercept^2) - 1),
     cv_g = sqrt(exp(sd_id__lkg_Intercept^2) - 1),
-    cv_p = sqrt(exp(sd_id__lpoverc_Intercept^2) - 1),
+    cv_p = sqrt(exp(sd_id__lp_Intercept^2) - 1),
     cv_c = sqrt(exp(sd_id__lc_Intercept^2) - 1),
     sigma = b_tau_Intercept
   )
@@ -170,45 +190,53 @@ Let's first look at the population level parameters:
 ```{r}
 #| label: gsf_pop_params
 
-mcmc_trace(post_df, pars = c("theta_b0", "theta_kg", "theta_poverc", "theta_c", "sigma"))
-mcmc_dens_overlay(post_df, pars = c("b_lb0_Intercept", "b_lkg_Intercept", "b_lpoverc_Intercept", "b_lc_Intercept", "b_tau_Intercept"))
+mcmc_trace(post_df, pars = c("theta_b0", "theta_kg", "theta_p", "theta_c", "sigma"))
+mcmc_dens_overlay(post_df, pars = c("b_lb0_Intercept", "b_lkg_Intercept", "b_lp_Intercept", "b_lc_Intercept", "b_tau_Intercept"))
 
-mcmc_pairs(post_df, pars = c("theta_b0", "theta_kg", "theta_poverc", "theta_c", "sigma"))
+mcmc_pairs(post_df, pars = c("theta_b0", "theta_kg", "theta_p", "theta_c", "sigma"))
 ```
 
 The trace plots look good. The chains seem to have converged and the pairs plot shows no strong correlations between the parameters. Let's check the table:
 
 ```{r}
-#| label: gsf_post_summary
+#| label: cb_post_summary
 
 post_sum <- post_df |>
-  select(b0, ks, kg, phi, omega_0, omega_s, omega_g, omega_phi, sigma) |>
+  dplyr::select(theta_b0, theta_kg, theta_p, theta_c, omega_0, omega_g, omega_p, omega_c,
+  cv_0, cv_g, cv_p, cv_c,
+  sigma) |>
   summarize_draws() |>
   gt() |>
   fmt_number(decimals = 3)
 post_sum
 ```
 
-So $\phi$ is estimated around 0.5. The other parameters are similar to the previous Stein-Fojo model, but we see a larger $k_s$ e.g.
+We see similar estimated values as before for $\theta_{b_{0}}$, $\theta_{k_{g}}$ and $\sigma$.
 
 ## Observation vs model fit
 
 We can now compare the model fit to the observations. Let's do this for the first 20 patients again:
 
 ```{r}
-#| label: gsf_model_fit
+#| label: cb_model_fit
 
 pt_subset <- as.character(1:20)
 df_subset <- df |> 
   filter(id %in% pt_subset)
 
-df_sim <- df_subset |> 
-  data_grid(
-    id = pt_subset, 
-    year = seq_range(year, 101)
-  ) |>
-  add_epred_draws(fit) |>
-  median_qi()
+df_sim_save_file <- here("session-tgi/cb3_sim_df.RData")
+if (file.exists(df_sim_save_file)) {
+  load(df_sim_save_file)
+} else {
+  df_sim <- df_subset |> 
+    data_grid(
+      id = pt_subset, 
+      year = seq_range(year, 101)
+    ) |>
+    add_epred_draws(fit) |>
+    median_qi()
+  save(df_sim, file = df_sim_save_file)
+}
 
 df_sim |>
   ggplot(aes(x = year, y = sld)) +
@@ -222,7 +250,7 @@ df_sim |>
   geom_point(data = df_subset, color = "tomato") +
   coord_cartesian(ylim = range(df_subset$sld)) +
   scale_fill_brewer(palette = "Greys") +
-  labs(title = "GSF model fit")
+  labs(title = "CB model fit")
 ```
 
 This also looks good. The model seems to capture the data well.
@@ -230,3 +258,5 @@ This also looks good. The model seems to capture the data well.
 ## With `jmpost`
 
 This model can also be fit with the `jmpost` package. The corresponding function is `LongitudinalClaretBruno`. The statistical model is specified in the vignette [here](https://genentech.github.io/jmpost/main/articles/statistical-specification.html#claret-bruno-model).
+
+Homework: Implement the generalized Claret-Bruno model with `jmpost` and compare the results with the `brms` implementation.
