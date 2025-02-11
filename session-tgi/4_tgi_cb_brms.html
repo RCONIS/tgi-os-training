@@ -10,7 +10,7 @@
 <meta name="author" content="Francois Mercier">
 <meta name="dcterms.date" content="2025-02-11">
 
-<title>3. Claret-Bruno model – TGI-OS Training</title>
+<title>4. Claret-Bruno model – TGI-OS Training</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -75,7 +75,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-453bbb6d1d9cb7fba2a81fb4686694e5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-22501a6347d7c50d37fc616aa2593389.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -145,7 +145,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../session-tgi/0_setup.html">Session 1: TGI</a></li><li class="breadcrumb-item"><a href="../session-tgi/4_tgi_cb_brms.html">3. Claret-Bruno model</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../session-tgi/0_setup.html">Session 1: TGI</a></li><li class="breadcrumb-item"><a href="../session-tgi/4_tgi_cb_brms.html">4. Claret-Bruno model</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -215,7 +215,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../session-tgi/4_tgi_cb_brms.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">3. Claret-Bruno model</span></a>
+ <span class="menu-text">4. Claret-Bruno model</span></a>
   </div>
 </li>
       </ul>
@@ -242,9 +242,9 @@ window.Quarto = {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../session-tgi/0_setup.html">Session 1: TGI</a></li><li class="breadcrumb-item"><a href="../session-tgi/4_tgi_cb_brms.html">3. Claret-Bruno model</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../session-tgi/0_setup.html">Session 1: TGI</a></li><li class="breadcrumb-item"><a href="../session-tgi/4_tgi_cb_brms.html">4. Claret-Bruno model</a></li></ol></nav>
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">3. Claret-Bruno model</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<div class="quarto-title-block"><div><h1 class="title">4. Claret-Bruno model</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
 </div>
 
 
@@ -281,20 +281,20 @@ window.Quarto = {
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidybayes)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bayesplot)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modelr)</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bayesplot)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(brms)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tictoc)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(posterior)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jmpost)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(truncnorm)</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(brms)</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstan)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jmpost)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modelr)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(posterior)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstan)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidybayes)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(truncnorm)</span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">require</span>(cmdstanr)) {</span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># If cmdstanr is available, instruct brms to use cmdstanr as backend </span></span>
@@ -632,34 +632,40 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_trace</span>(post_df, <span class="at">pars =</span> <span class="fu">c</span>(<span class="st">"theta_b0"</span>, <span class="st">"theta_kg"</span>, <span class="st">"theta_p"</span>, <span class="st">"theta_c"</span>, <span class="st">"sigma"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>cb_pop_params <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"theta_b0"</span>, <span class="st">"theta_kg"</span>, <span class="st">"theta_p"</span>, <span class="st">"theta_c"</span>, <span class="st">"sigma"</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_trace</span>(post_df, <span class="at">pars =</span> cb_pop_params)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="4_tgi_cb_brms_files/figure-html/gsf_pop_params-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="4_tgi_cb_brms_files/figure-html/cb_pop_params-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_dens_overlay</span>(post_df, <span class="at">pars =</span> <span class="fu">c</span>(<span class="st">"b_lb0_Intercept"</span>, <span class="st">"b_lkg_Intercept"</span>, <span class="st">"b_lp_Intercept"</span>, <span class="st">"b_lc_Intercept"</span>, <span class="st">"b_tau_Intercept"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_dens_overlay</span>(post_df, <span class="at">pars =</span> cb_pop_params)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="4_tgi_cb_brms_files/figure-html/gsf_pop_params-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="4_tgi_cb_brms_files/figure-html/cb_pop_params-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_pairs</span>(post_df, <span class="at">pars =</span> <span class="fu">c</span>(<span class="st">"theta_b0"</span>, <span class="st">"theta_kg"</span>, <span class="st">"theta_p"</span>, <span class="st">"theta_c"</span>, <span class="st">"sigma"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_pairs</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  post_df, </span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">pars =</span> cb_pop_params,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">off_diag_args =</span> <span class="fu">list</span>(<span class="at">size =</span> <span class="dv">1</span>, <span class="at">alpha =</span> <span class="fl">0.1</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="4_tgi_cb_brms_files/figure-html/gsf_pop_params-3.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="4_tgi_cb_brms_files/figure-html/cb_pop_params-3.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -684,23 +690,23 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>post_sum</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="vadktdzaay" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#vadktdzaay table {
+<div id="mvosdbzput" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#mvosdbzput table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#vadktdzaay thead, #vadktdzaay tbody, #vadktdzaay tfoot, #vadktdzaay tr, #vadktdzaay td, #vadktdzaay th {
+#mvosdbzput thead, #mvosdbzput tbody, #mvosdbzput tfoot, #mvosdbzput tr, #mvosdbzput td, #mvosdbzput th {
   border-style: none;
 }
 
-#vadktdzaay p {
+#mvosdbzput p {
   margin: 0;
   padding: 0;
 }
 
-#vadktdzaay .gt_table {
+#mvosdbzput .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -726,12 +732,12 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   border-left-color: #D3D3D3;
 }
 
-#vadktdzaay .gt_caption {
+#mvosdbzput .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#vadktdzaay .gt_title {
+#mvosdbzput .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -743,7 +749,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   border-bottom-width: 0;
 }
 
-#vadktdzaay .gt_subtitle {
+#mvosdbzput .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -755,7 +761,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   border-top-width: 0;
 }
 
-#vadktdzaay .gt_heading {
+#mvosdbzput .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -767,13 +773,13 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   border-right-color: #D3D3D3;
 }
 
-#vadktdzaay .gt_bottom_border {
+#mvosdbzput .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#vadktdzaay .gt_col_headings {
+#mvosdbzput .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -788,7 +794,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   border-right-color: #D3D3D3;
 }
 
-#vadktdzaay .gt_col_heading {
+#mvosdbzput .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -808,7 +814,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   overflow-x: hidden;
 }
 
-#vadktdzaay .gt_column_spanner_outer {
+#mvosdbzput .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -820,15 +826,15 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   padding-right: 4px;
 }
 
-#vadktdzaay .gt_column_spanner_outer:first-child {
+#mvosdbzput .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#vadktdzaay .gt_column_spanner_outer:last-child {
+#mvosdbzput .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#vadktdzaay .gt_column_spanner {
+#mvosdbzput .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -840,11 +846,11 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   width: 100%;
 }
 
-#vadktdzaay .gt_spanner_row {
+#mvosdbzput .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#vadktdzaay .gt_group_heading {
+#mvosdbzput .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -870,7 +876,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   text-align: left;
 }
 
-#vadktdzaay .gt_empty_group_heading {
+#mvosdbzput .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -885,15 +891,15 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   vertical-align: middle;
 }
 
-#vadktdzaay .gt_from_md > :first-child {
+#mvosdbzput .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#vadktdzaay .gt_from_md > :last-child {
+#mvosdbzput .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#vadktdzaay .gt_row {
+#mvosdbzput .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -912,7 +918,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   overflow-x: hidden;
 }
 
-#vadktdzaay .gt_stub {
+#mvosdbzput .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -925,7 +931,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   padding-right: 5px;
 }
 
-#vadktdzaay .gt_stub_row_group {
+#mvosdbzput .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -939,15 +945,15 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   vertical-align: top;
 }
 
-#vadktdzaay .gt_row_group_first td {
+#mvosdbzput .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#vadktdzaay .gt_row_group_first th {
+#mvosdbzput .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#vadktdzaay .gt_summary_row {
+#mvosdbzput .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -957,16 +963,16 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   padding-right: 5px;
 }
 
-#vadktdzaay .gt_first_summary_row {
+#mvosdbzput .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#vadktdzaay .gt_first_summary_row.thick {
+#mvosdbzput .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#vadktdzaay .gt_last_summary_row {
+#mvosdbzput .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -976,7 +982,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   border-bottom-color: #D3D3D3;
 }
 
-#vadktdzaay .gt_grand_summary_row {
+#mvosdbzput .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -986,7 +992,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   padding-right: 5px;
 }
 
-#vadktdzaay .gt_first_grand_summary_row {
+#mvosdbzput .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -996,7 +1002,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   border-top-color: #D3D3D3;
 }
 
-#vadktdzaay .gt_last_grand_summary_row_top {
+#mvosdbzput .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1006,11 +1012,11 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   border-bottom-color: #D3D3D3;
 }
 
-#vadktdzaay .gt_striped {
+#mvosdbzput .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#vadktdzaay .gt_table_body {
+#mvosdbzput .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1019,7 +1025,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   border-bottom-color: #D3D3D3;
 }
 
-#vadktdzaay .gt_footnotes {
+#mvosdbzput .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1033,7 +1039,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   border-right-color: #D3D3D3;
 }
 
-#vadktdzaay .gt_footnote {
+#mvosdbzput .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1042,7 +1048,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   padding-right: 5px;
 }
 
-#vadktdzaay .gt_sourcenotes {
+#mvosdbzput .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1056,7 +1062,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   border-right-color: #D3D3D3;
 }
 
-#vadktdzaay .gt_sourcenote {
+#mvosdbzput .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1064,72 +1070,72 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   padding-right: 5px;
 }
 
-#vadktdzaay .gt_left {
+#mvosdbzput .gt_left {
   text-align: left;
 }
 
-#vadktdzaay .gt_center {
+#mvosdbzput .gt_center {
   text-align: center;
 }
 
-#vadktdzaay .gt_right {
+#mvosdbzput .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#vadktdzaay .gt_font_normal {
+#mvosdbzput .gt_font_normal {
   font-weight: normal;
 }
 
-#vadktdzaay .gt_font_bold {
+#mvosdbzput .gt_font_bold {
   font-weight: bold;
 }
 
-#vadktdzaay .gt_font_italic {
+#mvosdbzput .gt_font_italic {
   font-style: italic;
 }
 
-#vadktdzaay .gt_super {
+#mvosdbzput .gt_super {
   font-size: 65%;
 }
 
-#vadktdzaay .gt_footnote_marks {
+#mvosdbzput .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#vadktdzaay .gt_asterisk {
+#mvosdbzput .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#vadktdzaay .gt_indent_1 {
+#mvosdbzput .gt_indent_1 {
   text-indent: 5px;
 }
 
-#vadktdzaay .gt_indent_2 {
+#mvosdbzput .gt_indent_2 {
   text-indent: 10px;
 }
 
-#vadktdzaay .gt_indent_3 {
+#mvosdbzput .gt_indent_3 {
   text-indent: 15px;
 }
 
-#vadktdzaay .gt_indent_4 {
+#mvosdbzput .gt_indent_4 {
   text-indent: 20px;
 }
 
-#vadktdzaay .gt_indent_5 {
+#mvosdbzput .gt_indent_5 {
   text-indent: 25px;
 }
 
-#vadktdzaay .katex-display {
+#mvosdbzput .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#vadktdzaay div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#mvosdbzput div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1846,7 +1852,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
 <div class="sourceCode" id="cb23" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "3. Claret-Bruno model"</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "4. Claret-Bruno model"</span></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span></span>
 <span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co">  - Daniel Sabanés Bové</span></span>
 <span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co">  - Francois Mercier</span></span>
@@ -2035,78 +2041,84 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb23-192"><a href="#cb23-192" aria-hidden="true" tabindex="-1"></a>Let's first look at the population level parameters:</span>
 <span id="cb23-193"><a href="#cb23-193" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-196"><a href="#cb23-196" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-197"><a href="#cb23-197" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: gsf_pop_params</span></span>
+<span id="cb23-197"><a href="#cb23-197" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: cb_pop_params</span></span>
 <span id="cb23-198"><a href="#cb23-198" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-199"><a href="#cb23-199" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_trace</span>(post_df, <span class="at">pars =</span> <span class="fu">c</span>(<span class="st">"theta_b0"</span>, <span class="st">"theta_kg"</span>, <span class="st">"theta_p"</span>, <span class="st">"theta_c"</span>, <span class="st">"sigma"</span>))</span>
-<span id="cb23-200"><a href="#cb23-200" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_dens_overlay</span>(post_df, <span class="at">pars =</span> <span class="fu">c</span>(<span class="st">"b_lb0_Intercept"</span>, <span class="st">"b_lkg_Intercept"</span>, <span class="st">"b_lp_Intercept"</span>, <span class="st">"b_lc_Intercept"</span>, <span class="st">"b_tau_Intercept"</span>))</span>
-<span id="cb23-201"><a href="#cb23-201" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-202"><a href="#cb23-202" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_pairs</span>(post_df, <span class="at">pars =</span> <span class="fu">c</span>(<span class="st">"theta_b0"</span>, <span class="st">"theta_kg"</span>, <span class="st">"theta_p"</span>, <span class="st">"theta_c"</span>, <span class="st">"sigma"</span>))</span>
-<span id="cb23-203"><a href="#cb23-203" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-204"><a href="#cb23-204" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-205"><a href="#cb23-205" aria-hidden="true" tabindex="-1"></a>The trace plots look good. The chains seem to have converged and the pairs plot shows no strong correlations between the parameters. Let's check the table:</span>
-<span id="cb23-206"><a href="#cb23-206" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-209"><a href="#cb23-209" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-210"><a href="#cb23-210" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: cb_post_summary</span></span>
-<span id="cb23-211"><a href="#cb23-211" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-212"><a href="#cb23-212" aria-hidden="true" tabindex="-1"></a>post_sum <span class="ot">&lt;-</span> post_df <span class="sc">|&gt;</span></span>
-<span id="cb23-213"><a href="#cb23-213" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(theta_b0, theta_kg, theta_p, theta_c, omega_0, omega_g, omega_p, omega_c,</span>
-<span id="cb23-214"><a href="#cb23-214" aria-hidden="true" tabindex="-1"></a>  cv_0, cv_g, cv_p, cv_c,</span>
-<span id="cb23-215"><a href="#cb23-215" aria-hidden="true" tabindex="-1"></a>  sigma) <span class="sc">|&gt;</span></span>
-<span id="cb23-216"><a href="#cb23-216" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize_draws</span>() <span class="sc">|&gt;</span></span>
-<span id="cb23-217"><a href="#cb23-217" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
-<span id="cb23-218"><a href="#cb23-218" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">decimals =</span> <span class="dv">3</span>)</span>
-<span id="cb23-219"><a href="#cb23-219" aria-hidden="true" tabindex="-1"></a>post_sum</span>
-<span id="cb23-220"><a href="#cb23-220" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-221"><a href="#cb23-221" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-222"><a href="#cb23-222" aria-hidden="true" tabindex="-1"></a>We see similar estimated values as before for $\theta_{b_{0}}$, $\theta_{k_{g}}$ and $\sigma$.</span>
-<span id="cb23-223"><a href="#cb23-223" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-224"><a href="#cb23-224" aria-hidden="true" tabindex="-1"></a><span class="fu">## Observation vs model fit</span></span>
-<span id="cb23-225"><a href="#cb23-225" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-226"><a href="#cb23-226" aria-hidden="true" tabindex="-1"></a>We can now compare the model fit to the observations. Let's do this for the first 20 patients again:</span>
+<span id="cb23-199"><a href="#cb23-199" aria-hidden="true" tabindex="-1"></a>cb_pop_params <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"theta_b0"</span>, <span class="st">"theta_kg"</span>, <span class="st">"theta_p"</span>, <span class="st">"theta_c"</span>, <span class="st">"sigma"</span>)</span>
+<span id="cb23-200"><a href="#cb23-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-201"><a href="#cb23-201" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_trace</span>(post_df, <span class="at">pars =</span> cb_pop_params)</span>
+<span id="cb23-202"><a href="#cb23-202" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_dens_overlay</span>(post_df, <span class="at">pars =</span> cb_pop_params)</span>
+<span id="cb23-203"><a href="#cb23-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-204"><a href="#cb23-204" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_pairs</span>(</span>
+<span id="cb23-205"><a href="#cb23-205" aria-hidden="true" tabindex="-1"></a>  post_df, </span>
+<span id="cb23-206"><a href="#cb23-206" aria-hidden="true" tabindex="-1"></a>  <span class="at">pars =</span> cb_pop_params,</span>
+<span id="cb23-207"><a href="#cb23-207" aria-hidden="true" tabindex="-1"></a>  <span class="at">off_diag_args =</span> <span class="fu">list</span>(<span class="at">size =</span> <span class="dv">1</span>, <span class="at">alpha =</span> <span class="fl">0.1</span>)</span>
+<span id="cb23-208"><a href="#cb23-208" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-209"><a href="#cb23-209" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-210"><a href="#cb23-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-211"><a href="#cb23-211" aria-hidden="true" tabindex="-1"></a>The trace plots look good. The chains seem to have converged and the pairs plot shows no strong correlations between the parameters. Let's check the table:</span>
+<span id="cb23-212"><a href="#cb23-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-215"><a href="#cb23-215" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-216"><a href="#cb23-216" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: cb_post_summary</span></span>
+<span id="cb23-217"><a href="#cb23-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-218"><a href="#cb23-218" aria-hidden="true" tabindex="-1"></a>post_sum <span class="ot">&lt;-</span> post_df <span class="sc">|&gt;</span></span>
+<span id="cb23-219"><a href="#cb23-219" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(theta_b0, theta_kg, theta_p, theta_c, omega_0, omega_g, omega_p, omega_c,</span>
+<span id="cb23-220"><a href="#cb23-220" aria-hidden="true" tabindex="-1"></a>  cv_0, cv_g, cv_p, cv_c,</span>
+<span id="cb23-221"><a href="#cb23-221" aria-hidden="true" tabindex="-1"></a>  sigma) <span class="sc">|&gt;</span></span>
+<span id="cb23-222"><a href="#cb23-222" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize_draws</span>() <span class="sc">|&gt;</span></span>
+<span id="cb23-223"><a href="#cb23-223" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb23-224"><a href="#cb23-224" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">decimals =</span> <span class="dv">3</span>)</span>
+<span id="cb23-225"><a href="#cb23-225" aria-hidden="true" tabindex="-1"></a>post_sum</span>
+<span id="cb23-226"><a href="#cb23-226" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb23-227"><a href="#cb23-227" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-230"><a href="#cb23-230" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb23-231"><a href="#cb23-231" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: cb_model_fit</span></span>
-<span id="cb23-232"><a href="#cb23-232" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-233"><a href="#cb23-233" aria-hidden="true" tabindex="-1"></a>pt_subset <span class="ot">&lt;-</span> <span class="fu">as.character</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>)</span>
-<span id="cb23-234"><a href="#cb23-234" aria-hidden="true" tabindex="-1"></a>df_subset <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> </span>
-<span id="cb23-235"><a href="#cb23-235" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(id <span class="sc">%in%</span> pt_subset)</span>
-<span id="cb23-236"><a href="#cb23-236" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-237"><a href="#cb23-237" aria-hidden="true" tabindex="-1"></a>df_sim_save_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-tgi/cb3_sim_df.RData"</span>)</span>
-<span id="cb23-238"><a href="#cb23-238" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(df_sim_save_file)) {</span>
-<span id="cb23-239"><a href="#cb23-239" aria-hidden="true" tabindex="-1"></a>  <span class="fu">load</span>(df_sim_save_file)</span>
-<span id="cb23-240"><a href="#cb23-240" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb23-241"><a href="#cb23-241" aria-hidden="true" tabindex="-1"></a>  df_sim <span class="ot">&lt;-</span> df_subset <span class="sc">|&gt;</span> </span>
-<span id="cb23-242"><a href="#cb23-242" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data_grid</span>(</span>
-<span id="cb23-243"><a href="#cb23-243" aria-hidden="true" tabindex="-1"></a>      <span class="at">id =</span> pt_subset, </span>
-<span id="cb23-244"><a href="#cb23-244" aria-hidden="true" tabindex="-1"></a>      <span class="at">year =</span> <span class="fu">seq_range</span>(year, <span class="dv">101</span>)</span>
-<span id="cb23-245"><a href="#cb23-245" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
-<span id="cb23-246"><a href="#cb23-246" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_epred_draws</span>(fit) <span class="sc">|&gt;</span></span>
-<span id="cb23-247"><a href="#cb23-247" aria-hidden="true" tabindex="-1"></a>    <span class="fu">median_qi</span>()</span>
-<span id="cb23-248"><a href="#cb23-248" aria-hidden="true" tabindex="-1"></a>  <span class="fu">save</span>(df_sim, <span class="at">file =</span> df_sim_save_file)</span>
-<span id="cb23-249"><a href="#cb23-249" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb23-250"><a href="#cb23-250" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-251"><a href="#cb23-251" aria-hidden="true" tabindex="-1"></a>df_sim <span class="sc">|&gt;</span></span>
-<span id="cb23-252"><a href="#cb23-252" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> sld)) <span class="sc">+</span></span>
-<span id="cb23-253"><a href="#cb23-253" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> id) <span class="sc">+</span></span>
-<span id="cb23-254"><a href="#cb23-254" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(</span>
-<span id="cb23-255"><a href="#cb23-255" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">y =</span> .epred, <span class="at">ymin =</span> .lower, <span class="at">ymax =</span> .upper), </span>
-<span id="cb23-256"><a href="#cb23-256" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.3</span>, </span>
-<span id="cb23-257"><a href="#cb23-257" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"deepskyblue"</span></span>
-<span id="cb23-258"><a href="#cb23-258" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb23-259"><a href="#cb23-259" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .epred), <span class="at">color =</span> <span class="st">"deepskyblue"</span>) <span class="sc">+</span></span>
-<span id="cb23-260"><a href="#cb23-260" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> df_subset, <span class="at">color =</span> <span class="st">"tomato"</span>) <span class="sc">+</span></span>
-<span id="cb23-261"><a href="#cb23-261" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">range</span>(df_subset<span class="sc">$</span>sld)) <span class="sc">+</span></span>
-<span id="cb23-262"><a href="#cb23-262" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Greys"</span>) <span class="sc">+</span></span>
-<span id="cb23-263"><a href="#cb23-263" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"CB model fit"</span>)</span>
-<span id="cb23-264"><a href="#cb23-264" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb23-265"><a href="#cb23-265" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-266"><a href="#cb23-266" aria-hidden="true" tabindex="-1"></a>This also looks good. The model seems to capture the data well.</span>
-<span id="cb23-267"><a href="#cb23-267" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-268"><a href="#cb23-268" aria-hidden="true" tabindex="-1"></a><span class="fu">## With `jmpost`</span></span>
-<span id="cb23-269"><a href="#cb23-269" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-270"><a href="#cb23-270" aria-hidden="true" tabindex="-1"></a>This model can also be fit with the <span class="in">`jmpost`</span> package. The corresponding function is <span class="in">`LongitudinalClaretBruno`</span>. The statistical model is specified in the vignette <span class="co">[</span><span class="ot">here</span><span class="co">](https://genentech.github.io/jmpost/main/articles/statistical-specification.html#claret-bruno-model)</span>.</span>
+<span id="cb23-228"><a href="#cb23-228" aria-hidden="true" tabindex="-1"></a>We see similar estimated values as before for $\theta_{b_{0}}$, $\theta_{k_{g}}$ and $\sigma$.</span>
+<span id="cb23-229"><a href="#cb23-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-230"><a href="#cb23-230" aria-hidden="true" tabindex="-1"></a><span class="fu">## Observation vs model fit</span></span>
+<span id="cb23-231"><a href="#cb23-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-232"><a href="#cb23-232" aria-hidden="true" tabindex="-1"></a>We can now compare the model fit to the observations. Let's do this for the first 20 patients again:</span>
+<span id="cb23-233"><a href="#cb23-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-236"><a href="#cb23-236" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-237"><a href="#cb23-237" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: cb_model_fit</span></span>
+<span id="cb23-238"><a href="#cb23-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-239"><a href="#cb23-239" aria-hidden="true" tabindex="-1"></a>pt_subset <span class="ot">&lt;-</span> <span class="fu">as.character</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>)</span>
+<span id="cb23-240"><a href="#cb23-240" aria-hidden="true" tabindex="-1"></a>df_subset <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> </span>
+<span id="cb23-241"><a href="#cb23-241" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(id <span class="sc">%in%</span> pt_subset)</span>
+<span id="cb23-242"><a href="#cb23-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-243"><a href="#cb23-243" aria-hidden="true" tabindex="-1"></a>df_sim_save_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-tgi/cb3_sim_df.RData"</span>)</span>
+<span id="cb23-244"><a href="#cb23-244" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(df_sim_save_file)) {</span>
+<span id="cb23-245"><a href="#cb23-245" aria-hidden="true" tabindex="-1"></a>  <span class="fu">load</span>(df_sim_save_file)</span>
+<span id="cb23-246"><a href="#cb23-246" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb23-247"><a href="#cb23-247" aria-hidden="true" tabindex="-1"></a>  df_sim <span class="ot">&lt;-</span> df_subset <span class="sc">|&gt;</span> </span>
+<span id="cb23-248"><a href="#cb23-248" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data_grid</span>(</span>
+<span id="cb23-249"><a href="#cb23-249" aria-hidden="true" tabindex="-1"></a>      <span class="at">id =</span> pt_subset, </span>
+<span id="cb23-250"><a href="#cb23-250" aria-hidden="true" tabindex="-1"></a>      <span class="at">year =</span> <span class="fu">seq_range</span>(year, <span class="dv">101</span>)</span>
+<span id="cb23-251"><a href="#cb23-251" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb23-252"><a href="#cb23-252" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_epred_draws</span>(fit) <span class="sc">|&gt;</span></span>
+<span id="cb23-253"><a href="#cb23-253" aria-hidden="true" tabindex="-1"></a>    <span class="fu">median_qi</span>()</span>
+<span id="cb23-254"><a href="#cb23-254" aria-hidden="true" tabindex="-1"></a>  <span class="fu">save</span>(df_sim, <span class="at">file =</span> df_sim_save_file)</span>
+<span id="cb23-255"><a href="#cb23-255" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb23-256"><a href="#cb23-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-257"><a href="#cb23-257" aria-hidden="true" tabindex="-1"></a>df_sim <span class="sc">|&gt;</span></span>
+<span id="cb23-258"><a href="#cb23-258" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> sld)) <span class="sc">+</span></span>
+<span id="cb23-259"><a href="#cb23-259" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> id) <span class="sc">+</span></span>
+<span id="cb23-260"><a href="#cb23-260" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(</span>
+<span id="cb23-261"><a href="#cb23-261" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">y =</span> .epred, <span class="at">ymin =</span> .lower, <span class="at">ymax =</span> .upper), </span>
+<span id="cb23-262"><a href="#cb23-262" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.3</span>, </span>
+<span id="cb23-263"><a href="#cb23-263" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"deepskyblue"</span></span>
+<span id="cb23-264"><a href="#cb23-264" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb23-265"><a href="#cb23-265" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .epred), <span class="at">color =</span> <span class="st">"deepskyblue"</span>) <span class="sc">+</span></span>
+<span id="cb23-266"><a href="#cb23-266" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> df_subset, <span class="at">color =</span> <span class="st">"tomato"</span>) <span class="sc">+</span></span>
+<span id="cb23-267"><a href="#cb23-267" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">range</span>(df_subset<span class="sc">$</span>sld)) <span class="sc">+</span></span>
+<span id="cb23-268"><a href="#cb23-268" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Greys"</span>) <span class="sc">+</span></span>
+<span id="cb23-269"><a href="#cb23-269" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"CB model fit"</span>)</span>
+<span id="cb23-270"><a href="#cb23-270" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb23-271"><a href="#cb23-271" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-272"><a href="#cb23-272" aria-hidden="true" tabindex="-1"></a>Homework: Implement the generalized Claret-Bruno model with <span class="in">`jmpost`</span> and compare the results with the <span class="in">`brms`</span> implementation.</span>
+<span id="cb23-272"><a href="#cb23-272" aria-hidden="true" tabindex="-1"></a>This also looks good. The model seems to capture the data well.</span>
+<span id="cb23-273"><a href="#cb23-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-274"><a href="#cb23-274" aria-hidden="true" tabindex="-1"></a><span class="fu">## With `jmpost`</span></span>
+<span id="cb23-275"><a href="#cb23-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-276"><a href="#cb23-276" aria-hidden="true" tabindex="-1"></a>This model can also be fit with the <span class="in">`jmpost`</span> package. The corresponding function is <span class="in">`LongitudinalClaretBruno`</span>. The statistical model is specified in the vignette <span class="co">[</span><span class="ot">here</span><span class="co">](https://genentech.github.io/jmpost/main/articles/statistical-specification.html#claret-bruno-model)</span>.</span>
+<span id="cb23-277"><a href="#cb23-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-278"><a href="#cb23-278" aria-hidden="true" tabindex="-1"></a>Homework: Implement the generalized Claret-Bruno model with <span class="in">`jmpost`</span> and compare the results with the <span class="in">`brms`</span> implementation.</span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
