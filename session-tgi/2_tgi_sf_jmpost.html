@@ -2,13 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.57">
+<meta name="generator" content="quarto-1.6.40">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Daniel Sabanés Bové">
 <meta name="author" content="Francois Mercier">
-<meta name="dcterms.date" content="2025-01-31">
+<meta name="dcterms.date" content="2025-02-11">
 
 <title>2. TGI model minimal workflow with jmpost – TGI-OS Training</title>
 <style>
@@ -72,10 +72,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-453bbb6d1d9cb7fba2a81fb4686694e5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -183,6 +183,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">3. Generalized Stein-Fojo model</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../session-tgi/4_tgi_cb_brms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3. Claret-Bruno model</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -231,7 +237,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2025-01-31</p>
+      <p class="date">2025-02-11</p>
     </div>
   </div>
   
@@ -634,37 +640,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>post_sum <span class="ot">&lt;-</span> post_samples <span class="sc">|&gt;</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">b0 =</span> <span class="fu">exp</span>(mu_bsld <span class="sc">+</span> omega_bsld<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>), </span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">ks =</span> <span class="fu">exp</span>(mu_ks <span class="sc">+</span> omega_ks<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>), </span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">kg =</span> <span class="fu">exp</span>(mu_kg <span class="sc">+</span> omega_kg<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_b0 =</span> <span class="fu">exp</span>(mu_bsld <span class="sc">+</span> omega_bsld<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>), </span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_ks =</span> <span class="fu">exp</span>(mu_ks <span class="sc">+</span> omega_ks<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>), </span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_kg =</span> <span class="fu">exp</span>(mu_kg <span class="sc">+</span> omega_kg<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
 <span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_0 =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_bsld<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
 <span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_s =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_ks<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
 <span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_g =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_kg<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>)</span>
 <span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(b0, ks, kg, omega_bsld, omega_ks, omega_kg, cv_0, cv_s, cv_g, sigma) <span class="sc">|&gt;</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(theta_b0, theta_ks, theta_kg, omega_bsld, omega_ks, omega_kg, cv_0, cv_s, cv_g, sigma) <span class="sc">|&gt;</span></span>
 <span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize_draws</span>() <span class="sc">|&gt;</span></span>
 <span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
 <span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">n_sigfig =</span> <span class="dv">3</span>)</span>
 <span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>post_sum</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="idghegqhdu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#idghegqhdu table {
+<div id="zptzvlydgj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#zptzvlydgj table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#idghegqhdu thead, #idghegqhdu tbody, #idghegqhdu tfoot, #idghegqhdu tr, #idghegqhdu td, #idghegqhdu th {
+#zptzvlydgj thead, #zptzvlydgj tbody, #zptzvlydgj tfoot, #zptzvlydgj tr, #zptzvlydgj td, #zptzvlydgj th {
   border-style: none;
 }
 
-#idghegqhdu p {
+#zptzvlydgj p {
   margin: 0;
   padding: 0;
 }
 
-#idghegqhdu .gt_table {
+#zptzvlydgj .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -690,12 +696,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-left-color: #D3D3D3;
 }
 
-#idghegqhdu .gt_caption {
+#zptzvlydgj .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#idghegqhdu .gt_title {
+#zptzvlydgj .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -707,7 +713,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-width: 0;
 }
 
-#idghegqhdu .gt_subtitle {
+#zptzvlydgj .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -719,7 +725,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-width: 0;
 }
 
-#idghegqhdu .gt_heading {
+#zptzvlydgj .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -731,13 +737,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#idghegqhdu .gt_bottom_border {
+#zptzvlydgj .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#idghegqhdu .gt_col_headings {
+#zptzvlydgj .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -752,7 +758,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#idghegqhdu .gt_col_heading {
+#zptzvlydgj .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -772,7 +778,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#idghegqhdu .gt_column_spanner_outer {
+#zptzvlydgj .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -784,15 +790,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 4px;
 }
 
-#idghegqhdu .gt_column_spanner_outer:first-child {
+#zptzvlydgj .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#idghegqhdu .gt_column_spanner_outer:last-child {
+#zptzvlydgj .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#idghegqhdu .gt_column_spanner {
+#zptzvlydgj .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -804,11 +810,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   width: 100%;
 }
 
-#idghegqhdu .gt_spanner_row {
+#zptzvlydgj .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#idghegqhdu .gt_group_heading {
+#zptzvlydgj .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -834,7 +840,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   text-align: left;
 }
 
-#idghegqhdu .gt_empty_group_heading {
+#zptzvlydgj .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -849,15 +855,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: middle;
 }
 
-#idghegqhdu .gt_from_md > :first-child {
+#zptzvlydgj .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#idghegqhdu .gt_from_md > :last-child {
+#zptzvlydgj .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#idghegqhdu .gt_row {
+#zptzvlydgj .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -876,7 +882,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#idghegqhdu .gt_stub {
+#zptzvlydgj .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -889,7 +895,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#idghegqhdu .gt_stub_row_group {
+#zptzvlydgj .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -903,15 +909,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: top;
 }
 
-#idghegqhdu .gt_row_group_first td {
+#zptzvlydgj .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#idghegqhdu .gt_row_group_first th {
+#zptzvlydgj .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#idghegqhdu .gt_summary_row {
+#zptzvlydgj .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -921,16 +927,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#idghegqhdu .gt_first_summary_row {
+#zptzvlydgj .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#idghegqhdu .gt_first_summary_row.thick {
+#zptzvlydgj .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#idghegqhdu .gt_last_summary_row {
+#zptzvlydgj .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -940,7 +946,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#idghegqhdu .gt_grand_summary_row {
+#zptzvlydgj .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -950,7 +956,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#idghegqhdu .gt_first_grand_summary_row {
+#zptzvlydgj .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -960,7 +966,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-color: #D3D3D3;
 }
 
-#idghegqhdu .gt_last_grand_summary_row_top {
+#zptzvlydgj .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -970,11 +976,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#idghegqhdu .gt_striped {
+#zptzvlydgj .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#idghegqhdu .gt_table_body {
+#zptzvlydgj .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -983,7 +989,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#idghegqhdu .gt_footnotes {
+#zptzvlydgj .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -997,7 +1003,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#idghegqhdu .gt_footnote {
+#zptzvlydgj .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1006,7 +1012,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#idghegqhdu .gt_sourcenotes {
+#zptzvlydgj .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1020,7 +1026,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#idghegqhdu .gt_sourcenote {
+#zptzvlydgj .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1028,79 +1034,79 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#idghegqhdu .gt_left {
+#zptzvlydgj .gt_left {
   text-align: left;
 }
 
-#idghegqhdu .gt_center {
+#zptzvlydgj .gt_center {
   text-align: center;
 }
 
-#idghegqhdu .gt_right {
+#zptzvlydgj .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#idghegqhdu .gt_font_normal {
+#zptzvlydgj .gt_font_normal {
   font-weight: normal;
 }
 
-#idghegqhdu .gt_font_bold {
+#zptzvlydgj .gt_font_bold {
   font-weight: bold;
 }
 
-#idghegqhdu .gt_font_italic {
+#zptzvlydgj .gt_font_italic {
   font-style: italic;
 }
 
-#idghegqhdu .gt_super {
+#zptzvlydgj .gt_super {
   font-size: 65%;
 }
 
-#idghegqhdu .gt_footnote_marks {
+#zptzvlydgj .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#idghegqhdu .gt_asterisk {
+#zptzvlydgj .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#idghegqhdu .gt_indent_1 {
+#zptzvlydgj .gt_indent_1 {
   text-indent: 5px;
 }
 
-#idghegqhdu .gt_indent_2 {
+#zptzvlydgj .gt_indent_2 {
   text-indent: 10px;
 }
 
-#idghegqhdu .gt_indent_3 {
+#zptzvlydgj .gt_indent_3 {
   text-indent: 15px;
 }
 
-#idghegqhdu .gt_indent_4 {
+#zptzvlydgj .gt_indent_4 {
   text-indent: 20px;
 }
 
-#idghegqhdu .gt_indent_5 {
+#zptzvlydgj .gt_indent_5 {
   text-indent: 25px;
 }
 
-#idghegqhdu .katex-display {
+#zptzvlydgj .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#idghegqhdu div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#zptzvlydgj div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
 
 <table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
 <thead>
-<tr class="header gt_col_headings">
+<tr class="gt_col_headings header">
 <th id="variable" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">variable</th>
 <th id="mean" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">mean</th>
 <th id="median" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">median</th>
@@ -1115,7 +1121,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody class="gt_table_body">
 <tr class="odd">
-<td class="gt_row gt_left" headers="variable">b0</td>
+<td class="gt_row gt_left" headers="variable">theta_b0</td>
 <td class="gt_row gt_right" headers="mean">43.8</td>
 <td class="gt_row gt_right" headers="median">43.8</td>
 <td class="gt_row gt_right" headers="sd">1.04</td>
@@ -1127,7 +1133,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td class="gt_row gt_right" headers="ess_tail">593</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="variable">ks</td>
+<td class="gt_row gt_left" headers="variable">theta_ks</td>
 <td class="gt_row gt_right" headers="mean">1.05</td>
 <td class="gt_row gt_right" headers="median">1.04</td>
 <td class="gt_row gt_right" headers="sd">0.120</td>
@@ -1139,7 +1145,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td class="gt_row gt_right" headers="ess_tail">447</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="variable">kg</td>
+<td class="gt_row gt_left" headers="variable">theta_kg</td>
 <td class="gt_row gt_right" headers="mean">0.434</td>
 <td class="gt_row gt_right" headers="median">0.434</td>
 <td class="gt_row gt_right" headers="sd">0.0296</td>
@@ -1355,11 +1361,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma =</span> lm_sf_sigma</span>
 <span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
 <span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">b0 =</span> <span class="fu">exp</span>(mu_bsld <span class="sc">+</span> omega_bsld<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>), </span>
-<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">ks1 =</span> <span class="fu">exp</span>(mu_ks1 <span class="sc">+</span> omega_ks1<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>), </span>
-<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">ks2 =</span> <span class="fu">exp</span>(mu_ks2 <span class="sc">+</span> omega_ks2<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
-<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">kg1 =</span> <span class="fu">exp</span>(mu_kg1 <span class="sc">+</span> omega_kg1<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
-<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">kg2 =</span> <span class="fu">exp</span>(mu_kg2 <span class="sc">+</span> omega_kg2<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_b0 =</span> <span class="fu">exp</span>(mu_bsld <span class="sc">+</span> omega_bsld<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>), </span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_ks1 =</span> <span class="fu">exp</span>(mu_ks1 <span class="sc">+</span> omega_ks1<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>), </span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_ks2 =</span> <span class="fu">exp</span>(mu_ks2 <span class="sc">+</span> omega_ks2<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_kg1 =</span> <span class="fu">exp</span>(mu_kg1 <span class="sc">+</span> omega_kg1<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_kg2 =</span> <span class="fu">exp</span>(mu_kg2 <span class="sc">+</span> omega_kg2<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
 <span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_0 =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_bsld<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
 <span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_s1 =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_ks1<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
 <span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_s2 =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_ks2<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
@@ -1369,7 +1375,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a>post_sum_by_arm <span class="ot">&lt;-</span> post_samples_by_arm <span class="sc">|&gt;</span></span>
 <span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
-<span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a>    b0, ks1, ks2, kg1, kg2, </span>
+<span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a>    theta_b0, theta_ks1, theta_ks2, theta_kg1, theta_kg2, </span>
 <span id="cb27-31"><a href="#cb27-31" aria-hidden="true" tabindex="-1"></a>    omega_bsld, omega_ks1, omega_ks2, omega_kg1, omega_kg2, </span>
 <span id="cb27-32"><a href="#cb27-32" aria-hidden="true" tabindex="-1"></a>    cv_0, cv_s1, cv_s2, cv_g1, cv_g2, sigma) <span class="sc">|&gt;</span></span>
 <span id="cb27-33"><a href="#cb27-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize_draws</span>() <span class="sc">|&gt;</span></span>
@@ -1384,23 +1390,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>post_sum_by_arm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="ehfiobepzr" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ehfiobepzr table {
+<div id="edrnkdttff" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#edrnkdttff table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#ehfiobepzr thead, #ehfiobepzr tbody, #ehfiobepzr tfoot, #ehfiobepzr tr, #ehfiobepzr td, #ehfiobepzr th {
+#edrnkdttff thead, #edrnkdttff tbody, #edrnkdttff tfoot, #edrnkdttff tr, #edrnkdttff td, #edrnkdttff th {
   border-style: none;
 }
 
-#ehfiobepzr p {
+#edrnkdttff p {
   margin: 0;
   padding: 0;
 }
 
-#ehfiobepzr .gt_table {
+#edrnkdttff .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1426,12 +1432,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-left-color: #D3D3D3;
 }
 
-#ehfiobepzr .gt_caption {
+#edrnkdttff .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ehfiobepzr .gt_title {
+#edrnkdttff .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1443,7 +1449,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-width: 0;
 }
 
-#ehfiobepzr .gt_subtitle {
+#edrnkdttff .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1455,7 +1461,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-width: 0;
 }
 
-#ehfiobepzr .gt_heading {
+#edrnkdttff .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1467,13 +1473,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#ehfiobepzr .gt_bottom_border {
+#edrnkdttff .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ehfiobepzr .gt_col_headings {
+#edrnkdttff .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1488,7 +1494,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#ehfiobepzr .gt_col_heading {
+#edrnkdttff .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1508,7 +1514,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#ehfiobepzr .gt_column_spanner_outer {
+#edrnkdttff .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1520,15 +1526,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 4px;
 }
 
-#ehfiobepzr .gt_column_spanner_outer:first-child {
+#edrnkdttff .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ehfiobepzr .gt_column_spanner_outer:last-child {
+#edrnkdttff .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ehfiobepzr .gt_column_spanner {
+#edrnkdttff .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1540,11 +1546,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   width: 100%;
 }
 
-#ehfiobepzr .gt_spanner_row {
+#edrnkdttff .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ehfiobepzr .gt_group_heading {
+#edrnkdttff .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1570,7 +1576,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   text-align: left;
 }
 
-#ehfiobepzr .gt_empty_group_heading {
+#edrnkdttff .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1585,15 +1591,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: middle;
 }
 
-#ehfiobepzr .gt_from_md > :first-child {
+#edrnkdttff .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ehfiobepzr .gt_from_md > :last-child {
+#edrnkdttff .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ehfiobepzr .gt_row {
+#edrnkdttff .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1612,7 +1618,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#ehfiobepzr .gt_stub {
+#edrnkdttff .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1625,7 +1631,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#ehfiobepzr .gt_stub_row_group {
+#edrnkdttff .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1639,15 +1645,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: top;
 }
 
-#ehfiobepzr .gt_row_group_first td {
+#edrnkdttff .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ehfiobepzr .gt_row_group_first th {
+#edrnkdttff .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ehfiobepzr .gt_summary_row {
+#edrnkdttff .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1657,16 +1663,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#ehfiobepzr .gt_first_summary_row {
+#edrnkdttff .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ehfiobepzr .gt_first_summary_row.thick {
+#edrnkdttff .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ehfiobepzr .gt_last_summary_row {
+#edrnkdttff .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1676,7 +1682,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#ehfiobepzr .gt_grand_summary_row {
+#edrnkdttff .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1686,7 +1692,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#ehfiobepzr .gt_first_grand_summary_row {
+#edrnkdttff .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1696,7 +1702,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-color: #D3D3D3;
 }
 
-#ehfiobepzr .gt_last_grand_summary_row_top {
+#edrnkdttff .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1706,11 +1712,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#ehfiobepzr .gt_striped {
+#edrnkdttff .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ehfiobepzr .gt_table_body {
+#edrnkdttff .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1719,7 +1725,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#ehfiobepzr .gt_footnotes {
+#edrnkdttff .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1733,7 +1739,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#ehfiobepzr .gt_footnote {
+#edrnkdttff .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1742,7 +1748,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#ehfiobepzr .gt_sourcenotes {
+#edrnkdttff .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1756,7 +1762,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#ehfiobepzr .gt_sourcenote {
+#edrnkdttff .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1764,79 +1770,79 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#ehfiobepzr .gt_left {
+#edrnkdttff .gt_left {
   text-align: left;
 }
 
-#ehfiobepzr .gt_center {
+#edrnkdttff .gt_center {
   text-align: center;
 }
 
-#ehfiobepzr .gt_right {
+#edrnkdttff .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ehfiobepzr .gt_font_normal {
+#edrnkdttff .gt_font_normal {
   font-weight: normal;
 }
 
-#ehfiobepzr .gt_font_bold {
+#edrnkdttff .gt_font_bold {
   font-weight: bold;
 }
 
-#ehfiobepzr .gt_font_italic {
+#edrnkdttff .gt_font_italic {
   font-style: italic;
 }
 
-#ehfiobepzr .gt_super {
+#edrnkdttff .gt_super {
   font-size: 65%;
 }
 
-#ehfiobepzr .gt_footnote_marks {
+#edrnkdttff .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#ehfiobepzr .gt_asterisk {
+#edrnkdttff .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ehfiobepzr .gt_indent_1 {
+#edrnkdttff .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ehfiobepzr .gt_indent_2 {
+#edrnkdttff .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ehfiobepzr .gt_indent_3 {
+#edrnkdttff .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ehfiobepzr .gt_indent_4 {
+#edrnkdttff .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ehfiobepzr .gt_indent_5 {
+#edrnkdttff .gt_indent_5 {
   text-indent: 25px;
 }
 
-#ehfiobepzr .katex-display {
+#edrnkdttff .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#ehfiobepzr div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#edrnkdttff div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
 
 <table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
 <thead>
-<tr class="header gt_col_headings">
+<tr class="gt_col_headings header">
 <th id="variable" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">variable</th>
 <th id="mean" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">mean</th>
 <th id="median" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">median</th>
@@ -1851,7 +1857,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody class="gt_table_body">
 <tr class="odd">
-<td class="gt_row gt_left" headers="variable">b0</td>
+<td class="gt_row gt_left" headers="variable">theta_b0</td>
 <td class="gt_row gt_right" headers="mean">43.8</td>
 <td class="gt_row gt_right" headers="median">43.8</td>
 <td class="gt_row gt_right" headers="sd">1.02</td>
@@ -1863,7 +1869,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td class="gt_row gt_right" headers="ess_tail">388</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="variable">ks1</td>
+<td class="gt_row gt_left" headers="variable">theta_ks1</td>
 <td class="gt_row gt_right" headers="mean">1.16</td>
 <td class="gt_row gt_right" headers="median">1.15</td>
 <td class="gt_row gt_right" headers="sd">0.159</td>
@@ -1875,7 +1881,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td class="gt_row gt_right" headers="ess_tail">1,150</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="variable">ks2</td>
+<td class="gt_row gt_left" headers="variable">theta_ks2</td>
 <td class="gt_row gt_right" headers="mean">1.07</td>
 <td class="gt_row gt_right" headers="median">1.04</td>
 <td class="gt_row gt_right" headers="sd">0.209</td>
@@ -1887,7 +1893,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td class="gt_row gt_right" headers="ess_tail">874</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="variable">kg1</td>
+<td class="gt_row gt_left" headers="variable">theta_kg1</td>
 <td class="gt_row gt_right" headers="mean">0.438</td>
 <td class="gt_row gt_right" headers="median">0.435</td>
 <td class="gt_row gt_right" headers="sd">0.0474</td>
@@ -1899,7 +1905,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td class="gt_row gt_right" headers="ess_tail">1,140</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="variable">kg2</td>
+<td class="gt_row gt_left" headers="variable">theta_kg2</td>
 <td class="gt_row gt_right" headers="mean">0.480</td>
 <td class="gt_row gt_right" headers="median">0.479</td>
 <td class="gt_row gt_right" headers="sd">0.0485</td>
@@ -2052,7 +2058,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>prob_ks1_greater_ks2 <span class="ot">&lt;-</span> <span class="fu">mean</span>(post_samples_by_arm<span class="sc">$</span>ks1 <span class="sc">&gt;</span> post_samples_by_arm<span class="sc">$</span>ks2)</span>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>prob_ks1_greater_ks2 <span class="ot">&lt;-</span> <span class="fu">mean</span>(post_samples_by_arm<span class="sc">$</span>theta_ks1 <span class="sc">&gt;</span> post_samples_by_arm<span class="sc">$</span>theta_ks2)</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>prob_ks1_greater_ks2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
@@ -2223,8 +2229,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -2386,7 +2390,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
@@ -2852,14 +2855,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb37-258"><a href="#cb37-258" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb37-259"><a href="#cb37-259" aria-hidden="true" tabindex="-1"></a>post_sum <span class="ot">&lt;-</span> post_samples <span class="sc">|&gt;</span></span>
 <span id="cb37-260"><a href="#cb37-260" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb37-261"><a href="#cb37-261" aria-hidden="true" tabindex="-1"></a>    <span class="at">b0 =</span> <span class="fu">exp</span>(mu_bsld <span class="sc">+</span> omega_bsld<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>), </span>
-<span id="cb37-262"><a href="#cb37-262" aria-hidden="true" tabindex="-1"></a>    <span class="at">ks =</span> <span class="fu">exp</span>(mu_ks <span class="sc">+</span> omega_ks<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>), </span>
-<span id="cb37-263"><a href="#cb37-263" aria-hidden="true" tabindex="-1"></a>    <span class="at">kg =</span> <span class="fu">exp</span>(mu_kg <span class="sc">+</span> omega_kg<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
+<span id="cb37-261"><a href="#cb37-261" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_b0 =</span> <span class="fu">exp</span>(mu_bsld <span class="sc">+</span> omega_bsld<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>), </span>
+<span id="cb37-262"><a href="#cb37-262" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_ks =</span> <span class="fu">exp</span>(mu_ks <span class="sc">+</span> omega_ks<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>), </span>
+<span id="cb37-263"><a href="#cb37-263" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_kg =</span> <span class="fu">exp</span>(mu_kg <span class="sc">+</span> omega_kg<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
 <span id="cb37-264"><a href="#cb37-264" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_0 =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_bsld<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
 <span id="cb37-265"><a href="#cb37-265" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_s =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_ks<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
 <span id="cb37-266"><a href="#cb37-266" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_g =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_kg<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>)</span>
 <span id="cb37-267"><a href="#cb37-267" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb37-268"><a href="#cb37-268" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(b0, ks, kg, omega_bsld, omega_ks, omega_kg, cv_0, cv_s, cv_g, sigma) <span class="sc">|&gt;</span></span>
+<span id="cb37-268"><a href="#cb37-268" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(theta_b0, theta_ks, theta_kg, omega_bsld, omega_ks, omega_kg, cv_0, cv_s, cv_g, sigma) <span class="sc">|&gt;</span></span>
 <span id="cb37-269"><a href="#cb37-269" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize_draws</span>() <span class="sc">|&gt;</span></span>
 <span id="cb37-270"><a href="#cb37-270" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
 <span id="cb37-271"><a href="#cb37-271" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">n_sigfig =</span> <span class="dv">3</span>)</span>
@@ -2972,11 +2975,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb37-388"><a href="#cb37-388" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma =</span> lm_sf_sigma</span>
 <span id="cb37-389"><a href="#cb37-389" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
 <span id="cb37-390"><a href="#cb37-390" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb37-391"><a href="#cb37-391" aria-hidden="true" tabindex="-1"></a>    <span class="at">b0 =</span> <span class="fu">exp</span>(mu_bsld <span class="sc">+</span> omega_bsld<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>), </span>
-<span id="cb37-392"><a href="#cb37-392" aria-hidden="true" tabindex="-1"></a>    <span class="at">ks1 =</span> <span class="fu">exp</span>(mu_ks1 <span class="sc">+</span> omega_ks1<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>), </span>
-<span id="cb37-393"><a href="#cb37-393" aria-hidden="true" tabindex="-1"></a>    <span class="at">ks2 =</span> <span class="fu">exp</span>(mu_ks2 <span class="sc">+</span> omega_ks2<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
-<span id="cb37-394"><a href="#cb37-394" aria-hidden="true" tabindex="-1"></a>    <span class="at">kg1 =</span> <span class="fu">exp</span>(mu_kg1 <span class="sc">+</span> omega_kg1<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
-<span id="cb37-395"><a href="#cb37-395" aria-hidden="true" tabindex="-1"></a>    <span class="at">kg2 =</span> <span class="fu">exp</span>(mu_kg2 <span class="sc">+</span> omega_kg2<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
+<span id="cb37-391"><a href="#cb37-391" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_b0 =</span> <span class="fu">exp</span>(mu_bsld <span class="sc">+</span> omega_bsld<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>), </span>
+<span id="cb37-392"><a href="#cb37-392" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_ks1 =</span> <span class="fu">exp</span>(mu_ks1 <span class="sc">+</span> omega_ks1<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>), </span>
+<span id="cb37-393"><a href="#cb37-393" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_ks2 =</span> <span class="fu">exp</span>(mu_ks2 <span class="sc">+</span> omega_ks2<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
+<span id="cb37-394"><a href="#cb37-394" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_kg1 =</span> <span class="fu">exp</span>(mu_kg1 <span class="sc">+</span> omega_kg1<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
+<span id="cb37-395"><a href="#cb37-395" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_kg2 =</span> <span class="fu">exp</span>(mu_kg2 <span class="sc">+</span> omega_kg2<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
 <span id="cb37-396"><a href="#cb37-396" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_0 =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_bsld<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
 <span id="cb37-397"><a href="#cb37-397" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_s1 =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_ks1<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
 <span id="cb37-398"><a href="#cb37-398" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_s2 =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_ks2<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
@@ -2986,7 +2989,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb37-402"><a href="#cb37-402" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb37-403"><a href="#cb37-403" aria-hidden="true" tabindex="-1"></a>post_sum_by_arm <span class="ot">&lt;-</span> post_samples_by_arm <span class="sc">|&gt;</span></span>
 <span id="cb37-404"><a href="#cb37-404" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
-<span id="cb37-405"><a href="#cb37-405" aria-hidden="true" tabindex="-1"></a>    b0, ks1, ks2, kg1, kg2, </span>
+<span id="cb37-405"><a href="#cb37-405" aria-hidden="true" tabindex="-1"></a>    theta_b0, theta_ks1, theta_ks2, theta_kg1, theta_kg2, </span>
 <span id="cb37-406"><a href="#cb37-406" aria-hidden="true" tabindex="-1"></a>    omega_bsld, omega_ks1, omega_ks2, omega_kg1, omega_kg2, </span>
 <span id="cb37-407"><a href="#cb37-407" aria-hidden="true" tabindex="-1"></a>    cv_0, cv_s1, cv_s2, cv_g1, cv_g2, sigma) <span class="sc">|&gt;</span></span>
 <span id="cb37-408"><a href="#cb37-408" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize_draws</span>() <span class="sc">|&gt;</span></span>
@@ -2998,7 +3001,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb37-414"><a href="#cb37-414" aria-hidden="true" tabindex="-1"></a>Here again the shrinkage rate in the treatment arm 1 seems higher than in the treatment arm 2. However, the difference is not as pronounced as in the <span class="in">`brms`</span> model before with the same standard deviation for both arms. We can again calculate the posterior probability that the shrinkage rate in arm 1 is higher than in arm 2:</span>
 <span id="cb37-415"><a href="#cb37-415" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb37-418"><a href="#cb37-418" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-419"><a href="#cb37-419" aria-hidden="true" tabindex="-1"></a>prob_ks1_greater_ks2 <span class="ot">&lt;-</span> <span class="fu">mean</span>(post_samples_by_arm<span class="sc">$</span>ks1 <span class="sc">&gt;</span> post_samples_by_arm<span class="sc">$</span>ks2)</span>
+<span id="cb37-419"><a href="#cb37-419" aria-hidden="true" tabindex="-1"></a>prob_ks1_greater_ks2 <span class="ot">&lt;-</span> <span class="fu">mean</span>(post_samples_by_arm<span class="sc">$</span>theta_ks1 <span class="sc">&gt;</span> post_samples_by_arm<span class="sc">$</span>theta_ks2)</span>
 <span id="cb37-420"><a href="#cb37-420" aria-hidden="true" tabindex="-1"></a>prob_ks1_greater_ks2</span>
 <span id="cb37-421"><a href="#cb37-421" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb37-422"><a href="#cb37-422" aria-hidden="true" tabindex="-1"></a></span>
