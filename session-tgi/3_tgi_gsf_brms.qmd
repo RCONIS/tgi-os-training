@@ -166,9 +166,14 @@ Let's first look at the population level parameters:
 
 ```{r}
 #| label: gsf_pop_params
+gsf_pop_params <- c("theta_b0", "theta_ks", "theta_kg", "theta_phi", "sigma")
 
-mcmc_trace(post_df, pars = c("theta_b0", "theta_ks", "theta_kg", "theta_phi", "sigma"))
-mcmc_pairs(post_df, pars = c("theta_b0", "theta_ks", "theta_kg", "theta_phi", "sigma"))
+mcmc_trace(post_df, pars = gsf_pop_params)
+mcmc_pairs(
+  post_df, 
+  pars = gsf_pop_params,
+  off_diag_args = list(size = 1, alpha = 0.1)
+)
 ```
 
 The trace plots look good. The chains seem to have converged and the pairs plot shows no strong correlations between the parameters. Let's check the table:

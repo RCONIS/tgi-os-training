@@ -241,9 +241,14 @@ For a graphical check of the convergence, we can use the `mcmc_trace` and `mcmc_
 
 ```{r}
 #| label: plot_convergence
+sf_pop_params <- c("theta_b0", "theta_ks", "theta_kg", "omega_0", "omega_s", "omega_g", "sigma")
 
-mcmc_trace(post_df, pars = c("theta_b0", "theta_ks", "theta_kg", "omega_0", "omega_s", "omega_g", "sigma"))
-mcmc_pairs(post_df, pars = c("theta_b0", "theta_ks", "theta_kg", "omega_0", "omega_s", "omega_g", "sigma"))
+mcmc_trace(post_df, pars = sf_pop_params)
+mcmc_pairs(
+  post_df, 
+  pars = sf_pop_params,
+  off_diag_args = list(size = 1, alpha = 0.1)
+)
 ```
 
 Next, we can create a nice summary table of the parameter estimates, using `summarize_draws` from the `posterior` package in combination with functions from the `gt` package:
@@ -362,12 +367,17 @@ So with the posterior samples from above, we can calculate these statistics, sep
 
 ```{r}
 #| label: post_ind_stats
-
 post_ind_stat <- post_ind |> 
   mutate(
     ttg = pmax((log(ks) - log(kg)) / (ks + kg), 0),
     tr12 = exp(-ks * 12/52) + exp(kg * 12/52) - 1
   )
+```
+
+Then we can look at e.g. the first 3 patients parameter estimates:
+
+```{r}
+#| label: post_ind_stat_sum
 
 post_ind_stat_sum <- post_ind_stat |>
   filter(id %in% c("1", "2", "3")) |>
@@ -393,7 +403,7 @@ df |>
 
 Here it makes sense to assume that only the shrinkage and growth parameters differ systematically between the two arms. For example, the baseline SLD should be the same in expectation, because of the randomization between the treatment arms.
 
-Therefore we can add this as follows as a fixed effect for the two parameters:
+Therefore we can add this binary `arm` covariate as follows as a fixed effect for the two population level mean parameters $\mu_{k_s}$ and $\mu_{k_g}$ on the log scale:
 
 ```{r}
 #| label: formula_covariates
@@ -602,3 +612,54 @@ So the model without treatment arm seems to be very slightly preferred here by t
 - Providing manually realistic initial values for the model parameters can help to speed up the convergence of the Markov chains. This is especially important for the nonlinear parameters. You can get the names of the parameters from the Stan code above - note that you cannot use the names of the `brms` R code. 
 - Sometimes it is not easy to get the dimensions of the inital values right. Here it can be helpful to change the backend to `rstan`, which provides more detailed error messages. You can do this by setting `backend = "rstan"` in the `brm` call.
 - When the Stan compiler gives you an error, that can be very informative: Just open the Stan code file that is mentioned in the error message and look at the line number that is mentioned. This can give you a good idea of what went wrong: Maybe a typo in the prior definition, or a missing semicolon, or a wrong dimension in the data block. With VScode e.g. this is very easy: Just hold `Ctrl` and click on the file name and number, and you will be taken to the right line in the Stan code.
+- In order to quickly get results for a model, e.g. for obtaining useful starting values or prior distributions, it can be worth trying the "Pathfinder" algorithm in `brms`. Pathfinder is a variational method for approximately sampling from differentiable log densities. You can use it by setting `algorithm = "pathfinder"` in the `brm` call. In this example it takes only a minute, compared to more than an hour for the full model fit. However, the results are still quite different, so it is likely only useful as a first approximation. Nevertheless, the individual model fits look quite encouraging, in the sense that they have found good parameter values - but they are still lacking any uncertainty, so could not be used for confidence or prediction intervals:
+
+  ```{r}
+  #| label: fit_brms_pathfinder
+  fit_fast_file <- here("session-tgi/fit_fast.RData")
+  if (file.exists(fit_fast_file)) {
+    load(fit_fast_file)
+  } else {
+    fit_fast <- brm(
+      formula = formula,
+      data = df,
+      prior = priors,
+      family = gaussian(),
+      init = rep(list(inits), CHAINS),
+      chains = CHAINS, 
+      iter = ITER + WARMUP, 
+      warmup = WARMUP, 
+      seed = BAYES.SEED,
+      refresh = REFRESH,
+      algorithm = "pathfinder"
+    )
+    save(fit_fast, file = fit_fast_file)
+  }
+
+  summary(fit_fast)
+
+  df_sim <- df_subset |> 
+    data_grid(
+      id = pt_subset, 
+      year = seq_range(year, 101)
+    ) |>
+    add_linpred_draws(fit_fast) |> 
+    median_qi() |> 
+    mutate(sld_pred = .linpred)
+
+  df_sim |>
+    ggplot(aes(x = year, y = sld)) +
+    facet_wrap(~ id) +
+    geom_ribbon(
+      aes(y = sld_pred, ymin = .lower, ymax = .upper),
+      alpha = 0.3, 
+      fill = "deepskyblue"
+    ) +
+    geom_line(aes(y = sld_pred), color = "deepskyblue") +
+    geom_point(data = df_subset, color = "tomato") +
+    coord_cartesian(ylim = range(df_subset$sld)) +
+    scale_fill_brewer(palette = "Greys") +
+    labs(title = "SF model fit (pathfinder approximation)")
+  ```
+
+  

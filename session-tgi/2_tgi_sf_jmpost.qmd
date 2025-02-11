@@ -156,6 +156,17 @@ mcmc_trace(vars_draws)
 
 They also look ok, all chains are mixing well in the same range of parameter values.
 
+Also here we could look at the pairs plot:
+
+```{r}
+#| label: plot_pairs
+
+mcmc_pairs(
+  vars_draws,
+  off_diag_args = list(size = 1, alpha = 0.1)
+)
+```
+
 ## Observation vs. model fit
 
 Let's check the fit of the model to the data:

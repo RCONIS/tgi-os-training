@@ -1,5 +1,5 @@
 ---
-title: "3. Claret-Bruno model"
+title: "4. Claret-Bruno model"
 author:
   - Daniel Sabanés Bové
   - Francois Mercier
@@ -188,12 +188,18 @@ post_df <- post_df |>
 Let's first look at the population level parameters:
 
 ```{r}
-#| label: gsf_pop_params
+#| label: cb_pop_params
 
-mcmc_trace(post_df, pars = c("theta_b0", "theta_kg", "theta_p", "theta_c", "sigma"))
-mcmc_dens_overlay(post_df, pars = c("b_lb0_Intercept", "b_lkg_Intercept", "b_lp_Intercept", "b_lc_Intercept", "b_tau_Intercept"))
+cb_pop_params <- c("theta_b0", "theta_kg", "theta_p", "theta_c", "sigma")
 
-mcmc_pairs(post_df, pars = c("theta_b0", "theta_kg", "theta_p", "theta_c", "sigma"))
+mcmc_trace(post_df, pars = cb_pop_params)
+mcmc_dens_overlay(post_df, pars = cb_pop_params)
+
+mcmc_pairs(
+  post_df, 
+  pars = cb_pop_params,
+  off_diag_args = list(size = 1, alpha = 0.1)
+)
 ```
 
 The trace plots look good. The chains seem to have converged and the pairs plot shows no strong correlations between the parameters. Let's check the table:
