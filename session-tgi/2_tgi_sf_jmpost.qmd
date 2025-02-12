@@ -80,10 +80,10 @@ tgi_mod <- JointModel(
         mu_bsld = prior_normal(log(65), 1),
         mu_ks = prior_normal(log(0.52), 1),
         mu_kg = prior_normal(log(1.04), 1),
-        omega_bsld = prior_normal(0, 3),
-        omega_ks = prior_normal(0, 3),
-        omega_kg = prior_normal(0, 3),
-        sigma = prior_normal(0, 3)
+        omega_bsld = prior_normal(0, 3) |> set_limits(0, Inf),
+        omega_ks = prior_normal(0, 3) |> set_limits(0, Inf),
+        omega_kg = prior_normal(0, 3) |> set_limits(0, Inf),
+        sigma = prior_normal(0, 3) |> set_limits(0, Inf)
     )
 )
 ```
@@ -97,7 +97,7 @@ We can now fit the model using `jmpost`.
 ```{r}
 #| label: fit_model
 
-save_file <- here("session-tgi/jm2.RData")
+save_file <- here("session-tgi/jm5.RData")
 if (file.exists(save_file)) {
   load(save_file)
 } else {
@@ -108,6 +108,7 @@ if (file.exists(save_file)) {
       iter_warmup = WARMUP,
       chains = CHAINS,
       parallel_chains = CHAINS,
+      thin = CHAINS,
       seed = BAYES.SEED,
       refresh = REFRESH
   )
@@ -131,7 +132,7 @@ vars <- c(
     "lm_sf_omega_kg"
 )
 
-save_overall_file <- here("session-tgi/jm2_more.RData")
+save_overall_file <- here("session-tgi/jm5_more.RData")
 if (file.exists(save_overall_file)) {
   load(save_overall_file)
 } else {
@@ -177,7 +178,7 @@ Let's check the fit of the model to the data:
 
 pt_subset <- as.character(1:20)
 
-save_fit_file <- here("session-tgi/jm2_fit.RData")
+save_fit_file <- here("session-tgi/jm5_fit.RData")
 if (file.exists(save_fit_file)) {
   load(save_fit_file)
 } else {
@@ -301,7 +302,7 @@ joint_data_by_arm <- DataJoint(
 ```{r}
 #| label: fit_model_arm
 
-save_file <- here("session-tgi/jm3.RData")
+save_file <- here("session-tgi/jm6.RData")
 if (file.exists(save_file)) {
   load(save_file)
 } else {
@@ -312,6 +313,7 @@ if (file.exists(save_file)) {
       iter_warmup = WARMUP,
       chains = CHAINS,
       parallel_chains = CHAINS,
+      thin = CHAINS,
       seed = BAYES.SEED,
       refresh = REFRESH
   )
@@ -335,7 +337,7 @@ vars <- c(
     "lm_sf_omega_kg"
 )
 
-save_arm_file <- here("session-tgi/jm3_more.RData")
+save_arm_file <- here("session-tgi/jm6_more.RData")
 if (file.exists(save_arm_file)) {
   load(save_arm_file)
 } else {
@@ -439,3 +441,4 @@ So the model by treatment arm performs here better than the model without treatm
   file.edit(tmp) # opens the Stan file in the default editor
   ```
 - It is not trivial to transport saved models from one computer to another. This is because `cmdstanr` only loads the results it currently needs from disk into memory, and thus into the R session. If you want to transport the model to another computer, you need to save the Stan code and the data, and then re-run the model on the other computer. This is because the model object in R is only a reference to the model on disk, not the model itself. Note that there is the `$save_object()` method, see [here](https://mc-stan.org/cmdstanr/reference/fit-method-save_object.html), however this leads to very large files (here about 300 MB for one fit) and can thus not be uploaded to typical git repositories. Therefore above we saved interim result objects separately as needed.
+- It is important to explicitly define the truncation boundaries for the truncated normal priors, because otherwise the MCMC results will not be correct.
