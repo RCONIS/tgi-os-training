@@ -1,123 +1,32 @@
 [
   {
-    "objectID": "session-tgi/2_tgi_sf_jmpost.html",
-    "href": "session-tgi/2_tgi_sf_jmpost.html",
-    "title": "2. TGI model minimal workflow with jmpost",
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Index",
     "section": "",
-    "text": "Let’s try to fit the same model now with jmpost. We will use the same data as in the previous notebook.",
+    "text": "Order By\n       Default\n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Title\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\nDate\n\n\nTitle\n\n\nAuthor\n\n\n\n\n\n\n2025-02-12\n\n\n0. Setup\n\n\nFrancois Mercier, Daniel Sabanés Bové\n\n\n\n\n2025-02-12\n\n\n1. TGI model minimal workflow with brms\n\n\nDaniel Sabanés Bové, Francois Mercier\n\n\n\n\n2025-02-12\n\n\n2. TGI model minimal workflow with jmpost\n\n\nDaniel Sabanés Bové, Francois Mercier\n\n\n\n\n2025-02-12\n\n\n3. Generalized Stein-Fojo model\n\n\nDaniel Sabanés Bové, Francois Mercier\n\n\n\n\n2025-02-12\n\n\n4. Claret-Bruno model\n\n\nDaniel Sabanés Bové, Francois Mercier\n\n\n\n\n\nNo matching items",
     "crumbs": [
-      "Session 1: TGI",
-      "2. TGI model minimal workflow with `jmpost`"
+      "Index"
     ]
   },
   {
-    "objectID": "session-tgi/2_tgi_sf_jmpost.html#setup-and-load-data",
-    "href": "session-tgi/2_tgi_sf_jmpost.html#setup-and-load-data",
-    "title": "2. TGI model minimal workflow with jmpost",
-    "section": "Setup and load data",
-    "text": "Setup and load data\nFirst we need to load the necessary packages and set some default options for the MCMC sampling. We also set the theme for the plots to theme_bw with a base size of 12.\n\n\nShow the code\nlibrary(bayesplot)\nlibrary(brms)\nlibrary(ggplot2)\nlibrary(gt)\nlibrary(here)\nlibrary(janitor)\nlibrary(jmpost)\nlibrary(modelr)\nlibrary(posterior)\nlibrary(readxl)\nlibrary(rstan)\nlibrary(tidybayes)\nlibrary(tidyverse)\nlibrary(truncnorm)\n\nif (require(cmdstanr)) {\n  # If cmdstanr is available, instruct brms to use cmdstanr as backend \n  # and cache all Stan binaries\n  options(brms.backend = \"cmdstanr\", cmdstanr_write_stan_file_dir = here(\"_brms-cache\"))\n  dir.create(here(\"_brms-cache\"), FALSE) # create cache directory if not yet available\n} else {\n  rstan::rstan_options(auto_write = TRUE)\n}\n\n# MCMC options\noptions(mc.cores = 4)\nITER &lt;- 1000 # number of sampling iterations after warm up\nWARMUP &lt;- 2000 # number of warm up iterations\nCHAINS &lt;- 4\nBAYES.SEED &lt;- 878\nREFRESH &lt;- 500\n\ntheme_set(theme_bw(base_size = 12))\n\n\nWe also need a small function definition, which is still missing in brms:\n\n\nShow the code\nint_step &lt;- function(x) {\n  stopifnot(is.logical(x))\n  ifelse(x, 1, 0)\n}\n\n\nWe will use the publicly published tumor size data from the OAK study, see here. In particular we are using the S1 data set, which is the fully anonymized data set used in the publication. For simplicity, we have copied the data set in this GitHub repository.\n\n\nShow the code\nfile_path &lt;- here(\"data/journal.pcbi.1009822.s006.xlsx\")\n\nread_one_sheet &lt;- function(sheet) {\n    read_excel(file_path, sheet = sheet) |&gt; \n    clean_names() |&gt; \n    mutate(\n        id = factor(as.character(patient_anonmyized)),\n        day = as.integer(treatment_day),\n        year = day / 365.25,\n        target_lesion_long_diam_mm = case_match(\n            target_lesion_long_diam_mm,\n            \"TOO SMALL TO MEASURE\" ~ \"2\",\n            \"NOT EVALUABLE\" ~ NA_character_,\n            .default = target_lesion_long_diam_mm\n        ),\n        sld = as.numeric(target_lesion_long_diam_mm),\n        sld = ifelse(sld == 0, 2, sld),\n        study = factor(gsub(\"^Study_(\\\\d+)_Arm_\\\\d+$\", \"\\\\1\", study_arm)),\n        arm = factor(gsub(\"^Study_\\\\d+_Arm_(\\\\d+)$\", \"\\\\1\", study_arm))\n    ) |&gt; \n    select(id, year, sld, study, arm)\n}\n\ntumor_data &lt;- excel_sheets(file_path) |&gt; \n    map(read_one_sheet) |&gt; \n    bind_rows()\n\nhead(tumor_data)\n\n\n# A tibble: 6 × 5\n  id                      year   sld study arm  \n  &lt;fct&gt;                  &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt; &lt;fct&gt;\n1 3657015667902160896 -0.00548    33 1     1    \n2 3657015667902160896  0.101      33 1     1    \n3 3657015667902160896  0.230      32 1     1    \n4 3657015667902160896  0.342      37 1     1    \n5 3657015667902160896  0.446      49 1     1    \n6 2080619628198763008 -0.00548    12 1     1    \n\n\nShow the code\nsummary(tumor_data)\n\n\n                    id            year              sld        study   \n 4308512445673410048 :  18   Min.   :-0.1314   Min.   :  2.0   1: 456  \n -4902532987801034752:  17   1st Qu.: 0.1123   1st Qu.: 17.0   2: 966  \n 5394902984416364544 :  16   Median : 0.2847   Median : 30.0   3:2177  \n 7160320731596789760 :  16   Mean   : 0.3822   Mean   : 36.1   4:4126  \n -4159496062492130816:  15   3rd Qu.: 0.5722   3rd Qu.: 49.0   5: 835  \n -7900338178541499392:  15   Max.   : 2.0753   Max.   :228.0           \n (Other)             :8463   NA's   :1         NA's   :69              \n arm     \n 1:3108  \n 2:3715  \n 3: 291  \n 4: 608  \n 5: 227  \n 6: 611  \n         \n\n\nFor simplicity, we will for now just use study 4 (this is the OAK study), and we rename the patient IDs:\n\n\nShow the code\ndf &lt;- tumor_data |&gt; \n  filter(study == \"4\") |&gt; \n  na.omit() |&gt;\n  droplevels() |&gt; \n  mutate(id = factor(as.numeric(id)))\n\n\nHere we have 701 patients. It is always a good idea to make a plot of the data. Let’s look at the first 20 patients e.g.:\n\n\nShow the code\ndf |&gt; \n  filter(as.integer(id) &lt;= 20) |&gt;\n  ggplot(aes(x = year, y = sld, group = id)) +\n  geom_line() +\n  geom_point() +\n  facet_wrap(~ id) +\n  geom_vline(xintercept = 0, linetype = \"dashed\") +\n  theme(legend.position = \"none\")",
+    "objectID": "index.html#license",
+    "href": "index.html#license",
+    "title": "Index",
+    "section": "License",
+    "text": "License\nThe training material is licensed under a Creative Commons Attribution 4.0 International License. If you wish to reuse any part of this material, please ensure proper attribution is given to the original authors as specified by the Creative Commons Attribution 4.0 International License.",
     "crumbs": [
-      "Session 1: TGI",
-      "2. TGI model minimal workflow with `jmpost`"
+      "Index"
     ]
   },
   {
-    "objectID": "session-tgi/2_tgi_sf_jmpost.html#data-preparation",
-    "href": "session-tgi/2_tgi_sf_jmpost.html#data-preparation",
-    "title": "2. TGI model minimal workflow with jmpost",
-    "section": "Data preparation",
-    "text": "Data preparation\nWe start with the subject level data set. For the beginning, we want to treat all observations as if they come from a single arm and single study for now. Therefore we insert constant study and arm values here.\n\n\nShow the code\nsubj_df &lt;- data.frame(\n  id = unique(df$id),\n  arm = \"arm\",\n  study = \"study\"\n)\nsubj_data &lt;- DataSubject(\n  data = subj_df,\n  subject = \"id\",\n  arm = \"arm\",\n  study = \"study\"\n)\n\n\nNext we prepare the longitudinal data object.\n\n\nShow the code\nlong_df &lt;- df |&gt;\n  select(id, year, sld)\nlong_data &lt;- DataLongitudinal(\n  data = long_df,\n  formula = sld ~ year\n)\n\n\nNow we can create the JointData object:\n\n\nShow the code\njoint_data &lt;- DataJoint(\n    subject = subj_data,\n    longitudinal = long_data\n)",
+    "objectID": "index.html#copyright",
+    "href": "index.html#copyright",
+    "title": "Index",
+    "section": "Copyright",
+    "text": "Copyright\n© 2025 Genentech Inc. All rights reserved.",
     "crumbs": [
-      "Session 1: TGI",
-      "2. TGI model minimal workflow with `jmpost`"
-    ]
-  },
-  {
-    "objectID": "session-tgi/2_tgi_sf_jmpost.html#model-specification",
-    "href": "session-tgi/2_tgi_sf_jmpost.html#model-specification",
-    "title": "2. TGI model minimal workflow with jmpost",
-    "section": "Model specification",
-    "text": "Model specification\nThe statistical model is specified in the jmpost vignette here.\nHere we just want to fit the longitudinal data, therefore:\n\n\nShow the code\ntgi_mod &lt;- JointModel(\n    longitudinal = LongitudinalSteinFojo(\n        mu_bsld = prior_normal(log(65), 1),\n        mu_ks = prior_normal(log(0.52), 1),\n        mu_kg = prior_normal(log(1.04), 1),\n        omega_bsld = prior_normal(0, 3),\n        omega_ks = prior_normal(0, 3),\n        omega_kg = prior_normal(0, 3),\n        sigma = prior_normal(0, 3)\n    )\n)\n\n\nNote that the priors on the standard deviations, omega_* and sigma, are truncated to the positive domain. So we used here truncated normal priors.",
-    "crumbs": [
-      "Session 1: TGI",
-      "2. TGI model minimal workflow with `jmpost`"
-    ]
-  },
-  {
-    "objectID": "session-tgi/2_tgi_sf_jmpost.html#fit-model",
-    "href": "session-tgi/2_tgi_sf_jmpost.html#fit-model",
-    "title": "2. TGI model minimal workflow with jmpost",
-    "section": "Fit model",
-    "text": "Fit model\nWe can now fit the model using jmpost.\n\n\nShow the code\nsave_file &lt;- here(\"session-tgi/jm2.RData\")\nif (file.exists(save_file)) {\n  load(save_file)\n} else {\n  mcmc_results &lt;- sampleStanModel(\n      tgi_mod,\n      data = joint_data,\n      iter_sampling = ITER,\n      iter_warmup = WARMUP,\n      chains = CHAINS,\n      parallel_chains = CHAINS,\n      seed = BAYES.SEED,\n      refresh = REFRESH\n  )\n  save(mcmc_results, file = save_file)\n}\n\n\nLet’s check the convergence of the population parameters:\n\n\nShow the code\nvars &lt;- c(\n    \"lm_sf_mu_bsld\",\n    \"lm_sf_mu_ks\",\n    \"lm_sf_mu_kg\",\n    \"lm_sf_sigma\",\n    \"lm_sf_omega_bsld\",\n    \"lm_sf_omega_ks\",\n    \"lm_sf_omega_kg\"\n)\n\nsave_overall_file &lt;- here(\"session-tgi/jm2_more.RData\")\nif (file.exists(save_overall_file)) {\n  load(save_overall_file)\n} else {\n  mcmc_res_cmdstan &lt;- cmdstanr::as.CmdStanMCMC(mcmc_results)\n  mcmc_res_sum &lt;- mcmc_res_cmdstan$summary(vars)\n  vars_draws &lt;- mcmc_res_cmdstan$draws(vars)\n  loo_res &lt;- mcmc_res_cmdstan$loo(r_eff = FALSE)\n  save(mcmc_res_sum, vars_draws, loo_res, file = save_overall_file)\n}\nmcmc_res_sum\n\n\n# A tibble: 7 × 10\n  variable     mean median      sd     mad     q5    q95  rhat ess_bulk ess_tail\n  &lt;chr&gt;       &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;\n1 lm_sf_mu_…  3.61   3.61  0.0223  0.0232   3.57   3.65   1.02     187.     337.\n2 lm_sf_mu_… -1.25  -1.25  0.155   0.154   -1.52  -1.01   1.01     384.     877.\n3 lm_sf_mu_… -1.33  -1.33  0.0769  0.0769  -1.46  -1.21   1.02     265.     476.\n4 lm_sf_sig…  0.161  0.161 0.00234 0.00235  0.157  0.165  1.00    1205.    2021.\n5 lm_sf_ome…  0.580  0.579 0.0165  0.0171   0.553  0.606  1.00     337.     670.\n6 lm_sf_ome…  1.60   1.60  0.110   0.109    1.43   1.79   1.01     351.     751.\n7 lm_sf_ome…  0.994  0.991 0.0512  0.0504   0.914  1.08   1.01     430.     891.\n\n\nThis looks good, let’s check the traceplots:\n\n\nShow the code\n# vars_draws &lt;- mcmc_res_cmdstan$draws(vars)\nmcmc_trace(vars_draws)\n\n\n\n\n\n\n\n\n\nThey also look ok, all chains are mixing well in the same range of parameter values.\nAlso here we could look at the pairs plot:\n\n\nShow the code\nmcmc_pairs(\n  vars_draws,\n  off_diag_args = list(size = 1, alpha = 0.1)\n)",
-    "crumbs": [
-      "Session 1: TGI",
-      "2. TGI model minimal workflow with `jmpost`"
-    ]
-  },
-  {
-    "objectID": "session-tgi/2_tgi_sf_jmpost.html#observation-vs.-model-fit",
-    "href": "session-tgi/2_tgi_sf_jmpost.html#observation-vs.-model-fit",
-    "title": "2. TGI model minimal workflow with jmpost",
-    "section": "Observation vs. model fit",
-    "text": "Observation vs. model fit\nLet’s check the fit of the model to the data:\n\n\nShow the code\npt_subset &lt;- as.character(1:20)\n\nsave_fit_file &lt;- here(\"session-tgi/jm2_fit.RData\")\nif (file.exists(save_fit_file)) {\n  load(save_fit_file)\n} else {\n  fit_subset &lt;- LongitudinalQuantities(\n    mcmc_results, \n    grid = GridObserved(subjects = pt_subset)\n  )\n  save(fit_subset, file = save_fit_file)\n}\n\nautoplot(fit_subset)+\n  labs(x = \"Time (years)\", y = \"SLD (mm)\")\n\n\n\n\n\n\n\n\n\nSo this works very nicely.",
-    "crumbs": [
-      "Session 1: TGI",
-      "2. TGI model minimal workflow with `jmpost`"
-    ]
-  },
-  {
-    "objectID": "session-tgi/2_tgi_sf_jmpost.html#prior-vs.-posterior",
-    "href": "session-tgi/2_tgi_sf_jmpost.html#prior-vs.-posterior",
-    "title": "2. TGI model minimal workflow with jmpost",
-    "section": "Prior vs. posterior",
-    "text": "Prior vs. posterior\nLet’s check the prior vs. posterior for the parameters:\n\n\nShow the code\npost_samples &lt;- as_draws_df(vars_draws) |&gt; \n  rename(\n    mu_bsld = \"lm_sf_mu_bsld[1]\",\n    mu_ks = \"lm_sf_mu_ks[1]\",\n    mu_kg = \"lm_sf_mu_kg[1]\",\n    omega_bsld = \"lm_sf_omega_bsld[1]\",\n    omega_ks = \"lm_sf_omega_ks[1]\",\n    omega_kg = \"lm_sf_omega_kg[1]\",\n    sigma = lm_sf_sigma\n  ) |&gt; \n  mutate(type = \"posterior\") |&gt; \n  select(mu_bsld, mu_ks, mu_kg, omega_bsld, omega_ks, omega_kg, sigma, type)\n\n\nWarning: Dropping 'draws_df' class as required metadata was removed.\n\n\nShow the code\nn_prior_samples &lt;- nrow(post_samples)\nprior_samples &lt;- data.frame(\n    mu_bsld = rnorm(n_prior_samples, log(65), 1),\n    mu_ks = rnorm(n_prior_samples, log(0.52), 1),\n    mu_kg = rnorm(n_prior_samples, log(1.04), 1),\n    omega_bsld = rtruncnorm(n_prior_samples, a = 0, mean = 0, sd = 3),\n    omega_ks = rtruncnorm(n_prior_samples, a = 0, mean = 0, sd = 3),\n    omega_kg = rtruncnorm(n_prior_samples, a = 0, mean = 0, sd = 3),\n    sigma = rtruncnorm(n_prior_samples, a = 0, mean = 0, sd = 3)\n  ) |&gt; \n  mutate(type = \"prior\")\n\n# Combine the two\ncombined_samples &lt;- rbind(post_samples, prior_samples) |&gt; \n  pivot_longer(cols = -type, names_to = \"parameter\", values_to = \"value\")\n\nggplot(combined_samples, aes(x = value, fill = type)) +\n  geom_density(alpha = 0.5) +\n  facet_wrap(~parameter, scales = \"free\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\nThis looks good, because the priors are covering the range of the posterior samples and are not too informative.",
-    "crumbs": [
-      "Session 1: TGI",
-      "2. TGI model minimal workflow with `jmpost`"
-    ]
-  },
-  {
-    "objectID": "session-tgi/2_tgi_sf_jmpost.html#parameter-estimates",
-    "href": "session-tgi/2_tgi_sf_jmpost.html#parameter-estimates",
-    "title": "2. TGI model minimal workflow with jmpost",
-    "section": "Parameter estimates",
-    "text": "Parameter estimates\nHere we need again to be careful: We are interested in the posterior mean estimates of the baseline, shrinkage and growth population rates on the original scale. Because we model them on the log scale as normal distributed, we need to use the mean of the log-normal distribution to get the mean on the original scale.\n\n\nShow the code\npost_sum &lt;- post_samples |&gt;\n  mutate(\n    theta_b0 = exp(mu_bsld + omega_bsld^2 / 2), \n    theta_ks = exp(mu_ks + omega_ks^2 / 2), \n    theta_kg = exp(mu_kg + omega_kg^2 / 2),\n    cv_0 = sqrt(exp(omega_bsld^2) - 1),\n    cv_s = sqrt(exp(omega_ks^2) - 1),\n    cv_g = sqrt(exp(omega_kg^2) - 1)\n  ) |&gt;\n  select(theta_b0, theta_ks, theta_kg, omega_bsld, omega_ks, omega_kg, cv_0, cv_s, cv_g, sigma) |&gt;\n  summarize_draws() |&gt;\n  gt() |&gt;\n  fmt_number(n_sigfig = 3)\npost_sum\n\n\n\n\n\n\n\n\nvariable\nmean\nmedian\nsd\nmad\nq5\nq95\nrhat\ness_bulk\ness_tail\n\n\n\n\ntheta_b0\n43.8\n43.8\n1.04\n1.11\n42.1\n45.5\n1.00\n189\n593\n\n\ntheta_ks\n1.05\n1.04\n0.120\n0.118\n0.874\n1.26\n1.00\n245\n447\n\n\ntheta_kg\n0.434\n0.434\n0.0296\n0.0299\n0.386\n0.483\n1.01\n427\n850\n\n\nomega_bsld\n0.580\n0.579\n0.0165\n0.0171\n0.553\n0.606\n1.00\n337\n668\n\n\nomega_ks\n1.60\n1.60\n0.110\n0.109\n1.43\n1.79\n1.01\n338\n739\n\n\nomega_kg\n0.994\n0.991\n0.0512\n0.0504\n0.914\n1.08\n1.00\n424\n876\n\n\ncv_0\n0.632\n0.632\n0.0212\n0.0220\n0.598\n0.666\n1.00\n337\n668\n\n\ncv_s\n3.56\n3.46\n0.719\n0.649\n2.59\n4.89\n1.01\n338\n739\n\n\ncv_g\n1.30\n1.29\n0.107\n0.103\n1.14\n1.49\n1.00\n424\n876\n\n\nsigma\n0.161\n0.161\n0.00234\n0.00235\n0.157\n0.165\n1.00\n1,160\n2,010\n\n\n\n\n\n\n\nWe can see that these are consistent with the estimates from the brms model earlier.",
-    "crumbs": [
-      "Session 1: TGI",
-      "2. TGI model minimal workflow with `jmpost`"
-    ]
-  },
-  {
-    "objectID": "session-tgi/2_tgi_sf_jmpost.html#separate-arm-estimates",
-    "href": "session-tgi/2_tgi_sf_jmpost.html#separate-arm-estimates",
-    "title": "2. TGI model minimal workflow with jmpost",
-    "section": "Separate arm estimates",
-    "text": "Separate arm estimates\nWhile there is no general covariates support in jmpost for the longitudinal models as of now, we can obtain separate estimates for the longitudinal model parameters: As detailed in the model specification here, as soon as we have the arm defined, then separate estimates for the arm-specific shrinkage and growth parameters will be obtained: Both the population means and standard deviation parameters are here arm-specific. (Note that this is slightly different from brms where we assumed earlier the same standard deviation independent of the treatment arm.)\nSo we need to define the subject data accordingly now with the arm information:\n\n\nShow the code\nsubj_df_by_arm &lt;- df |&gt;\n  select(id, arm) |&gt;\n  distinct() |&gt; \n  mutate(study = \"study\")\n\nsubj_data_by_arm &lt;- DataSubject(\n  data = subj_df_by_arm,\n  subject = \"id\",\n  arm = \"arm\",\n  study = \"study\"\n)\n\n\nWe redefine the JointData object and can then fit the model, because the prior specification does not need to change: We assume iid priors on the arm-specific parameters here.\n\n\nShow the code\njoint_data_by_arm &lt;- DataJoint(\n    subject = subj_data_by_arm,\n    longitudinal = long_data\n)\n\n\n\n\nShow the code\nsave_file &lt;- here(\"session-tgi/jm3.RData\")\nif (file.exists(save_file)) {\n  load(save_file)\n} else {\n  mcmc_results_by_arm &lt;- sampleStanModel(\n      tgi_mod,\n      data = joint_data_by_arm,\n      iter_sampling = ITER,\n      iter_warmup = WARMUP,\n      chains = CHAINS,\n      parallel_chains = CHAINS,\n      seed = BAYES.SEED,\n      refresh = REFRESH\n  )\n  save(mcmc_results_by_arm, file = save_file)\n}\n\n\nLet’s again check the convergence:\n\n\nShow the code\nvars &lt;- c(\n    \"lm_sf_mu_bsld\",\n    \"lm_sf_mu_ks\",\n    \"lm_sf_mu_kg\",\n    \"lm_sf_sigma\",\n    \"lm_sf_omega_bsld\",\n    \"lm_sf_omega_ks\",\n    \"lm_sf_omega_kg\"\n)\n\nsave_arm_file &lt;- here(\"session-tgi/jm3_more.RData\")\nif (file.exists(save_arm_file)) {\n  load(save_arm_file)\n} else {\n  mcmc_res_cmdstan_by_arm &lt;- cmdstanr::as.CmdStanMCMC(mcmc_results_by_arm)\n  mcmc_res_sum_by_arm &lt;- mcmc_res_cmdstan_by_arm$summary(vars)\n  vars_draws_by_arm &lt;- mcmc_res_cmdstan_by_arm$draws(vars)\n  loo_by_arm &lt;- mcmc_res_cmdstan_by_arm$loo(r_eff = FALSE)\n  save(mcmc_res_sum_by_arm, vars_draws_by_arm, loo_by_arm, file = save_arm_file)\n}\nmcmc_res_sum_by_arm\n\n\n# A tibble: 11 × 10\n   variable    mean median      sd     mad     q5    q95  rhat ess_bulk ess_tail\n   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;\n 1 lm_sf_mu…  3.61   3.61  0.0220  0.0218   3.58   3.65   1.01     300.     495.\n 2 lm_sf_mu… -0.782 -0.771 0.216   0.211   -1.15  -0.448  1.00     598.    1166.\n 3 lm_sf_mu… -1.50  -1.48  0.224   0.227   -1.88  -1.15   1.00     857.    1534.\n 4 lm_sf_mu… -1.13  -1.12  0.131   0.130   -1.36  -0.926  1.01     500.    1165.\n 5 lm_sf_mu… -1.35  -1.34  0.104   0.103   -1.52  -1.18   1.01     536.    1032.\n 6 lm_sf_si…  0.161  0.161 0.00234 0.00228  0.157  0.165  1.00    1903.    2494.\n 7 lm_sf_om…  0.579  0.579 0.0164  0.0164   0.553  0.607  1.01     426.     726.\n 8 lm_sf_om…  1.35   1.34  0.149   0.145    1.13   1.61   1.00     656.    1558.\n 9 lm_sf_om…  1.75   1.74  0.172   0.174    1.49   2.05   1.01     643.    1401.\n10 lm_sf_om…  0.769  0.764 0.0693  0.0674   0.664  0.891  1.00    1005.    1271.\n11 lm_sf_om…  1.10   1.10  0.0691  0.0667   0.993  1.22   1.00     664.     978.\n\n\nLet’s again tabulate the parameter estimates:\n\n\nShow the code\npost_samples_by_arm &lt;- as_draws_df(vars_draws_by_arm) |&gt; \n  rename(\n    mu_bsld = \"lm_sf_mu_bsld[1]\",\n    mu_ks1 = \"lm_sf_mu_ks[1]\",\n    mu_ks2 = \"lm_sf_mu_ks[2]\",\n    mu_kg1 = \"lm_sf_mu_kg[1]\",\n    mu_kg2 = \"lm_sf_mu_kg[2]\",\n    omega_bsld = \"lm_sf_omega_bsld[1]\",\n    omega_ks1 = \"lm_sf_omega_ks[1]\",\n    omega_ks2 = \"lm_sf_omega_ks[2]\",\n    omega_kg1 = \"lm_sf_omega_kg[1]\",\n    omega_kg2 = \"lm_sf_omega_kg[2]\",\n    sigma = lm_sf_sigma\n  ) |&gt; \n  mutate(\n    theta_b0 = exp(mu_bsld + omega_bsld^2 / 2), \n    theta_ks1 = exp(mu_ks1 + omega_ks1^2 / 2), \n    theta_ks2 = exp(mu_ks2 + omega_ks2^2 / 2),\n    theta_kg1 = exp(mu_kg1 + omega_kg1^2 / 2),\n    theta_kg2 = exp(mu_kg2 + omega_kg2^2 / 2),\n    cv_0 = sqrt(exp(omega_bsld^2) - 1),\n    cv_s1 = sqrt(exp(omega_ks1^2) - 1),\n    cv_s2 = sqrt(exp(omega_ks2^2) - 1),\n    cv_g1 = sqrt(exp(omega_kg1^2) - 1),\n    cv_g2 = sqrt(exp(omega_kg2^2) - 1)\n  ) \n  \npost_sum_by_arm &lt;- post_samples_by_arm |&gt;\n  select(\n    theta_b0, theta_ks1, theta_ks2, theta_kg1, theta_kg2, \n    omega_bsld, omega_ks1, omega_ks2, omega_kg1, omega_kg2, \n    cv_0, cv_s1, cv_s2, cv_g1, cv_g2, sigma) |&gt;\n  summarize_draws() |&gt;\n  gt() |&gt;\n  fmt_number(n_sigfig = 3)\n\n\nWarning: Dropping 'draws_df' class as required metadata was removed.\n\n\nShow the code\npost_sum_by_arm\n\n\n\n\n\n\n\n\nvariable\nmean\nmedian\nsd\nmad\nq5\nq95\nrhat\ness_bulk\ness_tail\n\n\n\n\ntheta_b0\n43.8\n43.8\n1.02\n1.01\n42.2\n45.5\n1.01\n303\n388\n\n\ntheta_ks1\n1.16\n1.15\n0.159\n0.157\n0.931\n1.44\n1.00\n678\n1,150\n\n\ntheta_ks2\n1.07\n1.04\n0.209\n0.185\n0.808\n1.44\n1.01\n399\n874\n\n\ntheta_kg1\n0.438\n0.435\n0.0474\n0.0467\n0.364\n0.520\n1.00\n528\n1,140\n\n\ntheta_kg2\n0.480\n0.479\n0.0485\n0.0468\n0.405\n0.565\n1.00\n829\n1,270\n\n\nomega_bsld\n0.579\n0.579\n0.0164\n0.0164\n0.553\n0.607\n1.00\n419\n730\n\n\nomega_ks1\n1.35\n1.34\n0.149\n0.145\n1.13\n1.61\n1.00\n660\n1,560\n\n\nomega_ks2\n1.75\n1.74\n0.172\n0.174\n1.49\n2.05\n1.00\n646\n1,390\n\n\nomega_kg1\n0.769\n0.764\n0.0693\n0.0674\n0.664\n0.891\n1.00\n990\n1,220\n\n\nomega_kg2\n1.10\n1.10\n0.0691\n0.0667\n0.993\n1.22\n1.00\n643\n965\n\n\ncv_0\n0.631\n0.631\n0.0211\n0.0210\n0.598\n0.667\n1.00\n419\n730\n\n\ncv_s1\n2.36\n2.24\n0.624\n0.513\n1.60\n3.50\n1.00\n660\n1,560\n\n\ncv_s2\n4.83\n4.47\n1.72\n1.40\n2.85\n8.11\n1.00\n646\n1,390\n\n\ncv_g1\n0.902\n0.890\n0.110\n0.103\n0.745\n1.10\n1.00\n990\n1,220\n\n\ncv_g2\n1.54\n1.52\n0.171\n0.158\n1.30\n1.86\n1.00\n643\n965\n\n\nsigma\n0.161\n0.161\n0.00234\n0.00228\n0.157\n0.165\n1.00\n1,830\n2,380\n\n\n\n\n\n\n\nHere again the shrinkage rate in the treatment arm 1 seems higher than in the treatment arm 2. However, the difference is not as pronounced as in the brms model before with the same standard deviation for both arms. We can again calculate the posterior probability that the shrinkage rate in arm 1 is higher than in arm 2:\n\n\nShow the code\nprob_ks1_greater_ks2 &lt;- mean(post_samples_by_arm$theta_ks1 &gt; post_samples_by_arm$theta_ks2)\nprob_ks1_greater_ks2\n\n\n[1] 0.67\n\n\nSo the posterior probability is now only around 67%.",
-    "crumbs": [
-      "Session 1: TGI",
-      "2. TGI model minimal workflow with `jmpost`"
-    ]
-  },
-  {
-    "objectID": "session-tgi/2_tgi_sf_jmpost.html#model-comparison-with-loo",
-    "href": "session-tgi/2_tgi_sf_jmpost.html#model-comparison-with-loo",
-    "title": "2. TGI model minimal workflow with jmpost",
-    "section": "Model comparison with LOO",
-    "text": "Model comparison with LOO\nAs we have seen for brms, also for jmpost we can easily compute the LOO criterion:\n\n\nShow the code\n# loo_res &lt;- mcmc_res_cmdstan$loo(r_eff = FALSE)\nloo_res\n\n\n\nComputed from 4000 by 4099 log-likelihood matrix.\n\n         Estimate    SE\nelpd_loo -12992.1  96.3\np_loo      1172.4  39.2\nlooic     25984.2 192.6\n------\nMCSE of elpd_loo is NA.\nMCSE and ESS estimates assume independent draws (r_eff=1).\n\nPareto k diagnostic values:\n                         Count Pct.    Min. ESS\n(-Inf, 0.7]   (good)     3739  91.2%   90      \n   (0.7, 1]   (bad)       301   7.3%   &lt;NA&gt;    \n   (1, Inf)   (very bad)   59   1.4%   &lt;NA&gt;    \nSee help('pareto-k-diagnostic') for details.\n\n\nUnderneath this is using the $loo() method from cmdstanr.\nAnd we can compare this to the LOO of the model with separate arm estimates:\n\n\nShow the code\n# loo_by_arm &lt;- mcmc_res_cmdstan_by_arm$loo(r_eff = FALSE)\nloo_by_arm\n\n\n\nComputed from 4000 by 4099 log-likelihood matrix.\n\n         Estimate    SE\nelpd_loo -12986.1  97.6\np_loo      1177.0  40.5\nlooic     25972.1 195.1\n------\nMCSE of elpd_loo is NA.\nMCSE and ESS estimates assume independent draws (r_eff=1).\n\nPareto k diagnostic values:\n                         Count Pct.    Min. ESS\n(-Inf, 0.7]   (good)     3719  90.7%   68      \n   (0.7, 1]   (bad)       317   7.7%   &lt;NA&gt;    \n   (1, Inf)   (very bad)   63   1.5%   &lt;NA&gt;    \nSee help('pareto-k-diagnostic') for details.\n\n\nSo the model by treatment arm performs here better than the model without treatment arm specific growth and shrinkage parameters.",
-    "crumbs": [
-      "Session 1: TGI",
-      "2. TGI model minimal workflow with `jmpost`"
-    ]
-  },
-  {
-    "objectID": "session-tgi/2_tgi_sf_jmpost.html#tipps-and-tricks",
-    "href": "session-tgi/2_tgi_sf_jmpost.html#tipps-and-tricks",
-    "title": "2. TGI model minimal workflow with jmpost",
-    "section": "Tipps and tricks",
-    "text": "Tipps and tricks\n\nAlso here it is possible to look at the underlying Stan code:\n\n\nShow the code\ntmp &lt;- tempfile()\nwrite_stan(tgi_mod, destination = tmp)\nfile.edit(tmp) # opens the Stan file in the default editor\n\n\nIt is not trivial to transport saved models from one computer to another. This is because cmdstanr only loads the results it currently needs from disk into memory, and thus into the R session. If you want to transport the model to another computer, you need to save the Stan code and the data, and then re-run the model on the other computer. This is because the model object in R is only a reference to the model on disk, not the model itself. Note that there is the $save_object() method, see here, however this leads to very large files (here about 300 MB for one fit) and can thus not be uploaded to typical git repositories. Therefore above we saved interim result objects separately as needed.",
-    "crumbs": [
-      "Session 1: TGI",
-      "2. TGI model minimal workflow with `jmpost`"
+      "Index"
     ]
   },
   {
@@ -231,6 +140,83 @@
     ]
   },
   {
+    "objectID": "session-tgi/3_tgi_gsf_brms.html",
+    "href": "session-tgi/3_tgi_gsf_brms.html",
+    "title": "3. Generalized Stein-Fojo model",
+    "section": "",
+    "text": "This appendix shows how the generalized Stein-Fojo model can be implemented in a Bayesian framework using the brms package in R.",
+    "crumbs": [
+      "Session 1: TGI",
+      "3. Generalized Stein-Fojo model"
+    ]
+  },
+  {
+    "objectID": "session-tgi/3_tgi_gsf_brms.html#setup-and-load-data",
+    "href": "session-tgi/3_tgi_gsf_brms.html#setup-and-load-data",
+    "title": "3. Generalized Stein-Fojo model",
+    "section": "Setup and load data",
+    "text": "Setup and load data\nFirst we need to load the necessary packages and set some default options for the MCMC sampling. We also set the theme for the plots to theme_bw with a base size of 12.\n\n\nShow the code\nlibrary(bayesplot)\nlibrary(brms)\nlibrary(ggplot2)\nlibrary(gt)\nlibrary(here)\nlibrary(janitor)\nlibrary(jmpost)\nlibrary(modelr)\nlibrary(posterior)\nlibrary(readxl)\nlibrary(rstan)\nlibrary(tidybayes)\nlibrary(tidyverse)\nlibrary(truncnorm)\n\nif (require(cmdstanr)) {\n  # If cmdstanr is available, instruct brms to use cmdstanr as backend \n  # and cache all Stan binaries\n  options(brms.backend = \"cmdstanr\", cmdstanr_write_stan_file_dir = here(\"_brms-cache\"))\n  dir.create(here(\"_brms-cache\"), FALSE) # create cache directory if not yet available\n} else {\n  rstan::rstan_options(auto_write = TRUE)\n}\n\n# MCMC options\noptions(mc.cores = 4)\nITER &lt;- 1000 # number of sampling iterations after warm up\nWARMUP &lt;- 2000 # number of warm up iterations\nCHAINS &lt;- 4\nBAYES.SEED &lt;- 878\nREFRESH &lt;- 500\n\ntheme_set(theme_bw(base_size = 12))\n\n\nWe also need a small function definition, which is still missing in brms:\n\n\nShow the code\nint_step &lt;- function(x) {\n  stopifnot(is.logical(x))\n  ifelse(x, 1, 0)\n}\n\n\nWe will use the publicly published tumor size data from the OAK study, see here. In particular we are using the S1 data set, which is the fully anonymized data set used in the publication. For simplicity, we have copied the data set in this GitHub repository.\n\n\nShow the code\nfile_path &lt;- here(\"data/journal.pcbi.1009822.s006.xlsx\")\n\nread_one_sheet &lt;- function(sheet) {\n    read_excel(file_path, sheet = sheet) |&gt; \n    clean_names() |&gt; \n    mutate(\n        id = factor(as.character(patient_anonmyized)),\n        day = as.integer(treatment_day),\n        year = day / 365.25,\n        target_lesion_long_diam_mm = case_match(\n            target_lesion_long_diam_mm,\n            \"TOO SMALL TO MEASURE\" ~ \"2\",\n            \"NOT EVALUABLE\" ~ NA_character_,\n            .default = target_lesion_long_diam_mm\n        ),\n        sld = as.numeric(target_lesion_long_diam_mm),\n        sld = ifelse(sld == 0, 2, sld),\n        study = factor(gsub(\"^Study_(\\\\d+)_Arm_\\\\d+$\", \"\\\\1\", study_arm)),\n        arm = factor(gsub(\"^Study_\\\\d+_Arm_(\\\\d+)$\", \"\\\\1\", study_arm))\n    ) |&gt; \n    select(id, year, sld, study, arm)\n}\n\ntumor_data &lt;- excel_sheets(file_path) |&gt; \n    map(read_one_sheet) |&gt; \n    bind_rows()\n\nhead(tumor_data)\n\n\n# A tibble: 6 × 5\n  id                      year   sld study arm  \n  &lt;fct&gt;                  &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt; &lt;fct&gt;\n1 3657015667902160896 -0.00548    33 1     1    \n2 3657015667902160896  0.101      33 1     1    \n3 3657015667902160896  0.230      32 1     1    \n4 3657015667902160896  0.342      37 1     1    \n5 3657015667902160896  0.446      49 1     1    \n6 2080619628198763008 -0.00548    12 1     1    \n\n\nShow the code\nsummary(tumor_data)\n\n\n                    id            year              sld        study   \n 4308512445673410048 :  18   Min.   :-0.1314   Min.   :  2.0   1: 456  \n -4902532987801034752:  17   1st Qu.: 0.1123   1st Qu.: 17.0   2: 966  \n 5394902984416364544 :  16   Median : 0.2847   Median : 30.0   3:2177  \n 7160320731596789760 :  16   Mean   : 0.3822   Mean   : 36.1   4:4126  \n -4159496062492130816:  15   3rd Qu.: 0.5722   3rd Qu.: 49.0   5: 835  \n -7900338178541499392:  15   Max.   : 2.0753   Max.   :228.0           \n (Other)             :8463   NA's   :1         NA's   :69              \n arm     \n 1:3108  \n 2:3715  \n 3: 291  \n 4: 608  \n 5: 227  \n 6: 611  \n         \n\n\nFor simplicity, we will for now just use study 4 (this is the OAK study), and we rename the patient IDs:\n\n\nShow the code\ndf &lt;- tumor_data |&gt; \n  filter(study == \"4\") |&gt; \n  na.omit() |&gt;\n  droplevels() |&gt; \n  mutate(id = factor(as.numeric(id)))\n\n\nHere we have 701 patients. It is always a good idea to make a plot of the data. Let’s look at the first 20 patients e.g.:\n\n\nShow the code\ndf |&gt; \n  filter(as.integer(id) &lt;= 20) |&gt;\n  ggplot(aes(x = year, y = sld, group = id)) +\n  geom_line() +\n  geom_point() +\n  facet_wrap(~ id) +\n  geom_vline(xintercept = 0, linetype = \"dashed\") +\n  theme(legend.position = \"none\")",
+    "crumbs": [
+      "Session 1: TGI",
+      "3. Generalized Stein-Fojo model"
+    ]
+  },
+  {
+    "objectID": "session-tgi/3_tgi_gsf_brms.html#generalized-stein-fojo-model",
+    "href": "session-tgi/3_tgi_gsf_brms.html#generalized-stein-fojo-model",
+    "title": "3. Generalized Stein-Fojo model",
+    "section": "Generalized Stein-Fojo model",
+    "text": "Generalized Stein-Fojo model\nHere we have an additional parameter \\(\\phi\\), which is the weight for the shrinkage in the double exponential model. The model is then:\n\\[\ny^{*}(t_{ij}) = \\psi_{b_{0}i} \\{\n  \\psi_{\\phi i} \\exp(- \\psi_{k_{s}i} \\cdot t_{ij}) +\n  (1 - \\psi_{\\phi i}) \\exp(\\psi_{k_{g}i} \\cdot t_{ij})\n\\}\n\\]\nfor positive times \\(t_{ij}\\). Again, if the time \\(t\\) is negative, i.e. the treatment has not started yet, then it is reasonable to assume that the tumor cannot shrink yet. That is, we have then \\(\\phi_i = 0\\). Therefore, the final model for the mean SLD is:\n\\[\ny^{*}(t_{ij}) =\n\\begin{cases}\n\\psi_{b_{0}i} \\exp(\\psi_{k_{g}i} \\cdot t_{ij}) & \\text{if } t_{ij} &lt; 0 \\\\\n\\psi_{b_{0}i} \\{\n  \\psi_{\\phi i} \\exp(- \\psi_{k_{s}i} \\cdot t_{ij}) +\n  (1 - \\psi_{\\phi i}) \\exp(\\psi_{k_{g}i} \\cdot t_{ij})\n\\} & \\text{if } t_{ij} \\geq 0\n\\end{cases}\n\\]\nIn terms of likelihood and priors, we can use the same assumptions as in the previous model. The only difference is that we have to model the \\(\\phi\\) parameter. We can use a logit-normal distribution for this parameter. This is a normal distribution on the logit scale, which is then transformed to the unit interval. \\[\n\\psi_{\\phi i} \\sim \\text{LogitNormal}(\\text{logit}(0.5) = 0, 0.5)\n\\]",
+    "crumbs": [
+      "Session 1: TGI",
+      "3. Generalized Stein-Fojo model"
+    ]
+  },
+  {
+    "objectID": "session-tgi/3_tgi_gsf_brms.html#fit-model",
+    "href": "session-tgi/3_tgi_gsf_brms.html#fit-model",
+    "title": "3. Generalized Stein-Fojo model",
+    "section": "Fit model",
+    "text": "Fit model\nWe can now fit the model using brms. The structure is determined by the model formula:\n\n\nShow the code\nformula &lt;- bf(sld ~ ystar, nl = TRUE) +\n  # Define the mean for the likelihood\n  nlf(\n    ystar ~ \n      int_step(year &gt; 0) * \n        (b0 * (phi * exp(-ks * year) + (1 - phi) * exp(kg * year))) +\n      int_step(year &lt;= 0) * \n        (b0 * exp(kg * year))\n  ) +\n  # As before:\n  nlf(sigma ~ log(tau) + log(ystar)) +\n  lf(tau ~ 1) +\n  # Define nonlinear parameter transformations:\n  nlf(b0 ~ exp(lb0)) +\n  nlf(phi ~ inv_logit(tphi)) +\n  nlf(ks ~ exp(lks)) +\n  nlf(kg ~ exp(lkg)) +\n  # Define random effect structure:\n  lf(lb0 ~ 1 + (1 | id)) + \n  lf(tphi ~ 1 + (1 | id)) + \n  lf(lks ~ 1 + (1 | id)) +\n  lf(lkg ~ 1 + (1 | id))\n\n# Define the priors\npriors &lt;- c(\n  prior(normal(log(65), 1), nlpar = \"lb0\"),\n  prior(normal(log(0.52), 0.1), nlpar = \"lks\"),\n  prior(normal(log(1.04), 1), nlpar = \"lkg\"),\n  prior(normal(0, 0.5), nlpar = \"tphi\"),\n  prior(normal(0, 3), lb = 0, nlpar = \"lb0\", class = \"sd\"),\n  prior(normal(0, 3), lb = 0, nlpar = \"lks\", class = \"sd\"),\n  prior(normal(0, 3), lb = 0, nlpar = \"lkg\", class = \"sd\"),\n  prior(student_t(3, 0, 22.2), lb = 0, nlpar = \"tphi\", class = \"sd\"),\n  prior(normal(0, 3), lb = 0, nlpar = \"tau\")\n)\n\n# Initial values to avoid problems at the beginning\nn_patients &lt;- nlevels(df$id)\ninits &lt;- list(\n  b_lb0 = array(3.61),\n  b_lks = array(-1.25),\n  b_lkg = array(-1.33),\n  b_tphi = array(0),\n  sd_1 = array(0.58),\n  sd_2 = array(1.6),\n  sd_3 = array(0.994),\n  sd_4 = array(0.1),\n  b_tau = array(0.161),\n  z_1 = matrix(0, nrow = 1, ncol = n_patients),\n  z_2 = matrix(0, nrow = 1, ncol = n_patients),\n  z_3 = matrix(0, nrow = 1, ncol = n_patients),\n  z_4 = matrix(0, nrow = 1, ncol = n_patients)\n)\n\n# Fit the model\nsave_file &lt;- here(\"session-tgi/gsf1.RData\")\nif (file.exists(save_file)) {\n  load(save_file)\n} else {\n  fit &lt;- brm(\n    formula = formula,\n    data = df,\n    prior = priors,\n    family = gaussian(),\n    init = rep(list(inits), CHAINS),\n    chains = CHAINS, \n    iter = WARMUP + ITER, \n    warmup = WARMUP, \n    seed = BAYES.SEED,\n    refresh = REFRESH\n  )\n  save(fit, file = save_file)\n}\n\n# Summarize the fit\nsummary(fit)\n\n\nWarning: There were 41 divergent transitions after warmup. Increasing\nadapt_delta above 0.8 may help. See\nhttp://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup\n\n\n Family: gaussian \n  Links: mu = identity; sigma = log \nFormula: sld ~ eta \n         eta ~ int_step(year &gt; 0) * (b0 * (phi * exp(-ks * year) + (1 - phi) * exp(kg * year))) + int_step(year &lt;= 0) * (b0 * exp(kg * year))\n         sigma ~ log(tau) + log(eta)\n         tau ~ 1\n         b0 ~ exp(lb0)\n         phi ~ inv_logit(tphi)\n         ks ~ exp(lks)\n         kg ~ exp(lkg)\n         lb0 ~ 1 + (1 | id)\n         tphi ~ 1 + (1 | id)\n         lks ~ 1 + (1 | id)\n         lkg ~ 1 + (1 | id)\n   Data: df (Number of observations: 4099) \n  Draws: 4 chains, each with iter = 3000; warmup = 2000; thin = 1;\n         total post-warmup draws = 4000\n\nMultilevel Hyperparameters:\n~id (Number of levels: 701) \n                   Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nsd(lb0_Intercept)      0.58      0.02     0.55     0.61 1.01      382      606\nsd(tphi_Intercept)     2.12      0.18     1.78     2.49 1.01      611     1216\nsd(lks_Intercept)      2.16      0.14     1.90     2.46 1.00      520     1282\nsd(lkg_Intercept)      1.18      0.09     1.01     1.36 1.00      899     1766\n\nRegression Coefficients:\n               Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\ntau_Intercept      0.15      0.00     0.14     0.15 1.00     1611     2351\nlb0_Intercept      3.63      0.02     3.59     3.68 1.03      221      547\ntphi_Intercept    -0.14      0.22    -0.57     0.27 1.00      424      839\nlks_Intercept     -0.62      0.10    -0.81    -0.43 1.00     1170     1868\nlkg_Intercept     -1.15      0.14    -1.43    -0.89 1.00      699     1488\n\nDraws were sampled using sample(hmc). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1).\n\n\nIn total this took 76 minutes on my laptop.",
+    "crumbs": [
+      "Session 1: TGI",
+      "3. Generalized Stein-Fojo model"
+    ]
+  },
+  {
+    "objectID": "session-tgi/3_tgi_gsf_brms.html#parameter-estimates",
+    "href": "session-tgi/3_tgi_gsf_brms.html#parameter-estimates",
+    "title": "3. Generalized Stein-Fojo model",
+    "section": "Parameter estimates",
+    "text": "Parameter estimates\n\n\nShow the code\npost_df &lt;- as_draws_df(fit)\nhead(names(post_df), 10)\n\n\n [1] \"b_tau_Intercept\"        \"b_lb0_Intercept\"        \"b_tphi_Intercept\"      \n [4] \"b_lks_Intercept\"        \"b_lkg_Intercept\"        \"sd_id__lb0_Intercept\"  \n [7] \"sd_id__tphi_Intercept\"  \"sd_id__lks_Intercept\"   \"sd_id__lkg_Intercept\"  \n[10] \"r_id__lb0[1,Intercept]\"\n\n\nShow the code\npost_df &lt;- post_df |&gt;\n  mutate(\n    theta_b0 = exp(b_lb0_Intercept + sd_id__lb0_Intercept^2 / 2),\n    theta_ks = exp(b_lks_Intercept + sd_id__lks_Intercept^2 / 2),\n    theta_kg = exp(b_lkg_Intercept + sd_id__lkg_Intercept^2 / 2),\n    theta_phi = plogis(b_tphi_Intercept),\n    omega_0 = sd_id__lb0_Intercept,\n    omega_s = sd_id__lks_Intercept,\n    omega_g = sd_id__lkg_Intercept,\n    omega_phi = sd_id__tphi_Intercept,\n    cv_0 = sqrt(exp(sd_id__lb0_Intercept^2) - 1),\n    cv_s = sqrt(exp(sd_id__lks_Intercept^2) - 1),\n    cv_g = sqrt(exp(sd_id__lkg_Intercept^2) - 1),\n    sigma = b_tau_Intercept\n  )\n\n\nLet’s first look at the population level parameters:\n\n\nShow the code\ngsf_pop_params &lt;- c(\"theta_b0\", \"theta_ks\", \"theta_kg\", \"theta_phi\", \"sigma\")\n\nmcmc_trace(post_df, pars = gsf_pop_params)\n\n\n\n\n\n\n\n\n\nShow the code\nmcmc_pairs(\n  post_df, \n  pars = gsf_pop_params,\n  off_diag_args = list(size = 1, alpha = 0.1)\n)\n\n\n\n\n\n\n\n\n\nThe trace plots look good. The chains seem to have converged and the pairs plot shows no strong correlations between the parameters. Let’s check the table:\n\n\nShow the code\npost_sum &lt;- post_df |&gt;\n  select(theta_b0, theta_ks, theta_kg, theta_phi, omega_0, omega_s, omega_g, omega_phi, sigma) |&gt;\n  summarize_draws() |&gt;\n  gt() |&gt;\n  fmt_number(decimals = 3)\n\n\nWarning: Dropping 'draws_df' class as required metadata was removed.\n\n\nShow the code\npost_sum\n\n\n\n\n\n\n\n\nvariable\nmean\nmedian\nsd\nmad\nq5\nq95\nrhat\ness_bulk\ness_tail\n\n\n\n\ntheta_b0\n44.766\n44.746\n1.057\n1.073\n43.074\n46.528\n1.007\n179.361\n378.906\n\n\ntheta_ks\n5.857\n5.444\n1.924\n1.582\n3.589\n9.560\n1.003\n384.622\n905.388\n\n\ntheta_kg\n0.640\n0.637\n0.061\n0.062\n0.541\n0.745\n1.000\n685.379\n1,885.264\n\n\ntheta_phi\n0.467\n0.466\n0.055\n0.058\n0.376\n0.555\n1.003\n419.761\n831.991\n\n\nomega_0\n0.578\n0.578\n0.016\n0.017\n0.553\n0.606\n1.001\n376.483\n628.807\n\n\nomega_s\n2.159\n2.155\n0.145\n0.145\n1.929\n2.412\n1.002\n521.866\n1,265.639\n\n\nomega_g\n1.177\n1.174\n0.090\n0.090\n1.037\n1.333\n1.002\n868.075\n1,746.640\n\n\nomega_phi\n2.117\n2.108\n0.182\n0.184\n1.833\n2.423\n1.003\n603.806\n1,215.066\n\n\nsigma\n0.147\n0.147\n0.002\n0.002\n0.143\n0.150\n1.000\n1,575.916\n2,168.010\n\n\n\n\n\n\n\nSo \\(\\theta_{\\phi}\\) is estimated around 0.5. The other parameters are similar to the previous Stein-Fojo model, but we see a larger \\(\\theta_{k_s}\\) e.g.",
+    "crumbs": [
+      "Session 1: TGI",
+      "3. Generalized Stein-Fojo model"
+    ]
+  },
+  {
+    "objectID": "session-tgi/3_tgi_gsf_brms.html#observation-vs-model-fit",
+    "href": "session-tgi/3_tgi_gsf_brms.html#observation-vs-model-fit",
+    "title": "3. Generalized Stein-Fojo model",
+    "section": "Observation vs model fit",
+    "text": "Observation vs model fit\nWe can now compare the model fit to the observations. Let’s do this for the first 20 patients again:\n\n\nShow the code\npt_subset &lt;- as.character(1:20)\ndf_subset &lt;- df |&gt; \n  filter(id %in% pt_subset)\n\ndf_sim &lt;- df_subset |&gt; \n  data_grid(\n    id = pt_subset, \n    year = seq_range(year, 101)\n  ) |&gt;\n  add_epred_draws(fit) |&gt;\n  median_qi()\n\ndf_sim |&gt;\n  ggplot(aes(x = year, y = sld)) +\n  facet_wrap(~ id) +\n  geom_ribbon(\n    aes(y = .epred, ymin = .lower, ymax = .upper), \n    alpha = 0.3, \n    fill = \"deepskyblue\"\n  ) +\n  geom_line(aes(y = .epred), color = \"deepskyblue\") +\n  geom_point(data = df_subset, color = \"tomato\") +\n  coord_cartesian(ylim = range(df_subset$sld)) +\n  scale_fill_brewer(palette = \"Greys\") +\n  labs(title = \"GSF model fit\")\n\n\n\n\n\n\n\n\n\nThis also looks good. The model seems to capture the data well.",
+    "crumbs": [
+      "Session 1: TGI",
+      "3. Generalized Stein-Fojo model"
+    ]
+  },
+  {
+    "objectID": "session-tgi/3_tgi_gsf_brms.html#with-jmpost",
+    "href": "session-tgi/3_tgi_gsf_brms.html#with-jmpost",
+    "title": "3. Generalized Stein-Fojo model",
+    "section": "With jmpost",
+    "text": "With jmpost\nThis model can also be fit with the jmpost package. The corresponding function is LongitudinalGSF. The statistical model is specified in the vignette here.\nHomework: Implement the generalized Stein-Fojo model with jmpost and compare the results with the brms implementation.",
+    "crumbs": [
+      "Session 1: TGI",
+      "3. Generalized Stein-Fojo model"
+    ]
+  },
+  {
     "objectID": "session-tgi/0_setup.html",
     "href": "session-tgi/0_setup.html",
     "title": "0. Setup",
@@ -275,33 +261,124 @@
     ]
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Index",
+    "objectID": "session-tgi/2_tgi_sf_jmpost.html",
+    "href": "session-tgi/2_tgi_sf_jmpost.html",
+    "title": "2. TGI model minimal workflow with jmpost",
     "section": "",
-    "text": "Order By\n       Default\n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Title\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\nDate\n\n\nTitle\n\n\nAuthor\n\n\n\n\n\n\n2025-02-11\n\n\n0. Setup\n\n\nFrancois Mercier, Daniel Sabanés Bové\n\n\n\n\n2025-02-11\n\n\n1. TGI model minimal workflow with brms\n\n\nDaniel Sabanés Bové, Francois Mercier\n\n\n\n\n2025-02-11\n\n\n2. TGI model minimal workflow with jmpost\n\n\nDaniel Sabanés Bové, Francois Mercier\n\n\n\n\n2025-02-11\n\n\n3. Generalized Stein-Fojo model\n\n\nDaniel Sabanés Bové, Francois Mercier\n\n\n\n\n2025-02-11\n\n\n4. Claret-Bruno model\n\n\nDaniel Sabanés Bové, Francois Mercier\n\n\n\n\n\nNo matching items",
+    "text": "Let’s try to fit the same model now with jmpost. We will use the same data as in the previous notebook.",
     "crumbs": [
-      "Index"
+      "Session 1: TGI",
+      "2. TGI model minimal workflow with `jmpost`"
     ]
   },
   {
-    "objectID": "index.html#license",
-    "href": "index.html#license",
-    "title": "Index",
-    "section": "License",
-    "text": "License\nThe training material is licensed under a Creative Commons Attribution 4.0 International License. If you wish to reuse any part of this material, please ensure proper attribution is given to the original authors as specified by the Creative Commons Attribution 4.0 International License.",
+    "objectID": "session-tgi/2_tgi_sf_jmpost.html#setup-and-load-data",
+    "href": "session-tgi/2_tgi_sf_jmpost.html#setup-and-load-data",
+    "title": "2. TGI model minimal workflow with jmpost",
+    "section": "Setup and load data",
+    "text": "Setup and load data\nFirst we need to load the necessary packages and set some default options for the MCMC sampling. We also set the theme for the plots to theme_bw with a base size of 12.\n\n\nShow the code\nlibrary(bayesplot)\nlibrary(brms)\nlibrary(ggplot2)\nlibrary(gt)\nlibrary(here)\nlibrary(janitor)\nlibrary(jmpost)\nlibrary(modelr)\nlibrary(posterior)\nlibrary(readxl)\nlibrary(rstan)\nlibrary(tidybayes)\nlibrary(tidyverse)\nlibrary(truncnorm)\n\nif (require(cmdstanr)) {\n  # If cmdstanr is available, instruct brms to use cmdstanr as backend \n  # and cache all Stan binaries\n  options(brms.backend = \"cmdstanr\", cmdstanr_write_stan_file_dir = here(\"_brms-cache\"))\n  dir.create(here(\"_brms-cache\"), FALSE) # create cache directory if not yet available\n} else {\n  rstan::rstan_options(auto_write = TRUE)\n}\n\n# MCMC options\noptions(mc.cores = 4)\nITER &lt;- 1000 # number of sampling iterations after warm up\nWARMUP &lt;- 2000 # number of warm up iterations\nCHAINS &lt;- 4\nBAYES.SEED &lt;- 878\nREFRESH &lt;- 500\n\ntheme_set(theme_bw(base_size = 12))\n\n\nWe also need a small function definition, which is still missing in brms:\n\n\nShow the code\nint_step &lt;- function(x) {\n  stopifnot(is.logical(x))\n  ifelse(x, 1, 0)\n}\n\n\nWe will use the publicly published tumor size data from the OAK study, see here. In particular we are using the S1 data set, which is the fully anonymized data set used in the publication. For simplicity, we have copied the data set in this GitHub repository.\n\n\nShow the code\nfile_path &lt;- here(\"data/journal.pcbi.1009822.s006.xlsx\")\n\nread_one_sheet &lt;- function(sheet) {\n    read_excel(file_path, sheet = sheet) |&gt; \n    clean_names() |&gt; \n    mutate(\n        id = factor(as.character(patient_anonmyized)),\n        day = as.integer(treatment_day),\n        year = day / 365.25,\n        target_lesion_long_diam_mm = case_match(\n            target_lesion_long_diam_mm,\n            \"TOO SMALL TO MEASURE\" ~ \"2\",\n            \"NOT EVALUABLE\" ~ NA_character_,\n            .default = target_lesion_long_diam_mm\n        ),\n        sld = as.numeric(target_lesion_long_diam_mm),\n        sld = ifelse(sld == 0, 2, sld),\n        study = factor(gsub(\"^Study_(\\\\d+)_Arm_\\\\d+$\", \"\\\\1\", study_arm)),\n        arm = factor(gsub(\"^Study_\\\\d+_Arm_(\\\\d+)$\", \"\\\\1\", study_arm))\n    ) |&gt; \n    select(id, year, sld, study, arm)\n}\n\ntumor_data &lt;- excel_sheets(file_path) |&gt; \n    map(read_one_sheet) |&gt; \n    bind_rows()\n\nhead(tumor_data)\n\n\n# A tibble: 6 × 5\n  id                      year   sld study arm  \n  &lt;fct&gt;                  &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt; &lt;fct&gt;\n1 3657015667902160896 -0.00548    33 1     1    \n2 3657015667902160896  0.101      33 1     1    \n3 3657015667902160896  0.230      32 1     1    \n4 3657015667902160896  0.342      37 1     1    \n5 3657015667902160896  0.446      49 1     1    \n6 2080619628198763008 -0.00548    12 1     1    \n\n\nShow the code\nsummary(tumor_data)\n\n\n                    id            year              sld        study   \n 4308512445673410048 :  18   Min.   :-0.1314   Min.   :  2.0   1: 456  \n -4902532987801034752:  17   1st Qu.: 0.1123   1st Qu.: 17.0   2: 966  \n 5394902984416364544 :  16   Median : 0.2847   Median : 30.0   3:2177  \n 7160320731596789760 :  16   Mean   : 0.3822   Mean   : 36.1   4:4126  \n -4159496062492130816:  15   3rd Qu.: 0.5722   3rd Qu.: 49.0   5: 835  \n -7900338178541499392:  15   Max.   : 2.0753   Max.   :228.0           \n (Other)             :8463   NA's   :1         NA's   :69              \n arm     \n 1:3108  \n 2:3715  \n 3: 291  \n 4: 608  \n 5: 227  \n 6: 611  \n         \n\n\nFor simplicity, we will for now just use study 4 (this is the OAK study), and we rename the patient IDs:\n\n\nShow the code\ndf &lt;- tumor_data |&gt; \n  filter(study == \"4\") |&gt; \n  na.omit() |&gt;\n  droplevels() |&gt; \n  mutate(id = factor(as.numeric(id)))\n\n\nHere we have 701 patients. It is always a good idea to make a plot of the data. Let’s look at the first 20 patients e.g.:\n\n\nShow the code\ndf |&gt; \n  filter(as.integer(id) &lt;= 20) |&gt;\n  ggplot(aes(x = year, y = sld, group = id)) +\n  geom_line() +\n  geom_point() +\n  facet_wrap(~ id) +\n  geom_vline(xintercept = 0, linetype = \"dashed\") +\n  theme(legend.position = \"none\")",
     "crumbs": [
-      "Index"
+      "Session 1: TGI",
+      "2. TGI model minimal workflow with `jmpost`"
     ]
   },
   {
-    "objectID": "index.html#copyright",
-    "href": "index.html#copyright",
-    "title": "Index",
-    "section": "Copyright",
-    "text": "Copyright\n© 2025 Genentech Inc. All rights reserved.",
+    "objectID": "session-tgi/2_tgi_sf_jmpost.html#data-preparation",
+    "href": "session-tgi/2_tgi_sf_jmpost.html#data-preparation",
+    "title": "2. TGI model minimal workflow with jmpost",
+    "section": "Data preparation",
+    "text": "Data preparation\nWe start with the subject level data set. For the beginning, we want to treat all observations as if they come from a single arm and single study for now. Therefore we insert constant study and arm values here.\n\n\nShow the code\nsubj_df &lt;- data.frame(\n  id = unique(df$id),\n  arm = \"arm\",\n  study = \"study\"\n)\nsubj_data &lt;- DataSubject(\n  data = subj_df,\n  subject = \"id\",\n  arm = \"arm\",\n  study = \"study\"\n)\n\n\nNext we prepare the longitudinal data object.\n\n\nShow the code\nlong_df &lt;- df |&gt;\n  select(id, year, sld)\nlong_data &lt;- DataLongitudinal(\n  data = long_df,\n  formula = sld ~ year\n)\n\n\nNow we can create the JointData object:\n\n\nShow the code\njoint_data &lt;- DataJoint(\n    subject = subj_data,\n    longitudinal = long_data\n)",
     "crumbs": [
-      "Index"
+      "Session 1: TGI",
+      "2. TGI model minimal workflow with `jmpost`"
+    ]
+  },
+  {
+    "objectID": "session-tgi/2_tgi_sf_jmpost.html#model-specification",
+    "href": "session-tgi/2_tgi_sf_jmpost.html#model-specification",
+    "title": "2. TGI model minimal workflow with jmpost",
+    "section": "Model specification",
+    "text": "Model specification\nThe statistical model is specified in the jmpost vignette here.\nHere we just want to fit the longitudinal data, therefore:\n\n\nShow the code\ntgi_mod &lt;- JointModel(\n    longitudinal = LongitudinalSteinFojo(\n        mu_bsld = prior_normal(log(65), 1),\n        mu_ks = prior_normal(log(0.52), 1),\n        mu_kg = prior_normal(log(1.04), 1),\n        omega_bsld = prior_normal(0, 3) |&gt; set_limits(0, Inf),\n        omega_ks = prior_normal(0, 3) |&gt; set_limits(0, Inf),\n        omega_kg = prior_normal(0, 3) |&gt; set_limits(0, Inf),\n        sigma = prior_normal(0, 3) |&gt; set_limits(0, Inf)\n    )\n)\n\n\nNote that the priors on the standard deviations, omega_* and sigma, are truncated to the positive domain. So we used here truncated normal priors.",
+    "crumbs": [
+      "Session 1: TGI",
+      "2. TGI model minimal workflow with `jmpost`"
+    ]
+  },
+  {
+    "objectID": "session-tgi/2_tgi_sf_jmpost.html#fit-model",
+    "href": "session-tgi/2_tgi_sf_jmpost.html#fit-model",
+    "title": "2. TGI model minimal workflow with jmpost",
+    "section": "Fit model",
+    "text": "Fit model\nWe can now fit the model using jmpost.\n\n\nShow the code\nsave_file &lt;- here(\"session-tgi/jm5.RData\")\nif (file.exists(save_file)) {\n  load(save_file)\n} else {\n  mcmc_results &lt;- sampleStanModel(\n      tgi_mod,\n      data = joint_data,\n      iter_sampling = ITER,\n      iter_warmup = WARMUP,\n      chains = CHAINS,\n      parallel_chains = CHAINS,\n      thin = CHAINS,\n      seed = BAYES.SEED,\n      refresh = REFRESH\n  )\n  save(mcmc_results, file = save_file)\n}\n\n\nLet’s check the convergence of the population parameters:\n\n\nShow the code\nvars &lt;- c(\n    \"lm_sf_mu_bsld\",\n    \"lm_sf_mu_ks\",\n    \"lm_sf_mu_kg\",\n    \"lm_sf_sigma\",\n    \"lm_sf_omega_bsld\",\n    \"lm_sf_omega_ks\",\n    \"lm_sf_omega_kg\"\n)\n\nsave_overall_file &lt;- here(\"session-tgi/jm5_more.RData\")\nif (file.exists(save_overall_file)) {\n  load(save_overall_file)\n} else {\n  mcmc_res_cmdstan &lt;- cmdstanr::as.CmdStanMCMC(mcmc_results)\n  mcmc_res_sum &lt;- mcmc_res_cmdstan$summary(vars)\n  vars_draws &lt;- mcmc_res_cmdstan$draws(vars)\n  loo_res &lt;- mcmc_res_cmdstan$loo(r_eff = FALSE)\n  save(mcmc_res_sum, vars_draws, loo_res, file = save_overall_file)\n}\nmcmc_res_sum\n\n\n# A tibble: 7 × 10\n  variable     mean median      sd     mad     q5    q95  rhat ess_bulk ess_tail\n  &lt;chr&gt;       &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;\n1 lm_sf_mu_…  3.61   3.61  0.0236  0.0232   3.57   3.65   1.02     142.     188.\n2 lm_sf_mu_… -1.27  -1.27  0.160   0.152   -1.54  -1.03   1.01     352.     500.\n3 lm_sf_mu_… -1.35  -1.35  0.0828  0.0789  -1.49  -1.22   1.00     230.     456.\n4 lm_sf_sig…  0.161  0.161 0.00233 0.00244  0.158  0.165  1.00     513.     875.\n5 lm_sf_ome…  0.579  0.578 0.0156  0.0153   0.555  0.608  1.00     341.     576.\n6 lm_sf_ome…  1.62   1.62  0.117   0.112    1.45   1.82   1.01     321.     509.\n7 lm_sf_ome…  0.997  0.993 0.0505  0.0503   0.920  1.08   1.00     390.     595.\n\n\nThis looks good, let’s check the traceplots:\n\n\nShow the code\n# vars_draws &lt;- mcmc_res_cmdstan$draws(vars)\nmcmc_trace(vars_draws)\n\n\n\n\n\n\n\n\n\nThey also look ok, all chains are mixing well in the same range of parameter values.\nAlso here we could look at the pairs plot:\n\n\nShow the code\nmcmc_pairs(\n  vars_draws,\n  off_diag_args = list(size = 1, alpha = 0.1)\n)",
+    "crumbs": [
+      "Session 1: TGI",
+      "2. TGI model minimal workflow with `jmpost`"
+    ]
+  },
+  {
+    "objectID": "session-tgi/2_tgi_sf_jmpost.html#observation-vs.-model-fit",
+    "href": "session-tgi/2_tgi_sf_jmpost.html#observation-vs.-model-fit",
+    "title": "2. TGI model minimal workflow with jmpost",
+    "section": "Observation vs. model fit",
+    "text": "Observation vs. model fit\nLet’s check the fit of the model to the data:\n\n\nShow the code\npt_subset &lt;- as.character(1:20)\n\nsave_fit_file &lt;- here(\"session-tgi/jm5_fit.RData\")\nif (file.exists(save_fit_file)) {\n  load(save_fit_file)\n} else {\n  fit_subset &lt;- LongitudinalQuantities(\n    mcmc_results, \n    grid = GridObserved(subjects = pt_subset)\n  )\n  save(fit_subset, file = save_fit_file)\n}\n\nautoplot(fit_subset)+\n  labs(x = \"Time (years)\", y = \"SLD (mm)\")\n\n\n\n\n\n\n\n\n\nSo this works very nicely.",
+    "crumbs": [
+      "Session 1: TGI",
+      "2. TGI model minimal workflow with `jmpost`"
+    ]
+  },
+  {
+    "objectID": "session-tgi/2_tgi_sf_jmpost.html#prior-vs.-posterior",
+    "href": "session-tgi/2_tgi_sf_jmpost.html#prior-vs.-posterior",
+    "title": "2. TGI model minimal workflow with jmpost",
+    "section": "Prior vs. posterior",
+    "text": "Prior vs. posterior\nLet’s check the prior vs. posterior for the parameters:\n\n\nShow the code\npost_samples &lt;- as_draws_df(vars_draws) |&gt; \n  rename(\n    mu_bsld = \"lm_sf_mu_bsld[1]\",\n    mu_ks = \"lm_sf_mu_ks[1]\",\n    mu_kg = \"lm_sf_mu_kg[1]\",\n    omega_bsld = \"lm_sf_omega_bsld[1]\",\n    omega_ks = \"lm_sf_omega_ks[1]\",\n    omega_kg = \"lm_sf_omega_kg[1]\",\n    sigma = lm_sf_sigma\n  ) |&gt; \n  mutate(type = \"posterior\") |&gt; \n  select(mu_bsld, mu_ks, mu_kg, omega_bsld, omega_ks, omega_kg, sigma, type)\n\n\nWarning: Dropping 'draws_df' class as required metadata was removed.\n\n\nShow the code\nn_prior_samples &lt;- nrow(post_samples)\nprior_samples &lt;- data.frame(\n    mu_bsld = rnorm(n_prior_samples, log(65), 1),\n    mu_ks = rnorm(n_prior_samples, log(0.52), 1),\n    mu_kg = rnorm(n_prior_samples, log(1.04), 1),\n    omega_bsld = rtruncnorm(n_prior_samples, a = 0, mean = 0, sd = 3),\n    omega_ks = rtruncnorm(n_prior_samples, a = 0, mean = 0, sd = 3),\n    omega_kg = rtruncnorm(n_prior_samples, a = 0, mean = 0, sd = 3),\n    sigma = rtruncnorm(n_prior_samples, a = 0, mean = 0, sd = 3)\n  ) |&gt; \n  mutate(type = \"prior\")\n\n# Combine the two\ncombined_samples &lt;- rbind(post_samples, prior_samples) |&gt; \n  pivot_longer(cols = -type, names_to = \"parameter\", values_to = \"value\")\n\nggplot(combined_samples, aes(x = value, fill = type)) +\n  geom_density(alpha = 0.5) +\n  facet_wrap(~parameter, scales = \"free\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\nThis looks good, because the priors are covering the range of the posterior samples and are not too informative.",
+    "crumbs": [
+      "Session 1: TGI",
+      "2. TGI model minimal workflow with `jmpost`"
+    ]
+  },
+  {
+    "objectID": "session-tgi/2_tgi_sf_jmpost.html#parameter-estimates",
+    "href": "session-tgi/2_tgi_sf_jmpost.html#parameter-estimates",
+    "title": "2. TGI model minimal workflow with jmpost",
+    "section": "Parameter estimates",
+    "text": "Parameter estimates\nHere we need again to be careful: We are interested in the posterior mean estimates of the baseline, shrinkage and growth population rates on the original scale. Because we model them on the log scale as normal distributed, we need to use the mean of the log-normal distribution to get the mean on the original scale.\n\n\nShow the code\npost_sum &lt;- post_samples |&gt;\n  mutate(\n    theta_b0 = exp(mu_bsld + omega_bsld^2 / 2), \n    theta_ks = exp(mu_ks + omega_ks^2 / 2), \n    theta_kg = exp(mu_kg + omega_kg^2 / 2),\n    cv_0 = sqrt(exp(omega_bsld^2) - 1),\n    cv_s = sqrt(exp(omega_ks^2) - 1),\n    cv_g = sqrt(exp(omega_kg^2) - 1)\n  ) |&gt;\n  select(theta_b0, theta_ks, theta_kg, omega_bsld, omega_ks, omega_kg, cv_0, cv_s, cv_g, sigma) |&gt;\n  summarize_draws() |&gt;\n  gt() |&gt;\n  fmt_number(n_sigfig = 3)\npost_sum\n\n\n\n\n\n\n\n\nvariable\nmean\nmedian\nsd\nmad\nq5\nq95\nrhat\ness_bulk\ness_tail\n\n\n\n\ntheta_b0\n43.7\n43.8\n1.10\n1.12\n42.0\n45.5\n1.00\n151\n201\n\n\ntheta_ks\n1.06\n1.05\n0.129\n0.120\n0.871\n1.30\n1.00\n226\n408\n\n\ntheta_kg\n0.428\n0.427\n0.0311\n0.0306\n0.378\n0.479\n1.00\n318\n472\n\n\nomega_bsld\n0.579\n0.578\n0.0156\n0.0153\n0.555\n0.608\n1.00\n346\n545\n\n\nomega_ks\n1.62\n1.62\n0.117\n0.112\n1.45\n1.82\n1.00\n318\n494\n\n\nomega_kg\n0.997\n0.993\n0.0505\n0.0503\n0.920\n1.08\n1.00\n390\n576\n\n\ncv_0\n0.631\n0.630\n0.0200\n0.0196\n0.600\n0.668\n1.00\n346\n545\n\n\ncv_s\n3.70\n3.57\n0.818\n0.685\n2.66\n5.16\n1.00\n318\n494\n\n\ncv_g\n1.31\n1.30\n0.106\n0.103\n1.15\n1.49\n1.00\n390\n576\n\n\nsigma\n0.161\n0.161\n0.00233\n0.00244\n0.158\n0.165\n1.00\n495\n844\n\n\n\n\n\n\n\nWe can see that these are consistent with the estimates from the brms model earlier.",
+    "crumbs": [
+      "Session 1: TGI",
+      "2. TGI model minimal workflow with `jmpost`"
+    ]
+  },
+  {
+    "objectID": "session-tgi/2_tgi_sf_jmpost.html#separate-arm-estimates",
+    "href": "session-tgi/2_tgi_sf_jmpost.html#separate-arm-estimates",
+    "title": "2. TGI model minimal workflow with jmpost",
+    "section": "Separate arm estimates",
+    "text": "Separate arm estimates\nWhile there is no general covariates support in jmpost for the longitudinal models as of now, we can obtain separate estimates for the longitudinal model parameters: As detailed in the model specification here, as soon as we have the arm defined, then separate estimates for the arm-specific shrinkage and growth parameters will be obtained: Both the population means and standard deviation parameters are here arm-specific. (Note that this is slightly different from brms where we assumed earlier the same standard deviation independent of the treatment arm.)\nSo we need to define the subject data accordingly now with the arm information:\n\n\nShow the code\nsubj_df_by_arm &lt;- df |&gt;\n  select(id, arm) |&gt;\n  distinct() |&gt; \n  mutate(study = \"study\")\n\nsubj_data_by_arm &lt;- DataSubject(\n  data = subj_df_by_arm,\n  subject = \"id\",\n  arm = \"arm\",\n  study = \"study\"\n)\n\n\nWe redefine the JointData object and can then fit the model, because the prior specification does not need to change: We assume iid priors on the arm-specific parameters here.\n\n\nShow the code\njoint_data_by_arm &lt;- DataJoint(\n    subject = subj_data_by_arm,\n    longitudinal = long_data\n)\n\n\n\n\nShow the code\nsave_file &lt;- here(\"session-tgi/jm6.RData\")\nif (file.exists(save_file)) {\n  load(save_file)\n} else {\n  mcmc_results_by_arm &lt;- sampleStanModel(\n      tgi_mod,\n      data = joint_data_by_arm,\n      iter_sampling = ITER,\n      iter_warmup = WARMUP,\n      chains = CHAINS,\n      parallel_chains = CHAINS,\n      thin = CHAINS,\n      seed = BAYES.SEED,\n      refresh = REFRESH\n  )\n  save(mcmc_results_by_arm, file = save_file)\n}\n\n\nLet’s again check the convergence:\n\n\nShow the code\nvars &lt;- c(\n    \"lm_sf_mu_bsld\",\n    \"lm_sf_mu_ks\",\n    \"lm_sf_mu_kg\",\n    \"lm_sf_sigma\",\n    \"lm_sf_omega_bsld\",\n    \"lm_sf_omega_ks\",\n    \"lm_sf_omega_kg\"\n)\n\nsave_arm_file &lt;- here(\"session-tgi/jm6_more.RData\")\nif (file.exists(save_arm_file)) {\n  load(save_arm_file)\n} else {\n  mcmc_res_cmdstan_by_arm &lt;- cmdstanr::as.CmdStanMCMC(mcmc_results_by_arm)\n  mcmc_res_sum_by_arm &lt;- mcmc_res_cmdstan_by_arm$summary(vars)\n  vars_draws_by_arm &lt;- mcmc_res_cmdstan_by_arm$draws(vars)\n  loo_by_arm &lt;- mcmc_res_cmdstan_by_arm$loo(r_eff = FALSE)\n  save(mcmc_res_sum_by_arm, vars_draws_by_arm, loo_by_arm, file = save_arm_file)\n}\nmcmc_res_sum_by_arm\n\n\n# A tibble: 11 × 10\n   variable    mean median      sd     mad     q5    q95  rhat ess_bulk ess_tail\n   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;\n 1 lm_sf_mu…  3.61   3.61  0.0211  0.0217   3.58   3.65  1.00      244.     502.\n 2 lm_sf_mu… -0.752 -0.730 0.222   0.216   -1.14  -0.398 1.01      592.     673.\n 3 lm_sf_mu… -1.52  -1.51  0.222   0.217   -1.90  -1.17  1.00      706.     850.\n 4 lm_sf_mu… -1.11  -1.11  0.138   0.139   -1.35  -0.900 1.00      594.     814.\n 5 lm_sf_mu… -1.35  -1.35  0.103   0.104   -1.52  -1.19  1.00      560.     776.\n 6 lm_sf_si…  0.161  0.161 0.00224 0.00228  0.157  0.165 1.00      892.     941.\n 7 lm_sf_om…  0.577  0.577 0.0159  0.0153   0.551  0.603 1.00      511.     672.\n 8 lm_sf_om…  1.34   1.33  0.150   0.152    1.11   1.60  1.00      630.     844.\n 9 lm_sf_om…  1.76   1.76  0.161   0.150    1.51   2.05  1.00      662.     990.\n10 lm_sf_om…  0.765  0.758 0.0710  0.0685   0.662  0.891 0.999     809.     951.\n11 lm_sf_om…  1.10   1.10  0.0705  0.0684   0.991  1.22  0.999     669.     736.\n\n\nLet’s again tabulate the parameter estimates:\n\n\nShow the code\npost_samples_by_arm &lt;- as_draws_df(vars_draws_by_arm) |&gt; \n  rename(\n    mu_bsld = \"lm_sf_mu_bsld[1]\",\n    mu_ks1 = \"lm_sf_mu_ks[1]\",\n    mu_ks2 = \"lm_sf_mu_ks[2]\",\n    mu_kg1 = \"lm_sf_mu_kg[1]\",\n    mu_kg2 = \"lm_sf_mu_kg[2]\",\n    omega_bsld = \"lm_sf_omega_bsld[1]\",\n    omega_ks1 = \"lm_sf_omega_ks[1]\",\n    omega_ks2 = \"lm_sf_omega_ks[2]\",\n    omega_kg1 = \"lm_sf_omega_kg[1]\",\n    omega_kg2 = \"lm_sf_omega_kg[2]\",\n    sigma = lm_sf_sigma\n  ) |&gt; \n  mutate(\n    theta_b0 = exp(mu_bsld + omega_bsld^2 / 2), \n    theta_ks1 = exp(mu_ks1 + omega_ks1^2 / 2), \n    theta_ks2 = exp(mu_ks2 + omega_ks2^2 / 2),\n    theta_kg1 = exp(mu_kg1 + omega_kg1^2 / 2),\n    theta_kg2 = exp(mu_kg2 + omega_kg2^2 / 2),\n    cv_0 = sqrt(exp(omega_bsld^2) - 1),\n    cv_s1 = sqrt(exp(omega_ks1^2) - 1),\n    cv_s2 = sqrt(exp(omega_ks2^2) - 1),\n    cv_g1 = sqrt(exp(omega_kg1^2) - 1),\n    cv_g2 = sqrt(exp(omega_kg2^2) - 1)\n  ) \n  \npost_sum_by_arm &lt;- post_samples_by_arm |&gt;\n  select(\n    theta_b0, theta_ks1, theta_ks2, theta_kg1, theta_kg2, \n    omega_bsld, omega_ks1, omega_ks2, omega_kg1, omega_kg2, \n    cv_0, cv_s1, cv_s2, cv_g1, cv_g2, sigma) |&gt;\n  summarize_draws() |&gt;\n  gt() |&gt;\n  fmt_number(n_sigfig = 3)\n\n\nWarning: Dropping 'draws_df' class as required metadata was removed.\n\n\nShow the code\npost_sum_by_arm\n\n\n\n\n\n\n\n\nvariable\nmean\nmedian\nsd\nmad\nq5\nq95\nrhat\ness_bulk\ness_tail\n\n\n\n\ntheta_b0\n43.7\n43.7\n0.999\n1.05\n42.1\n45.4\n1.00\n227\n558\n\n\ntheta_ks1\n1.18\n1.17\n0.152\n0.146\n0.961\n1.44\n1.00\n530\n696\n\n\ntheta_ks2\n1.07\n1.04\n0.209\n0.183\n0.779\n1.42\n1.00\n344\n443\n\n\ntheta_kg1\n0.444\n0.443\n0.0490\n0.0489\n0.365\n0.527\n1.00\n539\n712\n\n\ntheta_kg2\n0.479\n0.478\n0.0487\n0.0479\n0.399\n0.563\n1.00\n735\n908\n\n\nomega_bsld\n0.577\n0.577\n0.0159\n0.0153\n0.551\n0.603\n1.00\n504\n659\n\n\nomega_ks1\n1.34\n1.33\n0.150\n0.152\n1.11\n1.60\n1.00\n620\n838\n\n\nomega_ks2\n1.76\n1.76\n0.161\n0.150\n1.51\n2.05\n1.00\n651\n972\n\n\nomega_kg1\n0.765\n0.758\n0.0710\n0.0685\n0.662\n0.891\n0.999\n799\n943\n\n\nomega_kg2\n1.10\n1.10\n0.0705\n0.0684\n0.991\n1.22\n1.00\n649\n693\n\n\ncv_0\n0.629\n0.628\n0.0205\n0.0196\n0.596\n0.662\n1.00\n504\n659\n\n\ncv_s1\n2.33\n2.22\n0.601\n0.547\n1.55\n3.46\n1.00\n620\n838\n\n\ncv_s2\n4.90\n4.58\n1.64\n1.25\n2.96\n8.11\n1.00\n651\n972\n\n\ncv_g1\n0.897\n0.880\n0.112\n0.105\n0.742\n1.10\n0.999\n799\n943\n\n\ncv_g2\n1.55\n1.54\n0.175\n0.163\n1.29\n1.85\n1.00\n649\n693\n\n\nsigma\n0.161\n0.161\n0.00224\n0.00228\n0.157\n0.165\n1.00\n885\n881\n\n\n\n\n\n\n\nHere again the shrinkage rate in the treatment arm 1 seems higher than in the treatment arm 2. However, the difference is not as pronounced as in the brms model before with the same standard deviation for both arms. We can again calculate the posterior probability that the shrinkage rate in arm 1 is higher than in arm 2:\n\n\nShow the code\nprob_ks1_greater_ks2 &lt;- mean(post_samples_by_arm$theta_ks1 &gt; post_samples_by_arm$theta_ks2)\nprob_ks1_greater_ks2\n\n\n[1] 0.706\n\n\nSo the posterior probability is now only around 71%.",
+    "crumbs": [
+      "Session 1: TGI",
+      "2. TGI model minimal workflow with `jmpost`"
+    ]
+  },
+  {
+    "objectID": "session-tgi/2_tgi_sf_jmpost.html#model-comparison-with-loo",
+    "href": "session-tgi/2_tgi_sf_jmpost.html#model-comparison-with-loo",
+    "title": "2. TGI model minimal workflow with jmpost",
+    "section": "Model comparison with LOO",
+    "text": "Model comparison with LOO\nAs we have seen for brms, also for jmpost we can easily compute the LOO criterion:\n\n\nShow the code\n# loo_res &lt;- mcmc_res_cmdstan$loo(r_eff = FALSE)\nloo_res\n\n\n\nComputed from 1000 by 4099 log-likelihood matrix.\n\n         Estimate    SE\nelpd_loo -12957.3  95.8\np_loo      1137.1  38.4\nlooic     25914.5 191.6\n------\nMCSE of elpd_loo is NA.\nMCSE and ESS estimates assume independent draws (r_eff=1).\n\nPareto k diagnostic values:\n                          Count Pct.    Min. ESS\n(-Inf, 0.67]   (good)     3665  89.4%   26      \n   (0.67, 1]   (bad)       363   8.9%   &lt;NA&gt;    \n    (1, Inf)   (very bad)   71   1.7%   &lt;NA&gt;    \nSee help('pareto-k-diagnostic') for details.\n\n\nUnderneath this is using the $loo() method from cmdstanr.\nAnd we can compare this to the LOO of the model with separate arm estimates:\n\n\nShow the code\n# loo_by_arm &lt;- mcmc_res_cmdstan_by_arm$loo(r_eff = FALSE)\nloo_by_arm\n\n\n\nComputed from 1000 by 4099 log-likelihood matrix.\n\n         Estimate    SE\nelpd_loo -12931.8  95.6\np_loo      1121.5  36.8\nlooic     25863.5 191.1\n------\nMCSE of elpd_loo is NA.\nMCSE and ESS estimates assume independent draws (r_eff=1).\n\nPareto k diagnostic values:\n                          Count Pct.    Min. ESS\n(-Inf, 0.67]   (good)     3652  89.1%   48      \n   (0.67, 1]   (bad)       374   9.1%   &lt;NA&gt;    \n    (1, Inf)   (very bad)   73   1.8%   &lt;NA&gt;    \nSee help('pareto-k-diagnostic') for details.\n\n\nSo the model by treatment arm performs here better than the model without treatment arm specific growth and shrinkage parameters.",
+    "crumbs": [
+      "Session 1: TGI",
+      "2. TGI model minimal workflow with `jmpost`"
+    ]
+  },
+  {
+    "objectID": "session-tgi/2_tgi_sf_jmpost.html#tipps-and-tricks",
+    "href": "session-tgi/2_tgi_sf_jmpost.html#tipps-and-tricks",
+    "title": "2. TGI model minimal workflow with jmpost",
+    "section": "Tipps and tricks",
+    "text": "Tipps and tricks\n\nAlso here it is possible to look at the underlying Stan code:\n\n\nShow the code\ntmp &lt;- tempfile()\nwrite_stan(tgi_mod, destination = tmp)\nfile.edit(tmp) # opens the Stan file in the default editor\n\n\nIt is not trivial to transport saved models from one computer to another. This is because cmdstanr only loads the results it currently needs from disk into memory, and thus into the R session. If you want to transport the model to another computer, you need to save the Stan code and the data, and then re-run the model on the other computer. This is because the model object in R is only a reference to the model on disk, not the model itself. Note that there is the $save_object() method, see here, however this leads to very large files (here about 300 MB for one fit) and can thus not be uploaded to typical git repositories. Therefore above we saved interim result objects separately as needed.\nIt is important to explicitly define the truncation boundaries for the truncated normal priors, because otherwise the MCMC results will not be correct.",
+    "crumbs": [
+      "Session 1: TGI",
+      "2. TGI model minimal workflow with `jmpost`"
     ]
   },
   {
@@ -379,83 +456,6 @@
     "crumbs": [
       "Session 1: TGI",
       "4. Claret-Bruno model"
-    ]
-  },
-  {
-    "objectID": "session-tgi/3_tgi_gsf_brms.html",
-    "href": "session-tgi/3_tgi_gsf_brms.html",
-    "title": "3. Generalized Stein-Fojo model",
-    "section": "",
-    "text": "This appendix shows how the generalized Stein-Fojo model can be implemented in a Bayesian framework using the brms package in R.",
-    "crumbs": [
-      "Session 1: TGI",
-      "3. Generalized Stein-Fojo model"
-    ]
-  },
-  {
-    "objectID": "session-tgi/3_tgi_gsf_brms.html#setup-and-load-data",
-    "href": "session-tgi/3_tgi_gsf_brms.html#setup-and-load-data",
-    "title": "3. Generalized Stein-Fojo model",
-    "section": "Setup and load data",
-    "text": "Setup and load data\nFirst we need to load the necessary packages and set some default options for the MCMC sampling. We also set the theme for the plots to theme_bw with a base size of 12.\n\n\nShow the code\nlibrary(bayesplot)\nlibrary(brms)\nlibrary(ggplot2)\nlibrary(gt)\nlibrary(here)\nlibrary(janitor)\nlibrary(jmpost)\nlibrary(modelr)\nlibrary(posterior)\nlibrary(readxl)\nlibrary(rstan)\nlibrary(tidybayes)\nlibrary(tidyverse)\nlibrary(truncnorm)\n\nif (require(cmdstanr)) {\n  # If cmdstanr is available, instruct brms to use cmdstanr as backend \n  # and cache all Stan binaries\n  options(brms.backend = \"cmdstanr\", cmdstanr_write_stan_file_dir = here(\"_brms-cache\"))\n  dir.create(here(\"_brms-cache\"), FALSE) # create cache directory if not yet available\n} else {\n  rstan::rstan_options(auto_write = TRUE)\n}\n\n# MCMC options\noptions(mc.cores = 4)\nITER &lt;- 1000 # number of sampling iterations after warm up\nWARMUP &lt;- 2000 # number of warm up iterations\nCHAINS &lt;- 4\nBAYES.SEED &lt;- 878\nREFRESH &lt;- 500\n\ntheme_set(theme_bw(base_size = 12))\n\n\nWe also need a small function definition, which is still missing in brms:\n\n\nShow the code\nint_step &lt;- function(x) {\n  stopifnot(is.logical(x))\n  ifelse(x, 1, 0)\n}\n\n\nWe will use the publicly published tumor size data from the OAK study, see here. In particular we are using the S1 data set, which is the fully anonymized data set used in the publication. For simplicity, we have copied the data set in this GitHub repository.\n\n\nShow the code\nfile_path &lt;- here(\"data/journal.pcbi.1009822.s006.xlsx\")\n\nread_one_sheet &lt;- function(sheet) {\n    read_excel(file_path, sheet = sheet) |&gt; \n    clean_names() |&gt; \n    mutate(\n        id = factor(as.character(patient_anonmyized)),\n        day = as.integer(treatment_day),\n        year = day / 365.25,\n        target_lesion_long_diam_mm = case_match(\n            target_lesion_long_diam_mm,\n            \"TOO SMALL TO MEASURE\" ~ \"2\",\n            \"NOT EVALUABLE\" ~ NA_character_,\n            .default = target_lesion_long_diam_mm\n        ),\n        sld = as.numeric(target_lesion_long_diam_mm),\n        sld = ifelse(sld == 0, 2, sld),\n        study = factor(gsub(\"^Study_(\\\\d+)_Arm_\\\\d+$\", \"\\\\1\", study_arm)),\n        arm = factor(gsub(\"^Study_\\\\d+_Arm_(\\\\d+)$\", \"\\\\1\", study_arm))\n    ) |&gt; \n    select(id, year, sld, study, arm)\n}\n\ntumor_data &lt;- excel_sheets(file_path) |&gt; \n    map(read_one_sheet) |&gt; \n    bind_rows()\n\nhead(tumor_data)\n\n\n# A tibble: 6 × 5\n  id                      year   sld study arm  \n  &lt;fct&gt;                  &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt; &lt;fct&gt;\n1 3657015667902160896 -0.00548    33 1     1    \n2 3657015667902160896  0.101      33 1     1    \n3 3657015667902160896  0.230      32 1     1    \n4 3657015667902160896  0.342      37 1     1    \n5 3657015667902160896  0.446      49 1     1    \n6 2080619628198763008 -0.00548    12 1     1    \n\n\nShow the code\nsummary(tumor_data)\n\n\n                    id            year              sld        study   \n 4308512445673410048 :  18   Min.   :-0.1314   Min.   :  2.0   1: 456  \n -4902532987801034752:  17   1st Qu.: 0.1123   1st Qu.: 17.0   2: 966  \n 5394902984416364544 :  16   Median : 0.2847   Median : 30.0   3:2177  \n 7160320731596789760 :  16   Mean   : 0.3822   Mean   : 36.1   4:4126  \n -4159496062492130816:  15   3rd Qu.: 0.5722   3rd Qu.: 49.0   5: 835  \n -7900338178541499392:  15   Max.   : 2.0753   Max.   :228.0           \n (Other)             :8463   NA's   :1         NA's   :69              \n arm     \n 1:3108  \n 2:3715  \n 3: 291  \n 4: 608  \n 5: 227  \n 6: 611  \n         \n\n\nFor simplicity, we will for now just use study 4 (this is the OAK study), and we rename the patient IDs:\n\n\nShow the code\ndf &lt;- tumor_data |&gt; \n  filter(study == \"4\") |&gt; \n  na.omit() |&gt;\n  droplevels() |&gt; \n  mutate(id = factor(as.numeric(id)))\n\n\nHere we have 701 patients. It is always a good idea to make a plot of the data. Let’s look at the first 20 patients e.g.:\n\n\nShow the code\ndf |&gt; \n  filter(as.integer(id) &lt;= 20) |&gt;\n  ggplot(aes(x = year, y = sld, group = id)) +\n  geom_line() +\n  geom_point() +\n  facet_wrap(~ id) +\n  geom_vline(xintercept = 0, linetype = \"dashed\") +\n  theme(legend.position = \"none\")",
-    "crumbs": [
-      "Session 1: TGI",
-      "3. Generalized Stein-Fojo model"
-    ]
-  },
-  {
-    "objectID": "session-tgi/3_tgi_gsf_brms.html#generalized-stein-fojo-model",
-    "href": "session-tgi/3_tgi_gsf_brms.html#generalized-stein-fojo-model",
-    "title": "3. Generalized Stein-Fojo model",
-    "section": "Generalized Stein-Fojo model",
-    "text": "Generalized Stein-Fojo model\nHere we have an additional parameter \\(\\phi\\), which is the weight for the shrinkage in the double exponential model. The model is then:\n\\[\ny^{*}(t_{ij}) = \\psi_{b_{0}i} \\{\n  \\psi_{\\phi i} \\exp(- \\psi_{k_{s}i} \\cdot t_{ij}) +\n  (1 - \\psi_{\\phi i}) \\exp(\\psi_{k_{g}i} \\cdot t_{ij})\n\\}\n\\]\nfor positive times \\(t_{ij}\\). Again, if the time \\(t\\) is negative, i.e. the treatment has not started yet, then it is reasonable to assume that the tumor cannot shrink yet. That is, we have then \\(\\phi_i = 0\\). Therefore, the final model for the mean SLD is:\n\\[\ny^{*}(t_{ij}) =\n\\begin{cases}\n\\psi_{b_{0}i} \\exp(\\psi_{k_{g}i} \\cdot t_{ij}) & \\text{if } t_{ij} &lt; 0 \\\\\n\\psi_{b_{0}i} \\{\n  \\psi_{\\phi i} \\exp(- \\psi_{k_{s}i} \\cdot t_{ij}) +\n  (1 - \\psi_{\\phi i}) \\exp(\\psi_{k_{g}i} \\cdot t_{ij})\n\\} & \\text{if } t_{ij} \\geq 0\n\\end{cases}\n\\]\nIn terms of likelihood and priors, we can use the same assumptions as in the previous model. The only difference is that we have to model the \\(\\phi\\) parameter. We can use a logit-normal distribution for this parameter. This is a normal distribution on the logit scale, which is then transformed to the unit interval. \\[\n\\psi_{\\phi i} \\sim \\text{LogitNormal}(\\text{logit}(0.5) = 0, 0.5)\n\\]",
-    "crumbs": [
-      "Session 1: TGI",
-      "3. Generalized Stein-Fojo model"
-    ]
-  },
-  {
-    "objectID": "session-tgi/3_tgi_gsf_brms.html#fit-model",
-    "href": "session-tgi/3_tgi_gsf_brms.html#fit-model",
-    "title": "3. Generalized Stein-Fojo model",
-    "section": "Fit model",
-    "text": "Fit model\nWe can now fit the model using brms. The structure is determined by the model formula:\n\n\nShow the code\nformula &lt;- bf(sld ~ ystar, nl = TRUE) +\n  # Define the mean for the likelihood\n  nlf(\n    ystar ~ \n      int_step(year &gt; 0) * \n        (b0 * (phi * exp(-ks * year) + (1 - phi) * exp(kg * year))) +\n      int_step(year &lt;= 0) * \n        (b0 * exp(kg * year))\n  ) +\n  # As before:\n  nlf(sigma ~ log(tau) + log(ystar)) +\n  lf(tau ~ 1) +\n  # Define nonlinear parameter transformations:\n  nlf(b0 ~ exp(lb0)) +\n  nlf(phi ~ inv_logit(tphi)) +\n  nlf(ks ~ exp(lks)) +\n  nlf(kg ~ exp(lkg)) +\n  # Define random effect structure:\n  lf(lb0 ~ 1 + (1 | id)) + \n  lf(tphi ~ 1 + (1 | id)) + \n  lf(lks ~ 1 + (1 | id)) +\n  lf(lkg ~ 1 + (1 | id))\n\n# Define the priors\npriors &lt;- c(\n  prior(normal(log(65), 1), nlpar = \"lb0\"),\n  prior(normal(log(0.52), 0.1), nlpar = \"lks\"),\n  prior(normal(log(1.04), 1), nlpar = \"lkg\"),\n  prior(normal(0, 0.5), nlpar = \"tphi\"),\n  prior(normal(0, 3), lb = 0, nlpar = \"lb0\", class = \"sd\"),\n  prior(normal(0, 3), lb = 0, nlpar = \"lks\", class = \"sd\"),\n  prior(normal(0, 3), lb = 0, nlpar = \"lkg\", class = \"sd\"),\n  prior(student_t(3, 0, 22.2), lb = 0, nlpar = \"tphi\", class = \"sd\"),\n  prior(normal(0, 3), lb = 0, nlpar = \"tau\")\n)\n\n# Initial values to avoid problems at the beginning\nn_patients &lt;- nlevels(df$id)\ninits &lt;- list(\n  b_lb0 = array(3.61),\n  b_lks = array(-1.25),\n  b_lkg = array(-1.33),\n  b_tphi = array(0),\n  sd_1 = array(0.58),\n  sd_2 = array(1.6),\n  sd_3 = array(0.994),\n  sd_4 = array(0.1),\n  b_tau = array(0.161),\n  z_1 = matrix(0, nrow = 1, ncol = n_patients),\n  z_2 = matrix(0, nrow = 1, ncol = n_patients),\n  z_3 = matrix(0, nrow = 1, ncol = n_patients),\n  z_4 = matrix(0, nrow = 1, ncol = n_patients)\n)\n\n# Fit the model\nsave_file &lt;- here(\"session-tgi/gsf1.RData\")\nif (file.exists(save_file)) {\n  load(save_file)\n} else {\n  fit &lt;- brm(\n    formula = formula,\n    data = df,\n    prior = priors,\n    family = gaussian(),\n    init = rep(list(inits), CHAINS),\n    chains = CHAINS, \n    iter = WARMUP + ITER, \n    warmup = WARMUP, \n    seed = BAYES.SEED,\n    refresh = REFRESH\n  )\n  save(fit, file = save_file)\n}\n\n# Summarize the fit\nsummary(fit)\n\n\nWarning: There were 41 divergent transitions after warmup. Increasing\nadapt_delta above 0.8 may help. See\nhttp://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup\n\n\n Family: gaussian \n  Links: mu = identity; sigma = log \nFormula: sld ~ eta \n         eta ~ int_step(year &gt; 0) * (b0 * (phi * exp(-ks * year) + (1 - phi) * exp(kg * year))) + int_step(year &lt;= 0) * (b0 * exp(kg * year))\n         sigma ~ log(tau) + log(eta)\n         tau ~ 1\n         b0 ~ exp(lb0)\n         phi ~ inv_logit(tphi)\n         ks ~ exp(lks)\n         kg ~ exp(lkg)\n         lb0 ~ 1 + (1 | id)\n         tphi ~ 1 + (1 | id)\n         lks ~ 1 + (1 | id)\n         lkg ~ 1 + (1 | id)\n   Data: df (Number of observations: 4099) \n  Draws: 4 chains, each with iter = 3000; warmup = 2000; thin = 1;\n         total post-warmup draws = 4000\n\nMultilevel Hyperparameters:\n~id (Number of levels: 701) \n                   Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nsd(lb0_Intercept)      0.58      0.02     0.55     0.61 1.01      382      606\nsd(tphi_Intercept)     2.12      0.18     1.78     2.49 1.01      611     1216\nsd(lks_Intercept)      2.16      0.14     1.90     2.46 1.00      520     1282\nsd(lkg_Intercept)      1.18      0.09     1.01     1.36 1.00      899     1766\n\nRegression Coefficients:\n               Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\ntau_Intercept      0.15      0.00     0.14     0.15 1.00     1611     2351\nlb0_Intercept      3.63      0.02     3.59     3.68 1.03      221      547\ntphi_Intercept    -0.14      0.22    -0.57     0.27 1.00      424      839\nlks_Intercept     -0.62      0.10    -0.81    -0.43 1.00     1170     1868\nlkg_Intercept     -1.15      0.14    -1.43    -0.89 1.00      699     1488\n\nDraws were sampled using sample(hmc). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1).\n\n\nIn total this took 76 minutes on my laptop.",
-    "crumbs": [
-      "Session 1: TGI",
-      "3. Generalized Stein-Fojo model"
-    ]
-  },
-  {
-    "objectID": "session-tgi/3_tgi_gsf_brms.html#parameter-estimates",
-    "href": "session-tgi/3_tgi_gsf_brms.html#parameter-estimates",
-    "title": "3. Generalized Stein-Fojo model",
-    "section": "Parameter estimates",
-    "text": "Parameter estimates\n\n\nShow the code\npost_df &lt;- as_draws_df(fit)\nhead(names(post_df), 10)\n\n\n [1] \"b_tau_Intercept\"        \"b_lb0_Intercept\"        \"b_tphi_Intercept\"      \n [4] \"b_lks_Intercept\"        \"b_lkg_Intercept\"        \"sd_id__lb0_Intercept\"  \n [7] \"sd_id__tphi_Intercept\"  \"sd_id__lks_Intercept\"   \"sd_id__lkg_Intercept\"  \n[10] \"r_id__lb0[1,Intercept]\"\n\n\nShow the code\npost_df &lt;- post_df |&gt;\n  mutate(\n    theta_b0 = exp(b_lb0_Intercept + sd_id__lb0_Intercept^2 / 2),\n    theta_ks = exp(b_lks_Intercept + sd_id__lks_Intercept^2 / 2),\n    theta_kg = exp(b_lkg_Intercept + sd_id__lkg_Intercept^2 / 2),\n    theta_phi = plogis(b_tphi_Intercept),\n    omega_0 = sd_id__lb0_Intercept,\n    omega_s = sd_id__lks_Intercept,\n    omega_g = sd_id__lkg_Intercept,\n    omega_phi = sd_id__tphi_Intercept,\n    cv_0 = sqrt(exp(sd_id__lb0_Intercept^2) - 1),\n    cv_s = sqrt(exp(sd_id__lks_Intercept^2) - 1),\n    cv_g = sqrt(exp(sd_id__lkg_Intercept^2) - 1),\n    sigma = b_tau_Intercept\n  )\n\n\nLet’s first look at the population level parameters:\n\n\nShow the code\ngsf_pop_params &lt;- c(\"theta_b0\", \"theta_ks\", \"theta_kg\", \"theta_phi\", \"sigma\")\n\nmcmc_trace(post_df, pars = gsf_pop_params)\n\n\n\n\n\n\n\n\n\nShow the code\nmcmc_pairs(\n  post_df, \n  pars = gsf_pop_params,\n  off_diag_args = list(size = 1, alpha = 0.1)\n)\n\n\n\n\n\n\n\n\n\nThe trace plots look good. The chains seem to have converged and the pairs plot shows no strong correlations between the parameters. Let’s check the table:\n\n\nShow the code\npost_sum &lt;- post_df |&gt;\n  select(theta_b0, theta_ks, theta_kg, theta_phi, omega_0, omega_s, omega_g, omega_phi, sigma) |&gt;\n  summarize_draws() |&gt;\n  gt() |&gt;\n  fmt_number(decimals = 3)\n\n\nWarning: Dropping 'draws_df' class as required metadata was removed.\n\n\nShow the code\npost_sum\n\n\n\n\n\n\n\n\nvariable\nmean\nmedian\nsd\nmad\nq5\nq95\nrhat\ness_bulk\ness_tail\n\n\n\n\ntheta_b0\n44.766\n44.746\n1.057\n1.073\n43.074\n46.528\n1.007\n179.361\n378.906\n\n\ntheta_ks\n5.857\n5.444\n1.924\n1.582\n3.589\n9.560\n1.003\n384.622\n905.388\n\n\ntheta_kg\n0.640\n0.637\n0.061\n0.062\n0.541\n0.745\n1.000\n685.379\n1,885.264\n\n\ntheta_phi\n0.467\n0.466\n0.055\n0.058\n0.376\n0.555\n1.003\n419.761\n831.991\n\n\nomega_0\n0.578\n0.578\n0.016\n0.017\n0.553\n0.606\n1.001\n376.483\n628.807\n\n\nomega_s\n2.159\n2.155\n0.145\n0.145\n1.929\n2.412\n1.002\n521.866\n1,265.639\n\n\nomega_g\n1.177\n1.174\n0.090\n0.090\n1.037\n1.333\n1.002\n868.075\n1,746.640\n\n\nomega_phi\n2.117\n2.108\n0.182\n0.184\n1.833\n2.423\n1.003\n603.806\n1,215.066\n\n\nsigma\n0.147\n0.147\n0.002\n0.002\n0.143\n0.150\n1.000\n1,575.916\n2,168.010\n\n\n\n\n\n\n\nSo \\(\\theta_{\\phi}\\) is estimated around 0.5. The other parameters are similar to the previous Stein-Fojo model, but we see a larger \\(\\theta_{k_s}\\) e.g.",
-    "crumbs": [
-      "Session 1: TGI",
-      "3. Generalized Stein-Fojo model"
-    ]
-  },
-  {
-    "objectID": "session-tgi/3_tgi_gsf_brms.html#observation-vs-model-fit",
-    "href": "session-tgi/3_tgi_gsf_brms.html#observation-vs-model-fit",
-    "title": "3. Generalized Stein-Fojo model",
-    "section": "Observation vs model fit",
-    "text": "Observation vs model fit\nWe can now compare the model fit to the observations. Let’s do this for the first 20 patients again:\n\n\nShow the code\npt_subset &lt;- as.character(1:20)\ndf_subset &lt;- df |&gt; \n  filter(id %in% pt_subset)\n\ndf_sim &lt;- df_subset |&gt; \n  data_grid(\n    id = pt_subset, \n    year = seq_range(year, 101)\n  ) |&gt;\n  add_epred_draws(fit) |&gt;\n  median_qi()\n\ndf_sim |&gt;\n  ggplot(aes(x = year, y = sld)) +\n  facet_wrap(~ id) +\n  geom_ribbon(\n    aes(y = .epred, ymin = .lower, ymax = .upper), \n    alpha = 0.3, \n    fill = \"deepskyblue\"\n  ) +\n  geom_line(aes(y = .epred), color = \"deepskyblue\") +\n  geom_point(data = df_subset, color = \"tomato\") +\n  coord_cartesian(ylim = range(df_subset$sld)) +\n  scale_fill_brewer(palette = \"Greys\") +\n  labs(title = \"GSF model fit\")\n\n\n\n\n\n\n\n\n\nThis also looks good. The model seems to capture the data well.",
-    "crumbs": [
-      "Session 1: TGI",
-      "3. Generalized Stein-Fojo model"
-    ]
-  },
-  {
-    "objectID": "session-tgi/3_tgi_gsf_brms.html#with-jmpost",
-    "href": "session-tgi/3_tgi_gsf_brms.html#with-jmpost",
-    "title": "3. Generalized Stein-Fojo model",
-    "section": "With jmpost",
-    "text": "With jmpost\nThis model can also be fit with the jmpost package. The corresponding function is LongitudinalGSF. The statistical model is specified in the vignette here.\nHomework: Implement the generalized Stein-Fojo model with jmpost and compare the results with the brms implementation.",
-    "crumbs": [
-      "Session 1: TGI",
-      "3. Generalized Stein-Fojo model"
     ]
   }
 ]

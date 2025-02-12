@@ -8,7 +8,7 @@
 
 <meta name="author" content="Daniel Sabanés Bové">
 <meta name="author" content="Francois Mercier">
-<meta name="dcterms.date" content="2025-02-11">
+<meta name="dcterms.date" content="2025-02-12">
 
 <title>2. TGI model minimal workflow with jmpost – TGI-OS Training</title>
 <style>
@@ -75,7 +75,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-22501a6347d7c50d37fc616aa2593389.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-453bbb6d1d9cb7fba2a81fb4686694e5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -237,7 +237,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2025-02-11</p>
+      <p class="date">2025-02-12</p>
     </div>
   </div>
   
@@ -455,10 +455,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_bsld =</span> <span class="fu">prior_normal</span>(<span class="fu">log</span>(<span class="dv">65</span>), <span class="dv">1</span>),</span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_ks =</span> <span class="fu">prior_normal</span>(<span class="fu">log</span>(<span class="fl">0.52</span>), <span class="dv">1</span>),</span>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_kg =</span> <span class="fu">prior_normal</span>(<span class="fu">log</span>(<span class="fl">1.04</span>), <span class="dv">1</span>),</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_bsld =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>),</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_ks =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>),</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_kg =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>),</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">sigma =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_bsld =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="fu">set_limits</span>(<span class="dv">0</span>, <span class="cn">Inf</span>),</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_ks =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="fu">set_limits</span>(<span class="dv">0</span>, <span class="cn">Inf</span>),</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_kg =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="fu">set_limits</span>(<span class="dv">0</span>, <span class="cn">Inf</span>),</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">sigma =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="fu">set_limits</span>(<span class="dv">0</span>, <span class="cn">Inf</span>)</span>
 <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -471,7 +471,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>save_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-tgi/jm2.RData"</span>)</span>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>save_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-tgi/jm5.RData"</span>)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(save_file)) {</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">load</span>(save_file)</span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
@@ -482,11 +482,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">iter_warmup =</span> WARMUP,</span>
 <span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">chains =</span> CHAINS,</span>
 <span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">parallel_chains =</span> CHAINS,</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">seed =</span> BAYES.SEED,</span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">refresh =</span> REFRESH</span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">save</span>(mcmc_results, <span class="at">file =</span> save_file)</span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">thin =</span> CHAINS,</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">seed =</span> BAYES.SEED,</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">refresh =</span> REFRESH</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">save</span>(mcmc_results, <span class="at">file =</span> save_file)</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Let’s check the convergence of the population parameters:</p>
@@ -503,7 +504,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_omega_kg"</span></span>
 <span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>save_overall_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-tgi/jm2_more.RData"</span>)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>save_overall_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-tgi/jm5_more.RData"</span>)</span>
 <span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(save_overall_file)) {</span>
 <span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">load</span>(save_overall_file)</span>
 <span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
@@ -519,13 +520,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code># A tibble: 7 × 10
   variable     mean median      sd     mad     q5    q95  rhat ess_bulk ess_tail
   &lt;chr&gt;       &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
-1 lm_sf_mu_…  3.61   3.61  0.0223  0.0232   3.57   3.65   1.02     187.     337.
-2 lm_sf_mu_… -1.25  -1.25  0.155   0.154   -1.52  -1.01   1.01     384.     877.
-3 lm_sf_mu_… -1.33  -1.33  0.0769  0.0769  -1.46  -1.21   1.02     265.     476.
-4 lm_sf_sig…  0.161  0.161 0.00234 0.00235  0.157  0.165  1.00    1205.    2021.
-5 lm_sf_ome…  0.580  0.579 0.0165  0.0171   0.553  0.606  1.00     337.     670.
-6 lm_sf_ome…  1.60   1.60  0.110   0.109    1.43   1.79   1.01     351.     751.
-7 lm_sf_ome…  0.994  0.991 0.0512  0.0504   0.914  1.08   1.01     430.     891.</code></pre>
+1 lm_sf_mu_…  3.61   3.61  0.0236  0.0232   3.57   3.65   1.02     142.     188.
+2 lm_sf_mu_… -1.27  -1.27  0.160   0.152   -1.54  -1.03   1.01     352.     500.
+3 lm_sf_mu_… -1.35  -1.35  0.0828  0.0789  -1.49  -1.22   1.00     230.     456.
+4 lm_sf_sig…  0.161  0.161 0.00233 0.00244  0.158  0.165  1.00     513.     875.
+5 lm_sf_ome…  0.579  0.578 0.0156  0.0153   0.555  0.608  1.00     341.     576.
+6 lm_sf_ome…  1.62   1.62  0.117   0.112    1.45   1.82   1.01     321.     509.
+7 lm_sf_ome…  0.997  0.993 0.0505  0.0503   0.920  1.08   1.00     390.     595.</code></pre>
 </div>
 </div>
 <p>This looks good, let’s check the traceplots:</p>
@@ -570,7 +571,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>pt_subset <span class="ot">&lt;-</span> <span class="fu">as.character</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>)</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>save_fit_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-tgi/jm2_fit.RData"</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>save_fit_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-tgi/jm5_fit.RData"</span>)</span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(save_fit_file)) {</span>
 <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">load</span>(save_fit_file)</span>
 <span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
@@ -671,23 +672,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>post_sum</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="tysngjfpxd" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#tysngjfpxd table {
+<div id="dcbbodpppu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#dcbbodpppu table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#tysngjfpxd thead, #tysngjfpxd tbody, #tysngjfpxd tfoot, #tysngjfpxd tr, #tysngjfpxd td, #tysngjfpxd th {
+#dcbbodpppu thead, #dcbbodpppu tbody, #dcbbodpppu tfoot, #dcbbodpppu tr, #dcbbodpppu td, #dcbbodpppu th {
   border-style: none;
 }
 
-#tysngjfpxd p {
+#dcbbodpppu p {
   margin: 0;
   padding: 0;
 }
 
-#tysngjfpxd .gt_table {
+#dcbbodpppu .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -713,12 +714,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-left-color: #D3D3D3;
 }
 
-#tysngjfpxd .gt_caption {
+#dcbbodpppu .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#tysngjfpxd .gt_title {
+#dcbbodpppu .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -730,7 +731,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-width: 0;
 }
 
-#tysngjfpxd .gt_subtitle {
+#dcbbodpppu .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -742,7 +743,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-width: 0;
 }
 
-#tysngjfpxd .gt_heading {
+#dcbbodpppu .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -754,13 +755,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#tysngjfpxd .gt_bottom_border {
+#dcbbodpppu .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#tysngjfpxd .gt_col_headings {
+#dcbbodpppu .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -775,7 +776,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#tysngjfpxd .gt_col_heading {
+#dcbbodpppu .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -795,7 +796,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#tysngjfpxd .gt_column_spanner_outer {
+#dcbbodpppu .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -807,15 +808,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 4px;
 }
 
-#tysngjfpxd .gt_column_spanner_outer:first-child {
+#dcbbodpppu .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#tysngjfpxd .gt_column_spanner_outer:last-child {
+#dcbbodpppu .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#tysngjfpxd .gt_column_spanner {
+#dcbbodpppu .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -827,11 +828,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   width: 100%;
 }
 
-#tysngjfpxd .gt_spanner_row {
+#dcbbodpppu .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#tysngjfpxd .gt_group_heading {
+#dcbbodpppu .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -857,7 +858,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   text-align: left;
 }
 
-#tysngjfpxd .gt_empty_group_heading {
+#dcbbodpppu .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -872,15 +873,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: middle;
 }
 
-#tysngjfpxd .gt_from_md > :first-child {
+#dcbbodpppu .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#tysngjfpxd .gt_from_md > :last-child {
+#dcbbodpppu .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#tysngjfpxd .gt_row {
+#dcbbodpppu .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -899,7 +900,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#tysngjfpxd .gt_stub {
+#dcbbodpppu .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -912,7 +913,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#tysngjfpxd .gt_stub_row_group {
+#dcbbodpppu .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -926,15 +927,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: top;
 }
 
-#tysngjfpxd .gt_row_group_first td {
+#dcbbodpppu .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#tysngjfpxd .gt_row_group_first th {
+#dcbbodpppu .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#tysngjfpxd .gt_summary_row {
+#dcbbodpppu .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -944,16 +945,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#tysngjfpxd .gt_first_summary_row {
+#dcbbodpppu .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#tysngjfpxd .gt_first_summary_row.thick {
+#dcbbodpppu .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#tysngjfpxd .gt_last_summary_row {
+#dcbbodpppu .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -963,7 +964,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#tysngjfpxd .gt_grand_summary_row {
+#dcbbodpppu .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -973,7 +974,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#tysngjfpxd .gt_first_grand_summary_row {
+#dcbbodpppu .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -983,7 +984,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-color: #D3D3D3;
 }
 
-#tysngjfpxd .gt_last_grand_summary_row_top {
+#dcbbodpppu .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -993,11 +994,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#tysngjfpxd .gt_striped {
+#dcbbodpppu .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#tysngjfpxd .gt_table_body {
+#dcbbodpppu .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1006,7 +1007,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#tysngjfpxd .gt_footnotes {
+#dcbbodpppu .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1020,7 +1021,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#tysngjfpxd .gt_footnote {
+#dcbbodpppu .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1029,7 +1030,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#tysngjfpxd .gt_sourcenotes {
+#dcbbodpppu .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1043,7 +1044,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#tysngjfpxd .gt_sourcenote {
+#dcbbodpppu .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1051,72 +1052,72 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#tysngjfpxd .gt_left {
+#dcbbodpppu .gt_left {
   text-align: left;
 }
 
-#tysngjfpxd .gt_center {
+#dcbbodpppu .gt_center {
   text-align: center;
 }
 
-#tysngjfpxd .gt_right {
+#dcbbodpppu .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#tysngjfpxd .gt_font_normal {
+#dcbbodpppu .gt_font_normal {
   font-weight: normal;
 }
 
-#tysngjfpxd .gt_font_bold {
+#dcbbodpppu .gt_font_bold {
   font-weight: bold;
 }
 
-#tysngjfpxd .gt_font_italic {
+#dcbbodpppu .gt_font_italic {
   font-style: italic;
 }
 
-#tysngjfpxd .gt_super {
+#dcbbodpppu .gt_super {
   font-size: 65%;
 }
 
-#tysngjfpxd .gt_footnote_marks {
+#dcbbodpppu .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#tysngjfpxd .gt_asterisk {
+#dcbbodpppu .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#tysngjfpxd .gt_indent_1 {
+#dcbbodpppu .gt_indent_1 {
   text-indent: 5px;
 }
 
-#tysngjfpxd .gt_indent_2 {
+#dcbbodpppu .gt_indent_2 {
   text-indent: 10px;
 }
 
-#tysngjfpxd .gt_indent_3 {
+#dcbbodpppu .gt_indent_3 {
   text-indent: 15px;
 }
 
-#tysngjfpxd .gt_indent_4 {
+#dcbbodpppu .gt_indent_4 {
   text-indent: 20px;
 }
 
-#tysngjfpxd .gt_indent_5 {
+#dcbbodpppu .gt_indent_5 {
   text-indent: 25px;
 }
 
-#tysngjfpxd .katex-display {
+#dcbbodpppu .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#tysngjfpxd div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#dcbbodpppu div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1139,123 +1140,123 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody class="gt_table_body">
 <tr class="odd">
 <td class="gt_row gt_left" headers="variable">theta_b0</td>
-<td class="gt_row gt_right" headers="mean">43.8</td>
+<td class="gt_row gt_right" headers="mean">43.7</td>
 <td class="gt_row gt_right" headers="median">43.8</td>
-<td class="gt_row gt_right" headers="sd">1.04</td>
-<td class="gt_row gt_right" headers="mad">1.11</td>
-<td class="gt_row gt_right" headers="q5">42.1</td>
+<td class="gt_row gt_right" headers="sd">1.10</td>
+<td class="gt_row gt_right" headers="mad">1.12</td>
+<td class="gt_row gt_right" headers="q5">42.0</td>
 <td class="gt_row gt_right" headers="q95">45.5</td>
 <td class="gt_row gt_right" headers="rhat">1.00</td>
-<td class="gt_row gt_right" headers="ess_bulk">189</td>
-<td class="gt_row gt_right" headers="ess_tail">593</td>
+<td class="gt_row gt_right" headers="ess_bulk">151</td>
+<td class="gt_row gt_right" headers="ess_tail">201</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="variable">theta_ks</td>
-<td class="gt_row gt_right" headers="mean">1.05</td>
-<td class="gt_row gt_right" headers="median">1.04</td>
-<td class="gt_row gt_right" headers="sd">0.120</td>
-<td class="gt_row gt_right" headers="mad">0.118</td>
-<td class="gt_row gt_right" headers="q5">0.874</td>
-<td class="gt_row gt_right" headers="q95">1.26</td>
+<td class="gt_row gt_right" headers="mean">1.06</td>
+<td class="gt_row gt_right" headers="median">1.05</td>
+<td class="gt_row gt_right" headers="sd">0.129</td>
+<td class="gt_row gt_right" headers="mad">0.120</td>
+<td class="gt_row gt_right" headers="q5">0.871</td>
+<td class="gt_row gt_right" headers="q95">1.30</td>
 <td class="gt_row gt_right" headers="rhat">1.00</td>
-<td class="gt_row gt_right" headers="ess_bulk">245</td>
-<td class="gt_row gt_right" headers="ess_tail">447</td>
+<td class="gt_row gt_right" headers="ess_bulk">226</td>
+<td class="gt_row gt_right" headers="ess_tail">408</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="variable">theta_kg</td>
-<td class="gt_row gt_right" headers="mean">0.434</td>
-<td class="gt_row gt_right" headers="median">0.434</td>
-<td class="gt_row gt_right" headers="sd">0.0296</td>
-<td class="gt_row gt_right" headers="mad">0.0299</td>
-<td class="gt_row gt_right" headers="q5">0.386</td>
-<td class="gt_row gt_right" headers="q95">0.483</td>
-<td class="gt_row gt_right" headers="rhat">1.01</td>
-<td class="gt_row gt_right" headers="ess_bulk">427</td>
-<td class="gt_row gt_right" headers="ess_tail">850</td>
+<td class="gt_row gt_right" headers="mean">0.428</td>
+<td class="gt_row gt_right" headers="median">0.427</td>
+<td class="gt_row gt_right" headers="sd">0.0311</td>
+<td class="gt_row gt_right" headers="mad">0.0306</td>
+<td class="gt_row gt_right" headers="q5">0.378</td>
+<td class="gt_row gt_right" headers="q95">0.479</td>
+<td class="gt_row gt_right" headers="rhat">1.00</td>
+<td class="gt_row gt_right" headers="ess_bulk">318</td>
+<td class="gt_row gt_right" headers="ess_tail">472</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="variable">omega_bsld</td>
-<td class="gt_row gt_right" headers="mean">0.580</td>
-<td class="gt_row gt_right" headers="median">0.579</td>
-<td class="gt_row gt_right" headers="sd">0.0165</td>
-<td class="gt_row gt_right" headers="mad">0.0171</td>
-<td class="gt_row gt_right" headers="q5">0.553</td>
-<td class="gt_row gt_right" headers="q95">0.606</td>
+<td class="gt_row gt_right" headers="mean">0.579</td>
+<td class="gt_row gt_right" headers="median">0.578</td>
+<td class="gt_row gt_right" headers="sd">0.0156</td>
+<td class="gt_row gt_right" headers="mad">0.0153</td>
+<td class="gt_row gt_right" headers="q5">0.555</td>
+<td class="gt_row gt_right" headers="q95">0.608</td>
 <td class="gt_row gt_right" headers="rhat">1.00</td>
-<td class="gt_row gt_right" headers="ess_bulk">337</td>
-<td class="gt_row gt_right" headers="ess_tail">668</td>
+<td class="gt_row gt_right" headers="ess_bulk">346</td>
+<td class="gt_row gt_right" headers="ess_tail">545</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="variable">omega_ks</td>
-<td class="gt_row gt_right" headers="mean">1.60</td>
-<td class="gt_row gt_right" headers="median">1.60</td>
-<td class="gt_row gt_right" headers="sd">0.110</td>
-<td class="gt_row gt_right" headers="mad">0.109</td>
-<td class="gt_row gt_right" headers="q5">1.43</td>
-<td class="gt_row gt_right" headers="q95">1.79</td>
-<td class="gt_row gt_right" headers="rhat">1.01</td>
-<td class="gt_row gt_right" headers="ess_bulk">338</td>
-<td class="gt_row gt_right" headers="ess_tail">739</td>
+<td class="gt_row gt_right" headers="mean">1.62</td>
+<td class="gt_row gt_right" headers="median">1.62</td>
+<td class="gt_row gt_right" headers="sd">0.117</td>
+<td class="gt_row gt_right" headers="mad">0.112</td>
+<td class="gt_row gt_right" headers="q5">1.45</td>
+<td class="gt_row gt_right" headers="q95">1.82</td>
+<td class="gt_row gt_right" headers="rhat">1.00</td>
+<td class="gt_row gt_right" headers="ess_bulk">318</td>
+<td class="gt_row gt_right" headers="ess_tail">494</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="variable">omega_kg</td>
-<td class="gt_row gt_right" headers="mean">0.994</td>
-<td class="gt_row gt_right" headers="median">0.991</td>
-<td class="gt_row gt_right" headers="sd">0.0512</td>
-<td class="gt_row gt_right" headers="mad">0.0504</td>
-<td class="gt_row gt_right" headers="q5">0.914</td>
+<td class="gt_row gt_right" headers="mean">0.997</td>
+<td class="gt_row gt_right" headers="median">0.993</td>
+<td class="gt_row gt_right" headers="sd">0.0505</td>
+<td class="gt_row gt_right" headers="mad">0.0503</td>
+<td class="gt_row gt_right" headers="q5">0.920</td>
 <td class="gt_row gt_right" headers="q95">1.08</td>
 <td class="gt_row gt_right" headers="rhat">1.00</td>
-<td class="gt_row gt_right" headers="ess_bulk">424</td>
-<td class="gt_row gt_right" headers="ess_tail">876</td>
+<td class="gt_row gt_right" headers="ess_bulk">390</td>
+<td class="gt_row gt_right" headers="ess_tail">576</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="variable">cv_0</td>
-<td class="gt_row gt_right" headers="mean">0.632</td>
-<td class="gt_row gt_right" headers="median">0.632</td>
-<td class="gt_row gt_right" headers="sd">0.0212</td>
-<td class="gt_row gt_right" headers="mad">0.0220</td>
-<td class="gt_row gt_right" headers="q5">0.598</td>
-<td class="gt_row gt_right" headers="q95">0.666</td>
+<td class="gt_row gt_right" headers="mean">0.631</td>
+<td class="gt_row gt_right" headers="median">0.630</td>
+<td class="gt_row gt_right" headers="sd">0.0200</td>
+<td class="gt_row gt_right" headers="mad">0.0196</td>
+<td class="gt_row gt_right" headers="q5">0.600</td>
+<td class="gt_row gt_right" headers="q95">0.668</td>
 <td class="gt_row gt_right" headers="rhat">1.00</td>
-<td class="gt_row gt_right" headers="ess_bulk">337</td>
-<td class="gt_row gt_right" headers="ess_tail">668</td>
+<td class="gt_row gt_right" headers="ess_bulk">346</td>
+<td class="gt_row gt_right" headers="ess_tail">545</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="variable">cv_s</td>
-<td class="gt_row gt_right" headers="mean">3.56</td>
-<td class="gt_row gt_right" headers="median">3.46</td>
-<td class="gt_row gt_right" headers="sd">0.719</td>
-<td class="gt_row gt_right" headers="mad">0.649</td>
-<td class="gt_row gt_right" headers="q5">2.59</td>
-<td class="gt_row gt_right" headers="q95">4.89</td>
-<td class="gt_row gt_right" headers="rhat">1.01</td>
-<td class="gt_row gt_right" headers="ess_bulk">338</td>
-<td class="gt_row gt_right" headers="ess_tail">739</td>
+<td class="gt_row gt_right" headers="mean">3.70</td>
+<td class="gt_row gt_right" headers="median">3.57</td>
+<td class="gt_row gt_right" headers="sd">0.818</td>
+<td class="gt_row gt_right" headers="mad">0.685</td>
+<td class="gt_row gt_right" headers="q5">2.66</td>
+<td class="gt_row gt_right" headers="q95">5.16</td>
+<td class="gt_row gt_right" headers="rhat">1.00</td>
+<td class="gt_row gt_right" headers="ess_bulk">318</td>
+<td class="gt_row gt_right" headers="ess_tail">494</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="variable">cv_g</td>
-<td class="gt_row gt_right" headers="mean">1.30</td>
-<td class="gt_row gt_right" headers="median">1.29</td>
-<td class="gt_row gt_right" headers="sd">0.107</td>
+<td class="gt_row gt_right" headers="mean">1.31</td>
+<td class="gt_row gt_right" headers="median">1.30</td>
+<td class="gt_row gt_right" headers="sd">0.106</td>
 <td class="gt_row gt_right" headers="mad">0.103</td>
-<td class="gt_row gt_right" headers="q5">1.14</td>
+<td class="gt_row gt_right" headers="q5">1.15</td>
 <td class="gt_row gt_right" headers="q95">1.49</td>
 <td class="gt_row gt_right" headers="rhat">1.00</td>
-<td class="gt_row gt_right" headers="ess_bulk">424</td>
-<td class="gt_row gt_right" headers="ess_tail">876</td>
+<td class="gt_row gt_right" headers="ess_bulk">390</td>
+<td class="gt_row gt_right" headers="ess_tail">576</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="variable">sigma</td>
 <td class="gt_row gt_right" headers="mean">0.161</td>
 <td class="gt_row gt_right" headers="median">0.161</td>
-<td class="gt_row gt_right" headers="sd">0.00234</td>
-<td class="gt_row gt_right" headers="mad">0.00235</td>
-<td class="gt_row gt_right" headers="q5">0.157</td>
+<td class="gt_row gt_right" headers="sd">0.00233</td>
+<td class="gt_row gt_right" headers="mad">0.00244</td>
+<td class="gt_row gt_right" headers="q5">0.158</td>
 <td class="gt_row gt_right" headers="q95">0.165</td>
 <td class="gt_row gt_right" headers="rhat">1.00</td>
-<td class="gt_row gt_right" headers="ess_bulk">1,160</td>
-<td class="gt_row gt_right" headers="ess_tail">2,010</td>
+<td class="gt_row gt_right" headers="ess_bulk">495</td>
+<td class="gt_row gt_right" headers="ess_tail">844</td>
 </tr>
 </tbody>
 </table>
@@ -1298,7 +1299,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>save_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-tgi/jm3.RData"</span>)</span>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>save_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-tgi/jm6.RData"</span>)</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(save_file)) {</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">load</span>(save_file)</span>
 <span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
@@ -1309,11 +1310,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">iter_warmup =</span> WARMUP,</span>
 <span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">chains =</span> CHAINS,</span>
 <span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">parallel_chains =</span> CHAINS,</span>
-<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">seed =</span> BAYES.SEED,</span>
-<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">refresh =</span> REFRESH</span>
-<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">save</span>(mcmc_results_by_arm, <span class="at">file =</span> save_file)</span>
-<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">thin =</span> CHAINS,</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">seed =</span> BAYES.SEED,</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">refresh =</span> REFRESH</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">save</span>(mcmc_results_by_arm, <span class="at">file =</span> save_file)</span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Let’s again check the convergence:</p>
@@ -1330,7 +1332,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_omega_kg"</span></span>
 <span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>save_arm_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-tgi/jm3_more.RData"</span>)</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>save_arm_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-tgi/jm6_more.RData"</span>)</span>
 <span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(save_arm_file)) {</span>
 <span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">load</span>(save_arm_file)</span>
 <span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
@@ -1346,17 +1348,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code># A tibble: 11 × 10
    variable    mean median      sd     mad     q5    q95  rhat ess_bulk ess_tail
    &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
- 1 lm_sf_mu…  3.61   3.61  0.0220  0.0218   3.58   3.65   1.01     300.     495.
- 2 lm_sf_mu… -0.782 -0.771 0.216   0.211   -1.15  -0.448  1.00     598.    1166.
- 3 lm_sf_mu… -1.50  -1.48  0.224   0.227   -1.88  -1.15   1.00     857.    1534.
- 4 lm_sf_mu… -1.13  -1.12  0.131   0.130   -1.36  -0.926  1.01     500.    1165.
- 5 lm_sf_mu… -1.35  -1.34  0.104   0.103   -1.52  -1.18   1.01     536.    1032.
- 6 lm_sf_si…  0.161  0.161 0.00234 0.00228  0.157  0.165  1.00    1903.    2494.
- 7 lm_sf_om…  0.579  0.579 0.0164  0.0164   0.553  0.607  1.01     426.     726.
- 8 lm_sf_om…  1.35   1.34  0.149   0.145    1.13   1.61   1.00     656.    1558.
- 9 lm_sf_om…  1.75   1.74  0.172   0.174    1.49   2.05   1.01     643.    1401.
-10 lm_sf_om…  0.769  0.764 0.0693  0.0674   0.664  0.891  1.00    1005.    1271.
-11 lm_sf_om…  1.10   1.10  0.0691  0.0667   0.993  1.22   1.00     664.     978.</code></pre>
+ 1 lm_sf_mu…  3.61   3.61  0.0211  0.0217   3.58   3.65  1.00      244.     502.
+ 2 lm_sf_mu… -0.752 -0.730 0.222   0.216   -1.14  -0.398 1.01      592.     673.
+ 3 lm_sf_mu… -1.52  -1.51  0.222   0.217   -1.90  -1.17  1.00      706.     850.
+ 4 lm_sf_mu… -1.11  -1.11  0.138   0.139   -1.35  -0.900 1.00      594.     814.
+ 5 lm_sf_mu… -1.35  -1.35  0.103   0.104   -1.52  -1.19  1.00      560.     776.
+ 6 lm_sf_si…  0.161  0.161 0.00224 0.00228  0.157  0.165 1.00      892.     941.
+ 7 lm_sf_om…  0.577  0.577 0.0159  0.0153   0.551  0.603 1.00      511.     672.
+ 8 lm_sf_om…  1.34   1.33  0.150   0.152    1.11   1.60  1.00      630.     844.
+ 9 lm_sf_om…  1.76   1.76  0.161   0.150    1.51   2.05  1.00      662.     990.
+10 lm_sf_om…  0.765  0.758 0.0710  0.0685   0.662  0.891 0.999     809.     951.
+11 lm_sf_om…  1.10   1.10  0.0705  0.0684   0.991  1.22  0.999     669.     736.</code></pre>
 </div>
 </div>
 <p>Let’s again tabulate the parameter estimates:</p>
@@ -1407,23 +1409,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>post_sum_by_arm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="ryyiztqqjg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ryyiztqqjg table {
+<div id="mtohqluljk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#mtohqluljk table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#ryyiztqqjg thead, #ryyiztqqjg tbody, #ryyiztqqjg tfoot, #ryyiztqqjg tr, #ryyiztqqjg td, #ryyiztqqjg th {
+#mtohqluljk thead, #mtohqluljk tbody, #mtohqluljk tfoot, #mtohqluljk tr, #mtohqluljk td, #mtohqluljk th {
   border-style: none;
 }
 
-#ryyiztqqjg p {
+#mtohqluljk p {
   margin: 0;
   padding: 0;
 }
 
-#ryyiztqqjg .gt_table {
+#mtohqluljk .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1449,12 +1451,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-left-color: #D3D3D3;
 }
 
-#ryyiztqqjg .gt_caption {
+#mtohqluljk .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ryyiztqqjg .gt_title {
+#mtohqluljk .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1466,7 +1468,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-width: 0;
 }
 
-#ryyiztqqjg .gt_subtitle {
+#mtohqluljk .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1478,7 +1480,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-width: 0;
 }
 
-#ryyiztqqjg .gt_heading {
+#mtohqluljk .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1490,13 +1492,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#ryyiztqqjg .gt_bottom_border {
+#mtohqluljk .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ryyiztqqjg .gt_col_headings {
+#mtohqluljk .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1511,7 +1513,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#ryyiztqqjg .gt_col_heading {
+#mtohqluljk .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1531,7 +1533,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#ryyiztqqjg .gt_column_spanner_outer {
+#mtohqluljk .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1543,15 +1545,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 4px;
 }
 
-#ryyiztqqjg .gt_column_spanner_outer:first-child {
+#mtohqluljk .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ryyiztqqjg .gt_column_spanner_outer:last-child {
+#mtohqluljk .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ryyiztqqjg .gt_column_spanner {
+#mtohqluljk .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1563,11 +1565,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   width: 100%;
 }
 
-#ryyiztqqjg .gt_spanner_row {
+#mtohqluljk .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ryyiztqqjg .gt_group_heading {
+#mtohqluljk .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1593,7 +1595,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   text-align: left;
 }
 
-#ryyiztqqjg .gt_empty_group_heading {
+#mtohqluljk .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1608,15 +1610,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: middle;
 }
 
-#ryyiztqqjg .gt_from_md > :first-child {
+#mtohqluljk .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ryyiztqqjg .gt_from_md > :last-child {
+#mtohqluljk .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ryyiztqqjg .gt_row {
+#mtohqluljk .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1635,7 +1637,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#ryyiztqqjg .gt_stub {
+#mtohqluljk .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1648,7 +1650,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#ryyiztqqjg .gt_stub_row_group {
+#mtohqluljk .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1662,15 +1664,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: top;
 }
 
-#ryyiztqqjg .gt_row_group_first td {
+#mtohqluljk .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ryyiztqqjg .gt_row_group_first th {
+#mtohqluljk .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ryyiztqqjg .gt_summary_row {
+#mtohqluljk .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1680,16 +1682,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#ryyiztqqjg .gt_first_summary_row {
+#mtohqluljk .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ryyiztqqjg .gt_first_summary_row.thick {
+#mtohqluljk .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ryyiztqqjg .gt_last_summary_row {
+#mtohqluljk .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1699,7 +1701,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#ryyiztqqjg .gt_grand_summary_row {
+#mtohqluljk .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1709,7 +1711,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#ryyiztqqjg .gt_first_grand_summary_row {
+#mtohqluljk .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1719,7 +1721,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-color: #D3D3D3;
 }
 
-#ryyiztqqjg .gt_last_grand_summary_row_top {
+#mtohqluljk .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1729,11 +1731,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#ryyiztqqjg .gt_striped {
+#mtohqluljk .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ryyiztqqjg .gt_table_body {
+#mtohqluljk .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1742,7 +1744,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#ryyiztqqjg .gt_footnotes {
+#mtohqluljk .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1756,7 +1758,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#ryyiztqqjg .gt_footnote {
+#mtohqluljk .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1765,7 +1767,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#ryyiztqqjg .gt_sourcenotes {
+#mtohqluljk .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1779,7 +1781,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#ryyiztqqjg .gt_sourcenote {
+#mtohqluljk .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1787,72 +1789,72 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#ryyiztqqjg .gt_left {
+#mtohqluljk .gt_left {
   text-align: left;
 }
 
-#ryyiztqqjg .gt_center {
+#mtohqluljk .gt_center {
   text-align: center;
 }
 
-#ryyiztqqjg .gt_right {
+#mtohqluljk .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ryyiztqqjg .gt_font_normal {
+#mtohqluljk .gt_font_normal {
   font-weight: normal;
 }
 
-#ryyiztqqjg .gt_font_bold {
+#mtohqluljk .gt_font_bold {
   font-weight: bold;
 }
 
-#ryyiztqqjg .gt_font_italic {
+#mtohqluljk .gt_font_italic {
   font-style: italic;
 }
 
-#ryyiztqqjg .gt_super {
+#mtohqluljk .gt_super {
   font-size: 65%;
 }
 
-#ryyiztqqjg .gt_footnote_marks {
+#mtohqluljk .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#ryyiztqqjg .gt_asterisk {
+#mtohqluljk .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ryyiztqqjg .gt_indent_1 {
+#mtohqluljk .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ryyiztqqjg .gt_indent_2 {
+#mtohqluljk .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ryyiztqqjg .gt_indent_3 {
+#mtohqluljk .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ryyiztqqjg .gt_indent_4 {
+#mtohqluljk .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ryyiztqqjg .gt_indent_5 {
+#mtohqluljk .gt_indent_5 {
   text-indent: 25px;
 }
 
-#ryyiztqqjg .katex-display {
+#mtohqluljk .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#ryyiztqqjg div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#mtohqluljk div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1875,195 +1877,195 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody class="gt_table_body">
 <tr class="odd">
 <td class="gt_row gt_left" headers="variable">theta_b0</td>
-<td class="gt_row gt_right" headers="mean">43.8</td>
-<td class="gt_row gt_right" headers="median">43.8</td>
-<td class="gt_row gt_right" headers="sd">1.02</td>
-<td class="gt_row gt_right" headers="mad">1.01</td>
-<td class="gt_row gt_right" headers="q5">42.2</td>
-<td class="gt_row gt_right" headers="q95">45.5</td>
-<td class="gt_row gt_right" headers="rhat">1.01</td>
-<td class="gt_row gt_right" headers="ess_bulk">303</td>
-<td class="gt_row gt_right" headers="ess_tail">388</td>
+<td class="gt_row gt_right" headers="mean">43.7</td>
+<td class="gt_row gt_right" headers="median">43.7</td>
+<td class="gt_row gt_right" headers="sd">0.999</td>
+<td class="gt_row gt_right" headers="mad">1.05</td>
+<td class="gt_row gt_right" headers="q5">42.1</td>
+<td class="gt_row gt_right" headers="q95">45.4</td>
+<td class="gt_row gt_right" headers="rhat">1.00</td>
+<td class="gt_row gt_right" headers="ess_bulk">227</td>
+<td class="gt_row gt_right" headers="ess_tail">558</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="variable">theta_ks1</td>
-<td class="gt_row gt_right" headers="mean">1.16</td>
-<td class="gt_row gt_right" headers="median">1.15</td>
-<td class="gt_row gt_right" headers="sd">0.159</td>
-<td class="gt_row gt_right" headers="mad">0.157</td>
-<td class="gt_row gt_right" headers="q5">0.931</td>
+<td class="gt_row gt_right" headers="mean">1.18</td>
+<td class="gt_row gt_right" headers="median">1.17</td>
+<td class="gt_row gt_right" headers="sd">0.152</td>
+<td class="gt_row gt_right" headers="mad">0.146</td>
+<td class="gt_row gt_right" headers="q5">0.961</td>
 <td class="gt_row gt_right" headers="q95">1.44</td>
 <td class="gt_row gt_right" headers="rhat">1.00</td>
-<td class="gt_row gt_right" headers="ess_bulk">678</td>
-<td class="gt_row gt_right" headers="ess_tail">1,150</td>
+<td class="gt_row gt_right" headers="ess_bulk">530</td>
+<td class="gt_row gt_right" headers="ess_tail">696</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="variable">theta_ks2</td>
 <td class="gt_row gt_right" headers="mean">1.07</td>
 <td class="gt_row gt_right" headers="median">1.04</td>
 <td class="gt_row gt_right" headers="sd">0.209</td>
-<td class="gt_row gt_right" headers="mad">0.185</td>
-<td class="gt_row gt_right" headers="q5">0.808</td>
-<td class="gt_row gt_right" headers="q95">1.44</td>
-<td class="gt_row gt_right" headers="rhat">1.01</td>
-<td class="gt_row gt_right" headers="ess_bulk">399</td>
-<td class="gt_row gt_right" headers="ess_tail">874</td>
+<td class="gt_row gt_right" headers="mad">0.183</td>
+<td class="gt_row gt_right" headers="q5">0.779</td>
+<td class="gt_row gt_right" headers="q95">1.42</td>
+<td class="gt_row gt_right" headers="rhat">1.00</td>
+<td class="gt_row gt_right" headers="ess_bulk">344</td>
+<td class="gt_row gt_right" headers="ess_tail">443</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="variable">theta_kg1</td>
-<td class="gt_row gt_right" headers="mean">0.438</td>
-<td class="gt_row gt_right" headers="median">0.435</td>
-<td class="gt_row gt_right" headers="sd">0.0474</td>
-<td class="gt_row gt_right" headers="mad">0.0467</td>
-<td class="gt_row gt_right" headers="q5">0.364</td>
-<td class="gt_row gt_right" headers="q95">0.520</td>
+<td class="gt_row gt_right" headers="mean">0.444</td>
+<td class="gt_row gt_right" headers="median">0.443</td>
+<td class="gt_row gt_right" headers="sd">0.0490</td>
+<td class="gt_row gt_right" headers="mad">0.0489</td>
+<td class="gt_row gt_right" headers="q5">0.365</td>
+<td class="gt_row gt_right" headers="q95">0.527</td>
 <td class="gt_row gt_right" headers="rhat">1.00</td>
-<td class="gt_row gt_right" headers="ess_bulk">528</td>
-<td class="gt_row gt_right" headers="ess_tail">1,140</td>
+<td class="gt_row gt_right" headers="ess_bulk">539</td>
+<td class="gt_row gt_right" headers="ess_tail">712</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="variable">theta_kg2</td>
-<td class="gt_row gt_right" headers="mean">0.480</td>
-<td class="gt_row gt_right" headers="median">0.479</td>
-<td class="gt_row gt_right" headers="sd">0.0485</td>
-<td class="gt_row gt_right" headers="mad">0.0468</td>
-<td class="gt_row gt_right" headers="q5">0.405</td>
-<td class="gt_row gt_right" headers="q95">0.565</td>
+<td class="gt_row gt_right" headers="mean">0.479</td>
+<td class="gt_row gt_right" headers="median">0.478</td>
+<td class="gt_row gt_right" headers="sd">0.0487</td>
+<td class="gt_row gt_right" headers="mad">0.0479</td>
+<td class="gt_row gt_right" headers="q5">0.399</td>
+<td class="gt_row gt_right" headers="q95">0.563</td>
 <td class="gt_row gt_right" headers="rhat">1.00</td>
-<td class="gt_row gt_right" headers="ess_bulk">829</td>
-<td class="gt_row gt_right" headers="ess_tail">1,270</td>
+<td class="gt_row gt_right" headers="ess_bulk">735</td>
+<td class="gt_row gt_right" headers="ess_tail">908</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="variable">omega_bsld</td>
-<td class="gt_row gt_right" headers="mean">0.579</td>
-<td class="gt_row gt_right" headers="median">0.579</td>
-<td class="gt_row gt_right" headers="sd">0.0164</td>
-<td class="gt_row gt_right" headers="mad">0.0164</td>
-<td class="gt_row gt_right" headers="q5">0.553</td>
-<td class="gt_row gt_right" headers="q95">0.607</td>
+<td class="gt_row gt_right" headers="mean">0.577</td>
+<td class="gt_row gt_right" headers="median">0.577</td>
+<td class="gt_row gt_right" headers="sd">0.0159</td>
+<td class="gt_row gt_right" headers="mad">0.0153</td>
+<td class="gt_row gt_right" headers="q5">0.551</td>
+<td class="gt_row gt_right" headers="q95">0.603</td>
 <td class="gt_row gt_right" headers="rhat">1.00</td>
-<td class="gt_row gt_right" headers="ess_bulk">419</td>
-<td class="gt_row gt_right" headers="ess_tail">730</td>
+<td class="gt_row gt_right" headers="ess_bulk">504</td>
+<td class="gt_row gt_right" headers="ess_tail">659</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="variable">omega_ks1</td>
-<td class="gt_row gt_right" headers="mean">1.35</td>
-<td class="gt_row gt_right" headers="median">1.34</td>
-<td class="gt_row gt_right" headers="sd">0.149</td>
-<td class="gt_row gt_right" headers="mad">0.145</td>
-<td class="gt_row gt_right" headers="q5">1.13</td>
-<td class="gt_row gt_right" headers="q95">1.61</td>
+<td class="gt_row gt_right" headers="mean">1.34</td>
+<td class="gt_row gt_right" headers="median">1.33</td>
+<td class="gt_row gt_right" headers="sd">0.150</td>
+<td class="gt_row gt_right" headers="mad">0.152</td>
+<td class="gt_row gt_right" headers="q5">1.11</td>
+<td class="gt_row gt_right" headers="q95">1.60</td>
 <td class="gt_row gt_right" headers="rhat">1.00</td>
-<td class="gt_row gt_right" headers="ess_bulk">660</td>
-<td class="gt_row gt_right" headers="ess_tail">1,560</td>
+<td class="gt_row gt_right" headers="ess_bulk">620</td>
+<td class="gt_row gt_right" headers="ess_tail">838</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="variable">omega_ks2</td>
-<td class="gt_row gt_right" headers="mean">1.75</td>
-<td class="gt_row gt_right" headers="median">1.74</td>
-<td class="gt_row gt_right" headers="sd">0.172</td>
-<td class="gt_row gt_right" headers="mad">0.174</td>
-<td class="gt_row gt_right" headers="q5">1.49</td>
+<td class="gt_row gt_right" headers="mean">1.76</td>
+<td class="gt_row gt_right" headers="median">1.76</td>
+<td class="gt_row gt_right" headers="sd">0.161</td>
+<td class="gt_row gt_right" headers="mad">0.150</td>
+<td class="gt_row gt_right" headers="q5">1.51</td>
 <td class="gt_row gt_right" headers="q95">2.05</td>
 <td class="gt_row gt_right" headers="rhat">1.00</td>
-<td class="gt_row gt_right" headers="ess_bulk">646</td>
-<td class="gt_row gt_right" headers="ess_tail">1,390</td>
+<td class="gt_row gt_right" headers="ess_bulk">651</td>
+<td class="gt_row gt_right" headers="ess_tail">972</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="variable">omega_kg1</td>
-<td class="gt_row gt_right" headers="mean">0.769</td>
-<td class="gt_row gt_right" headers="median">0.764</td>
-<td class="gt_row gt_right" headers="sd">0.0693</td>
-<td class="gt_row gt_right" headers="mad">0.0674</td>
-<td class="gt_row gt_right" headers="q5">0.664</td>
+<td class="gt_row gt_right" headers="mean">0.765</td>
+<td class="gt_row gt_right" headers="median">0.758</td>
+<td class="gt_row gt_right" headers="sd">0.0710</td>
+<td class="gt_row gt_right" headers="mad">0.0685</td>
+<td class="gt_row gt_right" headers="q5">0.662</td>
 <td class="gt_row gt_right" headers="q95">0.891</td>
-<td class="gt_row gt_right" headers="rhat">1.00</td>
-<td class="gt_row gt_right" headers="ess_bulk">990</td>
-<td class="gt_row gt_right" headers="ess_tail">1,220</td>
+<td class="gt_row gt_right" headers="rhat">0.999</td>
+<td class="gt_row gt_right" headers="ess_bulk">799</td>
+<td class="gt_row gt_right" headers="ess_tail">943</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="variable">omega_kg2</td>
 <td class="gt_row gt_right" headers="mean">1.10</td>
 <td class="gt_row gt_right" headers="median">1.10</td>
-<td class="gt_row gt_right" headers="sd">0.0691</td>
-<td class="gt_row gt_right" headers="mad">0.0667</td>
-<td class="gt_row gt_right" headers="q5">0.993</td>
+<td class="gt_row gt_right" headers="sd">0.0705</td>
+<td class="gt_row gt_right" headers="mad">0.0684</td>
+<td class="gt_row gt_right" headers="q5">0.991</td>
 <td class="gt_row gt_right" headers="q95">1.22</td>
 <td class="gt_row gt_right" headers="rhat">1.00</td>
-<td class="gt_row gt_right" headers="ess_bulk">643</td>
-<td class="gt_row gt_right" headers="ess_tail">965</td>
+<td class="gt_row gt_right" headers="ess_bulk">649</td>
+<td class="gt_row gt_right" headers="ess_tail">693</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="variable">cv_0</td>
-<td class="gt_row gt_right" headers="mean">0.631</td>
-<td class="gt_row gt_right" headers="median">0.631</td>
-<td class="gt_row gt_right" headers="sd">0.0211</td>
-<td class="gt_row gt_right" headers="mad">0.0210</td>
-<td class="gt_row gt_right" headers="q5">0.598</td>
-<td class="gt_row gt_right" headers="q95">0.667</td>
+<td class="gt_row gt_right" headers="mean">0.629</td>
+<td class="gt_row gt_right" headers="median">0.628</td>
+<td class="gt_row gt_right" headers="sd">0.0205</td>
+<td class="gt_row gt_right" headers="mad">0.0196</td>
+<td class="gt_row gt_right" headers="q5">0.596</td>
+<td class="gt_row gt_right" headers="q95">0.662</td>
 <td class="gt_row gt_right" headers="rhat">1.00</td>
-<td class="gt_row gt_right" headers="ess_bulk">419</td>
-<td class="gt_row gt_right" headers="ess_tail">730</td>
+<td class="gt_row gt_right" headers="ess_bulk">504</td>
+<td class="gt_row gt_right" headers="ess_tail">659</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="variable">cv_s1</td>
-<td class="gt_row gt_right" headers="mean">2.36</td>
-<td class="gt_row gt_right" headers="median">2.24</td>
-<td class="gt_row gt_right" headers="sd">0.624</td>
-<td class="gt_row gt_right" headers="mad">0.513</td>
-<td class="gt_row gt_right" headers="q5">1.60</td>
-<td class="gt_row gt_right" headers="q95">3.50</td>
+<td class="gt_row gt_right" headers="mean">2.33</td>
+<td class="gt_row gt_right" headers="median">2.22</td>
+<td class="gt_row gt_right" headers="sd">0.601</td>
+<td class="gt_row gt_right" headers="mad">0.547</td>
+<td class="gt_row gt_right" headers="q5">1.55</td>
+<td class="gt_row gt_right" headers="q95">3.46</td>
 <td class="gt_row gt_right" headers="rhat">1.00</td>
-<td class="gt_row gt_right" headers="ess_bulk">660</td>
-<td class="gt_row gt_right" headers="ess_tail">1,560</td>
+<td class="gt_row gt_right" headers="ess_bulk">620</td>
+<td class="gt_row gt_right" headers="ess_tail">838</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="variable">cv_s2</td>
-<td class="gt_row gt_right" headers="mean">4.83</td>
-<td class="gt_row gt_right" headers="median">4.47</td>
-<td class="gt_row gt_right" headers="sd">1.72</td>
-<td class="gt_row gt_right" headers="mad">1.40</td>
-<td class="gt_row gt_right" headers="q5">2.85</td>
+<td class="gt_row gt_right" headers="mean">4.90</td>
+<td class="gt_row gt_right" headers="median">4.58</td>
+<td class="gt_row gt_right" headers="sd">1.64</td>
+<td class="gt_row gt_right" headers="mad">1.25</td>
+<td class="gt_row gt_right" headers="q5">2.96</td>
 <td class="gt_row gt_right" headers="q95">8.11</td>
 <td class="gt_row gt_right" headers="rhat">1.00</td>
-<td class="gt_row gt_right" headers="ess_bulk">646</td>
-<td class="gt_row gt_right" headers="ess_tail">1,390</td>
+<td class="gt_row gt_right" headers="ess_bulk">651</td>
+<td class="gt_row gt_right" headers="ess_tail">972</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="variable">cv_g1</td>
-<td class="gt_row gt_right" headers="mean">0.902</td>
-<td class="gt_row gt_right" headers="median">0.890</td>
-<td class="gt_row gt_right" headers="sd">0.110</td>
-<td class="gt_row gt_right" headers="mad">0.103</td>
-<td class="gt_row gt_right" headers="q5">0.745</td>
+<td class="gt_row gt_right" headers="mean">0.897</td>
+<td class="gt_row gt_right" headers="median">0.880</td>
+<td class="gt_row gt_right" headers="sd">0.112</td>
+<td class="gt_row gt_right" headers="mad">0.105</td>
+<td class="gt_row gt_right" headers="q5">0.742</td>
 <td class="gt_row gt_right" headers="q95">1.10</td>
-<td class="gt_row gt_right" headers="rhat">1.00</td>
-<td class="gt_row gt_right" headers="ess_bulk">990</td>
-<td class="gt_row gt_right" headers="ess_tail">1,220</td>
+<td class="gt_row gt_right" headers="rhat">0.999</td>
+<td class="gt_row gt_right" headers="ess_bulk">799</td>
+<td class="gt_row gt_right" headers="ess_tail">943</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="variable">cv_g2</td>
-<td class="gt_row gt_right" headers="mean">1.54</td>
-<td class="gt_row gt_right" headers="median">1.52</td>
-<td class="gt_row gt_right" headers="sd">0.171</td>
-<td class="gt_row gt_right" headers="mad">0.158</td>
-<td class="gt_row gt_right" headers="q5">1.30</td>
-<td class="gt_row gt_right" headers="q95">1.86</td>
+<td class="gt_row gt_right" headers="mean">1.55</td>
+<td class="gt_row gt_right" headers="median">1.54</td>
+<td class="gt_row gt_right" headers="sd">0.175</td>
+<td class="gt_row gt_right" headers="mad">0.163</td>
+<td class="gt_row gt_right" headers="q5">1.29</td>
+<td class="gt_row gt_right" headers="q95">1.85</td>
 <td class="gt_row gt_right" headers="rhat">1.00</td>
-<td class="gt_row gt_right" headers="ess_bulk">643</td>
-<td class="gt_row gt_right" headers="ess_tail">965</td>
+<td class="gt_row gt_right" headers="ess_bulk">649</td>
+<td class="gt_row gt_right" headers="ess_tail">693</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="variable">sigma</td>
 <td class="gt_row gt_right" headers="mean">0.161</td>
 <td class="gt_row gt_right" headers="median">0.161</td>
-<td class="gt_row gt_right" headers="sd">0.00234</td>
+<td class="gt_row gt_right" headers="sd">0.00224</td>
 <td class="gt_row gt_right" headers="mad">0.00228</td>
 <td class="gt_row gt_right" headers="q5">0.157</td>
 <td class="gt_row gt_right" headers="q95">0.165</td>
 <td class="gt_row gt_right" headers="rhat">1.00</td>
-<td class="gt_row gt_right" headers="ess_bulk">1,830</td>
-<td class="gt_row gt_right" headers="ess_tail">2,380</td>
+<td class="gt_row gt_right" headers="ess_bulk">885</td>
+<td class="gt_row gt_right" headers="ess_tail">881</td>
 </tr>
 </tbody>
 </table>
@@ -2079,10 +2081,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>prob_ks1_greater_ks2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.67</code></pre>
+<pre><code>[1] 0.706</code></pre>
 </div>
 </div>
-<p>So the posterior probability is now only around 67%.</p>
+<p>So the posterior probability is now only around 71%.</p>
 </section>
 <section id="model-comparison-with-loo" class="level2">
 <h2 class="anchored" data-anchor-id="model-comparison-with-loo">Model comparison with LOO</h2>
@@ -2095,21 +2097,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-Computed from 4000 by 4099 log-likelihood matrix.
+Computed from 1000 by 4099 log-likelihood matrix.
 
          Estimate    SE
-elpd_loo -12992.1  96.3
-p_loo      1172.4  39.2
-looic     25984.2 192.6
+elpd_loo -12957.3  95.8
+p_loo      1137.1  38.4
+looic     25914.5 191.6
 ------
 MCSE of elpd_loo is NA.
 MCSE and ESS estimates assume independent draws (r_eff=1).
 
 Pareto k diagnostic values:
-                         Count Pct.    Min. ESS
-(-Inf, 0.7]   (good)     3739  91.2%   90      
-   (0.7, 1]   (bad)       301   7.3%   &lt;NA&gt;    
-   (1, Inf)   (very bad)   59   1.4%   &lt;NA&gt;    
+                          Count Pct.    Min. ESS
+(-Inf, 0.67]   (good)     3665  89.4%   26      
+   (0.67, 1]   (bad)       363   8.9%   &lt;NA&gt;    
+    (1, Inf)   (very bad)   71   1.7%   &lt;NA&gt;    
 See help('pareto-k-diagnostic') for details.</code></pre>
 </div>
 </div>
@@ -2123,21 +2125,21 @@ See help('pareto-k-diagnostic') for details.</code></pre>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-Computed from 4000 by 4099 log-likelihood matrix.
+Computed from 1000 by 4099 log-likelihood matrix.
 
          Estimate    SE
-elpd_loo -12986.1  97.6
-p_loo      1177.0  40.5
-looic     25972.1 195.1
+elpd_loo -12931.8  95.6
+p_loo      1121.5  36.8
+looic     25863.5 191.1
 ------
 MCSE of elpd_loo is NA.
 MCSE and ESS estimates assume independent draws (r_eff=1).
 
 Pareto k diagnostic values:
-                         Count Pct.    Min. ESS
-(-Inf, 0.7]   (good)     3719  90.7%   68      
-   (0.7, 1]   (bad)       317   7.7%   &lt;NA&gt;    
-   (1, Inf)   (very bad)   63   1.5%   &lt;NA&gt;    
+                          Count Pct.    Min. ESS
+(-Inf, 0.67]   (good)     3652  89.1%   48      
+   (0.67, 1]   (bad)       374   9.1%   &lt;NA&gt;    
+    (1, Inf)   (very bad)   73   1.8%   &lt;NA&gt;    
 See help('pareto-k-diagnostic') for details.</code></pre>
 </div>
 </div>
@@ -2156,6 +2158,7 @@ See help('pareto-k-diagnostic') for details.</code></pre>
 </details>
 </div></li>
 <li><p>It is not trivial to transport saved models from one computer to another. This is because <code>cmdstanr</code> only loads the results it currently needs from disk into memory, and thus into the R session. If you want to transport the model to another computer, you need to save the Stan code and the data, and then re-run the model on the other computer. This is because the model object in R is only a reference to the model on disk, not the model itself. Note that there is the <code>$save_object()</code> method, see <a href="https://mc-stan.org/cmdstanr/reference/fit-method-save_object.html">here</a>, however this leads to very large files (here about 300 MB for one fit) and can thus not be uploaded to typical git repositories. Therefore above we saved interim result objects separately as needed.</p></li>
+<li><p>It is important to explicitly define the truncation boundaries for the truncated normal priors, because otherwise the MCMC results will not be correct.</p></li>
 </ul>
 
 
@@ -2714,10 +2717,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb38-88"><a href="#cb38-88" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_bsld =</span> <span class="fu">prior_normal</span>(<span class="fu">log</span>(<span class="dv">65</span>), <span class="dv">1</span>),</span>
 <span id="cb38-89"><a href="#cb38-89" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_ks =</span> <span class="fu">prior_normal</span>(<span class="fu">log</span>(<span class="fl">0.52</span>), <span class="dv">1</span>),</span>
 <span id="cb38-90"><a href="#cb38-90" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_kg =</span> <span class="fu">prior_normal</span>(<span class="fu">log</span>(<span class="fl">1.04</span>), <span class="dv">1</span>),</span>
-<span id="cb38-91"><a href="#cb38-91" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_bsld =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>),</span>
-<span id="cb38-92"><a href="#cb38-92" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_ks =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>),</span>
-<span id="cb38-93"><a href="#cb38-93" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_kg =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>),</span>
-<span id="cb38-94"><a href="#cb38-94" aria-hidden="true" tabindex="-1"></a>        <span class="at">sigma =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>)</span>
+<span id="cb38-91"><a href="#cb38-91" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_bsld =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="fu">set_limits</span>(<span class="dv">0</span>, <span class="cn">Inf</span>),</span>
+<span id="cb38-92"><a href="#cb38-92" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_ks =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="fu">set_limits</span>(<span class="dv">0</span>, <span class="cn">Inf</span>),</span>
+<span id="cb38-93"><a href="#cb38-93" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_kg =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="fu">set_limits</span>(<span class="dv">0</span>, <span class="cn">Inf</span>),</span>
+<span id="cb38-94"><a href="#cb38-94" aria-hidden="true" tabindex="-1"></a>        <span class="at">sigma =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="fu">set_limits</span>(<span class="dv">0</span>, <span class="cn">Inf</span>)</span>
 <span id="cb38-95"><a href="#cb38-95" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb38-96"><a href="#cb38-96" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb38-97"><a href="#cb38-97" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
@@ -2731,7 +2734,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb38-107"><a href="#cb38-107" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb38-108"><a href="#cb38-108" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fit_model</span></span>
 <span id="cb38-109"><a href="#cb38-109" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-110"><a href="#cb38-110" aria-hidden="true" tabindex="-1"></a>save_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-tgi/jm2.RData"</span>)</span>
+<span id="cb38-110"><a href="#cb38-110" aria-hidden="true" tabindex="-1"></a>save_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-tgi/jm5.RData"</span>)</span>
 <span id="cb38-111"><a href="#cb38-111" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(save_file)) {</span>
 <span id="cb38-112"><a href="#cb38-112" aria-hidden="true" tabindex="-1"></a>  <span class="fu">load</span>(save_file)</span>
 <span id="cb38-113"><a href="#cb38-113" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
@@ -2742,337 +2745,340 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb38-118"><a href="#cb38-118" aria-hidden="true" tabindex="-1"></a>      <span class="at">iter_warmup =</span> WARMUP,</span>
 <span id="cb38-119"><a href="#cb38-119" aria-hidden="true" tabindex="-1"></a>      <span class="at">chains =</span> CHAINS,</span>
 <span id="cb38-120"><a href="#cb38-120" aria-hidden="true" tabindex="-1"></a>      <span class="at">parallel_chains =</span> CHAINS,</span>
-<span id="cb38-121"><a href="#cb38-121" aria-hidden="true" tabindex="-1"></a>      <span class="at">seed =</span> BAYES.SEED,</span>
-<span id="cb38-122"><a href="#cb38-122" aria-hidden="true" tabindex="-1"></a>      <span class="at">refresh =</span> REFRESH</span>
-<span id="cb38-123"><a href="#cb38-123" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb38-124"><a href="#cb38-124" aria-hidden="true" tabindex="-1"></a>  <span class="fu">save</span>(mcmc_results, <span class="at">file =</span> save_file)</span>
-<span id="cb38-125"><a href="#cb38-125" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb38-126"><a href="#cb38-126" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-127"><a href="#cb38-127" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-128"><a href="#cb38-128" aria-hidden="true" tabindex="-1"></a>Let's check the convergence of the population parameters:</span>
-<span id="cb38-129"><a href="#cb38-129" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-132"><a href="#cb38-132" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-133"><a href="#cb38-133" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: check_convergence</span></span>
-<span id="cb38-134"><a href="#cb38-134" aria-hidden="true" tabindex="-1"></a><span class="co">#| dependson: fit_model</span></span>
-<span id="cb38-135"><a href="#cb38-135" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-136"><a href="#cb38-136" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb38-137"><a href="#cb38-137" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_mu_bsld"</span>,</span>
-<span id="cb38-138"><a href="#cb38-138" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_mu_ks"</span>,</span>
-<span id="cb38-139"><a href="#cb38-139" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_mu_kg"</span>,</span>
-<span id="cb38-140"><a href="#cb38-140" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_sigma"</span>,</span>
-<span id="cb38-141"><a href="#cb38-141" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_omega_bsld"</span>,</span>
-<span id="cb38-142"><a href="#cb38-142" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_omega_ks"</span>,</span>
-<span id="cb38-143"><a href="#cb38-143" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_omega_kg"</span></span>
-<span id="cb38-144"><a href="#cb38-144" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb38-145"><a href="#cb38-145" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-146"><a href="#cb38-146" aria-hidden="true" tabindex="-1"></a>save_overall_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-tgi/jm2_more.RData"</span>)</span>
-<span id="cb38-147"><a href="#cb38-147" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(save_overall_file)) {</span>
-<span id="cb38-148"><a href="#cb38-148" aria-hidden="true" tabindex="-1"></a>  <span class="fu">load</span>(save_overall_file)</span>
-<span id="cb38-149"><a href="#cb38-149" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb38-150"><a href="#cb38-150" aria-hidden="true" tabindex="-1"></a>  mcmc_res_cmdstan <span class="ot">&lt;-</span> cmdstanr<span class="sc">::</span><span class="fu">as.CmdStanMCMC</span>(mcmc_results)</span>
-<span id="cb38-151"><a href="#cb38-151" aria-hidden="true" tabindex="-1"></a>  mcmc_res_sum <span class="ot">&lt;-</span> mcmc_res_cmdstan<span class="sc">$</span><span class="fu">summary</span>(vars)</span>
-<span id="cb38-152"><a href="#cb38-152" aria-hidden="true" tabindex="-1"></a>  vars_draws <span class="ot">&lt;-</span> mcmc_res_cmdstan<span class="sc">$</span><span class="fu">draws</span>(vars)</span>
-<span id="cb38-153"><a href="#cb38-153" aria-hidden="true" tabindex="-1"></a>  loo_res <span class="ot">&lt;-</span> mcmc_res_cmdstan<span class="sc">$</span><span class="fu">loo</span>(<span class="at">r_eff =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb38-154"><a href="#cb38-154" aria-hidden="true" tabindex="-1"></a>  <span class="fu">save</span>(mcmc_res_sum, vars_draws, loo_res, <span class="at">file =</span> save_overall_file)</span>
-<span id="cb38-155"><a href="#cb38-155" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb38-156"><a href="#cb38-156" aria-hidden="true" tabindex="-1"></a>mcmc_res_sum</span>
-<span id="cb38-157"><a href="#cb38-157" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-158"><a href="#cb38-158" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-159"><a href="#cb38-159" aria-hidden="true" tabindex="-1"></a>This looks good, let's check the traceplots:</span>
-<span id="cb38-160"><a href="#cb38-160" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-163"><a href="#cb38-163" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-164"><a href="#cb38-164" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: plot_trace</span></span>
-<span id="cb38-165"><a href="#cb38-165" aria-hidden="true" tabindex="-1"></a><span class="co">#| dependson: check_convergence</span></span>
-<span id="cb38-166"><a href="#cb38-166" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-167"><a href="#cb38-167" aria-hidden="true" tabindex="-1"></a><span class="co"># vars_draws &lt;- mcmc_res_cmdstan$draws(vars)</span></span>
-<span id="cb38-168"><a href="#cb38-168" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_trace</span>(vars_draws)</span>
-<span id="cb38-169"><a href="#cb38-169" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-170"><a href="#cb38-170" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-171"><a href="#cb38-171" aria-hidden="true" tabindex="-1"></a>They also look ok, all chains are mixing well in the same range of parameter values.</span>
-<span id="cb38-172"><a href="#cb38-172" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-173"><a href="#cb38-173" aria-hidden="true" tabindex="-1"></a>Also here we could look at the pairs plot:</span>
-<span id="cb38-174"><a href="#cb38-174" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-177"><a href="#cb38-177" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-178"><a href="#cb38-178" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: plot_pairs</span></span>
-<span id="cb38-179"><a href="#cb38-179" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-180"><a href="#cb38-180" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_pairs</span>(</span>
-<span id="cb38-181"><a href="#cb38-181" aria-hidden="true" tabindex="-1"></a>  vars_draws,</span>
-<span id="cb38-182"><a href="#cb38-182" aria-hidden="true" tabindex="-1"></a>  <span class="at">off_diag_args =</span> <span class="fu">list</span>(<span class="at">size =</span> <span class="dv">1</span>, <span class="at">alpha =</span> <span class="fl">0.1</span>)</span>
-<span id="cb38-183"><a href="#cb38-183" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb38-184"><a href="#cb38-184" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-185"><a href="#cb38-185" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-186"><a href="#cb38-186" aria-hidden="true" tabindex="-1"></a><span class="fu">## Observation vs. model fit</span></span>
-<span id="cb38-187"><a href="#cb38-187" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-188"><a href="#cb38-188" aria-hidden="true" tabindex="-1"></a>Let's check the fit of the model to the data:</span>
-<span id="cb38-189"><a href="#cb38-189" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-192"><a href="#cb38-192" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-193"><a href="#cb38-193" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: plot_fit</span></span>
-<span id="cb38-194"><a href="#cb38-194" aria-hidden="true" tabindex="-1"></a><span class="co">#| dependson: fit_model</span></span>
-<span id="cb38-195"><a href="#cb38-195" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-196"><a href="#cb38-196" aria-hidden="true" tabindex="-1"></a>pt_subset <span class="ot">&lt;-</span> <span class="fu">as.character</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>)</span>
-<span id="cb38-197"><a href="#cb38-197" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-198"><a href="#cb38-198" aria-hidden="true" tabindex="-1"></a>save_fit_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-tgi/jm2_fit.RData"</span>)</span>
-<span id="cb38-199"><a href="#cb38-199" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(save_fit_file)) {</span>
-<span id="cb38-200"><a href="#cb38-200" aria-hidden="true" tabindex="-1"></a>  <span class="fu">load</span>(save_fit_file)</span>
-<span id="cb38-201"><a href="#cb38-201" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb38-202"><a href="#cb38-202" aria-hidden="true" tabindex="-1"></a>  fit_subset <span class="ot">&lt;-</span> <span class="fu">LongitudinalQuantities</span>(</span>
-<span id="cb38-203"><a href="#cb38-203" aria-hidden="true" tabindex="-1"></a>    mcmc_results, </span>
-<span id="cb38-204"><a href="#cb38-204" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> <span class="fu">GridObserved</span>(<span class="at">subjects =</span> pt_subset)</span>
-<span id="cb38-205"><a href="#cb38-205" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb38-206"><a href="#cb38-206" aria-hidden="true" tabindex="-1"></a>  <span class="fu">save</span>(fit_subset, <span class="at">file =</span> save_fit_file)</span>
-<span id="cb38-207"><a href="#cb38-207" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb38-208"><a href="#cb38-208" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-209"><a href="#cb38-209" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(fit_subset)<span class="sc">+</span></span>
-<span id="cb38-210"><a href="#cb38-210" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Time (years)"</span>, <span class="at">y =</span> <span class="st">"SLD (mm)"</span>)</span>
-<span id="cb38-211"><a href="#cb38-211" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-212"><a href="#cb38-212" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-213"><a href="#cb38-213" aria-hidden="true" tabindex="-1"></a>So this works very nicely.</span>
-<span id="cb38-214"><a href="#cb38-214" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-215"><a href="#cb38-215" aria-hidden="true" tabindex="-1"></a><span class="fu">## Prior vs. posterior</span></span>
-<span id="cb38-216"><a href="#cb38-216" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-217"><a href="#cb38-217" aria-hidden="true" tabindex="-1"></a>Let's check the prior vs. posterior for the parameters:</span>
-<span id="cb38-218"><a href="#cb38-218" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-221"><a href="#cb38-221" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-222"><a href="#cb38-222" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: plot_prior_post</span></span>
-<span id="cb38-223"><a href="#cb38-223" aria-hidden="true" tabindex="-1"></a><span class="co">#| dependson: plot_trace</span></span>
-<span id="cb38-224"><a href="#cb38-224" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-225"><a href="#cb38-225" aria-hidden="true" tabindex="-1"></a>post_samples <span class="ot">&lt;-</span> <span class="fu">as_draws_df</span>(vars_draws) <span class="sc">|&gt;</span> </span>
-<span id="cb38-226"><a href="#cb38-226" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
-<span id="cb38-227"><a href="#cb38-227" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_bsld =</span> <span class="st">"lm_sf_mu_bsld[1]"</span>,</span>
-<span id="cb38-228"><a href="#cb38-228" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_ks =</span> <span class="st">"lm_sf_mu_ks[1]"</span>,</span>
-<span id="cb38-229"><a href="#cb38-229" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_kg =</span> <span class="st">"lm_sf_mu_kg[1]"</span>,</span>
-<span id="cb38-230"><a href="#cb38-230" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_bsld =</span> <span class="st">"lm_sf_omega_bsld[1]"</span>,</span>
-<span id="cb38-231"><a href="#cb38-231" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_ks =</span> <span class="st">"lm_sf_omega_ks[1]"</span>,</span>
-<span id="cb38-232"><a href="#cb38-232" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_kg =</span> <span class="st">"lm_sf_omega_kg[1]"</span>,</span>
-<span id="cb38-233"><a href="#cb38-233" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma =</span> lm_sf_sigma</span>
-<span id="cb38-234"><a href="#cb38-234" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb38-235"><a href="#cb38-235" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">type =</span> <span class="st">"posterior"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb38-236"><a href="#cb38-236" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(mu_bsld, mu_ks, mu_kg, omega_bsld, omega_ks, omega_kg, sigma, type)</span>
-<span id="cb38-237"><a href="#cb38-237" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-238"><a href="#cb38-238" aria-hidden="true" tabindex="-1"></a>n_prior_samples <span class="ot">&lt;-</span> <span class="fu">nrow</span>(post_samples)</span>
-<span id="cb38-239"><a href="#cb38-239" aria-hidden="true" tabindex="-1"></a>prior_samples <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb38-240"><a href="#cb38-240" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_bsld =</span> <span class="fu">rnorm</span>(n_prior_samples, <span class="fu">log</span>(<span class="dv">65</span>), <span class="dv">1</span>),</span>
-<span id="cb38-241"><a href="#cb38-241" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_ks =</span> <span class="fu">rnorm</span>(n_prior_samples, <span class="fu">log</span>(<span class="fl">0.52</span>), <span class="dv">1</span>),</span>
-<span id="cb38-242"><a href="#cb38-242" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_kg =</span> <span class="fu">rnorm</span>(n_prior_samples, <span class="fu">log</span>(<span class="fl">1.04</span>), <span class="dv">1</span>),</span>
-<span id="cb38-243"><a href="#cb38-243" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_bsld =</span> <span class="fu">rtruncnorm</span>(n_prior_samples, <span class="at">a =</span> <span class="dv">0</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">3</span>),</span>
-<span id="cb38-244"><a href="#cb38-244" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_ks =</span> <span class="fu">rtruncnorm</span>(n_prior_samples, <span class="at">a =</span> <span class="dv">0</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">3</span>),</span>
-<span id="cb38-245"><a href="#cb38-245" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_kg =</span> <span class="fu">rtruncnorm</span>(n_prior_samples, <span class="at">a =</span> <span class="dv">0</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">3</span>),</span>
-<span id="cb38-246"><a href="#cb38-246" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma =</span> <span class="fu">rtruncnorm</span>(n_prior_samples, <span class="at">a =</span> <span class="dv">0</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">3</span>)</span>
-<span id="cb38-247"><a href="#cb38-247" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb38-248"><a href="#cb38-248" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">type =</span> <span class="st">"prior"</span>)</span>
-<span id="cb38-249"><a href="#cb38-249" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-250"><a href="#cb38-250" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine the two</span></span>
-<span id="cb38-251"><a href="#cb38-251" aria-hidden="true" tabindex="-1"></a>combined_samples <span class="ot">&lt;-</span> <span class="fu">rbind</span>(post_samples, prior_samples) <span class="sc">|&gt;</span> </span>
-<span id="cb38-252"><a href="#cb38-252" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>type, <span class="at">names_to =</span> <span class="st">"parameter"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>)</span>
-<span id="cb38-253"><a href="#cb38-253" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-254"><a href="#cb38-254" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(combined_samples, <span class="fu">aes</span>(<span class="at">x =</span> value, <span class="at">fill =</span> type)) <span class="sc">+</span></span>
-<span id="cb38-255"><a href="#cb38-255" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb38-256"><a href="#cb38-256" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>parameter, <span class="at">scales =</span> <span class="st">"free"</span>) <span class="sc">+</span></span>
-<span id="cb38-257"><a href="#cb38-257" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
-<span id="cb38-258"><a href="#cb38-258" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-259"><a href="#cb38-259" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-260"><a href="#cb38-260" aria-hidden="true" tabindex="-1"></a>This looks good, because the priors are covering the range of the posterior samples and are not too informative.</span>
-<span id="cb38-261"><a href="#cb38-261" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-262"><a href="#cb38-262" aria-hidden="true" tabindex="-1"></a><span class="fu">## Parameter estimates</span></span>
-<span id="cb38-263"><a href="#cb38-263" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-264"><a href="#cb38-264" aria-hidden="true" tabindex="-1"></a>Here we need again to be careful: We are interested in the posterior mean estimates of the baseline, shrinkage and growth population rates on the original scale. Because we model them on the log scale as normal distributed, we need to use the mean of the log-normal distribution to get the mean on the original scale.</span>
-<span id="cb38-265"><a href="#cb38-265" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-268"><a href="#cb38-268" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-269"><a href="#cb38-269" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: par_estimates</span></span>
-<span id="cb38-270"><a href="#cb38-270" aria-hidden="true" tabindex="-1"></a><span class="co">#| dependson: plot_prior_post</span></span>
-<span id="cb38-271"><a href="#cb38-271" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-272"><a href="#cb38-272" aria-hidden="true" tabindex="-1"></a>post_sum <span class="ot">&lt;-</span> post_samples <span class="sc">|&gt;</span></span>
-<span id="cb38-273"><a href="#cb38-273" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb38-274"><a href="#cb38-274" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_b0 =</span> <span class="fu">exp</span>(mu_bsld <span class="sc">+</span> omega_bsld<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>), </span>
-<span id="cb38-275"><a href="#cb38-275" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_ks =</span> <span class="fu">exp</span>(mu_ks <span class="sc">+</span> omega_ks<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>), </span>
-<span id="cb38-276"><a href="#cb38-276" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_kg =</span> <span class="fu">exp</span>(mu_kg <span class="sc">+</span> omega_kg<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
-<span id="cb38-277"><a href="#cb38-277" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_0 =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_bsld<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
-<span id="cb38-278"><a href="#cb38-278" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_s =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_ks<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
-<span id="cb38-279"><a href="#cb38-279" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_g =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_kg<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>)</span>
-<span id="cb38-280"><a href="#cb38-280" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb38-281"><a href="#cb38-281" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(theta_b0, theta_ks, theta_kg, omega_bsld, omega_ks, omega_kg, cv_0, cv_s, cv_g, sigma) <span class="sc">|&gt;</span></span>
-<span id="cb38-282"><a href="#cb38-282" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize_draws</span>() <span class="sc">|&gt;</span></span>
-<span id="cb38-283"><a href="#cb38-283" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
-<span id="cb38-284"><a href="#cb38-284" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">n_sigfig =</span> <span class="dv">3</span>)</span>
-<span id="cb38-285"><a href="#cb38-285" aria-hidden="true" tabindex="-1"></a>post_sum</span>
-<span id="cb38-286"><a href="#cb38-286" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-287"><a href="#cb38-287" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-288"><a href="#cb38-288" aria-hidden="true" tabindex="-1"></a>We can see that these are consistent with the estimates from the <span class="in">`brms`</span> model earlier.</span>
-<span id="cb38-289"><a href="#cb38-289" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-290"><a href="#cb38-290" aria-hidden="true" tabindex="-1"></a><span class="fu">## Separate arm estimates</span></span>
-<span id="cb38-291"><a href="#cb38-291" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-292"><a href="#cb38-292" aria-hidden="true" tabindex="-1"></a>While there is no general covariates support in <span class="in">`jmpost`</span> for the longitudinal models as of now, we can obtain separate estimates for the longitudinal model parameters: As detailed in the model specification <span class="co">[</span><span class="ot">here</span><span class="co">](https://genentech.github.io/jmpost/main/articles/statistical-specification.html#stein-fojo-model)</span>, as soon as we have the arm defined, then separate estimates for the arm-specific shrinkage and growth parameters will be obtained: Both the population means and standard deviation parameters are here arm-specific. (Note that this is slightly different from <span class="in">`brms`</span> where we assumed earlier the same standard deviation independent of the treatment arm.)</span>
-<span id="cb38-293"><a href="#cb38-293" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-294"><a href="#cb38-294" aria-hidden="true" tabindex="-1"></a>So we need to define the subject data accordingly now with the arm information:</span>
-<span id="cb38-295"><a href="#cb38-295" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-298"><a href="#cb38-298" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-299"><a href="#cb38-299" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: subj_df_prep_arm</span></span>
-<span id="cb38-300"><a href="#cb38-300" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-301"><a href="#cb38-301" aria-hidden="true" tabindex="-1"></a>subj_df_by_arm <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span></span>
-<span id="cb38-302"><a href="#cb38-302" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, arm) <span class="sc">|&gt;</span></span>
-<span id="cb38-303"><a href="#cb38-303" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb38-304"><a href="#cb38-304" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">study =</span> <span class="st">"study"</span>)</span>
-<span id="cb38-305"><a href="#cb38-305" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-306"><a href="#cb38-306" aria-hidden="true" tabindex="-1"></a>subj_data_by_arm <span class="ot">&lt;-</span> <span class="fu">DataSubject</span>(</span>
-<span id="cb38-307"><a href="#cb38-307" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> subj_df_by_arm,</span>
-<span id="cb38-308"><a href="#cb38-308" aria-hidden="true" tabindex="-1"></a>  <span class="at">subject =</span> <span class="st">"id"</span>,</span>
-<span id="cb38-309"><a href="#cb38-309" aria-hidden="true" tabindex="-1"></a>  <span class="at">arm =</span> <span class="st">"arm"</span>,</span>
-<span id="cb38-310"><a href="#cb38-310" aria-hidden="true" tabindex="-1"></a>  <span class="at">study =</span> <span class="st">"study"</span></span>
-<span id="cb38-311"><a href="#cb38-311" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb38-312"><a href="#cb38-312" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-313"><a href="#cb38-313" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-314"><a href="#cb38-314" aria-hidden="true" tabindex="-1"></a>We redefine the <span class="in">`JointData`</span> object and can then fit the model, because the prior specification does not need to change: We assume iid priors on the arm-specific parameters here.</span>
-<span id="cb38-315"><a href="#cb38-315" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-318"><a href="#cb38-318" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-319"><a href="#cb38-319" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: joint_data_prep_arm</span></span>
-<span id="cb38-320"><a href="#cb38-320" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-321"><a href="#cb38-321" aria-hidden="true" tabindex="-1"></a>joint_data_by_arm <span class="ot">&lt;-</span> <span class="fu">DataJoint</span>(</span>
-<span id="cb38-322"><a href="#cb38-322" aria-hidden="true" tabindex="-1"></a>    <span class="at">subject =</span> subj_data_by_arm,</span>
-<span id="cb38-323"><a href="#cb38-323" aria-hidden="true" tabindex="-1"></a>    <span class="at">longitudinal =</span> long_data</span>
-<span id="cb38-324"><a href="#cb38-324" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb38-325"><a href="#cb38-325" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-326"><a href="#cb38-326" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-329"><a href="#cb38-329" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-330"><a href="#cb38-330" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fit_model_arm</span></span>
-<span id="cb38-331"><a href="#cb38-331" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-332"><a href="#cb38-332" aria-hidden="true" tabindex="-1"></a>save_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-tgi/jm3.RData"</span>)</span>
-<span id="cb38-333"><a href="#cb38-333" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(save_file)) {</span>
-<span id="cb38-334"><a href="#cb38-334" aria-hidden="true" tabindex="-1"></a>  <span class="fu">load</span>(save_file)</span>
-<span id="cb38-335"><a href="#cb38-335" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb38-336"><a href="#cb38-336" aria-hidden="true" tabindex="-1"></a>  mcmc_results_by_arm <span class="ot">&lt;-</span> <span class="fu">sampleStanModel</span>(</span>
-<span id="cb38-337"><a href="#cb38-337" aria-hidden="true" tabindex="-1"></a>      tgi_mod,</span>
-<span id="cb38-338"><a href="#cb38-338" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> joint_data_by_arm,</span>
-<span id="cb38-339"><a href="#cb38-339" aria-hidden="true" tabindex="-1"></a>      <span class="at">iter_sampling =</span> ITER,</span>
-<span id="cb38-340"><a href="#cb38-340" aria-hidden="true" tabindex="-1"></a>      <span class="at">iter_warmup =</span> WARMUP,</span>
-<span id="cb38-341"><a href="#cb38-341" aria-hidden="true" tabindex="-1"></a>      <span class="at">chains =</span> CHAINS,</span>
-<span id="cb38-342"><a href="#cb38-342" aria-hidden="true" tabindex="-1"></a>      <span class="at">parallel_chains =</span> CHAINS,</span>
-<span id="cb38-343"><a href="#cb38-343" aria-hidden="true" tabindex="-1"></a>      <span class="at">seed =</span> BAYES.SEED,</span>
-<span id="cb38-344"><a href="#cb38-344" aria-hidden="true" tabindex="-1"></a>      <span class="at">refresh =</span> REFRESH</span>
-<span id="cb38-345"><a href="#cb38-345" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb38-346"><a href="#cb38-346" aria-hidden="true" tabindex="-1"></a>  <span class="fu">save</span>(mcmc_results_by_arm, <span class="at">file =</span> save_file)</span>
-<span id="cb38-347"><a href="#cb38-347" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb38-348"><a href="#cb38-348" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-349"><a href="#cb38-349" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-350"><a href="#cb38-350" aria-hidden="true" tabindex="-1"></a>Let's again check the convergence:</span>
+<span id="cb38-121"><a href="#cb38-121" aria-hidden="true" tabindex="-1"></a>      <span class="at">thin =</span> CHAINS,</span>
+<span id="cb38-122"><a href="#cb38-122" aria-hidden="true" tabindex="-1"></a>      <span class="at">seed =</span> BAYES.SEED,</span>
+<span id="cb38-123"><a href="#cb38-123" aria-hidden="true" tabindex="-1"></a>      <span class="at">refresh =</span> REFRESH</span>
+<span id="cb38-124"><a href="#cb38-124" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb38-125"><a href="#cb38-125" aria-hidden="true" tabindex="-1"></a>  <span class="fu">save</span>(mcmc_results, <span class="at">file =</span> save_file)</span>
+<span id="cb38-126"><a href="#cb38-126" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb38-127"><a href="#cb38-127" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-128"><a href="#cb38-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-129"><a href="#cb38-129" aria-hidden="true" tabindex="-1"></a>Let's check the convergence of the population parameters:</span>
+<span id="cb38-130"><a href="#cb38-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-133"><a href="#cb38-133" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-134"><a href="#cb38-134" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: check_convergence</span></span>
+<span id="cb38-135"><a href="#cb38-135" aria-hidden="true" tabindex="-1"></a><span class="co">#| dependson: fit_model</span></span>
+<span id="cb38-136"><a href="#cb38-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-137"><a href="#cb38-137" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb38-138"><a href="#cb38-138" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_mu_bsld"</span>,</span>
+<span id="cb38-139"><a href="#cb38-139" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_mu_ks"</span>,</span>
+<span id="cb38-140"><a href="#cb38-140" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_mu_kg"</span>,</span>
+<span id="cb38-141"><a href="#cb38-141" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_sigma"</span>,</span>
+<span id="cb38-142"><a href="#cb38-142" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_omega_bsld"</span>,</span>
+<span id="cb38-143"><a href="#cb38-143" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_omega_ks"</span>,</span>
+<span id="cb38-144"><a href="#cb38-144" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_omega_kg"</span></span>
+<span id="cb38-145"><a href="#cb38-145" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb38-146"><a href="#cb38-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-147"><a href="#cb38-147" aria-hidden="true" tabindex="-1"></a>save_overall_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-tgi/jm5_more.RData"</span>)</span>
+<span id="cb38-148"><a href="#cb38-148" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(save_overall_file)) {</span>
+<span id="cb38-149"><a href="#cb38-149" aria-hidden="true" tabindex="-1"></a>  <span class="fu">load</span>(save_overall_file)</span>
+<span id="cb38-150"><a href="#cb38-150" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb38-151"><a href="#cb38-151" aria-hidden="true" tabindex="-1"></a>  mcmc_res_cmdstan <span class="ot">&lt;-</span> cmdstanr<span class="sc">::</span><span class="fu">as.CmdStanMCMC</span>(mcmc_results)</span>
+<span id="cb38-152"><a href="#cb38-152" aria-hidden="true" tabindex="-1"></a>  mcmc_res_sum <span class="ot">&lt;-</span> mcmc_res_cmdstan<span class="sc">$</span><span class="fu">summary</span>(vars)</span>
+<span id="cb38-153"><a href="#cb38-153" aria-hidden="true" tabindex="-1"></a>  vars_draws <span class="ot">&lt;-</span> mcmc_res_cmdstan<span class="sc">$</span><span class="fu">draws</span>(vars)</span>
+<span id="cb38-154"><a href="#cb38-154" aria-hidden="true" tabindex="-1"></a>  loo_res <span class="ot">&lt;-</span> mcmc_res_cmdstan<span class="sc">$</span><span class="fu">loo</span>(<span class="at">r_eff =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb38-155"><a href="#cb38-155" aria-hidden="true" tabindex="-1"></a>  <span class="fu">save</span>(mcmc_res_sum, vars_draws, loo_res, <span class="at">file =</span> save_overall_file)</span>
+<span id="cb38-156"><a href="#cb38-156" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb38-157"><a href="#cb38-157" aria-hidden="true" tabindex="-1"></a>mcmc_res_sum</span>
+<span id="cb38-158"><a href="#cb38-158" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-159"><a href="#cb38-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-160"><a href="#cb38-160" aria-hidden="true" tabindex="-1"></a>This looks good, let's check the traceplots:</span>
+<span id="cb38-161"><a href="#cb38-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-164"><a href="#cb38-164" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-165"><a href="#cb38-165" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: plot_trace</span></span>
+<span id="cb38-166"><a href="#cb38-166" aria-hidden="true" tabindex="-1"></a><span class="co">#| dependson: check_convergence</span></span>
+<span id="cb38-167"><a href="#cb38-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-168"><a href="#cb38-168" aria-hidden="true" tabindex="-1"></a><span class="co"># vars_draws &lt;- mcmc_res_cmdstan$draws(vars)</span></span>
+<span id="cb38-169"><a href="#cb38-169" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_trace</span>(vars_draws)</span>
+<span id="cb38-170"><a href="#cb38-170" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-171"><a href="#cb38-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-172"><a href="#cb38-172" aria-hidden="true" tabindex="-1"></a>They also look ok, all chains are mixing well in the same range of parameter values.</span>
+<span id="cb38-173"><a href="#cb38-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-174"><a href="#cb38-174" aria-hidden="true" tabindex="-1"></a>Also here we could look at the pairs plot:</span>
+<span id="cb38-175"><a href="#cb38-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-178"><a href="#cb38-178" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-179"><a href="#cb38-179" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: plot_pairs</span></span>
+<span id="cb38-180"><a href="#cb38-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-181"><a href="#cb38-181" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_pairs</span>(</span>
+<span id="cb38-182"><a href="#cb38-182" aria-hidden="true" tabindex="-1"></a>  vars_draws,</span>
+<span id="cb38-183"><a href="#cb38-183" aria-hidden="true" tabindex="-1"></a>  <span class="at">off_diag_args =</span> <span class="fu">list</span>(<span class="at">size =</span> <span class="dv">1</span>, <span class="at">alpha =</span> <span class="fl">0.1</span>)</span>
+<span id="cb38-184"><a href="#cb38-184" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb38-185"><a href="#cb38-185" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-186"><a href="#cb38-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-187"><a href="#cb38-187" aria-hidden="true" tabindex="-1"></a><span class="fu">## Observation vs. model fit</span></span>
+<span id="cb38-188"><a href="#cb38-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-189"><a href="#cb38-189" aria-hidden="true" tabindex="-1"></a>Let's check the fit of the model to the data:</span>
+<span id="cb38-190"><a href="#cb38-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-193"><a href="#cb38-193" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-194"><a href="#cb38-194" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: plot_fit</span></span>
+<span id="cb38-195"><a href="#cb38-195" aria-hidden="true" tabindex="-1"></a><span class="co">#| dependson: fit_model</span></span>
+<span id="cb38-196"><a href="#cb38-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-197"><a href="#cb38-197" aria-hidden="true" tabindex="-1"></a>pt_subset <span class="ot">&lt;-</span> <span class="fu">as.character</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>)</span>
+<span id="cb38-198"><a href="#cb38-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-199"><a href="#cb38-199" aria-hidden="true" tabindex="-1"></a>save_fit_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-tgi/jm5_fit.RData"</span>)</span>
+<span id="cb38-200"><a href="#cb38-200" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(save_fit_file)) {</span>
+<span id="cb38-201"><a href="#cb38-201" aria-hidden="true" tabindex="-1"></a>  <span class="fu">load</span>(save_fit_file)</span>
+<span id="cb38-202"><a href="#cb38-202" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb38-203"><a href="#cb38-203" aria-hidden="true" tabindex="-1"></a>  fit_subset <span class="ot">&lt;-</span> <span class="fu">LongitudinalQuantities</span>(</span>
+<span id="cb38-204"><a href="#cb38-204" aria-hidden="true" tabindex="-1"></a>    mcmc_results, </span>
+<span id="cb38-205"><a href="#cb38-205" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> <span class="fu">GridObserved</span>(<span class="at">subjects =</span> pt_subset)</span>
+<span id="cb38-206"><a href="#cb38-206" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb38-207"><a href="#cb38-207" aria-hidden="true" tabindex="-1"></a>  <span class="fu">save</span>(fit_subset, <span class="at">file =</span> save_fit_file)</span>
+<span id="cb38-208"><a href="#cb38-208" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb38-209"><a href="#cb38-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-210"><a href="#cb38-210" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(fit_subset)<span class="sc">+</span></span>
+<span id="cb38-211"><a href="#cb38-211" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Time (years)"</span>, <span class="at">y =</span> <span class="st">"SLD (mm)"</span>)</span>
+<span id="cb38-212"><a href="#cb38-212" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-213"><a href="#cb38-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-214"><a href="#cb38-214" aria-hidden="true" tabindex="-1"></a>So this works very nicely.</span>
+<span id="cb38-215"><a href="#cb38-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-216"><a href="#cb38-216" aria-hidden="true" tabindex="-1"></a><span class="fu">## Prior vs. posterior</span></span>
+<span id="cb38-217"><a href="#cb38-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-218"><a href="#cb38-218" aria-hidden="true" tabindex="-1"></a>Let's check the prior vs. posterior for the parameters:</span>
+<span id="cb38-219"><a href="#cb38-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-222"><a href="#cb38-222" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-223"><a href="#cb38-223" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: plot_prior_post</span></span>
+<span id="cb38-224"><a href="#cb38-224" aria-hidden="true" tabindex="-1"></a><span class="co">#| dependson: plot_trace</span></span>
+<span id="cb38-225"><a href="#cb38-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-226"><a href="#cb38-226" aria-hidden="true" tabindex="-1"></a>post_samples <span class="ot">&lt;-</span> <span class="fu">as_draws_df</span>(vars_draws) <span class="sc">|&gt;</span> </span>
+<span id="cb38-227"><a href="#cb38-227" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb38-228"><a href="#cb38-228" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_bsld =</span> <span class="st">"lm_sf_mu_bsld[1]"</span>,</span>
+<span id="cb38-229"><a href="#cb38-229" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_ks =</span> <span class="st">"lm_sf_mu_ks[1]"</span>,</span>
+<span id="cb38-230"><a href="#cb38-230" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_kg =</span> <span class="st">"lm_sf_mu_kg[1]"</span>,</span>
+<span id="cb38-231"><a href="#cb38-231" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_bsld =</span> <span class="st">"lm_sf_omega_bsld[1]"</span>,</span>
+<span id="cb38-232"><a href="#cb38-232" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_ks =</span> <span class="st">"lm_sf_omega_ks[1]"</span>,</span>
+<span id="cb38-233"><a href="#cb38-233" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_kg =</span> <span class="st">"lm_sf_omega_kg[1]"</span>,</span>
+<span id="cb38-234"><a href="#cb38-234" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma =</span> lm_sf_sigma</span>
+<span id="cb38-235"><a href="#cb38-235" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb38-236"><a href="#cb38-236" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">type =</span> <span class="st">"posterior"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb38-237"><a href="#cb38-237" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(mu_bsld, mu_ks, mu_kg, omega_bsld, omega_ks, omega_kg, sigma, type)</span>
+<span id="cb38-238"><a href="#cb38-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-239"><a href="#cb38-239" aria-hidden="true" tabindex="-1"></a>n_prior_samples <span class="ot">&lt;-</span> <span class="fu">nrow</span>(post_samples)</span>
+<span id="cb38-240"><a href="#cb38-240" aria-hidden="true" tabindex="-1"></a>prior_samples <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb38-241"><a href="#cb38-241" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_bsld =</span> <span class="fu">rnorm</span>(n_prior_samples, <span class="fu">log</span>(<span class="dv">65</span>), <span class="dv">1</span>),</span>
+<span id="cb38-242"><a href="#cb38-242" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_ks =</span> <span class="fu">rnorm</span>(n_prior_samples, <span class="fu">log</span>(<span class="fl">0.52</span>), <span class="dv">1</span>),</span>
+<span id="cb38-243"><a href="#cb38-243" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_kg =</span> <span class="fu">rnorm</span>(n_prior_samples, <span class="fu">log</span>(<span class="fl">1.04</span>), <span class="dv">1</span>),</span>
+<span id="cb38-244"><a href="#cb38-244" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_bsld =</span> <span class="fu">rtruncnorm</span>(n_prior_samples, <span class="at">a =</span> <span class="dv">0</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">3</span>),</span>
+<span id="cb38-245"><a href="#cb38-245" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_ks =</span> <span class="fu">rtruncnorm</span>(n_prior_samples, <span class="at">a =</span> <span class="dv">0</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">3</span>),</span>
+<span id="cb38-246"><a href="#cb38-246" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_kg =</span> <span class="fu">rtruncnorm</span>(n_prior_samples, <span class="at">a =</span> <span class="dv">0</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">3</span>),</span>
+<span id="cb38-247"><a href="#cb38-247" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma =</span> <span class="fu">rtruncnorm</span>(n_prior_samples, <span class="at">a =</span> <span class="dv">0</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">3</span>)</span>
+<span id="cb38-248"><a href="#cb38-248" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb38-249"><a href="#cb38-249" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">type =</span> <span class="st">"prior"</span>)</span>
+<span id="cb38-250"><a href="#cb38-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-251"><a href="#cb38-251" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine the two</span></span>
+<span id="cb38-252"><a href="#cb38-252" aria-hidden="true" tabindex="-1"></a>combined_samples <span class="ot">&lt;-</span> <span class="fu">rbind</span>(post_samples, prior_samples) <span class="sc">|&gt;</span> </span>
+<span id="cb38-253"><a href="#cb38-253" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>type, <span class="at">names_to =</span> <span class="st">"parameter"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>)</span>
+<span id="cb38-254"><a href="#cb38-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-255"><a href="#cb38-255" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(combined_samples, <span class="fu">aes</span>(<span class="at">x =</span> value, <span class="at">fill =</span> type)) <span class="sc">+</span></span>
+<span id="cb38-256"><a href="#cb38-256" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb38-257"><a href="#cb38-257" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>parameter, <span class="at">scales =</span> <span class="st">"free"</span>) <span class="sc">+</span></span>
+<span id="cb38-258"><a href="#cb38-258" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb38-259"><a href="#cb38-259" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-260"><a href="#cb38-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-261"><a href="#cb38-261" aria-hidden="true" tabindex="-1"></a>This looks good, because the priors are covering the range of the posterior samples and are not too informative.</span>
+<span id="cb38-262"><a href="#cb38-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-263"><a href="#cb38-263" aria-hidden="true" tabindex="-1"></a><span class="fu">## Parameter estimates</span></span>
+<span id="cb38-264"><a href="#cb38-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-265"><a href="#cb38-265" aria-hidden="true" tabindex="-1"></a>Here we need again to be careful: We are interested in the posterior mean estimates of the baseline, shrinkage and growth population rates on the original scale. Because we model them on the log scale as normal distributed, we need to use the mean of the log-normal distribution to get the mean on the original scale.</span>
+<span id="cb38-266"><a href="#cb38-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-269"><a href="#cb38-269" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-270"><a href="#cb38-270" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: par_estimates</span></span>
+<span id="cb38-271"><a href="#cb38-271" aria-hidden="true" tabindex="-1"></a><span class="co">#| dependson: plot_prior_post</span></span>
+<span id="cb38-272"><a href="#cb38-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-273"><a href="#cb38-273" aria-hidden="true" tabindex="-1"></a>post_sum <span class="ot">&lt;-</span> post_samples <span class="sc">|&gt;</span></span>
+<span id="cb38-274"><a href="#cb38-274" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb38-275"><a href="#cb38-275" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_b0 =</span> <span class="fu">exp</span>(mu_bsld <span class="sc">+</span> omega_bsld<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>), </span>
+<span id="cb38-276"><a href="#cb38-276" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_ks =</span> <span class="fu">exp</span>(mu_ks <span class="sc">+</span> omega_ks<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>), </span>
+<span id="cb38-277"><a href="#cb38-277" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_kg =</span> <span class="fu">exp</span>(mu_kg <span class="sc">+</span> omega_kg<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
+<span id="cb38-278"><a href="#cb38-278" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_0 =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_bsld<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
+<span id="cb38-279"><a href="#cb38-279" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_s =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_ks<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
+<span id="cb38-280"><a href="#cb38-280" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_g =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_kg<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb38-281"><a href="#cb38-281" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb38-282"><a href="#cb38-282" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(theta_b0, theta_ks, theta_kg, omega_bsld, omega_ks, omega_kg, cv_0, cv_s, cv_g, sigma) <span class="sc">|&gt;</span></span>
+<span id="cb38-283"><a href="#cb38-283" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize_draws</span>() <span class="sc">|&gt;</span></span>
+<span id="cb38-284"><a href="#cb38-284" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb38-285"><a href="#cb38-285" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">n_sigfig =</span> <span class="dv">3</span>)</span>
+<span id="cb38-286"><a href="#cb38-286" aria-hidden="true" tabindex="-1"></a>post_sum</span>
+<span id="cb38-287"><a href="#cb38-287" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-288"><a href="#cb38-288" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-289"><a href="#cb38-289" aria-hidden="true" tabindex="-1"></a>We can see that these are consistent with the estimates from the <span class="in">`brms`</span> model earlier.</span>
+<span id="cb38-290"><a href="#cb38-290" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-291"><a href="#cb38-291" aria-hidden="true" tabindex="-1"></a><span class="fu">## Separate arm estimates</span></span>
+<span id="cb38-292"><a href="#cb38-292" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-293"><a href="#cb38-293" aria-hidden="true" tabindex="-1"></a>While there is no general covariates support in <span class="in">`jmpost`</span> for the longitudinal models as of now, we can obtain separate estimates for the longitudinal model parameters: As detailed in the model specification <span class="co">[</span><span class="ot">here</span><span class="co">](https://genentech.github.io/jmpost/main/articles/statistical-specification.html#stein-fojo-model)</span>, as soon as we have the arm defined, then separate estimates for the arm-specific shrinkage and growth parameters will be obtained: Both the population means and standard deviation parameters are here arm-specific. (Note that this is slightly different from <span class="in">`brms`</span> where we assumed earlier the same standard deviation independent of the treatment arm.)</span>
+<span id="cb38-294"><a href="#cb38-294" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-295"><a href="#cb38-295" aria-hidden="true" tabindex="-1"></a>So we need to define the subject data accordingly now with the arm information:</span>
+<span id="cb38-296"><a href="#cb38-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-299"><a href="#cb38-299" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-300"><a href="#cb38-300" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: subj_df_prep_arm</span></span>
+<span id="cb38-301"><a href="#cb38-301" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-302"><a href="#cb38-302" aria-hidden="true" tabindex="-1"></a>subj_df_by_arm <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span></span>
+<span id="cb38-303"><a href="#cb38-303" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, arm) <span class="sc">|&gt;</span></span>
+<span id="cb38-304"><a href="#cb38-304" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb38-305"><a href="#cb38-305" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">study =</span> <span class="st">"study"</span>)</span>
+<span id="cb38-306"><a href="#cb38-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-307"><a href="#cb38-307" aria-hidden="true" tabindex="-1"></a>subj_data_by_arm <span class="ot">&lt;-</span> <span class="fu">DataSubject</span>(</span>
+<span id="cb38-308"><a href="#cb38-308" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> subj_df_by_arm,</span>
+<span id="cb38-309"><a href="#cb38-309" aria-hidden="true" tabindex="-1"></a>  <span class="at">subject =</span> <span class="st">"id"</span>,</span>
+<span id="cb38-310"><a href="#cb38-310" aria-hidden="true" tabindex="-1"></a>  <span class="at">arm =</span> <span class="st">"arm"</span>,</span>
+<span id="cb38-311"><a href="#cb38-311" aria-hidden="true" tabindex="-1"></a>  <span class="at">study =</span> <span class="st">"study"</span></span>
+<span id="cb38-312"><a href="#cb38-312" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb38-313"><a href="#cb38-313" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-314"><a href="#cb38-314" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-315"><a href="#cb38-315" aria-hidden="true" tabindex="-1"></a>We redefine the <span class="in">`JointData`</span> object and can then fit the model, because the prior specification does not need to change: We assume iid priors on the arm-specific parameters here.</span>
+<span id="cb38-316"><a href="#cb38-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-319"><a href="#cb38-319" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-320"><a href="#cb38-320" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: joint_data_prep_arm</span></span>
+<span id="cb38-321"><a href="#cb38-321" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-322"><a href="#cb38-322" aria-hidden="true" tabindex="-1"></a>joint_data_by_arm <span class="ot">&lt;-</span> <span class="fu">DataJoint</span>(</span>
+<span id="cb38-323"><a href="#cb38-323" aria-hidden="true" tabindex="-1"></a>    <span class="at">subject =</span> subj_data_by_arm,</span>
+<span id="cb38-324"><a href="#cb38-324" aria-hidden="true" tabindex="-1"></a>    <span class="at">longitudinal =</span> long_data</span>
+<span id="cb38-325"><a href="#cb38-325" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb38-326"><a href="#cb38-326" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-327"><a href="#cb38-327" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-330"><a href="#cb38-330" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-331"><a href="#cb38-331" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fit_model_arm</span></span>
+<span id="cb38-332"><a href="#cb38-332" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-333"><a href="#cb38-333" aria-hidden="true" tabindex="-1"></a>save_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-tgi/jm6.RData"</span>)</span>
+<span id="cb38-334"><a href="#cb38-334" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(save_file)) {</span>
+<span id="cb38-335"><a href="#cb38-335" aria-hidden="true" tabindex="-1"></a>  <span class="fu">load</span>(save_file)</span>
+<span id="cb38-336"><a href="#cb38-336" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb38-337"><a href="#cb38-337" aria-hidden="true" tabindex="-1"></a>  mcmc_results_by_arm <span class="ot">&lt;-</span> <span class="fu">sampleStanModel</span>(</span>
+<span id="cb38-338"><a href="#cb38-338" aria-hidden="true" tabindex="-1"></a>      tgi_mod,</span>
+<span id="cb38-339"><a href="#cb38-339" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> joint_data_by_arm,</span>
+<span id="cb38-340"><a href="#cb38-340" aria-hidden="true" tabindex="-1"></a>      <span class="at">iter_sampling =</span> ITER,</span>
+<span id="cb38-341"><a href="#cb38-341" aria-hidden="true" tabindex="-1"></a>      <span class="at">iter_warmup =</span> WARMUP,</span>
+<span id="cb38-342"><a href="#cb38-342" aria-hidden="true" tabindex="-1"></a>      <span class="at">chains =</span> CHAINS,</span>
+<span id="cb38-343"><a href="#cb38-343" aria-hidden="true" tabindex="-1"></a>      <span class="at">parallel_chains =</span> CHAINS,</span>
+<span id="cb38-344"><a href="#cb38-344" aria-hidden="true" tabindex="-1"></a>      <span class="at">thin =</span> CHAINS,</span>
+<span id="cb38-345"><a href="#cb38-345" aria-hidden="true" tabindex="-1"></a>      <span class="at">seed =</span> BAYES.SEED,</span>
+<span id="cb38-346"><a href="#cb38-346" aria-hidden="true" tabindex="-1"></a>      <span class="at">refresh =</span> REFRESH</span>
+<span id="cb38-347"><a href="#cb38-347" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb38-348"><a href="#cb38-348" aria-hidden="true" tabindex="-1"></a>  <span class="fu">save</span>(mcmc_results_by_arm, <span class="at">file =</span> save_file)</span>
+<span id="cb38-349"><a href="#cb38-349" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb38-350"><a href="#cb38-350" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb38-351"><a href="#cb38-351" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-354"><a href="#cb38-354" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-355"><a href="#cb38-355" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: check_convergence_arm</span></span>
-<span id="cb38-356"><a href="#cb38-356" aria-hidden="true" tabindex="-1"></a><span class="co">#| dependson: fit_model_arm</span></span>
-<span id="cb38-357"><a href="#cb38-357" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-358"><a href="#cb38-358" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb38-359"><a href="#cb38-359" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_mu_bsld"</span>,</span>
-<span id="cb38-360"><a href="#cb38-360" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_mu_ks"</span>,</span>
-<span id="cb38-361"><a href="#cb38-361" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_mu_kg"</span>,</span>
-<span id="cb38-362"><a href="#cb38-362" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_sigma"</span>,</span>
-<span id="cb38-363"><a href="#cb38-363" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_omega_bsld"</span>,</span>
-<span id="cb38-364"><a href="#cb38-364" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_omega_ks"</span>,</span>
-<span id="cb38-365"><a href="#cb38-365" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_omega_kg"</span></span>
-<span id="cb38-366"><a href="#cb38-366" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb38-367"><a href="#cb38-367" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-368"><a href="#cb38-368" aria-hidden="true" tabindex="-1"></a>save_arm_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-tgi/jm3_more.RData"</span>)</span>
-<span id="cb38-369"><a href="#cb38-369" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(save_arm_file)) {</span>
-<span id="cb38-370"><a href="#cb38-370" aria-hidden="true" tabindex="-1"></a>  <span class="fu">load</span>(save_arm_file)</span>
-<span id="cb38-371"><a href="#cb38-371" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb38-372"><a href="#cb38-372" aria-hidden="true" tabindex="-1"></a>  mcmc_res_cmdstan_by_arm <span class="ot">&lt;-</span> cmdstanr<span class="sc">::</span><span class="fu">as.CmdStanMCMC</span>(mcmc_results_by_arm)</span>
-<span id="cb38-373"><a href="#cb38-373" aria-hidden="true" tabindex="-1"></a>  mcmc_res_sum_by_arm <span class="ot">&lt;-</span> mcmc_res_cmdstan_by_arm<span class="sc">$</span><span class="fu">summary</span>(vars)</span>
-<span id="cb38-374"><a href="#cb38-374" aria-hidden="true" tabindex="-1"></a>  vars_draws_by_arm <span class="ot">&lt;-</span> mcmc_res_cmdstan_by_arm<span class="sc">$</span><span class="fu">draws</span>(vars)</span>
-<span id="cb38-375"><a href="#cb38-375" aria-hidden="true" tabindex="-1"></a>  loo_by_arm <span class="ot">&lt;-</span> mcmc_res_cmdstan_by_arm<span class="sc">$</span><span class="fu">loo</span>(<span class="at">r_eff =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb38-376"><a href="#cb38-376" aria-hidden="true" tabindex="-1"></a>  <span class="fu">save</span>(mcmc_res_sum_by_arm, vars_draws_by_arm, loo_by_arm, <span class="at">file =</span> save_arm_file)</span>
-<span id="cb38-377"><a href="#cb38-377" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb38-378"><a href="#cb38-378" aria-hidden="true" tabindex="-1"></a>mcmc_res_sum_by_arm</span>
-<span id="cb38-379"><a href="#cb38-379" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-380"><a href="#cb38-380" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-381"><a href="#cb38-381" aria-hidden="true" tabindex="-1"></a>Let's again tabulate the parameter estimates:</span>
+<span id="cb38-352"><a href="#cb38-352" aria-hidden="true" tabindex="-1"></a>Let's again check the convergence:</span>
+<span id="cb38-353"><a href="#cb38-353" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-356"><a href="#cb38-356" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-357"><a href="#cb38-357" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: check_convergence_arm</span></span>
+<span id="cb38-358"><a href="#cb38-358" aria-hidden="true" tabindex="-1"></a><span class="co">#| dependson: fit_model_arm</span></span>
+<span id="cb38-359"><a href="#cb38-359" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-360"><a href="#cb38-360" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb38-361"><a href="#cb38-361" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_mu_bsld"</span>,</span>
+<span id="cb38-362"><a href="#cb38-362" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_mu_ks"</span>,</span>
+<span id="cb38-363"><a href="#cb38-363" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_mu_kg"</span>,</span>
+<span id="cb38-364"><a href="#cb38-364" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_sigma"</span>,</span>
+<span id="cb38-365"><a href="#cb38-365" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_omega_bsld"</span>,</span>
+<span id="cb38-366"><a href="#cb38-366" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_omega_ks"</span>,</span>
+<span id="cb38-367"><a href="#cb38-367" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_omega_kg"</span></span>
+<span id="cb38-368"><a href="#cb38-368" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb38-369"><a href="#cb38-369" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-370"><a href="#cb38-370" aria-hidden="true" tabindex="-1"></a>save_arm_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-tgi/jm6_more.RData"</span>)</span>
+<span id="cb38-371"><a href="#cb38-371" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(save_arm_file)) {</span>
+<span id="cb38-372"><a href="#cb38-372" aria-hidden="true" tabindex="-1"></a>  <span class="fu">load</span>(save_arm_file)</span>
+<span id="cb38-373"><a href="#cb38-373" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb38-374"><a href="#cb38-374" aria-hidden="true" tabindex="-1"></a>  mcmc_res_cmdstan_by_arm <span class="ot">&lt;-</span> cmdstanr<span class="sc">::</span><span class="fu">as.CmdStanMCMC</span>(mcmc_results_by_arm)</span>
+<span id="cb38-375"><a href="#cb38-375" aria-hidden="true" tabindex="-1"></a>  mcmc_res_sum_by_arm <span class="ot">&lt;-</span> mcmc_res_cmdstan_by_arm<span class="sc">$</span><span class="fu">summary</span>(vars)</span>
+<span id="cb38-376"><a href="#cb38-376" aria-hidden="true" tabindex="-1"></a>  vars_draws_by_arm <span class="ot">&lt;-</span> mcmc_res_cmdstan_by_arm<span class="sc">$</span><span class="fu">draws</span>(vars)</span>
+<span id="cb38-377"><a href="#cb38-377" aria-hidden="true" tabindex="-1"></a>  loo_by_arm <span class="ot">&lt;-</span> mcmc_res_cmdstan_by_arm<span class="sc">$</span><span class="fu">loo</span>(<span class="at">r_eff =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb38-378"><a href="#cb38-378" aria-hidden="true" tabindex="-1"></a>  <span class="fu">save</span>(mcmc_res_sum_by_arm, vars_draws_by_arm, loo_by_arm, <span class="at">file =</span> save_arm_file)</span>
+<span id="cb38-379"><a href="#cb38-379" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb38-380"><a href="#cb38-380" aria-hidden="true" tabindex="-1"></a>mcmc_res_sum_by_arm</span>
+<span id="cb38-381"><a href="#cb38-381" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb38-382"><a href="#cb38-382" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-385"><a href="#cb38-385" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-386"><a href="#cb38-386" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: par_estimates_arm</span></span>
-<span id="cb38-387"><a href="#cb38-387" aria-hidden="true" tabindex="-1"></a><span class="co">#| dependson: check_convergence_arm</span></span>
-<span id="cb38-388"><a href="#cb38-388" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-389"><a href="#cb38-389" aria-hidden="true" tabindex="-1"></a>post_samples_by_arm <span class="ot">&lt;-</span> <span class="fu">as_draws_df</span>(vars_draws_by_arm) <span class="sc">|&gt;</span> </span>
-<span id="cb38-390"><a href="#cb38-390" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
-<span id="cb38-391"><a href="#cb38-391" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_bsld =</span> <span class="st">"lm_sf_mu_bsld[1]"</span>,</span>
-<span id="cb38-392"><a href="#cb38-392" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_ks1 =</span> <span class="st">"lm_sf_mu_ks[1]"</span>,</span>
-<span id="cb38-393"><a href="#cb38-393" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_ks2 =</span> <span class="st">"lm_sf_mu_ks[2]"</span>,</span>
-<span id="cb38-394"><a href="#cb38-394" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_kg1 =</span> <span class="st">"lm_sf_mu_kg[1]"</span>,</span>
-<span id="cb38-395"><a href="#cb38-395" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_kg2 =</span> <span class="st">"lm_sf_mu_kg[2]"</span>,</span>
-<span id="cb38-396"><a href="#cb38-396" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_bsld =</span> <span class="st">"lm_sf_omega_bsld[1]"</span>,</span>
-<span id="cb38-397"><a href="#cb38-397" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_ks1 =</span> <span class="st">"lm_sf_omega_ks[1]"</span>,</span>
-<span id="cb38-398"><a href="#cb38-398" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_ks2 =</span> <span class="st">"lm_sf_omega_ks[2]"</span>,</span>
-<span id="cb38-399"><a href="#cb38-399" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_kg1 =</span> <span class="st">"lm_sf_omega_kg[1]"</span>,</span>
-<span id="cb38-400"><a href="#cb38-400" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_kg2 =</span> <span class="st">"lm_sf_omega_kg[2]"</span>,</span>
-<span id="cb38-401"><a href="#cb38-401" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma =</span> lm_sf_sigma</span>
-<span id="cb38-402"><a href="#cb38-402" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb38-403"><a href="#cb38-403" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb38-404"><a href="#cb38-404" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_b0 =</span> <span class="fu">exp</span>(mu_bsld <span class="sc">+</span> omega_bsld<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>), </span>
-<span id="cb38-405"><a href="#cb38-405" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_ks1 =</span> <span class="fu">exp</span>(mu_ks1 <span class="sc">+</span> omega_ks1<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>), </span>
-<span id="cb38-406"><a href="#cb38-406" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_ks2 =</span> <span class="fu">exp</span>(mu_ks2 <span class="sc">+</span> omega_ks2<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
-<span id="cb38-407"><a href="#cb38-407" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_kg1 =</span> <span class="fu">exp</span>(mu_kg1 <span class="sc">+</span> omega_kg1<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
-<span id="cb38-408"><a href="#cb38-408" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_kg2 =</span> <span class="fu">exp</span>(mu_kg2 <span class="sc">+</span> omega_kg2<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
-<span id="cb38-409"><a href="#cb38-409" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_0 =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_bsld<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
-<span id="cb38-410"><a href="#cb38-410" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_s1 =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_ks1<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
-<span id="cb38-411"><a href="#cb38-411" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_s2 =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_ks2<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
-<span id="cb38-412"><a href="#cb38-412" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_g1 =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_kg1<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
-<span id="cb38-413"><a href="#cb38-413" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_g2 =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_kg2<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>)</span>
-<span id="cb38-414"><a href="#cb38-414" aria-hidden="true" tabindex="-1"></a>  ) </span>
-<span id="cb38-415"><a href="#cb38-415" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb38-416"><a href="#cb38-416" aria-hidden="true" tabindex="-1"></a>post_sum_by_arm <span class="ot">&lt;-</span> post_samples_by_arm <span class="sc">|&gt;</span></span>
-<span id="cb38-417"><a href="#cb38-417" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
-<span id="cb38-418"><a href="#cb38-418" aria-hidden="true" tabindex="-1"></a>    theta_b0, theta_ks1, theta_ks2, theta_kg1, theta_kg2, </span>
-<span id="cb38-419"><a href="#cb38-419" aria-hidden="true" tabindex="-1"></a>    omega_bsld, omega_ks1, omega_ks2, omega_kg1, omega_kg2, </span>
-<span id="cb38-420"><a href="#cb38-420" aria-hidden="true" tabindex="-1"></a>    cv_0, cv_s1, cv_s2, cv_g1, cv_g2, sigma) <span class="sc">|&gt;</span></span>
-<span id="cb38-421"><a href="#cb38-421" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize_draws</span>() <span class="sc">|&gt;</span></span>
-<span id="cb38-422"><a href="#cb38-422" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
-<span id="cb38-423"><a href="#cb38-423" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">n_sigfig =</span> <span class="dv">3</span>)</span>
-<span id="cb38-424"><a href="#cb38-424" aria-hidden="true" tabindex="-1"></a>post_sum_by_arm</span>
-<span id="cb38-425"><a href="#cb38-425" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-426"><a href="#cb38-426" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-427"><a href="#cb38-427" aria-hidden="true" tabindex="-1"></a>Here again the shrinkage rate in the treatment arm 1 seems higher than in the treatment arm 2. However, the difference is not as pronounced as in the <span class="in">`brms`</span> model before with the same standard deviation for both arms. We can again calculate the posterior probability that the shrinkage rate in arm 1 is higher than in arm 2:</span>
+<span id="cb38-383"><a href="#cb38-383" aria-hidden="true" tabindex="-1"></a>Let's again tabulate the parameter estimates:</span>
+<span id="cb38-384"><a href="#cb38-384" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-387"><a href="#cb38-387" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-388"><a href="#cb38-388" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: par_estimates_arm</span></span>
+<span id="cb38-389"><a href="#cb38-389" aria-hidden="true" tabindex="-1"></a><span class="co">#| dependson: check_convergence_arm</span></span>
+<span id="cb38-390"><a href="#cb38-390" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-391"><a href="#cb38-391" aria-hidden="true" tabindex="-1"></a>post_samples_by_arm <span class="ot">&lt;-</span> <span class="fu">as_draws_df</span>(vars_draws_by_arm) <span class="sc">|&gt;</span> </span>
+<span id="cb38-392"><a href="#cb38-392" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb38-393"><a href="#cb38-393" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_bsld =</span> <span class="st">"lm_sf_mu_bsld[1]"</span>,</span>
+<span id="cb38-394"><a href="#cb38-394" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_ks1 =</span> <span class="st">"lm_sf_mu_ks[1]"</span>,</span>
+<span id="cb38-395"><a href="#cb38-395" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_ks2 =</span> <span class="st">"lm_sf_mu_ks[2]"</span>,</span>
+<span id="cb38-396"><a href="#cb38-396" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_kg1 =</span> <span class="st">"lm_sf_mu_kg[1]"</span>,</span>
+<span id="cb38-397"><a href="#cb38-397" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_kg2 =</span> <span class="st">"lm_sf_mu_kg[2]"</span>,</span>
+<span id="cb38-398"><a href="#cb38-398" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_bsld =</span> <span class="st">"lm_sf_omega_bsld[1]"</span>,</span>
+<span id="cb38-399"><a href="#cb38-399" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_ks1 =</span> <span class="st">"lm_sf_omega_ks[1]"</span>,</span>
+<span id="cb38-400"><a href="#cb38-400" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_ks2 =</span> <span class="st">"lm_sf_omega_ks[2]"</span>,</span>
+<span id="cb38-401"><a href="#cb38-401" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_kg1 =</span> <span class="st">"lm_sf_omega_kg[1]"</span>,</span>
+<span id="cb38-402"><a href="#cb38-402" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_kg2 =</span> <span class="st">"lm_sf_omega_kg[2]"</span>,</span>
+<span id="cb38-403"><a href="#cb38-403" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma =</span> lm_sf_sigma</span>
+<span id="cb38-404"><a href="#cb38-404" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb38-405"><a href="#cb38-405" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb38-406"><a href="#cb38-406" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_b0 =</span> <span class="fu">exp</span>(mu_bsld <span class="sc">+</span> omega_bsld<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>), </span>
+<span id="cb38-407"><a href="#cb38-407" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_ks1 =</span> <span class="fu">exp</span>(mu_ks1 <span class="sc">+</span> omega_ks1<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>), </span>
+<span id="cb38-408"><a href="#cb38-408" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_ks2 =</span> <span class="fu">exp</span>(mu_ks2 <span class="sc">+</span> omega_ks2<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
+<span id="cb38-409"><a href="#cb38-409" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_kg1 =</span> <span class="fu">exp</span>(mu_kg1 <span class="sc">+</span> omega_kg1<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
+<span id="cb38-410"><a href="#cb38-410" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_kg2 =</span> <span class="fu">exp</span>(mu_kg2 <span class="sc">+</span> omega_kg2<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
+<span id="cb38-411"><a href="#cb38-411" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_0 =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_bsld<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
+<span id="cb38-412"><a href="#cb38-412" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_s1 =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_ks1<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
+<span id="cb38-413"><a href="#cb38-413" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_s2 =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_ks2<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
+<span id="cb38-414"><a href="#cb38-414" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_g1 =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_kg1<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
+<span id="cb38-415"><a href="#cb38-415" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_g2 =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(omega_kg2<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb38-416"><a href="#cb38-416" aria-hidden="true" tabindex="-1"></a>  ) </span>
+<span id="cb38-417"><a href="#cb38-417" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb38-418"><a href="#cb38-418" aria-hidden="true" tabindex="-1"></a>post_sum_by_arm <span class="ot">&lt;-</span> post_samples_by_arm <span class="sc">|&gt;</span></span>
+<span id="cb38-419"><a href="#cb38-419" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb38-420"><a href="#cb38-420" aria-hidden="true" tabindex="-1"></a>    theta_b0, theta_ks1, theta_ks2, theta_kg1, theta_kg2, </span>
+<span id="cb38-421"><a href="#cb38-421" aria-hidden="true" tabindex="-1"></a>    omega_bsld, omega_ks1, omega_ks2, omega_kg1, omega_kg2, </span>
+<span id="cb38-422"><a href="#cb38-422" aria-hidden="true" tabindex="-1"></a>    cv_0, cv_s1, cv_s2, cv_g1, cv_g2, sigma) <span class="sc">|&gt;</span></span>
+<span id="cb38-423"><a href="#cb38-423" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize_draws</span>() <span class="sc">|&gt;</span></span>
+<span id="cb38-424"><a href="#cb38-424" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb38-425"><a href="#cb38-425" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">n_sigfig =</span> <span class="dv">3</span>)</span>
+<span id="cb38-426"><a href="#cb38-426" aria-hidden="true" tabindex="-1"></a>post_sum_by_arm</span>
+<span id="cb38-427"><a href="#cb38-427" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb38-428"><a href="#cb38-428" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-431"><a href="#cb38-431" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-432"><a href="#cb38-432" aria-hidden="true" tabindex="-1"></a>prob_ks1_greater_ks2 <span class="ot">&lt;-</span> <span class="fu">mean</span>(post_samples_by_arm<span class="sc">$</span>theta_ks1 <span class="sc">&gt;</span> post_samples_by_arm<span class="sc">$</span>theta_ks2)</span>
-<span id="cb38-433"><a href="#cb38-433" aria-hidden="true" tabindex="-1"></a>prob_ks1_greater_ks2</span>
-<span id="cb38-434"><a href="#cb38-434" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-435"><a href="#cb38-435" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-436"><a href="#cb38-436" aria-hidden="true" tabindex="-1"></a>So the posterior probability is now only around <span class="in">`r round(prob_ks1_greater_ks2 * 100)`</span>%. </span>
+<span id="cb38-429"><a href="#cb38-429" aria-hidden="true" tabindex="-1"></a>Here again the shrinkage rate in the treatment arm 1 seems higher than in the treatment arm 2. However, the difference is not as pronounced as in the <span class="in">`brms`</span> model before with the same standard deviation for both arms. We can again calculate the posterior probability that the shrinkage rate in arm 1 is higher than in arm 2:</span>
+<span id="cb38-430"><a href="#cb38-430" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-433"><a href="#cb38-433" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-434"><a href="#cb38-434" aria-hidden="true" tabindex="-1"></a>prob_ks1_greater_ks2 <span class="ot">&lt;-</span> <span class="fu">mean</span>(post_samples_by_arm<span class="sc">$</span>theta_ks1 <span class="sc">&gt;</span> post_samples_by_arm<span class="sc">$</span>theta_ks2)</span>
+<span id="cb38-435"><a href="#cb38-435" aria-hidden="true" tabindex="-1"></a>prob_ks1_greater_ks2</span>
+<span id="cb38-436"><a href="#cb38-436" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb38-437"><a href="#cb38-437" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-438"><a href="#cb38-438" aria-hidden="true" tabindex="-1"></a><span class="fu">## Model comparison with LOO</span></span>
+<span id="cb38-438"><a href="#cb38-438" aria-hidden="true" tabindex="-1"></a>So the posterior probability is now only around <span class="in">`r round(prob_ks1_greater_ks2 * 100)`</span>%. </span>
 <span id="cb38-439"><a href="#cb38-439" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-440"><a href="#cb38-440" aria-hidden="true" tabindex="-1"></a>As we have seen for <span class="in">`brms`</span>, also for <span class="in">`jmpost`</span> we can easily compute the LOO criterion:</span>
+<span id="cb38-440"><a href="#cb38-440" aria-hidden="true" tabindex="-1"></a><span class="fu">## Model comparison with LOO</span></span>
 <span id="cb38-441"><a href="#cb38-441" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-444"><a href="#cb38-444" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-445"><a href="#cb38-445" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: loo</span></span>
-<span id="cb38-446"><a href="#cb38-446" aria-hidden="true" tabindex="-1"></a><span class="co">#| dependson: check_convergence</span></span>
-<span id="cb38-447"><a href="#cb38-447" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-448"><a href="#cb38-448" aria-hidden="true" tabindex="-1"></a><span class="co"># loo_res &lt;- mcmc_res_cmdstan$loo(r_eff = FALSE)</span></span>
-<span id="cb38-449"><a href="#cb38-449" aria-hidden="true" tabindex="-1"></a>loo_res</span>
-<span id="cb38-450"><a href="#cb38-450" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-451"><a href="#cb38-451" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-452"><a href="#cb38-452" aria-hidden="true" tabindex="-1"></a>Underneath this is using the <span class="co">[</span><span class="ot">$loo()</span><span class="co">](https://mc-stan.org/cmdstanr/reference/fit-method-loo.html)</span> method from <span class="in">`cmdstanr`</span>. </span>
+<span id="cb38-442"><a href="#cb38-442" aria-hidden="true" tabindex="-1"></a>As we have seen for <span class="in">`brms`</span>, also for <span class="in">`jmpost`</span> we can easily compute the LOO criterion:</span>
+<span id="cb38-443"><a href="#cb38-443" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-446"><a href="#cb38-446" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-447"><a href="#cb38-447" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: loo</span></span>
+<span id="cb38-448"><a href="#cb38-448" aria-hidden="true" tabindex="-1"></a><span class="co">#| dependson: check_convergence</span></span>
+<span id="cb38-449"><a href="#cb38-449" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-450"><a href="#cb38-450" aria-hidden="true" tabindex="-1"></a><span class="co"># loo_res &lt;- mcmc_res_cmdstan$loo(r_eff = FALSE)</span></span>
+<span id="cb38-451"><a href="#cb38-451" aria-hidden="true" tabindex="-1"></a>loo_res</span>
+<span id="cb38-452"><a href="#cb38-452" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb38-453"><a href="#cb38-453" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-454"><a href="#cb38-454" aria-hidden="true" tabindex="-1"></a>And we can compare this to the LOO of the model with separate arm estimates:</span>
+<span id="cb38-454"><a href="#cb38-454" aria-hidden="true" tabindex="-1"></a>Underneath this is using the <span class="co">[</span><span class="ot">$loo()</span><span class="co">](https://mc-stan.org/cmdstanr/reference/fit-method-loo.html)</span> method from <span class="in">`cmdstanr`</span>. </span>
 <span id="cb38-455"><a href="#cb38-455" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-458"><a href="#cb38-458" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-459"><a href="#cb38-459" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: loo_arm</span></span>
-<span id="cb38-460"><a href="#cb38-460" aria-hidden="true" tabindex="-1"></a><span class="co">#| dependson: check_convergence_arm</span></span>
-<span id="cb38-461"><a href="#cb38-461" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-462"><a href="#cb38-462" aria-hidden="true" tabindex="-1"></a><span class="co"># loo_by_arm &lt;- mcmc_res_cmdstan_by_arm$loo(r_eff = FALSE)</span></span>
-<span id="cb38-463"><a href="#cb38-463" aria-hidden="true" tabindex="-1"></a>loo_by_arm</span>
-<span id="cb38-464"><a href="#cb38-464" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-465"><a href="#cb38-465" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-466"><a href="#cb38-466" aria-hidden="true" tabindex="-1"></a>So the model by treatment arm performs here better than the model without treatment arm specific growth and shrinkage parameters.</span>
+<span id="cb38-456"><a href="#cb38-456" aria-hidden="true" tabindex="-1"></a>And we can compare this to the LOO of the model with separate arm estimates:</span>
+<span id="cb38-457"><a href="#cb38-457" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-460"><a href="#cb38-460" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-461"><a href="#cb38-461" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: loo_arm</span></span>
+<span id="cb38-462"><a href="#cb38-462" aria-hidden="true" tabindex="-1"></a><span class="co">#| dependson: check_convergence_arm</span></span>
+<span id="cb38-463"><a href="#cb38-463" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-464"><a href="#cb38-464" aria-hidden="true" tabindex="-1"></a><span class="co"># loo_by_arm &lt;- mcmc_res_cmdstan_by_arm$loo(r_eff = FALSE)</span></span>
+<span id="cb38-465"><a href="#cb38-465" aria-hidden="true" tabindex="-1"></a>loo_by_arm</span>
+<span id="cb38-466"><a href="#cb38-466" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb38-467"><a href="#cb38-467" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-468"><a href="#cb38-468" aria-hidden="true" tabindex="-1"></a><span class="fu">## Tipps and tricks</span></span>
+<span id="cb38-468"><a href="#cb38-468" aria-hidden="true" tabindex="-1"></a>So the model by treatment arm performs here better than the model without treatment arm specific growth and shrinkage parameters.</span>
 <span id="cb38-469"><a href="#cb38-469" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-470"><a href="#cb38-470" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Also here it is possible to look at the underlying Stan code:</span>
-<span id="cb38-471"><a href="#cb38-471" aria-hidden="true" tabindex="-1"></a>  <span class="in">```{r}</span></span>
-<span id="cb38-472"><a href="#cb38-472" aria-hidden="true" tabindex="-1"></a><span class="in">  #| eval: false</span></span>
-<span id="cb38-473"><a href="#cb38-473" aria-hidden="true" tabindex="-1"></a><span class="in">  #| label: show_stan_code</span></span>
-<span id="cb38-474"><a href="#cb38-474" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-475"><a href="#cb38-475" aria-hidden="true" tabindex="-1"></a><span class="in">  tmp &lt;- tempfile()</span></span>
-<span id="cb38-476"><a href="#cb38-476" aria-hidden="true" tabindex="-1"></a><span class="in">  write_stan(tgi_mod, destination = tmp)</span></span>
-<span id="cb38-477"><a href="#cb38-477" aria-hidden="true" tabindex="-1"></a><span class="in">  file.edit(tmp) # opens the Stan file in the default editor</span></span>
-<span id="cb38-478"><a href="#cb38-478" aria-hidden="true" tabindex="-1"></a><span class="in">  ```</span></span>
-<span id="cb38-479"><a href="#cb38-479" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>It is not trivial to transport saved models from one computer to another. This is because <span class="in">`cmdstanr`</span> only loads the results it currently needs from disk into memory, and thus into the R session. If you want to transport the model to another computer, you need to save the Stan code and the data, and then re-run the model on the other computer. This is because the model object in R is only a reference to the model on disk, not the model itself. Note that there is the <span class="in">`$save_object()`</span> method, see <span class="co">[</span><span class="ot">here</span><span class="co">](https://mc-stan.org/cmdstanr/reference/fit-method-save_object.html)</span>, however this leads to very large files (here about 300 MB for one fit) and can thus not be uploaded to typical git repositories. Therefore above we saved interim result objects separately as needed.</span>
+<span id="cb38-470"><a href="#cb38-470" aria-hidden="true" tabindex="-1"></a><span class="fu">## Tipps and tricks</span></span>
+<span id="cb38-471"><a href="#cb38-471" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-472"><a href="#cb38-472" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Also here it is possible to look at the underlying Stan code:</span>
+<span id="cb38-473"><a href="#cb38-473" aria-hidden="true" tabindex="-1"></a>  <span class="in">```{r}</span></span>
+<span id="cb38-474"><a href="#cb38-474" aria-hidden="true" tabindex="-1"></a><span class="in">  #| eval: false</span></span>
+<span id="cb38-475"><a href="#cb38-475" aria-hidden="true" tabindex="-1"></a><span class="in">  #| label: show_stan_code</span></span>
+<span id="cb38-476"><a href="#cb38-476" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-477"><a href="#cb38-477" aria-hidden="true" tabindex="-1"></a><span class="in">  tmp &lt;- tempfile()</span></span>
+<span id="cb38-478"><a href="#cb38-478" aria-hidden="true" tabindex="-1"></a><span class="in">  write_stan(tgi_mod, destination = tmp)</span></span>
+<span id="cb38-479"><a href="#cb38-479" aria-hidden="true" tabindex="-1"></a><span class="in">  file.edit(tmp) # opens the Stan file in the default editor</span></span>
+<span id="cb38-480"><a href="#cb38-480" aria-hidden="true" tabindex="-1"></a><span class="in">  ```</span></span>
+<span id="cb38-481"><a href="#cb38-481" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>It is not trivial to transport saved models from one computer to another. This is because <span class="in">`cmdstanr`</span> only loads the results it currently needs from disk into memory, and thus into the R session. If you want to transport the model to another computer, you need to save the Stan code and the data, and then re-run the model on the other computer. This is because the model object in R is only a reference to the model on disk, not the model itself. Note that there is the <span class="in">`$save_object()`</span> method, see <span class="co">[</span><span class="ot">here</span><span class="co">](https://mc-stan.org/cmdstanr/reference/fit-method-save_object.html)</span>, however this leads to very large files (here about 300 MB for one fit) and can thus not be uploaded to typical git repositories. Therefore above we saved interim result objects separately as needed.</span>
+<span id="cb38-482"><a href="#cb38-482" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>It is important to explicitly define the truncation boundaries for the truncated normal priors, because otherwise the MCMC results will not be correct.</span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
