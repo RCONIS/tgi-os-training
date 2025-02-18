@@ -144,7 +144,7 @@ tumor_data_summary <- tumor_data |>
 head(tumor_data_summary)
 ```
 
-Now let's try to fuzzy join this with the OS data set, based on the baseline SLD and the treatment arm:
+Now let's try to fuzzy join this with the OS data set, based on the baseline SLD and the treatment arm. In addition, we know that the last time point in the tumor data needs to be before the OS time point. We will also check that the best overall response is the same in both data sets. There will be some errors here: For example, we don't know whether there were new lesions leading to a progression assessment, or whether the patient had later better results. So we need to expect that the matching will not be perfect.
 
 ```{r}
 #| label: match_os_data
@@ -168,12 +168,14 @@ tumor_os_data_joined <- tumor_data_summary |>
         by = c(
           "arm" = "arm", 
           "bsld" = "sld",          
-          "last_year" = "os_time"
+          "last_year" = "os_time",
+          "approx_response" = "response"
         ),
         match_fun = list(
           `==`, 
           dist_match, 
-          less_match
+          less_match,
+          `==`
         )
     )
 nrow(tumor_os_data_joined)
@@ -190,24 +192,19 @@ However, for the purpose of this training we don't need to be able to recover th
 ```{r}
 #| label: subset_matched_data
 
-tumor_os_data_joined <- tumor_os_data_joined |> 
-    group_by(id.x) |> 
-    filter(n() == 1) |>
-    ungroup() |> 
-    filter(!is.na(id.y))
-nrow(tumor_os_data_joined)
-
-with(tumor_os_data_joined, table(approx_response, response))
+tumor_os_data_joined_subset <- tumor_os_data_joined |> 
+    na.omit() |> 
+    filter(!duplicated(id.y)) |>
+    filter(!duplicated(id.x))
+nrow(tumor_os_data_joined_subset)
 ```
-
-As expected, we cannot approximate the best overall response well. For example, we don't know whether there were new lesions leading to a progression assessment, or whether the patient had later better results. Therefore we have not used this for matching the two data sets.
 
 Now let's save the joining information:
 
 ```{r}
 #| label: tgi_os_join_keys
 
-tgi_os_join_keys <- tumor_os_data_joined |> 
+tgi_os_join_keys <- tumor_os_data_joined_subset |> 
     select(id.x, id.y, arm.x) |> 
     rename(
         id_tgi = id.x,
@@ -217,10 +214,9 @@ tgi_os_join_keys <- tumor_os_data_joined |>
 table(tgi_os_join_keys$arm)
 ```
 
-So we have about the same number of patients in each arm.
+So we have about 100 patients in each arm.
 
 We subset the two data sets accordingly:
-
 
 ```{r}
 #| label: subset_data
