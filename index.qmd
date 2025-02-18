@@ -1,5 +1,5 @@
 ---
-title: "Index"
+title: "Contents"
 format:
   html:
     theme: sandstone
@@ -9,16 +9,26 @@ format:
     toc: true
     toc_float: true
 listing:
-  id: listings
-  contents: session-tgi
-  type: table
-  sort: title
+  - id: session-os
+    contents: session-os
+    type: table
+    sort: title
+  - id: session-tgi
+    contents: session-tgi
+    type: table
+    sort: title
 execute:
   cache: true
 ---
 
+## Session 2: OS
 
-::: {#listings}
+::: {#session-os}
+:::
+
+## Session 1: TGI
+
+::: {#session-tgi}
 :::
 
 ## License
