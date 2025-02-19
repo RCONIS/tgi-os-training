@@ -82,11 +82,12 @@ os_data <- here("data/41591_2018_134_MOESM3_ESM.xlsx") |>
     select(
       id,
       arm,
-      sld,
-      response,
+      ecog,
       age,
       race,
       sex,
+      sld,
+      response,
       pfs_time,
       pfs_event,
       os_time,
@@ -225,10 +226,14 @@ tumor_data <- tumor_data |>
     inner_join(
       tgi_os_join_keys, 
       by = c("id" = "id_tgi", "arm" = "arm")
-    )
+    ) |> 
+    select(-id) |> 
+    rename(id = id_os)
+
 os_data <- os_data |>
     inner_join(
       tgi_os_join_keys, 
       by = c("id" = "id_os", "arm" = "arm")
-    )
+    ) |> 
+    select(-id_tgi)
 ```

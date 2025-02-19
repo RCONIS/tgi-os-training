@@ -20,3 +20,260 @@ The purpose of this document is to show a minimal workflow for fitting a Weibull
 {{< include _setup_and_load.qmd >}}
 
 {{< include _load_data.qmd >}}
+
+## TGI model fitting
+
+Let's use `jmpost` to fit the Stein-Fojo model to the TGI dataset. This works analogously to what we showed in the previous session.
+
+First we again prepare the data objects, starting with the subject level data:
+
+```{r}
+#| label: subj_df_prep
+
+subj_df <- os_data |> 
+  mutate(study = "OAK") |> 
+  select(study, id, arm)
+
+subj_data <- DataSubject(
+  data = subj_df,
+  subject = "id",
+  arm = "arm",
+  study = "study"
+)
+```
+
+Next we prepare the longitudinal data object.
+
+```{r}
+#| label: long_df_prep
+
+long_df <- tumor_data |>
+  select(id, year, sld)
+long_data <- DataLongitudinal(
+  data = long_df,
+  formula = sld ~ year
+)
+```
+
+Now we can create the `JointData` object for the TGI model:
+
+```{r}
+#| label: tgi_data_prep
+
+tgi_joint_data <- DataJoint(
+    subject = subj_data,
+    longitudinal = long_data
+)
+```
+
+We specify the Stein-Fojo model together with the priors for the model parameters:
+
+```{r}
+#| label: tgi_mod_spec
+
+tgi_mod <- JointModel(
+    longitudinal = LongitudinalSteinFojo(
+        mu_bsld = prior_normal(log(65), 1),
+        mu_ks = prior_normal(log(0.52), 1),
+        mu_kg = prior_normal(log(1.04), 1),
+        omega_bsld = prior_normal(0, 3) |> set_limits(0, Inf),
+        omega_ks = prior_normal(0, 3) |> set_limits(0, Inf),
+        omega_kg = prior_normal(0, 3) |> set_limits(0, Inf),
+        sigma = prior_normal(0, 3) |> set_limits(0, Inf)
+    )
+)
+```
+
+Now we can fit the model:
+
+```{r}
+#| label: tgi_model_fit
+
+save_file <- here("session-os/tgi1.RData")
+if (file.exists(save_file)) {
+  load(save_file)
+} else {
+  tgi_results <- sampleStanModel(
+      tgi_mod,
+      data = tgi_joint_data,
+      iter_sampling = ITER,
+      iter_warmup = WARMUP,
+      chains = CHAINS,
+      parallel_chains = CHAINS,
+      thin = CHAINS,
+      seed = BAYES.SEED,
+      refresh = REFRESH
+  )
+  save(tgi_results, file = save_file)
+}
+```
+
+Note that this is considerably faster than fitting the larger dataset of 701 patients.
+Let's check the convergence of the population parameters:
+
+```{r}
+#| label: check_convergence
+#| dependson: tgi_model_fit
+
+vars <- c(
+    "lm_sf_mu_bsld",
+    "lm_sf_mu_ks",
+    "lm_sf_mu_kg",
+    "lm_sf_sigma",
+    "lm_sf_omega_bsld",
+    "lm_sf_omega_ks",
+    "lm_sf_omega_kg"
+)
+
+save_file <- here("session-os/tgi1-mcmc.rds")
+if (file.exists(save_file)) {
+  mcmc_tgi_results <- readRDS(save_file)
+} else {
+  mcmc_tgi_results <- cmdstanr::as.CmdStanMCMC(tgi_results)
+  mcmc_tgi_results$save_object(file = save_file)
+}
+mcmc_tgi_results$summary(vars)
+draws_tgi_results <- mcmc_tgi_results$draws(vars)
+mcmc_trace(draws_tgi_results)
+```
+
+So this looks good.
+
+## Extract individual growth rate estimates
+
+We can now extract the individual growth rate estimates from the model. 
+Since the relevant random effect parameter samples are already stored in the `mcmc_tgi_results` object, we can directly extract the posterior means and credible intervals for the growth rates using the `summary` method.
+The only tricky part is that we need to match the IDs of the patients manually, because `jmpost` just numbers the patients in the order they appear in the data, which is then the index for all the random effects and individual growth parameters $\psi_{\text{kg}, i}$.
+
+```{r}
+#| label: extract_growth_rates
+
+subj_kg_est <- mcmc_tgi_results$summary("lm_sf_psi_kg") |> 
+  mutate(id = subj_df$id)
+
+head(subj_kg_est)
+```
+
+We now add the e.g. posterior mean estimate of the individual growth rates to the OS data set, such that we will be able to use it below as a covariate in the OS model:
+
+```{r}
+#| label: add_kg_est_to_os_data
+
+os_data_with_kg_est <- os_data |> 
+  select(id, ecog, age, race, sex, os_time, os_event) |> 
+  left_join(select(subj_kg_est, mean, id), by = "id") |>
+  rename(kg_est = mean)
+head(os_data_with_kg_est)
+```
+
+## OS model fitting
+
+Now we can fit the OS model. We start by preparing the data objects.
+
+
+```{r}
+#| label: os_df_prep
+
+surv_data <- DataSurvival(
+  data = os_data_with_kg_est,
+  formula = Surv(os_time, os_event) ~ ecog + age + race + sex + kg_est
+)
+```
+
+Now we can create the `JointData` object for the OS model:
+
+```{r}
+#| label: os_data_prep
+
+os_joint_data <- DataJoint(
+    subject = subj_data,
+    survival = surv_data
+)
+```
+
+We specify the Weibull model together with the priors for the model parameters. We take vague priors for the regression coefficients `beta`. For `lambda` and `gamma`, we start from the scale of the survival data at hand: 
+the average survival time is `r round(mean(os_data_with_kg_est$os_time), 1)` years, just taking a crude average of all survival times. 
+
+We can quickly write the function that gives the mean of the Weibull distribution with fixed `lambda` and `gamma`:
+
+```{r}
+#| label: weibull_mean
+
+weibull_mean <- function(lambda, gamma) {
+  base::gamma(1 + 1 / gamma) / lambda
+}
+```
+
+Therefore, playing around with this a bit, we can e.g. center the prior for `lambda` around 0.7 and the prior for `gamma` around 1.5, giving a mean survival time of `r round(weibull_mean(0.7, 1.5), 1)` years.
+
+If we want to use Gamma distributions e.g. for `lambda` and `gamma`, we can use the `prior_gamma` function. The two parameters of this distribution are the shape and the rate. The mean is shape divided by the rate. So easiest is to keep a rate of 1 and just set the shape to the mean value we need:
+
+```{r}
+#| label: os_mod_spec
+
+os_mod <- JointModel(
+    survival = SurvivalWeibullPH(
+      lambda = prior_gamma(0.7, 1),
+      gamma = prior_gamma(1.5, 1),
+      beta = prior_normal(0, 20)
+    ) 
+)
+```
+
+Because we use a large prior variance for `beta`, we need to adjust the default initial value construction used in `jmpost`. As explained [here](https://genentech.github.io/jmpost/main/articles/model_fitting.html#initial-values), we can change the shrinkage of the initial values to the mean. We can then check what the initial values will be, to make sure that they are reasonable:
+
+```{r}
+#| label: os_mod_initial_values
+
+options("jmpost.prior_shrinkage" = 0.99)
+
+initialValues(os_mod, n_chains = CHAINS)
+```
+
+Now we can fit the model:
+
+```{r}
+#| label: os_model_fit
+
+save_file <- here("session-os/os1.RData")
+if (file.exists(save_file)) {
+  load(save_file)
+} else {
+  os_results <- sampleStanModel(
+      os_mod,
+      data = os_joint_data,
+      iter_sampling = ITER,
+      iter_warmup = WARMUP,
+      chains = CHAINS,
+      parallel_chains = CHAINS,
+      thin = CHAINS,
+      seed = BAYES.SEED,
+      refresh = REFRESH
+  )
+  save(os_results, file = save_file)
+}
+```
+
+Let's check the convergence of the population parameters:
+
+```{r}
+#| label: check_convergence_os
+#| dependson: os_model_fit
+
+vars <- c(
+    "beta_os_cov",
+    "sm_weibull_ph_gamma",
+    "sm_weibull_ph_lambda"
+)
+
+save_file <- here("session-os/os1-mcmc.rds")
+if (file.exists(save_file)) {
+  mcmc_os_results <- readRDS(save_file)
+} else {
+  mcmc_os_results <- cmdstanr::as.CmdStanMCMC(os_results)
+  mcmc_os_results$save_object(file = save_file)
+}
+mcmc_os_results$summary(vars)
+draws_os_results <- mcmc_os_results$draws(vars)
+mcmc_trace(draws_os_results)
+```
