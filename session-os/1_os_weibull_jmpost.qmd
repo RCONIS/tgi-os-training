@@ -160,7 +160,7 @@ We now add the e.g. posterior mean estimate of the individual growth rates to th
 #| label: add_kg_est_to_os_data
 
 os_data_with_kg_est <- os_data |> 
-  select(id, ecog, age, race, sex, os_time, os_event) |> 
+  select(id, arm, ecog, age, race, sex, os_time, os_event) |> 
   left_join(select(subj_kg_est, mean, id), by = "id") |>
   rename(kg_est = mean)
 head(os_data_with_kg_est)
@@ -170,15 +170,17 @@ head(os_data_with_kg_est)
 
 Now we can fit the OS model. We start by preparing the data objects.
 
-
 ```{r}
 #| label: os_df_prep
 
 surv_data <- DataSurvival(
   data = os_data_with_kg_est,
-  formula = Surv(os_time, os_event) ~ ecog + age + race + sex + kg_est
+  formula = Surv(os_time, os_event) ~ arm + ecog + age + race + sex + kg_est
 )
 ```
+
+Note that we are both including the treatment arm as well as the growth rate estimate here as covariates in the model, alongside the ECOG score, age, race and sex.
+The idea is that we want to understand whether there is additional information in the growth rate estimates, adjusting separately for the treatment arm.
 
 Now we can create the `JointData` object for the OS model:
 
@@ -254,6 +256,8 @@ if (file.exists(save_file)) {
 }
 ```
 
+Note that here we can get warnings at the beginning of the chains' sampling process ("The current Metropolis proposal is about to be rejected ..."). As long as this only happens in the beginning, and not during the sampling later, then this is not a cause for concern.
+
 Let's check the convergence of the population parameters:
 
 ```{r}
@@ -297,7 +301,7 @@ mcmc_dens_overlay(draws_os_results) +
 summary(draws_os_results)
 ```
 
-So we can see that the 90% credible interval (CI) for the covariate `ecog1` excludes 0, so this is a "significant" predictor of the hazard rate. On the other hand, the `race` variable indicator and `age` variables' CIs clearly include 0. The situation is less clear for `sex` and `kg_est`, the estimated growth rate: here the CIs barely include 0. The posterior probabilities for a hazard ratio above 1 are:
+So we can see that the 90% credible interval (CI) for the covariates `arm` and `ecog1` excludes 0, so these are "significant" predictors of the hazard rate. On the other hand, the `race` variable indicator and `age` variables' CIs clearly include 0. The situation is less clear for `sex` and `kg_est`, the estimated growth rate: here the CIs barely include 0. The posterior probabilities for a hazard ratio above 1 are:
 
 ```{r}
 #| label: os_hazard_ratios
@@ -308,5 +312,36 @@ draws_os_results |>
   summarise_all(~mean(. > 0))
 ```
 
-So we have around 94% posterior probability that male patients have a higher hazard than females, and that patients with a higher estimated growth rate have a higher hazard than those with a lower growth rate.
+So we have a more than 90% posterior probability that male patients have a higher hazard than females, and that patients with a higher estimated growth rate have a higher hazard than those with a lower growth rate - and this holds true even after adjusting for the treatment arm.
+
+## Observation vs model fit
+
+A useful plot displays the model predicted survival function and overlays the non-parametric Kaplan-Meier plot to it. Such a plot is easily obtained using the `autoplot()` function, as we will see below.
+
+The first step consists in generating the survival predictions at the group level with the `SurvivalQuantities()` function. It is recommended to specify the sequence of time points at which the predictions should be made (using the argument `times`):
+
+```{r}
+#| label: os_surv_pred
+os_surv_group_grid <- GridGrouped(
+  times = seq(from = 0, to = max(os_data_with_kg_est$os_time), length = 100),
+  groups = with(
+    subj_df,
+    split(as.character(id), arm)
+  )
+)
+os_surv_pred <- SurvivalQuantities(
+  object = os_results,
+  grid = os_surv_group_grid,
+  type = "surv"
+)
+```
+
+Now we can use the `autoplot()` method:
+
+```{r}
+#| label: os_surv_plot
+autoplot(os_surv_pred, add_km = TRUE, add_wrap = FALSE)
+```
+
+## Hazard and hazard rate estimation
 
