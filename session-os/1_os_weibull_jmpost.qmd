@@ -345,3 +345,73 @@ autoplot(os_surv_pred, add_km = TRUE, add_wrap = FALSE)
 
 ## Hazard and hazard rate estimation
 
+Similarly to the survival function estimation, we can also estimate the hazard function by treatment group.
+
+```{r}
+#| label: os_hazard_pred
+
+os_hazard_pred <- SurvivalQuantities(
+  object = os_results,
+  grid = os_surv_group_grid,
+  type = "haz"
+)
+```
+
+Also this can be plotted using the `autoplot()` method:
+
+```{r}
+#| label: os_hazard_plot
+
+autoplot(os_hazard_pred, add_wrap = FALSE)
+```
+
+Finally, we can also estimate the hazard rate, which is constant over time here - because we use the Weibull proportional hazards model. We still show this more complicated code here because it will also work later for joint TGI-OS models, where the hazard rate is not constant any longer.
+
+```{r}
+os_hr_est <- os_hazard_pred |> 
+  as.data.frame() |> 
+  group_by(group, time) |> 
+  mutate(sample = row_number()) |>
+  pivot_wider(names_from = group, values_from = values) |>
+  mutate(hr = MPDL3280A / Docetaxel) |> 
+  group_by(time) |> 
+  summarize(
+    mean = mean(hr, na.rm = TRUE),
+    lower = quantile(hr, 0.05, na.rm = TRUE),
+    upper = quantile(hr, 0.95, na.rm = TRUE)
+  ) |> 
+  na.omit() # Omit the time = 0 which has NA
+summary(os_hr_est)
+```
+
+Now we can plot this:
+
+```{r}
+ggplot(os_hr_est, aes(x = time, y = mean, ymin = lower, ymax = upper)) +
+    geom_line() +
+    geom_ribbon(alpha = 0.3)
+```
+
+Similar, but not identical numbers we can obtain here of course directly from the group covariate coefficient:
+
+```{r}
+draws_os_results |> 
+  mutate_variables(hr = exp(armMPDL3280A)) |> 
+  subset(variable = "hr") |> 
+  summary()
+```
+
+The difference is due to the fact that the other covariates are ignored here by this simpler calculation.
+
+## Model comparison
+
+We can use the [Brier score](https://en.wikipedia.org/wiki/Brier_score) to compare two different survival models. The Brier score is a measure of the mean squared difference between the predicted survival probability and the actual survival status. The lower the Brier score, the better the model.
+
+```{r}
+sq <- SurvivalQuantities(
+    mcmc_results,
+    grid = GridFixed(times = c(1, 50, 100, 400, 800)),
+    type = "surv"
+)
+brierScore(sq)
+```
