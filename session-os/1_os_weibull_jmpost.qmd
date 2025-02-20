@@ -277,3 +277,36 @@ mcmc_os_results$summary(vars)
 draws_os_results <- mcmc_os_results$draws(vars)
 mcmc_trace(draws_os_results)
 ```
+
+## Interpret covariate effects
+
+In order to better see which of the coefficients relate to which covariates, we can rename them as follows:
+
+```{r}
+#| label: rename_os_cov_coefs
+
+surv_data_design <- as_stan_list(surv_data)$os_cov_design
+os_cov_names <- colnames(surv_data_design)
+old_coef_names <- glue::glue("beta_os_cov[{seq_along(os_cov_names)}]")
+draws_os_results <- do.call(
+  rename_variables, 
+  c(list(draws_os_results), setNames(old_coef_names, os_cov_names))
+)
+mcmc_dens_overlay(draws_os_results) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "red")
+summary(draws_os_results)
+```
+
+So we can see that the 90% credible interval (CI) for the covariate `ecog1` excludes 0, so this is a "significant" predictor of the hazard rate. On the other hand, the `race` variable indicator and `age` variables' CIs clearly include 0. The situation is less clear for `sex` and `kg_est`, the estimated growth rate: here the CIs barely include 0. The posterior probabilities for a hazard ratio above 1 are:
+
+```{r}
+#| label: os_hazard_ratios
+
+draws_os_results |> 
+  as_draws_df() |> 
+  select(sexM, kg_est) |> 
+  summarise_all(~mean(. > 0))
+```
+
+So we have around 94% posterior probability that male patients have a higher hazard than females, and that patients with a higher estimated growth rate have a higher hazard than those with a lower growth rate.
+
