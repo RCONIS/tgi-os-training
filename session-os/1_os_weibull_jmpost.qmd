@@ -407,11 +407,17 @@ The difference is due to the fact that the other covariates are ignored here by 
 
 We can use the [Brier score](https://en.wikipedia.org/wiki/Brier_score) to compare two different survival models. The Brier score is a measure of the mean squared difference between the predicted survival probability and the actual survival status. The lower the Brier score, the better the model.
 
+To calculate it, we need to use the `GridFixed` input for `SurvivalQuantities()`:
+
 ```{r}
-sq <- SurvivalQuantities(
-    mcmc_results,
-    grid = GridFixed(times = c(1, 50, 100, 400, 800)),
+os_fixed_surv <- SurvivalQuantities(
+    object = os_results,
+    grid = GridFixed(times = seq(from = 0, to = max(os_data_with_kg_est$os_time), length = 100)),
     type = "surv"
 )
-brierScore(sq)
+
+# Current workaround if we have a logical event indicator:
+os_fixed_surv@data@survival@data$os_event <- as.numeric(os_fixed_surv@data@survival@data$os_event)
+
+os_mod1_bs <- brierScore(os_fixed_surv)
 ```
