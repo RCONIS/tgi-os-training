@@ -2,13 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.6.40">
+<meta name="generator" content="quarto-1.6.42">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Daniel Sabanés Bové">
 <meta name="author" content="Francois Mercier">
-<meta name="dcterms.date" content="2025-02-12">
+<meta name="dcterms.date" content="2025-02-27">
 
 <title>3. Generalized Stein-Fojo model – TGI-OS Training</title>
 <style>
@@ -72,10 +72,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-453bbb6d1d9cb7fba2a81fb4686694e5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-af1a5eef57a0beae2532659473833200.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -262,7 +262,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2025-02-12</p>
+      <p class="date">2025-02-27</p>
     </div>
   </div>
   
@@ -662,23 +662,23 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>post_sum</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="pwxbmpcwax" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#pwxbmpcwax table {
+<div id="bdxuporeeu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#bdxuporeeu table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#pwxbmpcwax thead, #pwxbmpcwax tbody, #pwxbmpcwax tfoot, #pwxbmpcwax tr, #pwxbmpcwax td, #pwxbmpcwax th {
+#bdxuporeeu thead, #bdxuporeeu tbody, #bdxuporeeu tfoot, #bdxuporeeu tr, #bdxuporeeu td, #bdxuporeeu th {
   border-style: none;
 }
 
-#pwxbmpcwax p {
+#bdxuporeeu p {
   margin: 0;
   padding: 0;
 }
 
-#pwxbmpcwax .gt_table {
+#bdxuporeeu .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -704,12 +704,12 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#pwxbmpcwax .gt_caption {
+#bdxuporeeu .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#pwxbmpcwax .gt_title {
+#bdxuporeeu .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -721,7 +721,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-width: 0;
 }
 
-#pwxbmpcwax .gt_subtitle {
+#bdxuporeeu .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -733,7 +733,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-top-width: 0;
 }
 
-#pwxbmpcwax .gt_heading {
+#bdxuporeeu .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -745,13 +745,13 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#pwxbmpcwax .gt_bottom_border {
+#bdxuporeeu .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#pwxbmpcwax .gt_col_headings {
+#bdxuporeeu .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -766,7 +766,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#pwxbmpcwax .gt_col_heading {
+#bdxuporeeu .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -786,7 +786,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   overflow-x: hidden;
 }
 
-#pwxbmpcwax .gt_column_spanner_outer {
+#bdxuporeeu .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -798,15 +798,15 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 4px;
 }
 
-#pwxbmpcwax .gt_column_spanner_outer:first-child {
+#bdxuporeeu .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#pwxbmpcwax .gt_column_spanner_outer:last-child {
+#bdxuporeeu .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#pwxbmpcwax .gt_column_spanner {
+#bdxuporeeu .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -818,11 +818,11 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   width: 100%;
 }
 
-#pwxbmpcwax .gt_spanner_row {
+#bdxuporeeu .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#pwxbmpcwax .gt_group_heading {
+#bdxuporeeu .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -848,7 +848,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   text-align: left;
 }
 
-#pwxbmpcwax .gt_empty_group_heading {
+#bdxuporeeu .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -863,15 +863,15 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   vertical-align: middle;
 }
 
-#pwxbmpcwax .gt_from_md > :first-child {
+#bdxuporeeu .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#pwxbmpcwax .gt_from_md > :last-child {
+#bdxuporeeu .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#pwxbmpcwax .gt_row {
+#bdxuporeeu .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -890,7 +890,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   overflow-x: hidden;
 }
 
-#pwxbmpcwax .gt_stub {
+#bdxuporeeu .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -903,7 +903,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#pwxbmpcwax .gt_stub_row_group {
+#bdxuporeeu .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -917,15 +917,15 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   vertical-align: top;
 }
 
-#pwxbmpcwax .gt_row_group_first td {
+#bdxuporeeu .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#pwxbmpcwax .gt_row_group_first th {
+#bdxuporeeu .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#pwxbmpcwax .gt_summary_row {
+#bdxuporeeu .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -935,16 +935,16 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#pwxbmpcwax .gt_first_summary_row {
+#bdxuporeeu .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#pwxbmpcwax .gt_first_summary_row.thick {
+#bdxuporeeu .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#pwxbmpcwax .gt_last_summary_row {
+#bdxuporeeu .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -954,7 +954,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#pwxbmpcwax .gt_grand_summary_row {
+#bdxuporeeu .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -964,7 +964,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#pwxbmpcwax .gt_first_grand_summary_row {
+#bdxuporeeu .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -974,7 +974,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#pwxbmpcwax .gt_last_grand_summary_row_top {
+#bdxuporeeu .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -984,11 +984,11 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#pwxbmpcwax .gt_striped {
+#bdxuporeeu .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#pwxbmpcwax .gt_table_body {
+#bdxuporeeu .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -997,7 +997,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#pwxbmpcwax .gt_footnotes {
+#bdxuporeeu .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1011,7 +1011,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#pwxbmpcwax .gt_footnote {
+#bdxuporeeu .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1020,7 +1020,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#pwxbmpcwax .gt_sourcenotes {
+#bdxuporeeu .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1034,7 +1034,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#pwxbmpcwax .gt_sourcenote {
+#bdxuporeeu .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1042,72 +1042,72 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#pwxbmpcwax .gt_left {
+#bdxuporeeu .gt_left {
   text-align: left;
 }
 
-#pwxbmpcwax .gt_center {
+#bdxuporeeu .gt_center {
   text-align: center;
 }
 
-#pwxbmpcwax .gt_right {
+#bdxuporeeu .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#pwxbmpcwax .gt_font_normal {
+#bdxuporeeu .gt_font_normal {
   font-weight: normal;
 }
 
-#pwxbmpcwax .gt_font_bold {
+#bdxuporeeu .gt_font_bold {
   font-weight: bold;
 }
 
-#pwxbmpcwax .gt_font_italic {
+#bdxuporeeu .gt_font_italic {
   font-style: italic;
 }
 
-#pwxbmpcwax .gt_super {
+#bdxuporeeu .gt_super {
   font-size: 65%;
 }
 
-#pwxbmpcwax .gt_footnote_marks {
+#bdxuporeeu .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#pwxbmpcwax .gt_asterisk {
+#bdxuporeeu .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#pwxbmpcwax .gt_indent_1 {
+#bdxuporeeu .gt_indent_1 {
   text-indent: 5px;
 }
 
-#pwxbmpcwax .gt_indent_2 {
+#bdxuporeeu .gt_indent_2 {
   text-indent: 10px;
 }
 
-#pwxbmpcwax .gt_indent_3 {
+#bdxuporeeu .gt_indent_3 {
   text-indent: 15px;
 }
 
-#pwxbmpcwax .gt_indent_4 {
+#bdxuporeeu .gt_indent_4 {
   text-indent: 20px;
 }
 
-#pwxbmpcwax .gt_indent_5 {
+#bdxuporeeu .gt_indent_5 {
   text-indent: 25px;
 }
 
-#pwxbmpcwax .katex-display {
+#bdxuporeeu .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#pwxbmpcwax div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#bdxuporeeu div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>

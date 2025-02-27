@@ -1,35 +1,5 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Index",
-    "section": "",
-    "text": "Order By\n       Default\n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Title\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\nDate\n\n\nTitle\n\n\nAuthor\n\n\n\n\n\n\n2025-02-12\n\n\n0. Setup\n\n\nFrancois Mercier, Daniel Sabanés Bové\n\n\n\n\n2025-02-12\n\n\n1. TGI model minimal workflow with brms\n\n\nDaniel Sabanés Bové, Francois Mercier\n\n\n\n\n2025-02-12\n\n\n2. TGI model minimal workflow with jmpost\n\n\nDaniel Sabanés Bové, Francois Mercier\n\n\n\n\n2025-02-12\n\n\n3. Generalized Stein-Fojo model\n\n\nDaniel Sabanés Bové, Francois Mercier\n\n\n\n\n2025-02-12\n\n\n4. Claret-Bruno model\n\n\nDaniel Sabanés Bové, Francois Mercier\n\n\n\n\n\nNo matching items",
-    "crumbs": [
-      "Index"
-    ]
-  },
-  {
-    "objectID": "index.html#license",
-    "href": "index.html#license",
-    "title": "Index",
-    "section": "License",
-    "text": "License\nThe training material is licensed under a Creative Commons Attribution 4.0 International License. If you wish to reuse any part of this material, please ensure proper attribution is given to the original authors as specified by the Creative Commons Attribution 4.0 International License.",
-    "crumbs": [
-      "Index"
-    ]
-  },
-  {
-    "objectID": "index.html#copyright",
-    "href": "index.html#copyright",
-    "title": "Index",
-    "section": "Copyright",
-    "text": "Copyright\n© 2025 Genentech Inc. All rights reserved.",
-    "crumbs": [
-      "Index"
-    ]
-  },
-  {
     "objectID": "session-tgi/1_tgi_sf_brms.html",
     "href": "session-tgi/1_tgi_sf_brms.html",
     "title": "1. TGI model minimal workflow with brms",
@@ -56,7 +26,7 @@
     "href": "session-tgi/1_tgi_sf_brms.html#stein-fojo-model",
     "title": "1. TGI model minimal workflow with brms",
     "section": "Stein-Fojo model",
-    "text": "Stein-Fojo model\nWe start from the Stein-Fojo model as shown in the slides:\n\\[\ny^{*}(t_{ij}) = \\psi_{b_{0}i} \\{\\exp(- \\psi_{k_{s}i} \\cdot t_{ij}) + \\exp(\\psi_{k_{g}i} \\cdot t_{ij}) - 1\\}\n\\]\n\nMean\nWe will make one more tweak here. If the time \\(t\\) is negative, i.e. the treatment has not started yet, then it is reasonable to assume that the tumor cannot shrink yet. Therefore, the final model for the mean SLD is:\n\\[\ny^{*}(t_{ij}) =\n\\begin{cases}\n\\psi_{b_{0}i} \\exp(\\psi_{k_{g}i} \\cdot t_{ij}) & \\text{if } t_{ij} &lt; 0 \\\\\n\\psi_{b_{0}i} \\{\\exp(-\\psi_{k_{s}i} \\cdot t_{ij}) + \\exp(\\psi_{k_{g}i} \\cdot t_{ij}) - 1\\} & \\text{if } t_{ij} \\geq 0\n\\end{cases}\n\\]\n\n\nLikelihood\nFor the likelihood given the mean SLD \\(y^{*}\\), we will assume a normal distribution with a constant coefficient of variation \\(\\tau\\):\n\\[\ny(t_{ij}) \\sim \\text{N}(y^{*}(t_{ij}), y^{*}(t_{ij})\\tau)\n\\]\nNote that for consistency with the brms and Stan convention, here we denote the standard deviation as the second parameter of the normal distribution. So in this case, the variance would be \\((y^{*}(t_{ij})\\tau)^2\\).\nThis can also be written as:\n\\[\ny(t_{ij}) = (1 + \\epsilon_{ij}) \\cdot y^{*}(t_{ij})\n\\]\nwhere \\(\\epsilon_{ij} \\sim \\text{N}(0, \\tau)\\).\nNote that also the additive model is a possible choice, where\n\\[\ny(t_{ij}) = y^{*}(t_{ij}) + \\epsilon_{ij}\n\\]\nsuch that the error does not depend on the scale of the SLD any longer.\n\n\nRandom effects\nNext, we define the distributions of the random effects \\(\\psi_{b_{0}i}\\), \\(\\psi_{k_{s}i}\\), \\(\\psi_{k_{g}i}\\), for \\(i = 1, \\dotsc, n\\):\n\\[\n\\begin{align*}\n\\psi_{b_{0}i} &\\sim \\text{LogNormal}(\\mu_{b_{0}}, \\omega_{0}) \\\\\n\\psi_{k_{s}i} &\\sim \\text{LogNormal}(\\mu_{k_{s}}, \\omega_{s}) \\\\\n\\psi_{k_{g}i} &\\sim \\text{LogNormal}(\\mu_{k_{g}}, \\omega_{g})\n\\end{align*}\n\\]\nThis can be rewritten as:\n\\[\n\\begin{align*}\n\\psi_{b_{0}i} &= \\exp(\\mu_{b_{0}} + \\omega_{0} \\cdot \\eta_{b_{0}i}) \\\\\n\\psi_{k_{s}i} &= \\exp(\\mu_{k_{s}} + \\omega_{s} \\cdot \\eta_{k_{s}i}) \\\\\n\\psi_{k_{g}i} &= \\exp(\\mu_{k_{g}} + \\omega_{g} \\cdot \\eta_{k_{g}i})\n\\end{align*}\n\\]\nwhere \\(\\eta_{b_{0}i}\\), \\(\\eta_{k_{s}i}\\), \\(\\eta_{k_{g}i}\\) are the standard normal distributed random effects.\nThis is important for two reasons:\n\nThis parametrization can help the sampler to converge faster. See here for more information.\nThis shows a bit more explicitly that the population mean of the random effects is not equal to the \\(\\mu\\) parameter, but to \\(\\theta = \\exp(\\mu + \\omega^2 / 2)\\), because they are log-normally distributed (see e.g. Wikipedia for the formulas). This is important for the interpretation of the parameter estimates.\n\n\n\nPriors\nFinally, we need to define the priors for the hyperparameters.\nThere are different principles we could use to define these priors:\n\nNon-informative priors: We could use priors that are as non-informative as possible. This is especially useful if we do not have any prior knowledge about the parameters. For example, we could use normal priors with a large standard deviation for the population means of the random effects.\nInformative priors: If we have some prior knowledge about the parameters, we can use this to define the priors. For example, if we have literature data about the \\(k_g\\) parameter estimate, we could use this to define the prior for the population mean of the growth rate. (Here we just need to be careful to consider the time scale and the log-normal distribution, as mentioned above)\n\nHere we use relatively informative priors for the log-normal location parameters, motivated by prior analyses of the same study:\n\\[\n\\begin{align*}\n\\mu_{b_{0}} &\\sim \\text{LogNormal}(\\log(65), 1) \\\\\n\\mu_{k_{s}} &\\sim \\text{LogNormal}(\\log(0.52), 0.1) \\\\\n\\mu_{k_{g}} &\\sim \\text{LogNormal}(\\log(1.04), 1)\n\\end{align*}\n\\]\nFor all standard deviations we use truncated normal priors:\n\\[\n\\begin{align*}\n\\omega_{0} &\\sim \\text{PositiveNormal}(0, 3) \\\\\n\\omega_{s} &\\sim \\text{PositiveNormal}(0, 3) \\\\\n\\omega_{g} &\\sim \\text{PositiveNormal}(0, 3) \\\\\n\\tau &\\sim \\text{PositiveNormal}(0, 3)\n\\end{align*}\n\\]\nwhere \\(\\text{PositiveNormal}(0, 3)\\) denotes a truncated normal distribution with mean \\(0\\) and standard deviation \\(3\\), truncated to the positive real numbers.",
+    "text": "Stein-Fojo model\nWe start from the Stein-Fojo model as shown in the slides:\n\\[\ny^{*}(t_{ij}) = \\psi_{b_{0}i} \\{\\exp(- \\psi_{k_{s}i} \\cdot t_{ij}) + \\exp(\\psi_{k_{g}i} \\cdot t_{ij}) - 1\\}\n\\]\n\nMean\nWe will make one more tweak here. If the time \\(t\\) is negative, i.e. the treatment has not started yet, then it is reasonable to assume that the tumor cannot shrink yet. Therefore, the final model for the mean SLD is:\n\\[\ny^{*}(t_{ij}) =\n\\begin{cases}\n\\psi_{b_{0}i} \\exp(\\psi_{k_{g}i} \\cdot t_{ij}) & \\text{if } t_{ij} &lt; 0 \\\\\n\\psi_{b_{0}i} \\{\\exp(-\\psi_{k_{s}i} \\cdot t_{ij}) + \\exp(\\psi_{k_{g}i} \\cdot t_{ij}) - 1\\} & \\text{if } t_{ij} \\geq 0\n\\end{cases}\n\\]\n\n\nLikelihood\nFor the likelihood given the mean SLD \\(y^{*}\\), we will assume a normal distribution with a constant coefficient of variation \\(\\tau\\):\n\\[\ny(t_{ij}) \\sim \\text{N}(y^{*}(t_{ij}), y^{*}(t_{ij})\\tau)\n\\]\nNote that for consistency with the brms and Stan convention, here we denote the standard deviation as the second parameter of the normal distribution. So in this case, the variance would be \\((y^{*}(t_{ij})\\tau)^2\\).\nThis can also be written as:\n\\[\ny(t_{ij}) = (1 + \\epsilon_{ij}) \\cdot y^{*}(t_{ij})\n\\]\nwhere \\(\\epsilon_{ij} \\sim \\text{N}(0, \\tau)\\).\nNote that also the additive model is a possible choice, where\n\\[\ny(t_{ij}) = y^{*}(t_{ij}) + \\epsilon_{ij}\n\\]\nsuch that the error does not depend on the scale of the SLD any longer.\n\n\nRandom effects\nNext, we define the distributions of the random effects \\(\\psi_{b_{0}i}\\), \\(\\psi_{k_{s}i}\\), \\(\\psi_{k_{g}i}\\), for \\(i = 1, \\dotsc, n\\):\n\\[\n\\begin{align*}\n\\psi_{b_{0}i} &\\sim \\text{LogNormal}(\\mu_{b_{0}}, \\omega_{0}) \\\\\n\\psi_{k_{s}i} &\\sim \\text{LogNormal}(\\mu_{k_{s}}, \\omega_{s}) \\\\\n\\psi_{k_{g}i} &\\sim \\text{LogNormal}(\\mu_{k_{g}}, \\omega_{g})\n\\end{align*}\n\\]\nThis can be rewritten as:\n\\[\n\\begin{align*}\n\\psi_{b_{0}i} &= \\exp(\\mu_{b_{0}} + \\omega_{0} \\cdot \\eta_{b_{0}i}) \\\\\n\\psi_{k_{s}i} &= \\exp(\\mu_{k_{s}} + \\omega_{s} \\cdot \\eta_{k_{s}i}) \\\\\n\\psi_{k_{g}i} &= \\exp(\\mu_{k_{g}} + \\omega_{g} \\cdot \\eta_{k_{g}i})\n\\end{align*}\n\\]\nwhere \\(\\eta_{b_{0}i}\\), \\(\\eta_{k_{s}i}\\), \\(\\eta_{k_{g}i}\\) are the standard normal distributed random effects.\nThis is important for two reasons:\n\nThis parametrization can help the sampler to converge faster. See here for more information.\nThis shows a bit more explicitly that the population mean of the random effects is not equal to the \\(\\mu\\) parameter, but to \\(\\theta = \\exp(\\mu + \\omega^2 / 2)\\), because they are log-normally distributed (see e.g. Wikipedia for the formulas). This is important for the interpretation of the parameter estimates.\n\n\n\nPriors\nFinally, we need to define the priors for the hyperparameters.\nThere are different principles we could use to define these priors:\n\nNon-informative priors: We could use priors that are as non-informative as possible. This is especially useful if we do not have any prior knowledge about the parameters. For example, we could use normal priors with a large standard deviation for the population means of the random effects.\nInformative priors: If we have some prior knowledge about the parameters, we can use this to define the priors. For example, if we have literature data about the \\(k_g\\) parameter estimate, we could use this to define the prior for the population mean of the growth rate. (Here we just need to be careful to consider the time scale and the log-normal distribution, as mentioned above)\n\nHere we use relatively informative priors for the log-normal location parameters, motivated by prior analyses of the same study:\n\\[\n\\begin{align*}\n\\mu_{b_{0}} &\\sim \\text{Normal}(\\log(65), 1) \\\\\n\\mu_{k_{s}} &\\sim \\text{Normal}(\\log(0.52), 0.1) \\\\\n\\mu_{k_{g}} &\\sim \\text{Normal}(\\log(1.04), 1)\n\\end{align*}\n\\]\nFor all standard deviations we use truncated normal priors:\n\\[\n\\begin{align*}\n\\omega_{0} &\\sim \\text{PositiveNormal}(0, 3) \\\\\n\\omega_{s} &\\sim \\text{PositiveNormal}(0, 3) \\\\\n\\omega_{g} &\\sim \\text{PositiveNormal}(0, 3) \\\\\n\\tau &\\sim \\text{PositiveNormal}(0, 3)\n\\end{align*}\n\\]\nwhere \\(\\text{PositiveNormal}(0, 3)\\) denotes a truncated normal distribution with mean \\(0\\) and standard deviation \\(3\\), truncated to the positive real numbers.",
     "crumbs": [
       "Session 1: TGI",
       "1. TGI model minimal workflow with `brms`"
@@ -137,127 +107,6 @@
     "crumbs": [
       "Session 1: TGI",
       "1. TGI model minimal workflow with `brms`"
-    ]
-  },
-  {
-    "objectID": "session-tgi/3_tgi_gsf_brms.html",
-    "href": "session-tgi/3_tgi_gsf_brms.html",
-    "title": "3. Generalized Stein-Fojo model",
-    "section": "",
-    "text": "This appendix shows how the generalized Stein-Fojo model can be implemented in a Bayesian framework using the brms package in R.",
-    "crumbs": [
-      "Session 1: TGI",
-      "3. Generalized Stein-Fojo model"
-    ]
-  },
-  {
-    "objectID": "session-tgi/3_tgi_gsf_brms.html#setup-and-load-data",
-    "href": "session-tgi/3_tgi_gsf_brms.html#setup-and-load-data",
-    "title": "3. Generalized Stein-Fojo model",
-    "section": "Setup and load data",
-    "text": "Setup and load data\nFirst we need to load the necessary packages and set some default options for the MCMC sampling. We also set the theme for the plots to theme_bw with a base size of 12.\n\n\nShow the code\nlibrary(bayesplot)\nlibrary(brms)\nlibrary(ggplot2)\nlibrary(gt)\nlibrary(here)\nlibrary(janitor)\nlibrary(jmpost)\nlibrary(modelr)\nlibrary(posterior)\nlibrary(readxl)\nlibrary(rstan)\nlibrary(tidybayes)\nlibrary(tidyverse)\nlibrary(truncnorm)\n\nif (require(cmdstanr)) {\n  # If cmdstanr is available, instruct brms to use cmdstanr as backend \n  # and cache all Stan binaries\n  options(brms.backend = \"cmdstanr\", cmdstanr_write_stan_file_dir = here(\"_brms-cache\"))\n  dir.create(here(\"_brms-cache\"), FALSE) # create cache directory if not yet available\n} else {\n  rstan::rstan_options(auto_write = TRUE)\n}\n\n# MCMC options\noptions(mc.cores = 4)\nITER &lt;- 1000 # number of sampling iterations after warm up\nWARMUP &lt;- 2000 # number of warm up iterations\nCHAINS &lt;- 4\nBAYES.SEED &lt;- 878\nREFRESH &lt;- 500\n\ntheme_set(theme_bw(base_size = 12))\n\n\nWe also need a small function definition, which is still missing in brms:\n\n\nShow the code\nint_step &lt;- function(x) {\n  stopifnot(is.logical(x))\n  ifelse(x, 1, 0)\n}\n\n\nWe will use the publicly published tumor size data from the OAK study, see here. In particular we are using the S1 data set, which is the fully anonymized data set used in the publication. For simplicity, we have copied the data set in this GitHub repository.\n\n\nShow the code\nfile_path &lt;- here(\"data/journal.pcbi.1009822.s006.xlsx\")\n\nread_one_sheet &lt;- function(sheet) {\n    read_excel(file_path, sheet = sheet) |&gt; \n    clean_names() |&gt; \n    mutate(\n        id = factor(as.character(patient_anonmyized)),\n        day = as.integer(treatment_day),\n        year = day / 365.25,\n        target_lesion_long_diam_mm = case_match(\n            target_lesion_long_diam_mm,\n            \"TOO SMALL TO MEASURE\" ~ \"2\",\n            \"NOT EVALUABLE\" ~ NA_character_,\n            .default = target_lesion_long_diam_mm\n        ),\n        sld = as.numeric(target_lesion_long_diam_mm),\n        sld = ifelse(sld == 0, 2, sld),\n        study = factor(gsub(\"^Study_(\\\\d+)_Arm_\\\\d+$\", \"\\\\1\", study_arm)),\n        arm = factor(gsub(\"^Study_\\\\d+_Arm_(\\\\d+)$\", \"\\\\1\", study_arm))\n    ) |&gt; \n    select(id, year, sld, study, arm)\n}\n\ntumor_data &lt;- excel_sheets(file_path) |&gt; \n    map(read_one_sheet) |&gt; \n    bind_rows()\n\nhead(tumor_data)\n\n\n# A tibble: 6 × 5\n  id                      year   sld study arm  \n  &lt;fct&gt;                  &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt; &lt;fct&gt;\n1 3657015667902160896 -0.00548    33 1     1    \n2 3657015667902160896  0.101      33 1     1    \n3 3657015667902160896  0.230      32 1     1    \n4 3657015667902160896  0.342      37 1     1    \n5 3657015667902160896  0.446      49 1     1    \n6 2080619628198763008 -0.00548    12 1     1    \n\n\nShow the code\nsummary(tumor_data)\n\n\n                    id            year              sld        study   \n 4308512445673410048 :  18   Min.   :-0.1314   Min.   :  2.0   1: 456  \n -4902532987801034752:  17   1st Qu.: 0.1123   1st Qu.: 17.0   2: 966  \n 5394902984416364544 :  16   Median : 0.2847   Median : 30.0   3:2177  \n 7160320731596789760 :  16   Mean   : 0.3822   Mean   : 36.1   4:4126  \n -4159496062492130816:  15   3rd Qu.: 0.5722   3rd Qu.: 49.0   5: 835  \n -7900338178541499392:  15   Max.   : 2.0753   Max.   :228.0           \n (Other)             :8463   NA's   :1         NA's   :69              \n arm     \n 1:3108  \n 2:3715  \n 3: 291  \n 4: 608  \n 5: 227  \n 6: 611  \n         \n\n\nFor simplicity, we will for now just use study 4 (this is the OAK study), and we rename the patient IDs:\n\n\nShow the code\ndf &lt;- tumor_data |&gt; \n  filter(study == \"4\") |&gt; \n  na.omit() |&gt;\n  droplevels() |&gt; \n  mutate(id = factor(as.numeric(id)))\n\n\nHere we have 701 patients. It is always a good idea to make a plot of the data. Let’s look at the first 20 patients e.g.:\n\n\nShow the code\ndf |&gt; \n  filter(as.integer(id) &lt;= 20) |&gt;\n  ggplot(aes(x = year, y = sld, group = id)) +\n  geom_line() +\n  geom_point() +\n  facet_wrap(~ id) +\n  geom_vline(xintercept = 0, linetype = \"dashed\") +\n  theme(legend.position = \"none\")",
-    "crumbs": [
-      "Session 1: TGI",
-      "3. Generalized Stein-Fojo model"
-    ]
-  },
-  {
-    "objectID": "session-tgi/3_tgi_gsf_brms.html#generalized-stein-fojo-model",
-    "href": "session-tgi/3_tgi_gsf_brms.html#generalized-stein-fojo-model",
-    "title": "3. Generalized Stein-Fojo model",
-    "section": "Generalized Stein-Fojo model",
-    "text": "Generalized Stein-Fojo model\nHere we have an additional parameter \\(\\phi\\), which is the weight for the shrinkage in the double exponential model. The model is then:\n\\[\ny^{*}(t_{ij}) = \\psi_{b_{0}i} \\{\n  \\psi_{\\phi i} \\exp(- \\psi_{k_{s}i} \\cdot t_{ij}) +\n  (1 - \\psi_{\\phi i}) \\exp(\\psi_{k_{g}i} \\cdot t_{ij})\n\\}\n\\]\nfor positive times \\(t_{ij}\\). Again, if the time \\(t\\) is negative, i.e. the treatment has not started yet, then it is reasonable to assume that the tumor cannot shrink yet. That is, we have then \\(\\phi_i = 0\\). Therefore, the final model for the mean SLD is:\n\\[\ny^{*}(t_{ij}) =\n\\begin{cases}\n\\psi_{b_{0}i} \\exp(\\psi_{k_{g}i} \\cdot t_{ij}) & \\text{if } t_{ij} &lt; 0 \\\\\n\\psi_{b_{0}i} \\{\n  \\psi_{\\phi i} \\exp(- \\psi_{k_{s}i} \\cdot t_{ij}) +\n  (1 - \\psi_{\\phi i}) \\exp(\\psi_{k_{g}i} \\cdot t_{ij})\n\\} & \\text{if } t_{ij} \\geq 0\n\\end{cases}\n\\]\nIn terms of likelihood and priors, we can use the same assumptions as in the previous model. The only difference is that we have to model the \\(\\phi\\) parameter. We can use a logit-normal distribution for this parameter. This is a normal distribution on the logit scale, which is then transformed to the unit interval. \\[\n\\psi_{\\phi i} \\sim \\text{LogitNormal}(\\text{logit}(0.5) = 0, 0.5)\n\\]",
-    "crumbs": [
-      "Session 1: TGI",
-      "3. Generalized Stein-Fojo model"
-    ]
-  },
-  {
-    "objectID": "session-tgi/3_tgi_gsf_brms.html#fit-model",
-    "href": "session-tgi/3_tgi_gsf_brms.html#fit-model",
-    "title": "3. Generalized Stein-Fojo model",
-    "section": "Fit model",
-    "text": "Fit model\nWe can now fit the model using brms. The structure is determined by the model formula:\n\n\nShow the code\nformula &lt;- bf(sld ~ ystar, nl = TRUE) +\n  # Define the mean for the likelihood\n  nlf(\n    ystar ~ \n      int_step(year &gt; 0) * \n        (b0 * (phi * exp(-ks * year) + (1 - phi) * exp(kg * year))) +\n      int_step(year &lt;= 0) * \n        (b0 * exp(kg * year))\n  ) +\n  # As before:\n  nlf(sigma ~ log(tau) + log(ystar)) +\n  lf(tau ~ 1) +\n  # Define nonlinear parameter transformations:\n  nlf(b0 ~ exp(lb0)) +\n  nlf(phi ~ inv_logit(tphi)) +\n  nlf(ks ~ exp(lks)) +\n  nlf(kg ~ exp(lkg)) +\n  # Define random effect structure:\n  lf(lb0 ~ 1 + (1 | id)) + \n  lf(tphi ~ 1 + (1 | id)) + \n  lf(lks ~ 1 + (1 | id)) +\n  lf(lkg ~ 1 + (1 | id))\n\n# Define the priors\npriors &lt;- c(\n  prior(normal(log(65), 1), nlpar = \"lb0\"),\n  prior(normal(log(0.52), 0.1), nlpar = \"lks\"),\n  prior(normal(log(1.04), 1), nlpar = \"lkg\"),\n  prior(normal(0, 0.5), nlpar = \"tphi\"),\n  prior(normal(0, 3), lb = 0, nlpar = \"lb0\", class = \"sd\"),\n  prior(normal(0, 3), lb = 0, nlpar = \"lks\", class = \"sd\"),\n  prior(normal(0, 3), lb = 0, nlpar = \"lkg\", class = \"sd\"),\n  prior(student_t(3, 0, 22.2), lb = 0, nlpar = \"tphi\", class = \"sd\"),\n  prior(normal(0, 3), lb = 0, nlpar = \"tau\")\n)\n\n# Initial values to avoid problems at the beginning\nn_patients &lt;- nlevels(df$id)\ninits &lt;- list(\n  b_lb0 = array(3.61),\n  b_lks = array(-1.25),\n  b_lkg = array(-1.33),\n  b_tphi = array(0),\n  sd_1 = array(0.58),\n  sd_2 = array(1.6),\n  sd_3 = array(0.994),\n  sd_4 = array(0.1),\n  b_tau = array(0.161),\n  z_1 = matrix(0, nrow = 1, ncol = n_patients),\n  z_2 = matrix(0, nrow = 1, ncol = n_patients),\n  z_3 = matrix(0, nrow = 1, ncol = n_patients),\n  z_4 = matrix(0, nrow = 1, ncol = n_patients)\n)\n\n# Fit the model\nsave_file &lt;- here(\"session-tgi/gsf1.RData\")\nif (file.exists(save_file)) {\n  load(save_file)\n} else {\n  fit &lt;- brm(\n    formula = formula,\n    data = df,\n    prior = priors,\n    family = gaussian(),\n    init = rep(list(inits), CHAINS),\n    chains = CHAINS, \n    iter = WARMUP + ITER, \n    warmup = WARMUP, \n    seed = BAYES.SEED,\n    refresh = REFRESH\n  )\n  save(fit, file = save_file)\n}\n\n# Summarize the fit\nsummary(fit)\n\n\nWarning: There were 41 divergent transitions after warmup. Increasing\nadapt_delta above 0.8 may help. See\nhttp://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup\n\n\n Family: gaussian \n  Links: mu = identity; sigma = log \nFormula: sld ~ eta \n         eta ~ int_step(year &gt; 0) * (b0 * (phi * exp(-ks * year) + (1 - phi) * exp(kg * year))) + int_step(year &lt;= 0) * (b0 * exp(kg * year))\n         sigma ~ log(tau) + log(eta)\n         tau ~ 1\n         b0 ~ exp(lb0)\n         phi ~ inv_logit(tphi)\n         ks ~ exp(lks)\n         kg ~ exp(lkg)\n         lb0 ~ 1 + (1 | id)\n         tphi ~ 1 + (1 | id)\n         lks ~ 1 + (1 | id)\n         lkg ~ 1 + (1 | id)\n   Data: df (Number of observations: 4099) \n  Draws: 4 chains, each with iter = 3000; warmup = 2000; thin = 1;\n         total post-warmup draws = 4000\n\nMultilevel Hyperparameters:\n~id (Number of levels: 701) \n                   Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nsd(lb0_Intercept)      0.58      0.02     0.55     0.61 1.01      382      606\nsd(tphi_Intercept)     2.12      0.18     1.78     2.49 1.01      611     1216\nsd(lks_Intercept)      2.16      0.14     1.90     2.46 1.00      520     1282\nsd(lkg_Intercept)      1.18      0.09     1.01     1.36 1.00      899     1766\n\nRegression Coefficients:\n               Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\ntau_Intercept      0.15      0.00     0.14     0.15 1.00     1611     2351\nlb0_Intercept      3.63      0.02     3.59     3.68 1.03      221      547\ntphi_Intercept    -0.14      0.22    -0.57     0.27 1.00      424      839\nlks_Intercept     -0.62      0.10    -0.81    -0.43 1.00     1170     1868\nlkg_Intercept     -1.15      0.14    -1.43    -0.89 1.00      699     1488\n\nDraws were sampled using sample(hmc). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1).\n\n\nIn total this took 76 minutes on my laptop.",
-    "crumbs": [
-      "Session 1: TGI",
-      "3. Generalized Stein-Fojo model"
-    ]
-  },
-  {
-    "objectID": "session-tgi/3_tgi_gsf_brms.html#parameter-estimates",
-    "href": "session-tgi/3_tgi_gsf_brms.html#parameter-estimates",
-    "title": "3. Generalized Stein-Fojo model",
-    "section": "Parameter estimates",
-    "text": "Parameter estimates\n\n\nShow the code\npost_df &lt;- as_draws_df(fit)\nhead(names(post_df), 10)\n\n\n [1] \"b_tau_Intercept\"        \"b_lb0_Intercept\"        \"b_tphi_Intercept\"      \n [4] \"b_lks_Intercept\"        \"b_lkg_Intercept\"        \"sd_id__lb0_Intercept\"  \n [7] \"sd_id__tphi_Intercept\"  \"sd_id__lks_Intercept\"   \"sd_id__lkg_Intercept\"  \n[10] \"r_id__lb0[1,Intercept]\"\n\n\nShow the code\npost_df &lt;- post_df |&gt;\n  mutate(\n    theta_b0 = exp(b_lb0_Intercept + sd_id__lb0_Intercept^2 / 2),\n    theta_ks = exp(b_lks_Intercept + sd_id__lks_Intercept^2 / 2),\n    theta_kg = exp(b_lkg_Intercept + sd_id__lkg_Intercept^2 / 2),\n    theta_phi = plogis(b_tphi_Intercept),\n    omega_0 = sd_id__lb0_Intercept,\n    omega_s = sd_id__lks_Intercept,\n    omega_g = sd_id__lkg_Intercept,\n    omega_phi = sd_id__tphi_Intercept,\n    cv_0 = sqrt(exp(sd_id__lb0_Intercept^2) - 1),\n    cv_s = sqrt(exp(sd_id__lks_Intercept^2) - 1),\n    cv_g = sqrt(exp(sd_id__lkg_Intercept^2) - 1),\n    sigma = b_tau_Intercept\n  )\n\n\nLet’s first look at the population level parameters:\n\n\nShow the code\ngsf_pop_params &lt;- c(\"theta_b0\", \"theta_ks\", \"theta_kg\", \"theta_phi\", \"sigma\")\n\nmcmc_trace(post_df, pars = gsf_pop_params)\n\n\n\n\n\n\n\n\n\nShow the code\nmcmc_pairs(\n  post_df, \n  pars = gsf_pop_params,\n  off_diag_args = list(size = 1, alpha = 0.1)\n)\n\n\n\n\n\n\n\n\n\nThe trace plots look good. The chains seem to have converged and the pairs plot shows no strong correlations between the parameters. Let’s check the table:\n\n\nShow the code\npost_sum &lt;- post_df |&gt;\n  select(theta_b0, theta_ks, theta_kg, theta_phi, omega_0, omega_s, omega_g, omega_phi, sigma) |&gt;\n  summarize_draws() |&gt;\n  gt() |&gt;\n  fmt_number(decimals = 3)\n\n\nWarning: Dropping 'draws_df' class as required metadata was removed.\n\n\nShow the code\npost_sum\n\n\n\n\n\n\n\n\nvariable\nmean\nmedian\nsd\nmad\nq5\nq95\nrhat\ness_bulk\ness_tail\n\n\n\n\ntheta_b0\n44.766\n44.746\n1.057\n1.073\n43.074\n46.528\n1.007\n179.361\n378.906\n\n\ntheta_ks\n5.857\n5.444\n1.924\n1.582\n3.589\n9.560\n1.003\n384.622\n905.388\n\n\ntheta_kg\n0.640\n0.637\n0.061\n0.062\n0.541\n0.745\n1.000\n685.379\n1,885.264\n\n\ntheta_phi\n0.467\n0.466\n0.055\n0.058\n0.376\n0.555\n1.003\n419.761\n831.991\n\n\nomega_0\n0.578\n0.578\n0.016\n0.017\n0.553\n0.606\n1.001\n376.483\n628.807\n\n\nomega_s\n2.159\n2.155\n0.145\n0.145\n1.929\n2.412\n1.002\n521.866\n1,265.639\n\n\nomega_g\n1.177\n1.174\n0.090\n0.090\n1.037\n1.333\n1.002\n868.075\n1,746.640\n\n\nomega_phi\n2.117\n2.108\n0.182\n0.184\n1.833\n2.423\n1.003\n603.806\n1,215.066\n\n\nsigma\n0.147\n0.147\n0.002\n0.002\n0.143\n0.150\n1.000\n1,575.916\n2,168.010\n\n\n\n\n\n\n\nSo \\(\\theta_{\\phi}\\) is estimated around 0.5. The other parameters are similar to the previous Stein-Fojo model, but we see a larger \\(\\theta_{k_s}\\) e.g.",
-    "crumbs": [
-      "Session 1: TGI",
-      "3. Generalized Stein-Fojo model"
-    ]
-  },
-  {
-    "objectID": "session-tgi/3_tgi_gsf_brms.html#observation-vs-model-fit",
-    "href": "session-tgi/3_tgi_gsf_brms.html#observation-vs-model-fit",
-    "title": "3. Generalized Stein-Fojo model",
-    "section": "Observation vs model fit",
-    "text": "Observation vs model fit\nWe can now compare the model fit to the observations. Let’s do this for the first 20 patients again:\n\n\nShow the code\npt_subset &lt;- as.character(1:20)\ndf_subset &lt;- df |&gt; \n  filter(id %in% pt_subset)\n\ndf_sim &lt;- df_subset |&gt; \n  data_grid(\n    id = pt_subset, \n    year = seq_range(year, 101)\n  ) |&gt;\n  add_epred_draws(fit) |&gt;\n  median_qi()\n\ndf_sim |&gt;\n  ggplot(aes(x = year, y = sld)) +\n  facet_wrap(~ id) +\n  geom_ribbon(\n    aes(y = .epred, ymin = .lower, ymax = .upper), \n    alpha = 0.3, \n    fill = \"deepskyblue\"\n  ) +\n  geom_line(aes(y = .epred), color = \"deepskyblue\") +\n  geom_point(data = df_subset, color = \"tomato\") +\n  coord_cartesian(ylim = range(df_subset$sld)) +\n  scale_fill_brewer(palette = \"Greys\") +\n  labs(title = \"GSF model fit\")\n\n\n\n\n\n\n\n\n\nThis also looks good. The model seems to capture the data well.",
-    "crumbs": [
-      "Session 1: TGI",
-      "3. Generalized Stein-Fojo model"
-    ]
-  },
-  {
-    "objectID": "session-tgi/3_tgi_gsf_brms.html#with-jmpost",
-    "href": "session-tgi/3_tgi_gsf_brms.html#with-jmpost",
-    "title": "3. Generalized Stein-Fojo model",
-    "section": "With jmpost",
-    "text": "With jmpost\nThis model can also be fit with the jmpost package. The corresponding function is LongitudinalGSF. The statistical model is specified in the vignette here.\nHomework: Implement the generalized Stein-Fojo model with jmpost and compare the results with the brms implementation.",
-    "crumbs": [
-      "Session 1: TGI",
-      "3. Generalized Stein-Fojo model"
-    ]
-  },
-  {
-    "objectID": "session-tgi/0_setup.html",
-    "href": "session-tgi/0_setup.html",
-    "title": "0. Setup",
-    "section": "",
-    "text": "This is a repository with training material for Tumor Growth Inhibition (TGI) and joint TGI-OS (Overall Survival) modeling.\nHere is an overview of the required setup steps, which are described in more detail below:\n\nClone the repository from GitHub\nOpen the folder in RStudio or VSCode\nInstall RTools (if you are on Windows)\nInstall necessary R packages\nInstall cmdstanr (optional but highly recommended)\n\n\n\nIf you are running the examples on a Windows PC, you will need to install RTools, see\nhere.\nYou need to use the version of RTools that matches your R version. You can check your R version by running R.Version()$version.string.\nYou can then afterwards check the installation of RTools with:\nif(!require(pkgbuild)) install.packages(\"pkgbuild\")\npkgbuild::has_build_tools()\n\n\n\nThe following code will install the packages that are required to run the examples in this repository.\ninstall_if_not_available &lt;- function(pkg, min_version = NULL) {\n    is_installed &lt;- suppressWarnings(suppressPackageStartupMessages(\n      require(pkg, character.only = TRUE)\n    ))\n    if (is_installed & !is.null(min_version)) {\n      version_ok &lt;- packageVersion(pkg) &gt;= min_version\n    }    \n    if (!is_installed | !version_ok) {\n        install.packages(pkg)\n    }\n  }\npackages &lt;- c(\n  \"bayesplot\", \n  \"brms\", \n  \"ggplot2\",\n  \"gt\",\n  \"here\", \n  \"janitor\",\n  \"modelr\",\n  \"posterior\",\n  \"readxl\",\n  \"rstan\",\n  \"tidybayes\", \n  \"tidyverse\",   \n  \"truncnorm\"\n)\nsapply(packages, install_if_not_available)\nremotes::install_github(\"genentech/jmpost\")\n\n\n\nOptionally, you can use cmdstanr as the backend of brms for fitting the models.\nThere are a few advantages of using cmdstanr over the default rstan:\n\nWith cmdstanr, you can cache the compiled model, therefore you don’t need to recompile the model as long as the same formula is used, even after restarting R session (or re-opening RStudio).\ncmdstanr is more up-to-date and more actively maintained compared to rstan.\n\nA detailed installation guide for cmdstanr is available here. Here is a brief summary:\n\nInstall cmdstanr with:\n# Typically, you install cmdstanr from the R-universe as follows:\ninstall.packages(\"cmdstanr\", repos = c('https://stan-dev.r-universe.dev', getOption(\"repos\")))\n\n# If the above does not work, e.g. because you in a company network or VPN, you can install cmdstanr from GitHub instead:\nremotes::install_github(\"stan-dev/cmdstanr@*release\")    \nCheck the compiler toolchain with:\ncmdstanr::check_cmdstan_toolchain()\n\nThis should not be a problem on Mac and Linux (including RStudio Cloud instances), but might be a problem on Windows.\nIf you have problems, please check the installation guide for Windows.\n\nRTools is the easiest way.\nEven if you have RTools, you might still see an error like \"Rtools44 installation found but the toolchain was not installed.\".\nIn this case, you can run cmdstanr::check_cmdstan_toolchain(fix = TRUE) and this will likely resolve the issue.\n\n\nInstall the CmdStan backend with:\ncmdstanr::install_cmdstan(cores = 2)\nTesting the cmdstanr installation\n\nIf the above installation was successful, you should now be able to run the following simple model.\n\nlibrary(cmdstanr)\nfile &lt;- file.path(\n  cmdstan_path(), \n  \"examples\", \"bernoulli\", \"bernoulli.stan\"\n)\nmod &lt;- cmdstan_model(file)\ndata_list &lt;- list(N = 10, y = c(0, 1, 0, 0, 0, 0, 0, 0, 0, 1))\n\nfit &lt;- mod$sample(\n  data = data_list,\n  seed = 123,\n  chains = 4,\n  parallel_chains = 4,\n  refresh = 500\n)",
-    "crumbs": [
-      "Session 1: TGI",
-      "0. Setup"
-    ]
-  },
-  {
-    "objectID": "session-tgi/0_setup.html#install-rtools",
-    "href": "session-tgi/0_setup.html#install-rtools",
-    "title": "0. Setup",
-    "section": "",
-    "text": "If you are running the examples on a Windows PC, you will need to install RTools, see\nhere.\nYou need to use the version of RTools that matches your R version. You can check your R version by running R.Version()$version.string.\nYou can then afterwards check the installation of RTools with:\nif(!require(pkgbuild)) install.packages(\"pkgbuild\")\npkgbuild::has_build_tools()",
-    "crumbs": [
-      "Session 1: TGI",
-      "0. Setup"
-    ]
-  },
-  {
-    "objectID": "session-tgi/0_setup.html#install-necessary-r-packages",
-    "href": "session-tgi/0_setup.html#install-necessary-r-packages",
-    "title": "0. Setup",
-    "section": "",
-    "text": "The following code will install the packages that are required to run the examples in this repository.\ninstall_if_not_available &lt;- function(pkg, min_version = NULL) {\n    is_installed &lt;- suppressWarnings(suppressPackageStartupMessages(\n      require(pkg, character.only = TRUE)\n    ))\n    if (is_installed & !is.null(min_version)) {\n      version_ok &lt;- packageVersion(pkg) &gt;= min_version\n    }    \n    if (!is_installed | !version_ok) {\n        install.packages(pkg)\n    }\n  }\npackages &lt;- c(\n  \"bayesplot\", \n  \"brms\", \n  \"ggplot2\",\n  \"gt\",\n  \"here\", \n  \"janitor\",\n  \"modelr\",\n  \"posterior\",\n  \"readxl\",\n  \"rstan\",\n  \"tidybayes\", \n  \"tidyverse\",   \n  \"truncnorm\"\n)\nsapply(packages, install_if_not_available)\nremotes::install_github(\"genentech/jmpost\")",
-    "crumbs": [
-      "Session 1: TGI",
-      "0. Setup"
-    ]
-  },
-  {
-    "objectID": "session-tgi/0_setup.html#optional-install-cmdstanr",
-    "href": "session-tgi/0_setup.html#optional-install-cmdstanr",
-    "title": "0. Setup",
-    "section": "",
-    "text": "Optionally, you can use cmdstanr as the backend of brms for fitting the models.\nThere are a few advantages of using cmdstanr over the default rstan:\n\nWith cmdstanr, you can cache the compiled model, therefore you don’t need to recompile the model as long as the same formula is used, even after restarting R session (or re-opening RStudio).\ncmdstanr is more up-to-date and more actively maintained compared to rstan.\n\nA detailed installation guide for cmdstanr is available here. Here is a brief summary:\n\nInstall cmdstanr with:\n# Typically, you install cmdstanr from the R-universe as follows:\ninstall.packages(\"cmdstanr\", repos = c('https://stan-dev.r-universe.dev', getOption(\"repos\")))\n\n# If the above does not work, e.g. because you in a company network or VPN, you can install cmdstanr from GitHub instead:\nremotes::install_github(\"stan-dev/cmdstanr@*release\")    \nCheck the compiler toolchain with:\ncmdstanr::check_cmdstan_toolchain()\n\nThis should not be a problem on Mac and Linux (including RStudio Cloud instances), but might be a problem on Windows.\nIf you have problems, please check the installation guide for Windows.\n\nRTools is the easiest way.\nEven if you have RTools, you might still see an error like \"Rtools44 installation found but the toolchain was not installed.\".\nIn this case, you can run cmdstanr::check_cmdstan_toolchain(fix = TRUE) and this will likely resolve the issue.\n\n\nInstall the CmdStan backend with:\ncmdstanr::install_cmdstan(cores = 2)\nTesting the cmdstanr installation\n\nIf the above installation was successful, you should now be able to run the following simple model.\n\nlibrary(cmdstanr)\nfile &lt;- file.path(\n  cmdstan_path(), \n  \"examples\", \"bernoulli\", \"bernoulli.stan\"\n)\nmod &lt;- cmdstan_model(file)\ndata_list &lt;- list(N = 10, y = c(0, 1, 0, 0, 0, 0, 0, 0, 0, 1))\n\nfit &lt;- mod$sample(\n  data = data_list,\n  seed = 123,\n  chains = 4,\n  parallel_chains = 4,\n  refresh = 500\n)",
-    "crumbs": [
-      "Session 1: TGI",
-      "0. Setup"
     ]
   },
   {
@@ -382,6 +231,113 @@
     ]
   },
   {
+    "objectID": "session-tgi/3_tgi_gsf_brms.html",
+    "href": "session-tgi/3_tgi_gsf_brms.html",
+    "title": "3. Generalized Stein-Fojo model",
+    "section": "",
+    "text": "This appendix shows how the generalized Stein-Fojo model can be implemented in a Bayesian framework using the brms package in R.",
+    "crumbs": [
+      "Session 1: TGI",
+      "3. Generalized Stein-Fojo model"
+    ]
+  },
+  {
+    "objectID": "session-tgi/3_tgi_gsf_brms.html#setup-and-load-data",
+    "href": "session-tgi/3_tgi_gsf_brms.html#setup-and-load-data",
+    "title": "3. Generalized Stein-Fojo model",
+    "section": "Setup and load data",
+    "text": "Setup and load data\nFirst we need to load the necessary packages and set some default options for the MCMC sampling. We also set the theme for the plots to theme_bw with a base size of 12.\n\n\nShow the code\nlibrary(bayesplot)\nlibrary(brms)\nlibrary(ggplot2)\nlibrary(gt)\nlibrary(here)\nlibrary(janitor)\nlibrary(jmpost)\nlibrary(modelr)\nlibrary(posterior)\nlibrary(readxl)\nlibrary(rstan)\nlibrary(tidybayes)\nlibrary(tidyverse)\nlibrary(truncnorm)\n\nif (require(cmdstanr)) {\n  # If cmdstanr is available, instruct brms to use cmdstanr as backend \n  # and cache all Stan binaries\n  options(brms.backend = \"cmdstanr\", cmdstanr_write_stan_file_dir = here(\"_brms-cache\"))\n  dir.create(here(\"_brms-cache\"), FALSE) # create cache directory if not yet available\n} else {\n  rstan::rstan_options(auto_write = TRUE)\n}\n\n# MCMC options\noptions(mc.cores = 4)\nITER &lt;- 1000 # number of sampling iterations after warm up\nWARMUP &lt;- 2000 # number of warm up iterations\nCHAINS &lt;- 4\nBAYES.SEED &lt;- 878\nREFRESH &lt;- 500\n\ntheme_set(theme_bw(base_size = 12))\n\n\nWe also need a small function definition, which is still missing in brms:\n\n\nShow the code\nint_step &lt;- function(x) {\n  stopifnot(is.logical(x))\n  ifelse(x, 1, 0)\n}\n\n\nWe will use the publicly published tumor size data from the OAK study, see here. In particular we are using the S1 data set, which is the fully anonymized data set used in the publication. For simplicity, we have copied the data set in this GitHub repository.\n\n\nShow the code\nfile_path &lt;- here(\"data/journal.pcbi.1009822.s006.xlsx\")\n\nread_one_sheet &lt;- function(sheet) {\n    read_excel(file_path, sheet = sheet) |&gt; \n    clean_names() |&gt; \n    mutate(\n        id = factor(as.character(patient_anonmyized)),\n        day = as.integer(treatment_day),\n        year = day / 365.25,\n        target_lesion_long_diam_mm = case_match(\n            target_lesion_long_diam_mm,\n            \"TOO SMALL TO MEASURE\" ~ \"2\",\n            \"NOT EVALUABLE\" ~ NA_character_,\n            .default = target_lesion_long_diam_mm\n        ),\n        sld = as.numeric(target_lesion_long_diam_mm),\n        sld = ifelse(sld == 0, 2, sld),\n        study = factor(gsub(\"^Study_(\\\\d+)_Arm_\\\\d+$\", \"\\\\1\", study_arm)),\n        arm = factor(gsub(\"^Study_\\\\d+_Arm_(\\\\d+)$\", \"\\\\1\", study_arm))\n    ) |&gt; \n    select(id, year, sld, study, arm)\n}\n\ntumor_data &lt;- excel_sheets(file_path) |&gt; \n    map(read_one_sheet) |&gt; \n    bind_rows()\n\nhead(tumor_data)\n\n\n# A tibble: 6 × 5\n  id                      year   sld study arm  \n  &lt;fct&gt;                  &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt; &lt;fct&gt;\n1 3657015667902160896 -0.00548    33 1     1    \n2 3657015667902160896  0.101      33 1     1    \n3 3657015667902160896  0.230      32 1     1    \n4 3657015667902160896  0.342      37 1     1    \n5 3657015667902160896  0.446      49 1     1    \n6 2080619628198763008 -0.00548    12 1     1    \n\n\nShow the code\nsummary(tumor_data)\n\n\n                    id            year              sld        study   \n 4308512445673410048 :  18   Min.   :-0.1314   Min.   :  2.0   1: 456  \n -4902532987801034752:  17   1st Qu.: 0.1123   1st Qu.: 17.0   2: 966  \n 5394902984416364544 :  16   Median : 0.2847   Median : 30.0   3:2177  \n 7160320731596789760 :  16   Mean   : 0.3822   Mean   : 36.1   4:4126  \n -4159496062492130816:  15   3rd Qu.: 0.5722   3rd Qu.: 49.0   5: 835  \n -7900338178541499392:  15   Max.   : 2.0753   Max.   :228.0           \n (Other)             :8463   NA's   :1         NA's   :69              \n arm     \n 1:3108  \n 2:3715  \n 3: 291  \n 4: 608  \n 5: 227  \n 6: 611  \n         \n\n\nFor simplicity, we will for now just use study 4 (this is the OAK study), and we rename the patient IDs:\n\n\nShow the code\ndf &lt;- tumor_data |&gt; \n  filter(study == \"4\") |&gt; \n  na.omit() |&gt;\n  droplevels() |&gt; \n  mutate(id = factor(as.numeric(id)))\n\n\nHere we have 701 patients. It is always a good idea to make a plot of the data. Let’s look at the first 20 patients e.g.:\n\n\nShow the code\ndf |&gt; \n  filter(as.integer(id) &lt;= 20) |&gt;\n  ggplot(aes(x = year, y = sld, group = id)) +\n  geom_line() +\n  geom_point() +\n  facet_wrap(~ id) +\n  geom_vline(xintercept = 0, linetype = \"dashed\") +\n  theme(legend.position = \"none\")",
+    "crumbs": [
+      "Session 1: TGI",
+      "3. Generalized Stein-Fojo model"
+    ]
+  },
+  {
+    "objectID": "session-tgi/3_tgi_gsf_brms.html#generalized-stein-fojo-model",
+    "href": "session-tgi/3_tgi_gsf_brms.html#generalized-stein-fojo-model",
+    "title": "3. Generalized Stein-Fojo model",
+    "section": "Generalized Stein-Fojo model",
+    "text": "Generalized Stein-Fojo model\nHere we have an additional parameter \\(\\phi\\), which is the weight for the shrinkage in the double exponential model. The model is then:\n\\[\ny^{*}(t_{ij}) = \\psi_{b_{0}i} \\{\n  \\psi_{\\phi i} \\exp(- \\psi_{k_{s}i} \\cdot t_{ij}) +\n  (1 - \\psi_{\\phi i}) \\exp(\\psi_{k_{g}i} \\cdot t_{ij})\n\\}\n\\]\nfor positive times \\(t_{ij}\\). Again, if the time \\(t\\) is negative, i.e. the treatment has not started yet, then it is reasonable to assume that the tumor cannot shrink yet. That is, we have then \\(\\phi_i = 0\\). Therefore, the final model for the mean SLD is:\n\\[\ny^{*}(t_{ij}) =\n\\begin{cases}\n\\psi_{b_{0}i} \\exp(\\psi_{k_{g}i} \\cdot t_{ij}) & \\text{if } t_{ij} &lt; 0 \\\\\n\\psi_{b_{0}i} \\{\n  \\psi_{\\phi i} \\exp(- \\psi_{k_{s}i} \\cdot t_{ij}) +\n  (1 - \\psi_{\\phi i}) \\exp(\\psi_{k_{g}i} \\cdot t_{ij})\n\\} & \\text{if } t_{ij} \\geq 0\n\\end{cases}\n\\]\nIn terms of likelihood and priors, we can use the same assumptions as in the previous model. The only difference is that we have to model the \\(\\phi\\) parameter. We can use a logit-normal distribution for this parameter. This is a normal distribution on the logit scale, which is then transformed to the unit interval. \\[\n\\psi_{\\phi i} \\sim \\text{LogitNormal}(\\text{logit}(0.5) = 0, 0.5)\n\\]",
+    "crumbs": [
+      "Session 1: TGI",
+      "3. Generalized Stein-Fojo model"
+    ]
+  },
+  {
+    "objectID": "session-tgi/3_tgi_gsf_brms.html#fit-model",
+    "href": "session-tgi/3_tgi_gsf_brms.html#fit-model",
+    "title": "3. Generalized Stein-Fojo model",
+    "section": "Fit model",
+    "text": "Fit model\nWe can now fit the model using brms. The structure is determined by the model formula:\n\n\nShow the code\nformula &lt;- bf(sld ~ ystar, nl = TRUE) +\n  # Define the mean for the likelihood\n  nlf(\n    ystar ~ \n      int_step(year &gt; 0) * \n        (b0 * (phi * exp(-ks * year) + (1 - phi) * exp(kg * year))) +\n      int_step(year &lt;= 0) * \n        (b0 * exp(kg * year))\n  ) +\n  # As before:\n  nlf(sigma ~ log(tau) + log(ystar)) +\n  lf(tau ~ 1) +\n  # Define nonlinear parameter transformations:\n  nlf(b0 ~ exp(lb0)) +\n  nlf(phi ~ inv_logit(tphi)) +\n  nlf(ks ~ exp(lks)) +\n  nlf(kg ~ exp(lkg)) +\n  # Define random effect structure:\n  lf(lb0 ~ 1 + (1 | id)) + \n  lf(tphi ~ 1 + (1 | id)) + \n  lf(lks ~ 1 + (1 | id)) +\n  lf(lkg ~ 1 + (1 | id))\n\n# Define the priors\npriors &lt;- c(\n  prior(normal(log(65), 1), nlpar = \"lb0\"),\n  prior(normal(log(0.52), 0.1), nlpar = \"lks\"),\n  prior(normal(log(1.04), 1), nlpar = \"lkg\"),\n  prior(normal(0, 0.5), nlpar = \"tphi\"),\n  prior(normal(0, 3), lb = 0, nlpar = \"lb0\", class = \"sd\"),\n  prior(normal(0, 3), lb = 0, nlpar = \"lks\", class = \"sd\"),\n  prior(normal(0, 3), lb = 0, nlpar = \"lkg\", class = \"sd\"),\n  prior(student_t(3, 0, 22.2), lb = 0, nlpar = \"tphi\", class = \"sd\"),\n  prior(normal(0, 3), lb = 0, nlpar = \"tau\")\n)\n\n# Initial values to avoid problems at the beginning\nn_patients &lt;- nlevels(df$id)\ninits &lt;- list(\n  b_lb0 = array(3.61),\n  b_lks = array(-1.25),\n  b_lkg = array(-1.33),\n  b_tphi = array(0),\n  sd_1 = array(0.58),\n  sd_2 = array(1.6),\n  sd_3 = array(0.994),\n  sd_4 = array(0.1),\n  b_tau = array(0.161),\n  z_1 = matrix(0, nrow = 1, ncol = n_patients),\n  z_2 = matrix(0, nrow = 1, ncol = n_patients),\n  z_3 = matrix(0, nrow = 1, ncol = n_patients),\n  z_4 = matrix(0, nrow = 1, ncol = n_patients)\n)\n\n# Fit the model\nsave_file &lt;- here(\"session-tgi/gsf1.RData\")\nif (file.exists(save_file)) {\n  load(save_file)\n} else {\n  fit &lt;- brm(\n    formula = formula,\n    data = df,\n    prior = priors,\n    family = gaussian(),\n    init = rep(list(inits), CHAINS),\n    chains = CHAINS, \n    iter = WARMUP + ITER, \n    warmup = WARMUP, \n    seed = BAYES.SEED,\n    refresh = REFRESH\n  )\n  save(fit, file = save_file)\n}\n\n# Summarize the fit\nsummary(fit)\n\n\nWarning: There were 41 divergent transitions after warmup. Increasing\nadapt_delta above 0.8 may help. See\nhttp://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup\n\n\n Family: gaussian \n  Links: mu = identity; sigma = log \nFormula: sld ~ eta \n         eta ~ int_step(year &gt; 0) * (b0 * (phi * exp(-ks * year) + (1 - phi) * exp(kg * year))) + int_step(year &lt;= 0) * (b0 * exp(kg * year))\n         sigma ~ log(tau) + log(eta)\n         tau ~ 1\n         b0 ~ exp(lb0)\n         phi ~ inv_logit(tphi)\n         ks ~ exp(lks)\n         kg ~ exp(lkg)\n         lb0 ~ 1 + (1 | id)\n         tphi ~ 1 + (1 | id)\n         lks ~ 1 + (1 | id)\n         lkg ~ 1 + (1 | id)\n   Data: df (Number of observations: 4099) \n  Draws: 4 chains, each with iter = 3000; warmup = 2000; thin = 1;\n         total post-warmup draws = 4000\n\nMultilevel Hyperparameters:\n~id (Number of levels: 701) \n                   Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\nsd(lb0_Intercept)      0.58      0.02     0.55     0.61 1.01      382      606\nsd(tphi_Intercept)     2.12      0.18     1.78     2.49 1.01      611     1216\nsd(lks_Intercept)      2.16      0.14     1.90     2.46 1.00      520     1282\nsd(lkg_Intercept)      1.18      0.09     1.01     1.36 1.00      899     1766\n\nRegression Coefficients:\n               Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS\ntau_Intercept      0.15      0.00     0.14     0.15 1.00     1611     2351\nlb0_Intercept      3.63      0.02     3.59     3.68 1.03      221      547\ntphi_Intercept    -0.14      0.22    -0.57     0.27 1.00      424      839\nlks_Intercept     -0.62      0.10    -0.81    -0.43 1.00     1170     1868\nlkg_Intercept     -1.15      0.14    -1.43    -0.89 1.00      699     1488\n\nDraws were sampled using sample(hmc). For each parameter, Bulk_ESS\nand Tail_ESS are effective sample size measures, and Rhat is the potential\nscale reduction factor on split chains (at convergence, Rhat = 1).\n\n\nIn total this took 76 minutes on my laptop.",
+    "crumbs": [
+      "Session 1: TGI",
+      "3. Generalized Stein-Fojo model"
+    ]
+  },
+  {
+    "objectID": "session-tgi/3_tgi_gsf_brms.html#parameter-estimates",
+    "href": "session-tgi/3_tgi_gsf_brms.html#parameter-estimates",
+    "title": "3. Generalized Stein-Fojo model",
+    "section": "Parameter estimates",
+    "text": "Parameter estimates\n\n\nShow the code\npost_df &lt;- as_draws_df(fit)\nhead(names(post_df), 10)\n\n\n [1] \"b_tau_Intercept\"        \"b_lb0_Intercept\"        \"b_tphi_Intercept\"      \n [4] \"b_lks_Intercept\"        \"b_lkg_Intercept\"        \"sd_id__lb0_Intercept\"  \n [7] \"sd_id__tphi_Intercept\"  \"sd_id__lks_Intercept\"   \"sd_id__lkg_Intercept\"  \n[10] \"r_id__lb0[1,Intercept]\"\n\n\nShow the code\npost_df &lt;- post_df |&gt;\n  mutate(\n    theta_b0 = exp(b_lb0_Intercept + sd_id__lb0_Intercept^2 / 2),\n    theta_ks = exp(b_lks_Intercept + sd_id__lks_Intercept^2 / 2),\n    theta_kg = exp(b_lkg_Intercept + sd_id__lkg_Intercept^2 / 2),\n    theta_phi = plogis(b_tphi_Intercept),\n    omega_0 = sd_id__lb0_Intercept,\n    omega_s = sd_id__lks_Intercept,\n    omega_g = sd_id__lkg_Intercept,\n    omega_phi = sd_id__tphi_Intercept,\n    cv_0 = sqrt(exp(sd_id__lb0_Intercept^2) - 1),\n    cv_s = sqrt(exp(sd_id__lks_Intercept^2) - 1),\n    cv_g = sqrt(exp(sd_id__lkg_Intercept^2) - 1),\n    sigma = b_tau_Intercept\n  )\n\n\nLet’s first look at the population level parameters:\n\n\nShow the code\ngsf_pop_params &lt;- c(\"theta_b0\", \"theta_ks\", \"theta_kg\", \"theta_phi\", \"sigma\")\n\nmcmc_trace(post_df, pars = gsf_pop_params)\n\n\n\n\n\n\n\n\n\nShow the code\nmcmc_pairs(\n  post_df, \n  pars = gsf_pop_params,\n  off_diag_args = list(size = 1, alpha = 0.1)\n)\n\n\n\n\n\n\n\n\n\nThe trace plots look good. The chains seem to have converged and the pairs plot shows no strong correlations between the parameters. Let’s check the table:\n\n\nShow the code\npost_sum &lt;- post_df |&gt;\n  select(theta_b0, theta_ks, theta_kg, theta_phi, omega_0, omega_s, omega_g, omega_phi, sigma) |&gt;\n  summarize_draws() |&gt;\n  gt() |&gt;\n  fmt_number(decimals = 3)\n\n\nWarning: Dropping 'draws_df' class as required metadata was removed.\n\n\nShow the code\npost_sum\n\n\n\n\n\n\n\n\nvariable\nmean\nmedian\nsd\nmad\nq5\nq95\nrhat\ness_bulk\ness_tail\n\n\n\n\ntheta_b0\n44.766\n44.746\n1.057\n1.073\n43.074\n46.528\n1.007\n179.361\n378.906\n\n\ntheta_ks\n5.857\n5.444\n1.924\n1.582\n3.589\n9.560\n1.003\n384.622\n905.388\n\n\ntheta_kg\n0.640\n0.637\n0.061\n0.062\n0.541\n0.745\n1.000\n685.379\n1,885.264\n\n\ntheta_phi\n0.467\n0.466\n0.055\n0.058\n0.376\n0.555\n1.003\n419.761\n831.991\n\n\nomega_0\n0.578\n0.578\n0.016\n0.017\n0.553\n0.606\n1.001\n376.483\n628.807\n\n\nomega_s\n2.159\n2.155\n0.145\n0.145\n1.929\n2.412\n1.002\n521.866\n1,265.639\n\n\nomega_g\n1.177\n1.174\n0.090\n0.090\n1.037\n1.333\n1.002\n868.075\n1,746.640\n\n\nomega_phi\n2.117\n2.108\n0.182\n0.184\n1.833\n2.423\n1.003\n603.806\n1,215.066\n\n\nsigma\n0.147\n0.147\n0.002\n0.002\n0.143\n0.150\n1.000\n1,575.916\n2,168.010\n\n\n\n\n\n\n\nSo \\(\\theta_{\\phi}\\) is estimated around 0.5. The other parameters are similar to the previous Stein-Fojo model, but we see a larger \\(\\theta_{k_s}\\) e.g.",
+    "crumbs": [
+      "Session 1: TGI",
+      "3. Generalized Stein-Fojo model"
+    ]
+  },
+  {
+    "objectID": "session-tgi/3_tgi_gsf_brms.html#observation-vs-model-fit",
+    "href": "session-tgi/3_tgi_gsf_brms.html#observation-vs-model-fit",
+    "title": "3. Generalized Stein-Fojo model",
+    "section": "Observation vs model fit",
+    "text": "Observation vs model fit\nWe can now compare the model fit to the observations. Let’s do this for the first 20 patients again:\n\n\nShow the code\npt_subset &lt;- as.character(1:20)\ndf_subset &lt;- df |&gt; \n  filter(id %in% pt_subset)\n\ndf_sim &lt;- df_subset |&gt; \n  data_grid(\n    id = pt_subset, \n    year = seq_range(year, 101)\n  ) |&gt;\n  add_epred_draws(fit) |&gt;\n  median_qi()\n\ndf_sim |&gt;\n  ggplot(aes(x = year, y = sld)) +\n  facet_wrap(~ id) +\n  geom_ribbon(\n    aes(y = .epred, ymin = .lower, ymax = .upper), \n    alpha = 0.3, \n    fill = \"deepskyblue\"\n  ) +\n  geom_line(aes(y = .epred), color = \"deepskyblue\") +\n  geom_point(data = df_subset, color = \"tomato\") +\n  coord_cartesian(ylim = range(df_subset$sld)) +\n  scale_fill_brewer(palette = \"Greys\") +\n  labs(title = \"GSF model fit\")\n\n\n\n\n\n\n\n\n\nThis also looks good. The model seems to capture the data well.",
+    "crumbs": [
+      "Session 1: TGI",
+      "3. Generalized Stein-Fojo model"
+    ]
+  },
+  {
+    "objectID": "session-tgi/3_tgi_gsf_brms.html#with-jmpost",
+    "href": "session-tgi/3_tgi_gsf_brms.html#with-jmpost",
+    "title": "3. Generalized Stein-Fojo model",
+    "section": "With jmpost",
+    "text": "With jmpost\nThis model can also be fit with the jmpost package. The corresponding function is LongitudinalGSF. The statistical model is specified in the vignette here.\nHomework: Implement the generalized Stein-Fojo model with jmpost and compare the results with the brms implementation.",
+    "crumbs": [
+      "Session 1: TGI",
+      "3. Generalized Stein-Fojo model"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Index",
+    "section": "",
+    "text": "Order By\n       Default\n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Title\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\nDate\n\n\nTitle\n\n\nAuthor\n\n\n\n\n\n\n2025-02-27\n\n\n0. Setup\n\n\nFrancois Mercier, Daniel Sabanés Bové\n\n\n\n\n2025-02-27\n\n\n1. TGI model minimal workflow with brms\n\n\nDaniel Sabanés Bové, Francois Mercier\n\n\n\n\n2025-02-27\n\n\n2. TGI model minimal workflow with jmpost\n\n\nDaniel Sabanés Bové, Francois Mercier\n\n\n\n\n2025-02-27\n\n\n3. Generalized Stein-Fojo model\n\n\nDaniel Sabanés Bové, Francois Mercier\n\n\n\n\n2025-02-27\n\n\n4. Claret-Bruno model\n\n\nDaniel Sabanés Bové, Francois Mercier\n\n\n\n\n\nNo matching items",
+    "crumbs": [
+      "Index"
+    ]
+  },
+  {
+    "objectID": "index.html#license",
+    "href": "index.html#license",
+    "title": "Index",
+    "section": "License",
+    "text": "License\nThe training material is licensed under a Creative Commons Attribution 4.0 International License. If you wish to reuse any part of this material, please ensure proper attribution is given to the original authors as specified by the Creative Commons Attribution 4.0 International License.",
+    "crumbs": [
+      "Index"
+    ]
+  },
+  {
+    "objectID": "index.html#copyright",
+    "href": "index.html#copyright",
+    "title": "Index",
+    "section": "Copyright",
+    "text": "Copyright\n© 2025 Genentech Inc. All rights reserved.",
+    "crumbs": [
+      "Index"
+    ]
+  },
+  {
     "objectID": "session-tgi/4_tgi_cb_brms.html",
     "href": "session-tgi/4_tgi_cb_brms.html",
     "title": "4. Claret-Bruno model",
@@ -456,6 +412,50 @@
     "crumbs": [
       "Session 1: TGI",
       "4. Claret-Bruno model"
+    ]
+  },
+  {
+    "objectID": "session-tgi/0_setup.html",
+    "href": "session-tgi/0_setup.html",
+    "title": "0. Setup",
+    "section": "",
+    "text": "This is a repository with training material for Tumor Growth Inhibition (TGI) and joint TGI-OS (Overall Survival) modeling.\nHere is an overview of the required setup steps, which are described in more detail below:\n\nClone the repository from GitHub\nOpen the folder in RStudio or VSCode\nInstall RTools (if you are on Windows)\nInstall necessary R packages\nInstall cmdstanr (optional but highly recommended)\n\n\n\nIf you are running the examples on a Windows PC, you will need to install RTools, see\nhere.\nYou need to use the version of RTools that matches your R version. You can check your R version by running R.Version()$version.string.\nYou can then afterwards check the installation of RTools with:\nif(!require(pkgbuild)) install.packages(\"pkgbuild\")\npkgbuild::has_build_tools()\n\n\n\nThe following code will install the packages that are required to run the examples in this repository.\ninstall_if_not_available &lt;- function(pkg, min_version = NULL) {\n    is_installed &lt;- suppressWarnings(suppressPackageStartupMessages(\n      require(pkg, character.only = TRUE)\n    ))\n    if (is_installed & !is.null(min_version)) {\n      version_ok &lt;- packageVersion(pkg) &gt;= min_version\n    }    \n    if (!is_installed | !version_ok) {\n        install.packages(pkg)\n    }\n  }\npackages &lt;- c(\n  \"bayesplot\", \n  \"brms\", \n  \"ggplot2\",\n  \"gt\",\n  \"here\", \n  \"janitor\",\n  \"modelr\",\n  \"posterior\",\n  \"readxl\",\n  \"rstan\",\n  \"tidybayes\", \n  \"tidyverse\",   \n  \"truncnorm\"\n)\nsapply(packages, install_if_not_available)\nremotes::install_github(\"genentech/jmpost\")\n\n\n\nOptionally, you can use cmdstanr as the backend of brms for fitting the models.\nThere are a few advantages of using cmdstanr over the default rstan:\n\nWith cmdstanr, you can cache the compiled model, therefore you don’t need to recompile the model as long as the same formula is used, even after restarting R session (or re-opening RStudio).\ncmdstanr is more up-to-date and more actively maintained compared to rstan.\n\nA detailed installation guide for cmdstanr is available here. Here is a brief summary:\n\nInstall cmdstanr with:\n# Typically, you install cmdstanr from the R-universe as follows:\ninstall.packages(\"cmdstanr\", repos = c('https://stan-dev.r-universe.dev', getOption(\"repos\")))\n\n# If the above does not work, e.g. because you in a company network or VPN, you can install cmdstanr from GitHub instead:\nremotes::install_github(\"stan-dev/cmdstanr@*release\")    \nCheck the compiler toolchain with:\ncmdstanr::check_cmdstan_toolchain()\n\nThis should not be a problem on Mac and Linux (including RStudio Cloud instances), but might be a problem on Windows.\nIf you have problems, please check the installation guide for Windows.\n\nRTools is the easiest way.\nEven if you have RTools, you might still see an error like \"Rtools44 installation found but the toolchain was not installed.\".\nIn this case, you can run cmdstanr::check_cmdstan_toolchain(fix = TRUE) and this will likely resolve the issue.\n\n\nInstall the CmdStan backend with:\ncmdstanr::install_cmdstan(cores = 2)\nTesting the cmdstanr installation\n\nIf the above installation was successful, you should now be able to run the following simple model.\n\nlibrary(cmdstanr)\nfile &lt;- file.path(\n  cmdstan_path(), \n  \"examples\", \"bernoulli\", \"bernoulli.stan\"\n)\nmod &lt;- cmdstan_model(file)\ndata_list &lt;- list(N = 10, y = c(0, 1, 0, 0, 0, 0, 0, 0, 0, 1))\n\nfit &lt;- mod$sample(\n  data = data_list,\n  seed = 123,\n  chains = 4,\n  parallel_chains = 4,\n  refresh = 500\n)",
+    "crumbs": [
+      "Session 1: TGI",
+      "0. Setup"
+    ]
+  },
+  {
+    "objectID": "session-tgi/0_setup.html#install-rtools",
+    "href": "session-tgi/0_setup.html#install-rtools",
+    "title": "0. Setup",
+    "section": "",
+    "text": "If you are running the examples on a Windows PC, you will need to install RTools, see\nhere.\nYou need to use the version of RTools that matches your R version. You can check your R version by running R.Version()$version.string.\nYou can then afterwards check the installation of RTools with:\nif(!require(pkgbuild)) install.packages(\"pkgbuild\")\npkgbuild::has_build_tools()",
+    "crumbs": [
+      "Session 1: TGI",
+      "0. Setup"
+    ]
+  },
+  {
+    "objectID": "session-tgi/0_setup.html#install-necessary-r-packages",
+    "href": "session-tgi/0_setup.html#install-necessary-r-packages",
+    "title": "0. Setup",
+    "section": "",
+    "text": "The following code will install the packages that are required to run the examples in this repository.\ninstall_if_not_available &lt;- function(pkg, min_version = NULL) {\n    is_installed &lt;- suppressWarnings(suppressPackageStartupMessages(\n      require(pkg, character.only = TRUE)\n    ))\n    if (is_installed & !is.null(min_version)) {\n      version_ok &lt;- packageVersion(pkg) &gt;= min_version\n    }    \n    if (!is_installed | !version_ok) {\n        install.packages(pkg)\n    }\n  }\npackages &lt;- c(\n  \"bayesplot\", \n  \"brms\", \n  \"ggplot2\",\n  \"gt\",\n  \"here\", \n  \"janitor\",\n  \"modelr\",\n  \"posterior\",\n  \"readxl\",\n  \"rstan\",\n  \"tidybayes\", \n  \"tidyverse\",   \n  \"truncnorm\"\n)\nsapply(packages, install_if_not_available)\nremotes::install_github(\"genentech/jmpost\")",
+    "crumbs": [
+      "Session 1: TGI",
+      "0. Setup"
+    ]
+  },
+  {
+    "objectID": "session-tgi/0_setup.html#optional-install-cmdstanr",
+    "href": "session-tgi/0_setup.html#optional-install-cmdstanr",
+    "title": "0. Setup",
+    "section": "",
+    "text": "Optionally, you can use cmdstanr as the backend of brms for fitting the models.\nThere are a few advantages of using cmdstanr over the default rstan:\n\nWith cmdstanr, you can cache the compiled model, therefore you don’t need to recompile the model as long as the same formula is used, even after restarting R session (or re-opening RStudio).\ncmdstanr is more up-to-date and more actively maintained compared to rstan.\n\nA detailed installation guide for cmdstanr is available here. Here is a brief summary:\n\nInstall cmdstanr with:\n# Typically, you install cmdstanr from the R-universe as follows:\ninstall.packages(\"cmdstanr\", repos = c('https://stan-dev.r-universe.dev', getOption(\"repos\")))\n\n# If the above does not work, e.g. because you in a company network or VPN, you can install cmdstanr from GitHub instead:\nremotes::install_github(\"stan-dev/cmdstanr@*release\")    \nCheck the compiler toolchain with:\ncmdstanr::check_cmdstan_toolchain()\n\nThis should not be a problem on Mac and Linux (including RStudio Cloud instances), but might be a problem on Windows.\nIf you have problems, please check the installation guide for Windows.\n\nRTools is the easiest way.\nEven if you have RTools, you might still see an error like \"Rtools44 installation found but the toolchain was not installed.\".\nIn this case, you can run cmdstanr::check_cmdstan_toolchain(fix = TRUE) and this will likely resolve the issue.\n\n\nInstall the CmdStan backend with:\ncmdstanr::install_cmdstan(cores = 2)\nTesting the cmdstanr installation\n\nIf the above installation was successful, you should now be able to run the following simple model.\n\nlibrary(cmdstanr)\nfile &lt;- file.path(\n  cmdstan_path(), \n  \"examples\", \"bernoulli\", \"bernoulli.stan\"\n)\nmod &lt;- cmdstan_model(file)\ndata_list &lt;- list(N = 10, y = c(0, 1, 0, 0, 0, 0, 0, 0, 0, 1))\n\nfit &lt;- mod$sample(\n  data = data_list,\n  seed = 123,\n  chains = 4,\n  parallel_chains = 4,\n  refresh = 500\n)",
+    "crumbs": [
+      "Session 1: TGI",
+      "0. Setup"
     ]
   }
 ]
