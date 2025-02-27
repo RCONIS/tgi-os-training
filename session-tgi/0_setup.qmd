@@ -18,11 +18,11 @@ This is a repository with training material for Tumor Growth Inhibition (TGI) an
 
 Here is an overview of the required setup steps, which are described in more detail below:
 
-1. Clone the repository from GitHub
-1. Open the folder in RStudio or VSCode
 1. [Install `RTools`](#install-rtools) (if you are on Windows)
 1. [Install necessary R packages](#install-necessary-r-packages)
 1. [Install `cmdstanr`](#optional-install-cmdstanr) (optional but highly recommended)
+1. Clone the repository from GitHub (https://github.com/RCONIS/tgi-os-training)
+1. Open the folder in RStudio or VSCode
 
 ## Install `RTools`
 
