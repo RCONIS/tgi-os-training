@@ -109,9 +109,9 @@ Here we use relatively informative priors for the log-normal location parameters
 
 $$
 \begin{align*}
-\mu_{b_{0}} &\sim \text{LogNormal}(\log(65), 1) \\
-\mu_{k_{s}} &\sim \text{LogNormal}(\log(0.52), 0.1) \\
-\mu_{k_{g}} &\sim \text{LogNormal}(\log(1.04), 1)
+\mu_{b_{0}} &\sim \text{Normal}(\log(65), 1) \\
+\mu_{k_{s}} &\sim \text{Normal}(\log(0.52), 0.1) \\
+\mu_{k_{g}} &\sim \text{Normal}(\log(1.04), 1)
 \end{align*}
 $$
 
