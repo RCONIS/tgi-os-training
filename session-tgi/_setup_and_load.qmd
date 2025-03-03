@@ -5,9 +5,8 @@ First we need to load the necessary packages and set some default options for th
 #| output: FALSE
 #| message: FALSE
 
-library(tidyverse)
-library(tidybayes)
 library(bayesplot)
+<<<<<<< HEAD
 library(modelr)
 library(here)
 library(tictoc)
@@ -19,8 +18,21 @@ library(posterior)
 library(jmpost)
 library(cmdstanr)
 library(truncnorm)
+=======
+>>>>>>> main
 library(brms)
+library(ggplot2)
+library(gt)
+library(here)
+library(janitor)
+library(jmpost)
+library(modelr)
+library(posterior)
+library(readxl)
 library(rstan)
+library(tidybayes)
+library(tidyverse)
+library(truncnorm)
 
 if (require(cmdstanr)) {
   # If cmdstanr is available, instruct brms to use cmdstanr as backend 

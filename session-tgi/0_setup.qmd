@@ -56,16 +56,18 @@ install_if_not_available <- function(pkg, min_version = NULL) {
     }
   }
 packages <- c(
-  "tidyverse", 
-  "tidybayes", 
   "bayesplot", 
   "brms", 
-  "here", 
-  "tictoc", 
+  "ggplot2",
   "gt",
-  "readxl",
+  "here", 
   "janitor",
+  "modelr",
   "posterior",
+  "readxl",
+  "rstan",
+  "tidybayes", 
+  "tidyverse",   
   "truncnorm"
 )
 sapply(packages, install_if_not_available)

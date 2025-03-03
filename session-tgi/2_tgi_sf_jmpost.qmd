@@ -80,10 +80,10 @@ tgi_mod <- JointModel(
         mu_bsld = prior_normal(log(65), 1),
         mu_ks = prior_normal(log(0.52), 1),
         mu_kg = prior_normal(log(1.04), 1),
-        omega_bsld = prior_normal(0, 3),
-        omega_ks = prior_normal(0, 3),
-        omega_kg = prior_normal(0, 3),
-        sigma = prior_normal(0, 3)
+        omega_bsld = prior_normal(0, 3) |> set_limits(0, Inf),
+        omega_ks = prior_normal(0, 3) |> set_limits(0, Inf),
+        omega_kg = prior_normal(0, 3) |> set_limits(0, Inf),
+        sigma = prior_normal(0, 3) |> set_limits(0, Inf)
     )
 )
 ```
@@ -97,7 +97,7 @@ We can now fit the model using `jmpost`.
 ```{r}
 #| label: fit_model
 
-save_file <- here("session-tgi/jm2.RData")
+save_file <- here("session-tgi/jm5.RData")
 if (file.exists(save_file)) {
   load(save_file)
 } else {
@@ -108,6 +108,7 @@ if (file.exists(save_file)) {
       iter_warmup = WARMUP,
       chains = CHAINS,
       parallel_chains = CHAINS,
+      thin = CHAINS,
       seed = BAYES.SEED,
       refresh = REFRESH
   )
@@ -131,7 +132,7 @@ vars <- c(
     "lm_sf_omega_kg"
 )
 
-save_overall_file <- here("session-tgi/jm2_more.RData")
+save_overall_file <- here("session-tgi/jm5_more.RData")
 if (file.exists(save_overall_file)) {
   load(save_overall_file)
 } else {
@@ -156,6 +157,17 @@ mcmc_trace(vars_draws)
 
 They also look ok, all chains are mixing well in the same range of parameter values.
 
+Also here we could look at the pairs plot:
+
+```{r}
+#| label: plot_pairs
+
+mcmc_pairs(
+  vars_draws,
+  off_diag_args = list(size = 1, alpha = 0.1)
+)
+```
+
 ## Observation vs. model fit
 
 Let's check the fit of the model to the data:
@@ -166,7 +178,7 @@ Let's check the fit of the model to the data:
 
 pt_subset <- as.character(1:20)
 
-save_fit_file <- here("session-tgi/jm2_fit.RData")
+save_fit_file <- here("session-tgi/jm5_fit.RData")
 if (file.exists(save_fit_file)) {
   load(save_fit_file)
 } else {
@@ -238,14 +250,14 @@ Here we need again to be careful: We are interested in the posterior mean estima
 
 post_sum <- post_samples |>
   mutate(
-    b0 = exp(mu_bsld + omega_bsld^2 / 2), 
-    ks = exp(mu_ks + omega_ks^2 / 2), 
-    kg = exp(mu_kg + omega_kg^2 / 2),
+    theta_b0 = exp(mu_bsld + omega_bsld^2 / 2), 
+    theta_ks = exp(mu_ks + omega_ks^2 / 2), 
+    theta_kg = exp(mu_kg + omega_kg^2 / 2),
     cv_0 = sqrt(exp(omega_bsld^2) - 1),
     cv_s = sqrt(exp(omega_ks^2) - 1),
     cv_g = sqrt(exp(omega_kg^2) - 1)
   ) |>
-  select(b0, ks, kg, omega_bsld, omega_ks, omega_kg, cv_0, cv_s, cv_g, sigma) |>
+  select(theta_b0, theta_ks, theta_kg, omega_bsld, omega_ks, omega_kg, cv_0, cv_s, cv_g, sigma) |>
   summarize_draws() |>
   gt() |>
   fmt_number(n_sigfig = 3)
@@ -290,7 +302,7 @@ joint_data_by_arm <- DataJoint(
 ```{r}
 #| label: fit_model_arm
 
-save_file <- here("session-tgi/jm3.RData")
+save_file <- here("session-tgi/jm6.RData")
 if (file.exists(save_file)) {
   load(save_file)
 } else {
@@ -301,6 +313,7 @@ if (file.exists(save_file)) {
       iter_warmup = WARMUP,
       chains = CHAINS,
       parallel_chains = CHAINS,
+      thin = CHAINS,
       seed = BAYES.SEED,
       refresh = REFRESH
   )
@@ -324,7 +337,7 @@ vars <- c(
     "lm_sf_omega_kg"
 )
 
-save_arm_file <- here("session-tgi/jm3_more.RData")
+save_arm_file <- here("session-tgi/jm6_more.RData")
 if (file.exists(save_arm_file)) {
   load(save_arm_file)
 } else {
@@ -358,11 +371,11 @@ post_samples_by_arm <- as_draws_df(vars_draws_by_arm) |>
     sigma = lm_sf_sigma
   ) |> 
   mutate(
-    b0 = exp(mu_bsld + omega_bsld^2 / 2), 
-    ks1 = exp(mu_ks1 + omega_ks1^2 / 2), 
-    ks2 = exp(mu_ks2 + omega_ks2^2 / 2),
-    kg1 = exp(mu_kg1 + omega_kg1^2 / 2),
-    kg2 = exp(mu_kg2 + omega_kg2^2 / 2),
+    theta_b0 = exp(mu_bsld + omega_bsld^2 / 2), 
+    theta_ks1 = exp(mu_ks1 + omega_ks1^2 / 2), 
+    theta_ks2 = exp(mu_ks2 + omega_ks2^2 / 2),
+    theta_kg1 = exp(mu_kg1 + omega_kg1^2 / 2),
+    theta_kg2 = exp(mu_kg2 + omega_kg2^2 / 2),
     cv_0 = sqrt(exp(omega_bsld^2) - 1),
     cv_s1 = sqrt(exp(omega_ks1^2) - 1),
     cv_s2 = sqrt(exp(omega_ks2^2) - 1),
@@ -372,7 +385,7 @@ post_samples_by_arm <- as_draws_df(vars_draws_by_arm) |>
   
 post_sum_by_arm <- post_samples_by_arm |>
   select(
-    b0, ks1, ks2, kg1, kg2, 
+    theta_b0, theta_ks1, theta_ks2, theta_kg1, theta_kg2, 
     omega_bsld, omega_ks1, omega_ks2, omega_kg1, omega_kg2, 
     cv_0, cv_s1, cv_s2, cv_g1, cv_g2, sigma) |>
   summarize_draws() |>
@@ -384,7 +397,7 @@ post_sum_by_arm
 Here again the shrinkage rate in the treatment arm 1 seems higher than in the treatment arm 2. However, the difference is not as pronounced as in the `brms` model before with the same standard deviation for both arms. We can again calculate the posterior probability that the shrinkage rate in arm 1 is higher than in arm 2:
 
 ```{r}
-prob_ks1_greater_ks2 <- mean(post_samples_by_arm$ks1 > post_samples_by_arm$ks2)
+prob_ks1_greater_ks2 <- mean(post_samples_by_arm$theta_ks1 > post_samples_by_arm$theta_ks2)
 prob_ks1_greater_ks2
 ```
 
@@ -428,3 +441,4 @@ So the model by treatment arm performs here better than the model without treatm
   file.edit(tmp) # opens the Stan file in the default editor
   ```
 - It is not trivial to transport saved models from one computer to another. This is because `cmdstanr` only loads the results it currently needs from disk into memory, and thus into the R session. If you want to transport the model to another computer, you need to save the Stan code and the data, and then re-run the model on the other computer. This is because the model object in R is only a reference to the model on disk, not the model itself. Note that there is the `$save_object()` method, see [here](https://mc-stan.org/cmdstanr/reference/fit-method-save_object.html), however this leads to very large files (here about 300 MB for one fit) and can thus not be uploaded to typical git repositories. Therefore above we saved interim result objects separately as needed.
+- It is important to explicitly define the truncation boundaries for the truncated normal priors, because otherwise the MCMC results will not be correct.

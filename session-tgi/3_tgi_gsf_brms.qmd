@@ -35,7 +35,7 @@ $$
 for positive times $t_{ij}$. Again, if the time $t$ is negative, i.e. the treatment has not started yet, then it is reasonable to assume that the tumor cannot shrink yet. That is, we have then $\phi_i = 0$. Therefore, the final model for the mean SLD is:
 
 $$
-\mu(t_{ij}) = 
+y^{*}(t_{ij}) = 
 \begin{cases} 
 \psi_{b_{0}i} \exp(\psi_{k_{g}i} \cdot t_{ij}) & \text{if } t_{ij} < 0 \\
 \psi_{b_{0}i} \{
@@ -57,26 +57,24 @@ We can now fit the model using `brms`. The structure is determined by the model 
 ```{r}
 #| label: specify_gsf_model
 
-formula <- bf(sld ~ eta, nl = TRUE) +
+formula <- bf(sld ~ ystar, nl = TRUE) +
   # Define the mean for the likelihood
   nlf(
-    eta ~ 
+    ystar ~ 
       int_step(year > 0) * 
         (b0 * (phi * exp(-ks * year) + (1 - phi) * exp(kg * year))) +
       int_step(year <= 0) * 
         (b0 * exp(kg * year))
   ) +
-  # Define the standard deviation (called sigma in brms) as a 
-  # coefficient tau times the mean.
-  # sigma is modelled on the log scale though, therefore:
-  nlf(sigma ~ log(tau) + log(eta)) +
+  # As before:
+  nlf(sigma ~ log(tau) + log(ystar)) +
   lf(tau ~ 1) +
-  # Define nonlinear parameter transformations
+  # Define nonlinear parameter transformations:
   nlf(b0 ~ exp(lb0)) +
   nlf(phi ~ inv_logit(tphi)) +
   nlf(ks ~ exp(lks)) +
   nlf(kg ~ exp(lkg)) +
-  # Define random effect structure
+  # Define random effect structure:
   lf(lb0 ~ 1 + (1 | id)) + 
   lf(tphi ~ 1 + (1 | id)) + 
   lf(lks ~ 1 + (1 | id)) +
@@ -149,10 +147,10 @@ head(names(post_df), 10)
 
 post_df <- post_df |>
   mutate(
-    b0 = exp(b_lb0_Intercept + sd_id__lb0_Intercept^2 / 2),
-    ks = exp(b_lks_Intercept + sd_id__lks_Intercept^2 / 2),
-    kg = exp(b_lkg_Intercept + sd_id__lkg_Intercept^2 / 2),
-    phi = plogis(b_tphi_Intercept),
+    theta_b0 = exp(b_lb0_Intercept + sd_id__lb0_Intercept^2 / 2),
+    theta_ks = exp(b_lks_Intercept + sd_id__lks_Intercept^2 / 2),
+    theta_kg = exp(b_lkg_Intercept + sd_id__lkg_Intercept^2 / 2),
+    theta_phi = plogis(b_tphi_Intercept),
     omega_0 = sd_id__lb0_Intercept,
     omega_s = sd_id__lks_Intercept,
     omega_g = sd_id__lkg_Intercept,
@@ -168,9 +166,14 @@ Let's first look at the population level parameters:
 
 ```{r}
 #| label: gsf_pop_params
+gsf_pop_params <- c("theta_b0", "theta_ks", "theta_kg", "theta_phi", "sigma")
 
-mcmc_trace(post_df, pars = c("b0", "ks", "kg", "phi", "sigma"))
-mcmc_pairs(post_df, pars = c("b0", "ks", "kg", "phi", "sigma"))
+mcmc_trace(post_df, pars = gsf_pop_params)
+mcmc_pairs(
+  post_df, 
+  pars = gsf_pop_params,
+  off_diag_args = list(size = 1, alpha = 0.1)
+)
 ```
 
 The trace plots look good. The chains seem to have converged and the pairs plot shows no strong correlations between the parameters. Let's check the table:
@@ -179,14 +182,14 @@ The trace plots look good. The chains seem to have converged and the pairs plot 
 #| label: gsf_post_summary
 
 post_sum <- post_df |>
-  select(b0, ks, kg, phi, omega_0, omega_s, omega_g, omega_phi, sigma) |>
+  select(theta_b0, theta_ks, theta_kg, theta_phi, omega_0, omega_s, omega_g, omega_phi, sigma) |>
   summarize_draws() |>
   gt() |>
   fmt_number(decimals = 3)
 post_sum
 ```
 
-So $\phi$ is estimated around 0.5. The other parameters are similar to the previous Stein-Fojo model, but we see a larger $k_s$ e.g.
+So $\theta_{\phi}$ is estimated around 0.5. The other parameters are similar to the previous Stein-Fojo model, but we see a larger $\theta_{k_s}$ e.g.
 
 ## Observation vs model fit
 
@@ -227,3 +230,5 @@ This also looks good. The model seems to capture the data well.
 ## With `jmpost`
 
 This model can also be fit with the `jmpost` package. The corresponding function is `LongitudinalGSF`. The statistical model is specified in the vignette [here](https://genentech.github.io/jmpost/main/articles/statistical-specification.html#generalized-stein-fojo-gsf-model).
+
+Homework: Implement the generalized Stein-Fojo model with `jmpost` and compare the results with the `brms` implementation.
