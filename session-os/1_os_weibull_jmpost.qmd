@@ -89,9 +89,9 @@ Now we can fit the model:
 ```{r}
 #| label: tgi_model_fit
 
-save_file <- here("session-os/tgi1.RData")
+save_file <- here("session-os/tgi1.rds")
 if (file.exists(save_file)) {
-    load(save_file)
+    tgi_results <- readRDS(save_file)
 } else {
     tgi_results <- sampleStanModel(
         tgi_mod,
@@ -160,6 +160,10 @@ os_data_with_kg_est <- os_data |>
     left_join(select(subj_kg_est, mean, id), by = "id") |>
     rename(kg_est = mean)
 head(os_data_with_kg_est)
+save_file <- here("session-os/os_data_with_kg.rds")
+if (!file.exists(save_file)) {
+    saveRDS(os_data_with_kg_est, file = save_file)
+}
 ```
 
 ## OS model fitting
@@ -233,9 +237,9 @@ Now we can fit the model:
 ```{r}
 #| label: os_model_fit
 
-save_file <- here("session-os/os1.RData")
+save_file <- here("session-os/os1.rds")
 if (file.exists(save_file)) {
-    load(save_file)
+    os_results <- readRDS(save_file)
 } else {
     os_results <- sampleStanModel(
         os_mod,
@@ -289,6 +293,11 @@ draws_os_results <- do.call(
 mcmc_dens_overlay(draws_os_results) +
     geom_vline(xintercept = 0, linetype = "dashed", color = "red")
 summary(draws_os_results)
+
+save_file <- here("session-os/os_draws.rds")
+if (!file.exists(save_file)) {
+    saveRDS(draws_os_results, file = save_file)
+}
 ```
 
 So we can see that the 90% credible interval (CI) for the covariates `arm` and `ecog1` excludes 0, so these are "significant" predictors of the hazard rate. On the other hand, the `race` variable indicator and `age` variables' CIs clearly include 0. The situation is less clear for `sex` and `kg_est`, the estimated growth rate: here the CIs barely include 0. The posterior probabilities for a hazard ratio above 1 are:
@@ -434,9 +443,9 @@ os_joint_data2 <- DataJoint(
     subject = subj_data,
     survival = surv_data2
 )
-save_file <- here("session-os/os2.RData")
+save_file <- here("session-os/os2.rds")
 if (file.exists(save_file)) {
-    load(save_file)
+    os_results2 <- readRDS(save_file)
 } else {
     os_results2 <- sampleStanModel(
         os_mod,
