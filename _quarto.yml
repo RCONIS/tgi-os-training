@@ -10,13 +10,15 @@ website:
         contents: session-tgi/*
     tools:
       - icon: github
-        href: https://github.io/RCONIS/tgi-os-training
-  repo-url: https://github.com/RCONIS/tgi-os-training
+        href: https://rconis.github.io/tgi-os-training/
+  repo-url: https://github.com/RCONIS/tgi-os-training/
   repo-actions: [edit, issue]
   
 format:
   html:
-    theme: sandstone
+    theme:
+      - sandstone
+      - custom.scss
     code-fold: true
     code-summary: "Show the code"
     code-tools: true
