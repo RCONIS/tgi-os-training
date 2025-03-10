@@ -39,7 +39,10 @@ jobs:
             "posterior",
             "truncnorm",
             "brms",
-            "rstan"
+            "rstan",
+            "sn",
+            "fuzzyjoin",
+            "glue"
           ), repos = "https://cloud.r-project.org")
         shell: Rscript {0}
 
