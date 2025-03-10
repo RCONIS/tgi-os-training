@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Index – TGI-OS Training</title>
+<title>Contents – TGI-OS Training</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -105,7 +105,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script>
 
   window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listings .list');
+    const listingTargetEl = window.document.querySelector('#listing-session-os .list');
     if (!listingTargetEl) {
       // No listing discovered, do not attach.
       return; 
@@ -118,7 +118,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     };
 
     window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listings'] = new List('listing-listings', options);
+    window['quarto-listings']['listing-session-os'] = new List('listing-session-os', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-session-tgi .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-date','listing-title','listing-author',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-title-sort'] }],
+      
+      searchColumns: ["listing-date","listing-title","listing-author"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-session-tgi'] = new List('listing-session-tgi', options);
 
     if (window['quarto-listing-loaded']) {
       window['quarto-listing-loaded']();
@@ -173,7 +201,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Index</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Contents</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -204,7 +232,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Index</span></a>
+ <span class="menu-text">Contents</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -248,6 +276,29 @@ window.Quarto = {
 </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 2: OS</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./session-os/1_os_weibull_jmpost.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. OS model minimal workflow with <code>jmpost</code></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./session-os/2_os_weibull_brms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2. OS model minimal workflow with <code>brms</code></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -258,7 +309,9 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#license" id="toc-license" class="nav-link active" data-scroll-target="#license">License</a></li>
+  <li><a href="#session-2-os" id="toc-session-2-os" class="nav-link active" data-scroll-target="#session-2-os">Session 2: OS</a></li>
+  <li><a href="#session-1-tgi" id="toc-session-1-tgi" class="nav-link" data-scroll-target="#session-1-tgi">Session 1: TGI</a></li>
+  <li><a href="#license" id="toc-license" class="nav-link" data-scroll-target="#license">License</a></li>
   <li><a href="#copyright" id="toc-copyright" class="nav-link" data-scroll-target="#copyright">Copyright</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/RCONIS/tgi-os-training/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/RCONIS/tgi-os-training/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
@@ -268,7 +321,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Index</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<div class="quarto-title-block"><div><h1 class="title">Contents</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
 </div>
 
 
@@ -285,11 +338,13 @@ window.Quarto = {
 </header>
 
 
-<div id="listing-listings" class="quarto-listing quarto-listing-container-table">
+<section id="session-2-os" class="level2">
+<h2 class="anchored" data-anchor-id="session-2-os">Session 2: OS</h2>
+<div id="listing-session-os" class="quarto-listing quarto-listing-container-table">
 <div class="listing-actions-group">
    <div class="input-group input-group-sm quarto-listing-sort">
      <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
-     <select id="listing-listings-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-listings'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
+     <select id="listing-session-os-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-session-os'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
        <option value="" disabled="" selected="" hidden="">Order By</option>
        <option value="index" data-direction="asc">Default</option>
          <option value="listing-date-sort" data-direction="asc">
@@ -326,7 +381,79 @@ window.Quarto = {
 </tr>
 </thead>
 <tbody class="list">
-<tr data-index="0" data-listing-date-sort="1741574480000" data-listing-file-modified-sort="1741574480755" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="690" data-listing-title-sort="0. Setup" data-listing-filename-sort="0_setup.qmd">
+<tr data-index="0" data-listing-date-sort="1741577081000" data-listing-file-modified-sort="1741577081241" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="13" data-listing-word-count-sort="2447" data-listing-title-sort="1. OS model minimal workflow with `jmpost`" data-listing-filename-sort="1_os_weibull_jmpost.qmd">
+<td>
+<span class="listing-date">2025-03-10</span>
+</td>
+<td>
+<a href="./session-os/1_os_weibull_jmpost.html" class="title listing-title">1. OS model minimal workflow with <code>jmpost</code></a>
+</td>
+<td>
+<span class="listing-author">Daniel Sabanés Bové, Francois Mercier</span>
+</td>
+</tr>
+<tr data-index="1" data-listing-date-sort="1741577081000" data-listing-file-modified-sort="1741577081241" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="11" data-listing-word-count-sort="2126" data-listing-title-sort="2. OS model minimal workflow with `brms`" data-listing-filename-sort="2_os_weibull_brms.qmd">
+<td>
+<span class="listing-date">2025-03-10</span>
+</td>
+<td>
+<a href="./session-os/2_os_weibull_brms.html" class="title listing-title">2. OS model minimal workflow with <code>brms</code></a>
+</td>
+<td>
+<span class="listing-author">Daniel Sabanés Bové, Francois Mercier</span>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div>
+</section>
+<section id="session-1-tgi" class="level2">
+<h2 class="anchored" data-anchor-id="session-1-tgi">Session 1: TGI</h2>
+<div id="listing-session-tgi" class="quarto-listing quarto-listing-container-table">
+<div class="listing-actions-group">
+   <div class="input-group input-group-sm quarto-listing-sort">
+     <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
+     <select id="listing-session-tgi-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-session-tgi'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
+       <option value="" disabled="" selected="" hidden="">Order By</option>
+       <option value="index" data-direction="asc">Default</option>
+         <option value="listing-date-sort" data-direction="asc">
+          Date - Oldest
+        </option>
+         <option value="listing-date-sort" data-direction="desc">
+          Date - Newest
+        </option>
+         <option value="listing-title-sort" data-direction="asc">
+          Title
+        </option>
+         <option value="listing-author" data-direction="asc">
+          Author
+        </option>
+     </select>
+  </div>
+    <div class="input-group input-group-sm quarto-listing-filter">
+      <span class="input-group-text"><i class="bi bi-search"></i></span>
+      <input type="text" class="search form-control" placeholder="Filter">
+    </div>
+</div>
+<table class="quarto-listing-table table">
+<thead>
+<tr>
+<th>
+<a class="sort" data-sort="listing-date-sort" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Date</a>
+</th>
+<th>
+<a class="sort" data-sort="listing-title-sort" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Title</a>
+</th>
+<th>
+<a class="sort" data-sort="listing-author" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Author</a>
+</th>
+</tr>
+</thead>
+<tbody class="list">
+<tr data-index="0" data-listing-date-sort="1741577081000" data-listing-file-modified-sort="1741577081326" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="696" data-listing-title-sort="0. Setup" data-listing-filename-sort="0_setup.qmd">
 <td>
 <span class="listing-date">2025-03-10</span>
 </td>
@@ -337,7 +464,7 @@ window.Quarto = {
 <span class="listing-author">Francois Mercier, Daniel Sabanés Bové</span>
 </td>
 </tr>
-<tr data-index="1" data-listing-date-sort="1741574480000" data-listing-file-modified-sort="1741574480755" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="20" data-listing-word-count-sort="3859" data-listing-title-sort="1. TGI model minimal workflow with `brms`" data-listing-filename-sort="1_tgi_sf_brms.qmd">
+<tr data-index="1" data-listing-date-sort="1741577081000" data-listing-file-modified-sort="1741577081326" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="20" data-listing-word-count-sort="3859" data-listing-title-sort="1. TGI model minimal workflow with `brms`" data-listing-filename-sort="1_tgi_sf_brms.qmd">
 <td>
 <span class="listing-date">2025-03-10</span>
 </td>
@@ -348,7 +475,7 @@ window.Quarto = {
 <span class="listing-author">Daniel Sabanés Bové, Francois Mercier</span>
 </td>
 </tr>
-<tr data-index="2" data-listing-date-sort="1741574480000" data-listing-file-modified-sort="1741574480755" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10" data-listing-word-count-sort="1897" data-listing-title-sort="2. TGI model minimal workflow with `jmpost`" data-listing-filename-sort="2_tgi_sf_jmpost.qmd">
+<tr data-index="2" data-listing-date-sort="1741577081000" data-listing-file-modified-sort="1741577081326" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10" data-listing-word-count-sort="1897" data-listing-title-sort="2. TGI model minimal workflow with `jmpost`" data-listing-filename-sort="2_tgi_sf_jmpost.qmd">
 <td>
 <span class="listing-date">2025-03-10</span>
 </td>
@@ -359,7 +486,7 @@ window.Quarto = {
 <span class="listing-author">Daniel Sabanés Bové, Francois Mercier</span>
 </td>
 </tr>
-<tr data-index="3" data-listing-date-sort="1741574480000" data-listing-file-modified-sort="1741574480755" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1077" data-listing-title-sort="3. Generalized Stein-Fojo model" data-listing-filename-sort="3_tgi_gsf_brms.qmd">
+<tr data-index="3" data-listing-date-sort="1741577081000" data-listing-file-modified-sort="1741577081326" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1077" data-listing-title-sort="3. Generalized Stein-Fojo model" data-listing-filename-sort="3_tgi_gsf_brms.qmd">
 <td>
 <span class="listing-date">2025-03-10</span>
 </td>
@@ -370,7 +497,7 @@ window.Quarto = {
 <span class="listing-author">Daniel Sabanés Bové, Francois Mercier</span>
 </td>
 </tr>
-<tr data-index="4" data-listing-date-sort="1741574480000" data-listing-file-modified-sort="1741574480755" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1199" data-listing-title-sort="4. Claret-Bruno model" data-listing-filename-sort="4_tgi_cb_brms.qmd">
+<tr data-index="4" data-listing-date-sort="1741577081000" data-listing-file-modified-sort="1741577081326" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1199" data-listing-title-sort="4. Claret-Bruno model" data-listing-filename-sort="4_tgi_cb_brms.qmd">
 <td>
 <span class="listing-date">2025-03-10</span>
 </td>
@@ -387,6 +514,7 @@ window.Quarto = {
 No matching items
 </div>
 </div>
+</section>
 <section id="license" class="level2">
 <h2 class="anchored" data-anchor-id="license">License</h2>
 <p>The training material is licensed under a <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>. If you wish to reuse any part of this material, please ensure proper attribution is given to the original authors as specified by the <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</p>
@@ -871,7 +999,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
 <div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Index"</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Contents"</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">    theme: sandstone</span></span>
@@ -881,26 +1009,36 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc_float: true</span></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="an">listing:</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">  id: listings</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">  contents: session-tgi</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">  type: table</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">  sort: title</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">  cache: true</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>::: {#listings}</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">  - id: session-os</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">    contents: session-os</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">    type: table</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">    sort: title</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">  - id: session-tgi</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">    contents: session-tgi</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co">    type: table</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co">    sort: title</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co">  cache: true</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="fu">## License</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="fu">## Session 2: OS</span></span>
 <span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>The training material is licensed under a <span class="co">[</span><span class="ot">Creative Commons Attribution 4.0 International License</span><span class="co">](https://creativecommons.org/licenses/by/4.0/)</span>.</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>If you wish to reuse any part of this material, please ensure proper attribution is given to the original authors as specified by the <span class="co">[</span><span class="ot">Creative Commons Attribution 4.0 International License</span><span class="co">](https://creativecommons.org/licenses/by/4.0/)</span>.</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>::: {#session-os}</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="fu">## Copyright</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="fu">## Session 1: TGI</span></span>
 <span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="dv">&amp;copy;</span> 2025 Genentech Inc. All rights reserved.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>::: {#session-tgi}</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="fu">## License</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>The training material is licensed under a <span class="co">[</span><span class="ot">Creative Commons Attribution 4.0 International License</span><span class="co">](https://creativecommons.org/licenses/by/4.0/)</span>.</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>If you wish to reuse any part of this material, please ensure proper attribution is given to the original authors as specified by the <span class="co">[</span><span class="ot">Creative Commons Attribution 4.0 International License</span><span class="co">](https://creativecommons.org/licenses/by/4.0/)</span>.</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="fu">## Copyright</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="dv">&amp;copy;</span> 2025 Genentech Inc. All rights reserved.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

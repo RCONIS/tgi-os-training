@@ -2,6 +2,8 @@
   {
     "listing": "/index.html",
     "items": [
+      "/session-os/1_os_weibull_jmpost.html",
+      "/session-os/2_os_weibull_brms.html",
       "/session-tgi/0_setup.html",
       "/session-tgi/1_tgi_sf_brms.html",
       "/session-tgi/2_tgi_sf_jmpost.html",
