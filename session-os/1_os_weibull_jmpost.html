@@ -182,12 +182,35 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Session 1: TGI</span></a>
+ <span class="menu-text">Session 2: OS</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../session-os/1_os_weibull_jmpost.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">1. OS model minimal workflow with <code>jmpost</code></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../session-os/2_os_weibull_brms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2. OS model minimal workflow with <code>brms</code></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 1: TGI</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../session-tgi/0_setup.html" class="sidebar-item-text sidebar-link">
@@ -216,29 +239,6 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../session-tgi/4_tgi_cb_brms.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">4. Claret-Bruno model</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Session 2: OS</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../session-os/1_os_weibull_jmpost.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">1. OS model minimal workflow with <code>jmpost</code></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../session-os/2_os_weibull_brms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">2. OS model minimal workflow with <code>brms</code></span></a>
   </div>
 </li>
       </ul>
@@ -946,46 +946,46 @@ Docetaxel MPDL3280A
 <div class="cell-output cell-output-stdout">
 <pre><code>[[1]]
 [[1]]$sm_weibull_ph_lambda
-[1] 0.697769
+[1] 0.7162641
 
 [[1]]$sm_weibull_ph_gamma
-[1] 1.49011
+[1] 1.519187
 
 [[1]]$beta_os_cov
-[1] -0.01574033
+[1] -0.2581826
 
 
 [[2]]
 [[2]]$sm_weibull_ph_lambda
-[1] 0.6978782
+[1] 0.6951075
 
 [[2]]$sm_weibull_ph_gamma
-[1] 1.489772
+[1] 1.492171
 
 [[2]]$beta_os_cov
-[1] 0.0799451
+[1] -0.1503566
 
 
 [[3]]
 [[3]]$sm_weibull_ph_lambda
-[1] 0.6987861
+[1] 0.710528
 
 [[3]]$sm_weibull_ph_gamma
-[1] 1.493009
+[1] 1.49332
 
 [[3]]$beta_os_cov
-[1] -0.02421813
+[1] 0.01999751
 
 
 [[4]]
 [[4]]$sm_weibull_ph_lambda
-[1] 0.7038139
+[1] 0.6967565
 
 [[4]]$sm_weibull_ph_gamma
-[1] 1.489617
+[1] 1.494848
 
 [[4]]$beta_os_cov
-[1] -0.08382688</code></pre>
+[1] 0.3513265</code></pre>
 </div>
 </div>
 <p>Now we can fit the model:</p>
