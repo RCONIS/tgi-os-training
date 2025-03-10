@@ -6,10 +6,10 @@ website:
   sidebar:
     contents:
       - index.qmd
-      - section: "Session 1: TGI"
-        contents: session-tgi/*
       - section: "Session 2: OS"
         contents: session-os/*
+      - section: "Session 1: TGI"
+        contents: session-tgi/*
     tools:
       - icon: github
         href: https://rconis.github.io/tgi-os-training/
