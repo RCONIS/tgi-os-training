@@ -20,14 +20,19 @@ library(tidybayes)
 library(tidyverse)
 library(truncnorm)
 library(fuzzyjoin)
+library(sn)
+library(glue)
 
 if (require(cmdstanr)) {
-  # If cmdstanr is available, instruct brms to use cmdstanr as backend 
-  # and cache all Stan binaries
-  options(brms.backend = "cmdstanr", cmdstanr_write_stan_file_dir = here("_brms-cache"))
-  dir.create(here("_brms-cache"), FALSE) # create cache directory if not yet available
+    # If cmdstanr is available, instruct brms to use cmdstanr as backend
+    # and cache all Stan binaries
+    options(
+        brms.backend = "cmdstanr",
+        cmdstanr_write_stan_file_dir = here("_brms-cache")
+    )
+    dir.create(here("_brms-cache"), FALSE) # create cache directory if not yet available
 } else {
-  rstan::rstan_options(auto_write = TRUE)
+    rstan::rstan_options(auto_write = TRUE)
 }
 
 # MCMC options
@@ -47,7 +52,7 @@ We also need a small function definition, which is still missing in `brms`:
 #| label: int_step_function
 
 int_step <- function(x) {
-  stopifnot(is.logical(x))
-  ifelse(x, 1, 0)
+    stopifnot(is.logical(x))
+    ifelse(x, 1, 0)
 }
 ```
