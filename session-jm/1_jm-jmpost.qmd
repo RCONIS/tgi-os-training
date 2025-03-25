@@ -13,7 +13,7 @@ format:
 cache: true
 ---
 
-The purpose of this document is to show a minimal workflow for fitting a joint Weibull OS model using the `jmpost` package.
+The purpose of this document is to show a minimal workflow for fitting a joint Stein-Fojo TGI + Weibull OS model using the `jmpost` package.
 
 ## Setup and load data
 
@@ -24,6 +24,7 @@ Here we execute the R code from the setup and data preparation chapter, see the 
 #| echo: false
 #| output: false
 library(here)
+options(knitr.duplicate.label = "allow")
 
 knitr::purl(
     here("session-jm/_setup.qmd"),
@@ -38,11 +39,7 @@ knitr::purl(
 source(here("session-jm/_load_data.R"))
 ```
 
-cont here
-
-## TGI model fitting
-
-Let's use `jmpost` to fit the Stein-Fojo model to the TGI dataset. This works analogously to what we showed in the previous session.
+## Data object preparation
 
 First we again prepare the data objects, starting with the subject level data:
 
@@ -74,23 +71,39 @@ long_data <- DataLongitudinal(
 )
 ```
 
-Now we can create the `JointData` object for the TGI model:
+Next we prepare the `DataSurvival` object, where specify the covariates for the survival model:
 
 ```{r}
-#| label: tgi_data_prep
+#| label: surv_df_prep
 
-tgi_joint_data <- DataJoint(
-    subject = subj_data,
-    longitudinal = long_data
+surv_data <- DataSurvival(
+    data = os_data,
+    formula = Surv(os_time, os_event) ~ arm + ecog + age + race + sex
 )
 ```
 
-We specify the Stein-Fojo model together with the priors for the model parameters:
+Note that we don't include the growth rate estimate `kg_est` here, because here we are fitting a joint model - the growth rate will be included later in the `JointModel` specification instead.
+
+Now we can create the `JointData` object for the TGI model:
 
 ```{r}
-#| label: tgi_mod_spec
+#| label: jm_data_prep
 
-tgi_mod <- JointModel(
+joint_data <- DataJoint(
+    subject = subj_data,
+    longitudinal = long_data,
+    survival = surv_data
+)
+```
+
+## Model specification
+
+We specify the Stein-Fojo model for the TGI data, the Weibull model for the OS data, as well as the link, i.e. the growth rate from the TGI model which shall influence the hazard in the OS model:
+
+```{r}
+#| label: joint_mod_spec
+
+joint_mod <- JointModel(
     longitudinal = LongitudinalSteinFojo(
         mu_bsld = prior_normal(log(65), 1),
         mu_ks = prior_normal(log(0.52), 1),
@@ -99,22 +112,47 @@ tgi_mod <- JointModel(
         omega_ks = prior_normal(0, 3) |> set_limits(0, Inf),
         omega_kg = prior_normal(0, 3) |> set_limits(0, Inf),
         sigma = prior_normal(0, 3) |> set_limits(0, Inf)
+    ),
+    survival = SurvivalWeibullPH(
+        lambda = prior_gamma(0.7, 1),
+        gamma = prior_gamma(1.5, 1),
+        beta = prior_normal(0, 20)
+    ),
+    link = linkGrowth(
+        prior = prior_normal(0, 20)
     )
 )
 ```
 
+Here we use a normal prior with mean 0 and standard deviation 20 for the link coefficient, which is a very uninformative prior. This corresponds to the same prior used for the regression coefficients of the "fixed" covariates in `SurvivalWeibullPH`.
+For the other parameters, we keep the same prior as in the previous sessions on separate TGI and OS models.
+
+## Model fitting
+
+Again we need to be careful with the automatic selection of initial values due to the large standard deviation on `beta` and the link coefficient. We therefore set the shrinkage option and check the initial values:
+
+```{r}
+#| label: joint_mod_initial_values
+
+options("jmpost.prior_shrinkage" = 0.99)
+
+initialValues(joint_mod, n_chains = CHAINS)
+```
+
+If we don't do this, then it is very likely that some chains will diverge because of very unrealistic initial values for `beta` and/or the link coefficient.
+
 Now we can fit the model:
 
 ```{r}
-#| label: tgi_model_fit
+#| label: joint_model_fit
 
-save_file <- here("session-os/tgi1.rds")
+save_file <- here("session-jm/jm1.rds")
 if (file.exists(save_file)) {
-    tgi_results <- readRDS(save_file)
+    joint_results <- readRDS(save_file)
 } else {
-    tgi_results <- sampleStanModel(
-        tgi_mod,
-        data = tgi_joint_data,
+    joint_results <- sampleStanModel(
+        joint_mod,
+        data = joint_data,
         iter_sampling = ITER,
         iter_warmup = WARMUP,
         chains = CHAINS,
@@ -123,18 +161,21 @@ if (file.exists(save_file)) {
         seed = BAYES.SEED,
         refresh = REFRESH
     )
-    saveObject(tgi_results, file = save_file)
+    saveObject(joint_results, file = save_file)
 }
 ```
 
-The function `saveObject()` was added to the package recently, please update your installation if it is not yet available.
+Let's check the convergence of the population parameters. If we don't remember their names, we can query them as follows:
 
-Note that this is considerably faster than fitting the larger dataset of 701 patients.
-Let's check the convergence of the population parameters:
+```{r}
+#| label: joint_mod_params
+
+joint_results
+```
 
 ```{r}
 #| label: check_convergence
-#| dependson: tgi_model_fit
+#| dependson: joint_model_fit
 
 vars <- c(
     "lm_sf_mu_bsld",
@@ -143,16 +184,51 @@ vars <- c(
     "lm_sf_sigma",
     "lm_sf_omega_bsld",
     "lm_sf_omega_ks",
-    "lm_sf_omega_kg"
+    "lm_sf_omega_kg",
+    "beta_os_cov",
+    "sm_weibull_ph_gamma",
+    "sm_weibull_ph_lambda",
+    "link_growth"
 )
 
-mcmc_tgi_results <- cmdstanr::as.CmdStanMCMC(tgi_results)
-mcmc_tgi_results$summary(vars)
-draws_tgi_results <- mcmc_tgi_results$draws(vars)
-mcmc_trace(draws_tgi_results)
+mcmc_joint_results <- cmdstanr::as.CmdStanMCMC(joint_results)
+mcmc_joint_results$summary(vars)
+draws_joint_results <- mcmc_joint_results$draws(vars)
+mcmc_trace(draws_joint_results)
 ```
 
 So this looks good.
+
+## Interpret covariate effects
+
+In order to better see which of the survival model coefficients relate to which covariates, we can again rename them as follows:
+
+```{r}
+#| label: rename_os_cov_coefs
+
+surv_data_design <- as_stan_list(surv_data)$os_cov_design
+os_cov_names <- colnames(surv_data_design)
+old_coef_names <- glue::glue("beta_os_cov[{seq_along(os_cov_names)}]")
+draws_joint_results <- do.call(
+    rename_variables,
+    c(list(draws_joint_results), setNames(old_coef_names, os_cov_names))
+)
+mcmc_dens_overlay(draws_joint_results) +
+    geom_vline(xintercept = 0, linetype = "dashed", color = "red")
+```
+
+If we compare this with the covariate effect estimates from the 2-stage OS model we did in the last session, then we can see:
+ 
+- the `arm` effect is less pronounced here (Atezo is still lowering the hazard but slightly less here)
+- the `kg_est` effect (see `link_growth` here) is stronger here
+- the `ecog` effect is similar (clearly higher risk with ECOG 1)
+- the `age` effect is similar (no effect)
+- the `race` effect is similar (almost no effect)
+- the `sex` effect is similar (higher risk for males)
+
+It is also interesting to look at the shrinkage and growth rate estimates from the SF model part: We see e.g. 0 shrinkage in arm 1, which is the control arm, while we see a strong shrinkage in arm 2, which is the Atezo arm.
+
+cont here
 
 ## Extract individual growth rate estimates
 
