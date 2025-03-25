@@ -17,6 +17,8 @@ The purpose of this document is to show a minimal workflow for fitting a Weibull
 
 ## Setup and load data
 
+Here we execute the R code from the setup and data preparation chapter, see the [full code here](0_setup.qmd).
+
 ```{r}
 #| label: setup_and_load_data
 #| echo: false
@@ -24,16 +26,16 @@ The purpose of this document is to show a minimal workflow for fitting a Weibull
 library(here)
 
 knitr::purl(
-    "session-os/0_setup.qmd",
-    output = here("session-os/0_setup.R")
+    here("session-os/_setup.qmd"),
+    output = here("session-os/_setup.R")
 )
-source(here("session-os/0_setup.R"))
+source(here("session-os/_setup.R"))
 
 knitr::purl(
-    "session-os/_setup_and_load.qmd",
-    output = here("session-os/_setup_and_load.R")
+    here("session-os/_load_data.qmd"),
+    output = here("session-os/_load_data.R")
 )
-source(here("session-os/_setup_and_load.R"))
+source(here("session-os/_load_data.R"))
 ```
 
 ## TGI model fitting

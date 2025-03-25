@@ -24,10 +24,10 @@ Let's try to fit the same model now with `brms`. We will use the same data as in
 library(here)
 
 knitr::purl(
-    "session-os/0_setup.qmd",
-    output = here("session-os/0_setup.R")
+    here("session-os/_setup.qmd"),
+    output = here("session-os/_setup.R")
 )
-source(here("session-os/0_setup.R"))
+source(here("session-os/_setup.R"))
 ```
 
 Here we directly start from the overall survival data with `kg` estimates, as we have obtained them in the previous notebook:
