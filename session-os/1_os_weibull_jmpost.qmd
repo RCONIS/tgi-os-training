@@ -17,9 +17,24 @@ The purpose of this document is to show a minimal workflow for fitting a Weibull
 
 ## Setup and load data
 
-{{< include _setup_and_load.qmd >}}
+```{r}
+#| label: setup_and_load_data
+#| echo: false
+#| output: false
+library(here)
 
-{{< include _load_data.qmd >}}
+knitr::purl(
+    "session-os/0_setup.qmd",
+    output = here("session-os/0_setup.R")
+)
+source(here("session-os/0_setup.R"))
+
+knitr::purl(
+    "session-os/_setup_and_load.qmd",
+    output = here("session-os/_setup_and_load.R")
+)
+source(here("session-os/_setup_and_load.R"))
+```
 
 ## TGI model fitting
 
