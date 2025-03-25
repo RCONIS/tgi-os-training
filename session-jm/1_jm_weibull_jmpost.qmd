@@ -1,0 +1,531 @@
+---
+title: "1. TGI-OS joint model minimal workflow with `jmpost`"
+author:
+  - Daniel Sabanés Bové
+  - Francois Mercier
+date: last-modified
+editor_options: 
+  chunk_output_type: inline
+format:
+  html:
+    code-fold: show
+    html-math-method: mathjax
+cache: true
+---
+
+The purpose of this document is to show a minimal workflow for fitting a joint Weibull OS model using the `jmpost` package.
+
+## Setup and load data
+
+Here we execute the R code from the setup and data preparation chapter, see the [full code here](0_setup.qmd).
+
+```{r}
+#| label: setup_and_load_data
+#| echo: false
+#| output: false
+library(here)
+
+knitr::purl(
+    here("session-jm/_setup.qmd"),
+    output = here("session-jm/_setup.R")
+)
+source(here("session-jm/_setup.R"))
+
+knitr::purl(
+    here("session-jm/_load_data.qmd"),
+    output = here("session-jm/_load_data.R")
+)
+source(here("session-jm/_load_data.R"))
+```
+
+cont here
+
+## TGI model fitting
+
+Let's use `jmpost` to fit the Stein-Fojo model to the TGI dataset. This works analogously to what we showed in the previous session.
+
+First we again prepare the data objects, starting with the subject level data:
+
+```{r}
+#| label: subj_df_prep
+
+subj_df <- os_data |>
+    mutate(study = "OAK") |>
+    select(study, id, arm)
+
+subj_data <- DataSubject(
+    data = subj_df,
+    subject = "id",
+    arm = "arm",
+    study = "study"
+)
+```
+
+Next we prepare the longitudinal data object.
+
+```{r}
+#| label: long_df_prep
+
+long_df <- tumor_data |>
+    select(id, year, sld)
+long_data <- DataLongitudinal(
+    data = long_df,
+    formula = sld ~ year
+)
+```
+
+Now we can create the `JointData` object for the TGI model:
+
+```{r}
+#| label: tgi_data_prep
+
+tgi_joint_data <- DataJoint(
+    subject = subj_data,
+    longitudinal = long_data
+)
+```
+
+We specify the Stein-Fojo model together with the priors for the model parameters:
+
+```{r}
+#| label: tgi_mod_spec
+
+tgi_mod <- JointModel(
+    longitudinal = LongitudinalSteinFojo(
+        mu_bsld = prior_normal(log(65), 1),
+        mu_ks = prior_normal(log(0.52), 1),
+        mu_kg = prior_normal(log(1.04), 1),
+        omega_bsld = prior_normal(0, 3) |> set_limits(0, Inf),
+        omega_ks = prior_normal(0, 3) |> set_limits(0, Inf),
+        omega_kg = prior_normal(0, 3) |> set_limits(0, Inf),
+        sigma = prior_normal(0, 3) |> set_limits(0, Inf)
+    )
+)
+```
+
+Now we can fit the model:
+
+```{r}
+#| label: tgi_model_fit
+
+save_file <- here("session-os/tgi1.rds")
+if (file.exists(save_file)) {
+    tgi_results <- readRDS(save_file)
+} else {
+    tgi_results <- sampleStanModel(
+        tgi_mod,
+        data = tgi_joint_data,
+        iter_sampling = ITER,
+        iter_warmup = WARMUP,
+        chains = CHAINS,
+        parallel_chains = CHAINS,
+        thin = CHAINS,
+        seed = BAYES.SEED,
+        refresh = REFRESH
+    )
+    saveObject(tgi_results, file = save_file)
+}
+```
+
+The function `saveObject()` was added to the package recently, please update your installation if it is not yet available.
+
+Note that this is considerably faster than fitting the larger dataset of 701 patients.
+Let's check the convergence of the population parameters:
+
+```{r}
+#| label: check_convergence
+#| dependson: tgi_model_fit
+
+vars <- c(
+    "lm_sf_mu_bsld",
+    "lm_sf_mu_ks",
+    "lm_sf_mu_kg",
+    "lm_sf_sigma",
+    "lm_sf_omega_bsld",
+    "lm_sf_omega_ks",
+    "lm_sf_omega_kg"
+)
+
+mcmc_tgi_results <- cmdstanr::as.CmdStanMCMC(tgi_results)
+mcmc_tgi_results$summary(vars)
+draws_tgi_results <- mcmc_tgi_results$draws(vars)
+mcmc_trace(draws_tgi_results)
+```
+
+So this looks good.
+
+## Extract individual growth rate estimates
+
+We can now extract the individual growth rate estimates from the model. 
+Since the relevant random effect parameter samples are already stored in the `mcmc_tgi_results` object, we can directly extract the posterior means and credible intervals for the growth rates using the `summary` method.
+The only tricky part is that we need to match the IDs of the patients manually, because `jmpost` just numbers the patients in the order they appear in the data, which is then the index for all the random effects and individual growth parameters $\psi_{\text{kg}, i}$.
+
+```{r}
+#| label: extract_growth_rates
+
+subj_kg_est <- mcmc_tgi_results$summary("lm_sf_psi_kg") |>
+    mutate(id = subj_df$id)
+
+head(subj_kg_est)
+```
+
+We now add the e.g. posterior mean estimate of the individual growth rates to the OS data set, such that we will be able to use it below as a covariate in the OS model:
+
+```{r}
+#| label: add_kg_est_to_os_data
+
+os_data_with_kg_est <- os_data |>
+    select(id, arm, ecog, age, race, sex, os_time, os_event) |>
+    left_join(select(subj_kg_est, mean, id), by = "id") |>
+    rename(kg_est = mean)
+head(os_data_with_kg_est)
+save_file <- here("session-os/os_data_with_kg.rds")
+if (!file.exists(save_file)) {
+    saveRDS(os_data_with_kg_est, file = save_file)
+}
+```
+
+## OS model fitting
+
+Now we can fit the OS model. We start by preparing the data objects.
+
+```{r}
+#| label: os_df_prep
+
+surv_data <- DataSurvival(
+    data = os_data_with_kg_est,
+    formula = Surv(os_time, os_event) ~ arm + ecog + age + race + sex + kg_est
+)
+```
+
+Note that we are both including the treatment arm as well as the growth rate estimate here as covariates in the model, alongside the ECOG score, age, race and sex.
+The idea is that we want to understand whether there is additional information in the growth rate estimates, adjusting separately for the treatment arm.
+
+Now we can create the `JointData` object for the OS model:
+
+```{r}
+#| label: os_data_prep
+
+os_joint_data <- DataJoint(
+    subject = subj_data,
+    survival = surv_data
+)
+```
+
+We specify the Weibull model together with the priors for the model parameters. We take vague priors for the regression coefficients `beta`. For `lambda` and `gamma`, we start from the scale of the survival data at hand: 
+the average survival time is `r round(mean(os_data_with_kg_est$os_time), 1)` years, just taking a crude average of all survival times. 
+
+We can quickly write the function that gives the mean of the Weibull distribution with fixed `lambda` and `gamma`:
+
+```{r}
+#| label: weibull_mean
+
+weibull_mean <- function(lambda, gamma) {
+    base::gamma(1 + 1 / gamma) / lambda
+}
+```
+
+Therefore, playing around with this a bit, we can e.g. center the prior for `lambda` around 0.7 and the prior for `gamma` around 1.5, giving a mean survival time of `r round(weibull_mean(0.7, 1.5), 1)` years.
+
+If we want to use Gamma distributions e.g. for `lambda` and `gamma`, we can use the `prior_gamma` function. The two parameters of this distribution are the shape and the rate. The mean is shape divided by the rate. So easiest is to keep a rate of 1 and just set the shape to the mean value we need:
+
+```{r}
+#| label: os_mod_spec
+
+os_mod <- JointModel(
+    survival = SurvivalWeibullPH(
+        lambda = prior_gamma(0.7, 1),
+        gamma = prior_gamma(1.5, 1),
+        beta = prior_normal(0, 20)
+    )
+)
+```
+
+Because we use a large prior variance for `beta`, we need to adjust the default initial value construction used in `jmpost`. As explained [here](https://genentech.github.io/jmpost/main/articles/model_fitting.html#initial-values), we can change the shrinkage of the initial values to the mean. We can then check what the initial values will be, to make sure that they are reasonable:
+
+```{r}
+#| label: os_mod_initial_values
+
+options("jmpost.prior_shrinkage" = 0.99)
+
+initialValues(os_mod, n_chains = CHAINS)
+```
+
+Now we can fit the model:
+
+```{r}
+#| label: os_model_fit
+
+save_file <- here("session-os/os1.rds")
+if (file.exists(save_file)) {
+    os_results <- readRDS(save_file)
+} else {
+    os_results <- sampleStanModel(
+        os_mod,
+        data = os_joint_data,
+        iter_sampling = ITER,
+        iter_warmup = WARMUP,
+        chains = CHAINS,
+        parallel_chains = CHAINS,
+        thin = CHAINS,
+        seed = BAYES.SEED,
+        refresh = REFRESH
+    )
+    saveObject(os_results, file = save_file)
+}
+```
+
+Note that here we can get warnings at the beginning of the chains' sampling process ("The current Metropolis proposal is about to be rejected ..."). As long as this only happens in the beginning, and not during the sampling later, then this is not a cause for concern.
+
+Let's check the convergence of the population parameters:
+
+```{r}
+#| label: check_convergence_os
+#| dependson: os_model_fit
+
+vars <- c(
+    "beta_os_cov",
+    "sm_weibull_ph_gamma",
+    "sm_weibull_ph_lambda"
+)
+
+mcmc_os_results <- cmdstanr::as.CmdStanMCMC(os_results)
+mcmc_os_results$summary(vars)
+draws_os_results <- mcmc_os_results$draws(vars)
+mcmc_trace(draws_os_results)
+```
+
+## Interpret covariate effects
+
+In order to better see which of the coefficients relate to which covariates, we can rename them as follows:
+
+```{r}
+#| label: rename_os_cov_coefs
+
+surv_data_design <- as_stan_list(surv_data)$os_cov_design
+os_cov_names <- colnames(surv_data_design)
+old_coef_names <- glue::glue("beta_os_cov[{seq_along(os_cov_names)}]")
+draws_os_results <- do.call(
+    rename_variables,
+    c(list(draws_os_results), setNames(old_coef_names, os_cov_names))
+)
+mcmc_dens_overlay(draws_os_results) +
+    geom_vline(xintercept = 0, linetype = "dashed", color = "red")
+summary(draws_os_results)
+
+save_file <- here("session-os/os_draws.rds")
+if (!file.exists(save_file)) {
+    saveRDS(draws_os_results, file = save_file)
+}
+```
+
+So we can see that the 90% credible interval (CI) for the covariates `arm` and `ecog1` excludes 0, so these are "significant" predictors of the hazard rate. On the other hand, the `race` variable indicator and `age` variables' CIs clearly include 0. The situation is less clear for `sex` and `kg_est`, the estimated growth rate: here the CIs barely include 0. The posterior probabilities for a hazard ratio above 1 are:
+
+```{r}
+#| label: os_hazard_ratios
+
+draws_os_results |>
+    as_draws_df() |>
+    select(sexM, kg_est) |>
+    summarise_all(~ mean(. > 0))
+```
+
+So we have a more than 90% posterior probability that male patients have a higher hazard than females, and that patients with a higher estimated growth rate have a higher hazard than those with a lower growth rate - and this holds true even after adjusting for the treatment arm.
+
+## Observation vs model fit
+
+A useful plot displays the model predicted survival function and overlays the non-parametric Kaplan-Meier plot to it. Such a plot is easily obtained using the `autoplot()` function, as we will see below.
+
+The first step consists in generating the survival predictions at the group level with the `SurvivalQuantities()` function. It is recommended to specify the sequence of time points at which the predictions should be made (using the argument `times`):
+
+```{r}
+#| label: os_surv_pred
+time_grid <- seq(from = 0, to = max(os_data_with_kg_est$os_time), length = 100)
+os_surv_group_grid <- GridGrouped(
+    times = time_grid,
+    groups = with(
+        subj_df,
+        split(as.character(id), arm)
+    )
+)
+os_surv_pred <- SurvivalQuantities(
+    object = os_results,
+    grid = os_surv_group_grid,
+    type = "surv"
+)
+```
+
+Now we can use the `autoplot()` method:
+
+```{r}
+#| label: os_surv_plot
+autoplot(os_surv_pred, add_km = TRUE, add_wrap = FALSE)
+```
+
+## Hazard and hazard rate estimation
+
+Similarly to the survival function estimation, we can also estimate the hazard function by treatment group.
+
+```{r}
+#| label: os_hazard_pred
+
+os_hazard_pred <- SurvivalQuantities(
+    object = os_results,
+    grid = os_surv_group_grid,
+    type = "haz"
+)
+```
+
+Also this can be plotted using the `autoplot()` method:
+
+```{r}
+#| label: os_hazard_plot
+
+autoplot(os_hazard_pred, add_wrap = FALSE)
+```
+
+Finally, we can also estimate the hazard rate, which is constant over time here - because we use the Weibull proportional hazards model. We still show this more complicated code here because it will also work later for joint TGI-OS models, where the hazard rate is not constant any longer.
+
+```{r}
+os_hr_est <- os_hazard_pred |>
+    as.data.frame() |>
+    group_by(group, time) |>
+    mutate(sample = row_number()) |>
+    pivot_wider(names_from = group, values_from = values) |>
+    mutate(hr = MPDL3280A / Docetaxel) |>
+    group_by(time) |>
+    summarize(
+        mean = mean(hr, na.rm = TRUE),
+        lower = quantile(hr, 0.05, na.rm = TRUE),
+        upper = quantile(hr, 0.95, na.rm = TRUE)
+    ) |>
+    na.omit() # Omit the time = 0 which has NA
+summary(os_hr_est)
+```
+
+Now we can plot this:
+
+```{r}
+ggplot(os_hr_est, aes(x = time, y = mean, ymin = lower, ymax = upper)) +
+    geom_line() +
+    geom_ribbon(alpha = 0.3)
+```
+
+Similar, but not identical numbers we can obtain here of course directly from the group covariate coefficient:
+
+```{r}
+draws_os_results |>
+    mutate_variables(hr = exp(armMPDL3280A)) |>
+    subset(variable = "hr") |>
+    summary()
+```
+
+The difference is due to the fact that the other covariates are ignored here by this simpler calculation.
+
+## Model comparison
+
+We can use the [Brier score](https://en.wikipedia.org/wiki/Brier_score) to compare two different survival models. The Brier score is a measure of the mean squared difference between the predicted survival probability and the actual survival status. The lower the Brier score, the better the model.
+
+To calculate it, we need to use the `GridFixed` input for `SurvivalQuantities()`:
+
+```{r}
+os_fixed_surv <- SurvivalQuantities(
+    object = os_results,
+    grid = GridFixed(times = time_grid),
+    type = "surv"
+)
+
+# Current workaround if we have a logical event indicator:
+os_fixed_surv@data@survival@data$os_event <- as.numeric(
+    os_fixed_surv@data@survival@data$os_event
+)
+
+os_mod1_bs <- brierScore(os_fixed_surv)
+```
+
+We can also look at the LOOIC. As for the TGI model, we can use the `loo()` method in the `CmdStanMCMC` object to calculate it:
+
+```{r}
+os_mod1_looic <- mcmc_os_results$loo(r_eff = FALSE)
+```
+
+Now suppose we have a second model, where we omit the `kg_est` covariate. We can fit this model, just by omitting the `kg_est` covariate in the formula of the `DataSurvival` construction:
+
+```{r}
+#| label: os_mod2_fit
+
+surv_data2 <- DataSurvival(
+    data = os_data_with_kg_est,
+    formula = update(surv_data@formula, . ~ . - kg_est)
+)
+os_joint_data2 <- DataJoint(
+    subject = subj_data,
+    survival = surv_data2
+)
+save_file <- here("session-os/os2.rds")
+if (file.exists(save_file)) {
+    os_results2 <- readRDS(save_file)
+} else {
+    os_results2 <- sampleStanModel(
+        os_mod,
+        data = os_joint_data2,
+        iter_sampling = ITER,
+        iter_warmup = WARMUP,
+        chains = CHAINS,
+        parallel_chains = CHAINS,
+        thin = CHAINS,
+        seed = BAYES.SEED,
+        refresh = REFRESH
+    )
+    saveObject(os_results2, file = save_file)
+}
+
+mcmc_os_results2 <- cmdstanr::as.CmdStanMCMC(os_results2)
+```
+
+Then we can calculate the Brier score and LOOIC as well:
+
+```{r}
+os_fixed_surv2 <- SurvivalQuantities(
+    object = os_results2,
+    grid = GridFixed(times = time_grid),
+    type = "surv"
+)
+
+# Current workaround if we have a logical event indicator:
+os_fixed_surv2@data@survival@data$os_event <- as.numeric(
+    os_fixed_surv2@data@survival@data$os_event
+)
+
+os_mod2_bs <- brierScore(os_fixed_surv2)
+os_mod2_looic <- mcmc_os_results2$loo(r_eff = FALSE)
+```
+
+Now we can compare the two models:
+
+```{r}
+#| label: model_comparison
+os_mod1_looic
+os_mod2_looic
+loo_compare(os_mod1_looic, os_mod2_looic)
+```
+
+So we see that according to the LOOIC, the model with the `kg_est` covariate is slightly better than the model without it. However, the difference is small, and considering the difference in the expected log pointwise predictive density (ELPD) is small compared to the standard error, the improvement is not significant.
+
+We can plot the Brier scores:
+
+
+```{r}
+#| label: brier_scores_plot
+
+data.frame(
+    time = time_grid,
+    brier_score_diff = os_mod1_bs - os_mod2_bs
+) |>
+    ggplot(aes(x = time, y = brier_score_diff)) +
+    geom_line() +
+    labs(y = "Brier score difference (1 - 2)") +
+    geom_hline(yintercept = 0, linetype = "dashed", color = "red")
+```
+
+Also here we can see that the differences are very small, but for most time points the model with `kg_est` is slightly better than the one without (because lower numbers are better and we looked at the difference model 1 minus model 2 scores).
