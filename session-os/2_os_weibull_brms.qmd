@@ -22,6 +22,7 @@ Let's try to fit the same model now with `brms`. We will use the same data as in
 #| echo: false
 #| output: false
 library(here)
+options(knitr.duplicate.label = "allow")
 
 knitr::purl(
     here("session-os/_setup.qmd"),
@@ -68,14 +69,14 @@ Now we can define the model formula:
 formula <- bf(
     os_time | cens(os_cens) ~
         0 +
-        ones +
-        armMPDL3280A +
-        ecog1 +
-        age +
-        raceOTHER +
-        raceWHITE +
-        sexM +
-        kg_est
+            ones +
+            armMPDL3280A +
+            ecog1 +
+            age +
+            raceOTHER +
+            raceWHITE +
+            sexM +
+            kg_est
 )
 ```
 

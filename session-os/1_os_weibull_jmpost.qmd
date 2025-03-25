@@ -24,6 +24,7 @@ Here we execute the R code from the setup and data preparation chapter, see the 
 #| echo: false
 #| output: false
 library(here)
+options(knitr.duplicate.label = "allow")
 
 knitr::purl(
     here("session-os/_setup.qmd"),
