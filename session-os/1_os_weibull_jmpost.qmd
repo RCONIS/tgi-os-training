@@ -175,6 +175,7 @@ log_growth_samples <- mcmc_tgi_results |>
 subj_log_kg_est <- log_growth_samples |>
     subset_draws(variable = "log_growth") |>
     summary() |>
+    # Important: Take the IDs from `tgi_joint_data` and not from `subj_data` here!
     mutate(id = tgi_joint_data@subject@data$id)
 
 head(subj_log_kg_est)
@@ -196,7 +197,7 @@ if (!file.exists(save_file)) {
 }
 ```
 
-As a sanity check to make sure we linked the growth rates correctly to the patients, let's compare the average log growth rates computed from the above data set with the average we would expect based on the log normal distribution: As we discussed during the TGI session, we have:
+As a sanity check to make sure we linked the growth rates correctly to the patients, let's compare the average log growth rates computed from the above data set with the average we would expect based on the log normal distribution. Remember from the TGI session that we have:
 
 $$
 \log(\psi_{k_{g}}) \sim \text{Normal}(\mu_{k_{g}}, \omega_{g})
@@ -217,6 +218,7 @@ log_growth_check <- mcmc_tgi_results$summary("lm_sf_mu_kg") |>
     mutate(
         arm = recode(
             variable,
+            # The order here is given by the order of the arm factor levels.
             "lm_sf_mu_kg[1]" = "Docetaxel",
             "lm_sf_mu_kg[2]" = "MPDL3280A"
         )
@@ -228,11 +230,13 @@ log_growth_summary
 log_growth_check
 ```
 
-So this looks good.
+So this looks good, and we can continue with this data set.
 
 ## OS model fitting
 
-Now we can fit the OS model. We start by preparing the data objects.
+Now we can fit the OS model. 
+
+We start by preparing the `DataSurvival` object:
 
 ```{r}
 #| label: os_df_prep
@@ -244,7 +248,8 @@ surv_data <- DataSurvival(
 )
 ```
 
-Note that we are not including the treatment arm here, but only the log growth rate estimates. In addition, the covariates in the model include the ECOG score, age, race and sex. The idea is that the treatment effect is fully captured in the log growth rate estimates, which is referred to as "Working assumption (1)" in the slides.
+Note that we are not including the treatment arm here, but only the log growth rate estimates. 
+In addition, the covariates in the model include the ECOG score, age, race and sex. The idea is that the treatment effect is fully captured in the log growth rate estimates, which is referred to as "Working assumption (1)" in the slides.
 
 Now we can create the `JointData` object for the OS model:
 
@@ -258,7 +263,7 @@ os_joint_data <- DataJoint(
 ```
 
 We specify the Weibull model together with the priors for the model parameters. We take vague priors for the regression coefficients `beta`. For `lambda` and `gamma`, we start from the scale of the survival data at hand: 
-the average survival time is `r round(mean(os_data_with_kg_est$os_time), 1)` years, just taking a crude average of all survival times. 
+the average survival time is `r round(mean(os_data_with_log_kg_est$os_time), 1)` years, just taking a crude average of all survival times. 
 
 We can quickly write the function that gives the mean of the Weibull distribution with fixed `lambda` and `gamma`:
 
