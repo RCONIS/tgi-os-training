@@ -156,33 +156,79 @@ So this looks good.
 ## Extract individual growth rate estimates
 
 We can now extract the individual growth rate estimates from the model. 
-Since the relevant random effect parameter samples are already stored in the `mcmc_tgi_results` object, we can directly extract the posterior means and credible intervals for the growth rates using the `summary` method.
-The only tricky part is that we need to match the IDs of the patients manually, because `jmpost` just numbers the patients in the order they appear in the data, which is then the index for all the random effects and individual growth parameters $\psi_{\text{kg}, i}$.
+Later, in the joint model, we are going to use the log of the growth parameter as the link. Therefore we also here first log transform the sampled values of the growth rate estimates $\psi_{\text{kg}, i}$, and then take the mean.
+Since the relevant random effect parameter samples are already stored in the `mcmc_tgi_results` object, we can work with that via the `rvars` interface.
+
+The only tricky part is that we need to match the IDs of the patients manually, because `jmpost` just numbers the patients in the order they appear in the data, which is then the index for all the random effects and individual growth parameters $\psi_{\text{kg}, i}$. 
+
+However, we need to be careful to extract the data order from the `tgi_joint_data` object, because the subject data set is reordered by the sorted patient ID during the creation of the `DataJoint` object. If we don't do this correctly, then we would permute the growth rates randomly between the patients and thereby destroy the link between the growth rates and the patients.
 
 ```{r}
-#| label: extract_growth_rates
+#| label: extract_log_growth_rates
 
-subj_kg_est <- mcmc_tgi_results$summary("lm_sf_psi_kg") |>
-    mutate(id = subj_df$id)
+log_growth_samples <- mcmc_tgi_results |>
+    # We use here `rvars` because it allows to apply the
+    # mutation across all subjects at once.
+    as_draws_rvars() |>
+    mutate_variables(log_growth = log(lm_sf_psi_kg))
 
-head(subj_kg_est)
+subj_log_kg_est <- log_growth_samples |>
+    subset_draws(variable = "log_growth") |>
+    summary() |>
+    mutate(id = tgi_joint_data@subject@data$id)
+
+head(subj_log_kg_est)
 ```
 
-We now add the e.g. posterior mean estimate of the individual growth rates to the OS data set, such that we will be able to use it below as a covariate in the OS model:
+We now add the e.g. posterior mean estimate of the individual log growth rates to the OS data set, such that we will be able to use it below as a covariate in the OS model:
 
 ```{r}
-#| label: add_kg_est_to_os_data
+#| label: add_log_kg_est_to_os_data
 
-os_data_with_kg_est <- os_data |>
+os_data_with_log_kg_est <- os_data |>
     select(id, arm, ecog, age, race, sex, os_time, os_event) |>
-    left_join(select(subj_kg_est, mean, id), by = "id") |>
-    rename(kg_est = mean)
-head(os_data_with_kg_est)
-save_file <- here("session-os/os_data_with_kg.rds")
+    left_join(select(subj_log_kg_est, mean, id), by = "id") |>
+    rename(log_kg_est = mean)
+head(os_data_with_log_kg_est)
+save_file <- here("session-os/os_data_with_log_kg.rds")
 if (!file.exists(save_file)) {
-    saveRDS(os_data_with_kg_est, file = save_file)
+    saveRDS(os_data_with_log_kg_est, file = save_file)
 }
 ```
+
+As a sanity check to make sure we linked the growth rates correctly to the patients, let's compare the average log growth rates computed from the above data set with the average we would expect based on the log normal distribution: As we discussed during the TGI session, we have:
+
+$$
+\log(\psi_{k_{g}}) \sim \text{Normal}(\mu_{k_{g}}, \omega_{g})
+$$
+
+within each treatment arm.
+
+```{r}
+#| label: log_growth_sanity_check
+
+# Compute the mean using the individual estimates:
+log_growth_summary <- os_data_with_log_kg_est |>
+    group_by(arm) |>
+    summarise(mean = mean(log_kg_est))
+
+# And now compute the mean from the original model parameter samples:
+log_growth_check <- mcmc_tgi_results$summary("lm_sf_mu_kg") |>
+    mutate(
+        arm = recode(
+            variable,
+            "lm_sf_mu_kg[1]" = "Docetaxel",
+            "lm_sf_mu_kg[2]" = "MPDL3280A"
+        )
+    ) |>
+    select(arm, mean)
+
+# We can compare:
+log_growth_summary
+log_growth_check
+```
+
+So this looks good.
 
 ## OS model fitting
 
@@ -192,13 +238,13 @@ Now we can fit the OS model. We start by preparing the data objects.
 #| label: os_df_prep
 
 surv_data <- DataSurvival(
-    data = os_data_with_kg_est,
-    formula = Surv(os_time, os_event) ~ arm + ecog + age + race + sex + kg_est
+    data = os_data_with_log_kg_est,
+    formula = Surv(os_time, os_event) ~
+        ecog + age + race + sex + log_kg_est
 )
 ```
 
-Note that we are both including the treatment arm as well as the growth rate estimate here as covariates in the model, alongside the ECOG score, age, race and sex.
-The idea is that we want to understand whether there is additional information in the growth rate estimates, adjusting separately for the treatment arm.
+Note that we are not including the treatment arm here, but only the log growth rate estimates. In addition, the covariates in the model include the ECOG score, age, race and sex. The idea is that the treatment effect is fully captured in the log growth rate estimates, which is referred to as "Working assumption (1)" in the slides.
 
 Now we can create the `JointData` object for the OS model:
 
@@ -245,10 +291,12 @@ Because we use a large prior variance for `beta`, we need to adjust the default 
 ```{r}
 #| label: os_mod_initial_values
 
-options("jmpost.prior_shrinkage" = 0.99)
+options("jmpost.prior_shrinkage" = 0.999)
 
 initialValues(os_mod, n_chains = CHAINS)
 ```
+
+So the values are now close to the means of the respective prior distributions. We can then see later if the chains were converging well. If not, we could as an alternative also manually set initial values, as explained [here](https://genentech.github.io/jmpost/main/articles/quickstart.html#initial-values).
 
 Now we can fit the model:
 
@@ -318,18 +366,19 @@ if (!file.exists(save_file)) {
 }
 ```
 
-So we can see that the 90% credible interval (CI) for the covariates `arm` and `ecog1` excludes 0, so these are "significant" predictors of the hazard rate. On the other hand, the `race` variable indicator and `age` variables' CIs clearly include 0. The situation is less clear for `sex` and `kg_est`, the estimated growth rate: here the CIs barely include 0. The posterior probabilities for a hazard ratio above 1 are:
+So we can see that the 90% credible interval (CI) for the `log_kg_est` and `ecog1` covariate coefficients excludes 0, so both are "significant" predictors of the hazard rate. On the other hand, the `race` dummy variables' and the `age` variable's coefficient CIs clearly include 0. The situation is less clear for `sex`: here the CI barely includes 0. 
+
+In addition, we can also look at the posterior probabilities to have a hazard ratio above 1:
 
 ```{r}
 #| label: os_hazard_ratios
 
 draws_os_results |>
     as_draws_df() |>
-    select(sexM, kg_est) |>
     summarise_all(~ mean(. > 0))
 ```
 
-So we have a more than 90% posterior probability that male patients have a higher hazard than females, and that patients with a higher estimated growth rate have a higher hazard than those with a lower growth rate - and this holds true even after adjusting for the treatment arm.
+So we have a more than 90% posterior probability that male patients have a higher hazard than females, and we also see a similarly strong effect here for the `OTHER` category of `race`. As we saw from the CI already, the `age` effect is not so strong.
 
 ## Observation vs model fit
 
@@ -339,7 +388,11 @@ The first step consists in generating the survival predictions at the group leve
 
 ```{r}
 #| label: os_surv_pred
-time_grid <- seq(from = 0, to = max(os_data_with_kg_est$os_time), length = 100)
+time_grid <- seq(
+    from = 0,
+    to = max(os_data_with_log_kg_est$os_time),
+    length = 100
+)
 os_surv_group_grid <- GridGrouped(
     times = time_grid,
     groups = with(
@@ -360,6 +413,8 @@ Now we can use the `autoplot()` method:
 #| label: os_surv_plot
 autoplot(os_surv_pred, add_km = TRUE, add_wrap = FALSE)
 ```
+
+Here the fit seems ok but not perfect, especially for the Docetaxel arm it could be improved maybe. We will try below alternative models to see if we can improve the fit.
 
 ## Hazard and hazard rate estimation
 
@@ -383,7 +438,7 @@ Also this can be plotted using the `autoplot()` method:
 autoplot(os_hazard_pred, add_wrap = FALSE)
 ```
 
-Finally, we can also estimate the hazard rate, which is constant over time here - because we use the Weibull proportional hazards model. We still show this more complicated code here because it will also work later for joint TGI-OS models, where the hazard rate is not constant any longer.
+Finally, we can also estimate the hazard rate, which is constant over time here - because we use the Weibull proportional hazards model. We still show this more complicated code here because it will also work later for joint TGI-OS models, where the hazard rate may not be constant any longer.
 
 ```{r}
 os_hr_est <- os_hazard_pred |>
@@ -410,52 +465,19 @@ ggplot(os_hr_est, aes(x = time, y = mean, ymin = lower, ymax = upper)) +
     geom_ribbon(alpha = 0.3)
 ```
 
-Similar, but not identical numbers we can obtain here of course directly from the group covariate coefficient:
+## Alternative models
 
-```{r}
-draws_os_results |>
-    mutate_variables(hr = exp(armMPDL3280A)) |>
-    subset(variable = "hr") |>
-    summary()
-```
+Above we felt that maybe we could improve the fit of the model further. 
 
-The difference is due to the fact that the other covariates are ignored here by this simpler calculation.
-
-## Model comparison
-
-We can use the [Brier score](https://en.wikipedia.org/wiki/Brier_score) to compare two different survival models. The Brier score is a measure of the mean squared difference between the predicted survival probability and the actual survival status. The lower the Brier score, the better the model.
-
-To calculate it, we need to use the `GridFixed` input for `SurvivalQuantities()`:
-
-```{r}
-os_fixed_surv <- SurvivalQuantities(
-    object = os_results,
-    grid = GridFixed(times = time_grid),
-    type = "surv"
-)
-
-# Current workaround if we have a logical event indicator:
-os_fixed_surv@data@survival@data$os_event <- as.numeric(
-    os_fixed_surv@data@survival@data$os_event
-)
-
-os_mod1_bs <- brierScore(os_fixed_surv)
-```
-
-We can also look at the LOOIC. As for the TGI model, we can use the `loo()` method in the `CmdStanMCMC` object to calculate it:
-
-```{r}
-os_mod1_looic <- mcmc_os_results$loo(r_eff = FALSE)
-```
-
-Now suppose we have a second model, where we omit the `kg_est` covariate. We can fit this model, just by omitting the `kg_est` covariate in the formula of the `DataSurvival` construction:
+One idea is to add also the direct effect of the treatment arm as a covariate:
 
 ```{r}
 #| label: os_mod2_fit
 
 surv_data2 <- DataSurvival(
-    data = os_data_with_kg_est,
-    formula = update(surv_data@formula, . ~ . - kg_est)
+    data = os_data_with_log_kg_est,
+    # Here we add the arm covariate:
+    formula = update(surv_data@formula, . ~ . + arm)
 )
 os_joint_data2 <- DataJoint(
     subject = subj_data,
@@ -478,11 +500,95 @@ if (file.exists(save_file)) {
     )
     saveObject(os_results2, file = save_file)
 }
-
 mcmc_os_results2 <- cmdstanr::as.CmdStanMCMC(os_results2)
 ```
 
-Then we can calculate the Brier score and LOOIC as well:
+We can easily plot the survival functions and compare them with the Kaplan-Meier curves of the treatment arms, because we can reuse the above `os_surv_group_grid`:
+
+```{r}
+os_surv_pred2 <- SurvivalQuantities(
+    object = os_results2,
+    grid = os_surv_group_grid,
+    type = "surv"
+)
+autoplot(os_surv_pred2, add_km = TRUE, add_wrap = FALSE)
+```
+
+Here we see a bit better "coverage" of the Docetaxel Kaplan-Meier curve by the confidence intervals of the model.
+
+We could also consider the model with only the direct treatment arm effect, without the log growth rate estimates:
+
+```{r}
+#| label: os_mod3_fit
+
+surv_data3 <- DataSurvival(
+    data = os_data_with_log_kg_est,
+    # Here we add the arm covariate:
+    formula = update(surv_data2@formula, . ~ . - log_kg_est)
+)
+os_joint_data3 <- DataJoint(
+    subject = subj_data,
+    survival = surv_data3
+)
+save_file <- here("session-os/os3.rds")
+if (file.exists(save_file)) {
+    os_results3 <- readRDS(save_file)
+} else {
+    os_results3 <- sampleStanModel(
+        os_mod,
+        data = os_joint_data3,
+        iter_sampling = ITER,
+        iter_warmup = WARMUP,
+        chains = CHAINS,
+        parallel_chains = CHAINS,
+        thin = CHAINS,
+        seed = BAYES.SEED,
+        refresh = REFRESH
+    )
+    saveObject(os_results3, file = save_file)
+}
+mcmc_os_results3 <- cmdstanr::as.CmdStanMCMC(os_results3)
+```
+
+Let's plot again the survival functions:
+
+```{r}
+#| label: os_mod3_surv_pred
+
+os_surv_pred3 <- SurvivalQuantities(
+    object = os_results3,
+    grid = os_surv_group_grid,
+    type = "surv"
+)
+autoplot(os_surv_pred3, add_km = TRUE, add_wrap = FALSE)
+```
+
+This looks very similar to the previous model.
+
+## Model comparison
+
+For comparing models, we can use more formal tools, as we will see now.
+
+We can use the [Brier score](https://en.wikipedia.org/wiki/Brier_score) to compare two different survival models. The Brier score is a measure of the mean squared difference between the predicted survival probability and the actual survival status. The lower the Brier score, the better the model.
+
+To calculate it, we need to use the `GridFixed` input for `SurvivalQuantities()`:
+
+```{r}
+os_fixed_surv <- SurvivalQuantities(
+    object = os_results,
+    grid = GridFixed(times = time_grid),
+    type = "surv"
+)
+os_mod1_bs <- brierScore(os_fixed_surv)
+```
+
+We can also look at the LOOIC. As for the TGI model, we can use the `loo()` method in the `CmdStanMCMC` object to calculate it:
+
+```{r}
+os_mod1_looic <- mcmc_os_results$loo(r_eff = FALSE)
+```
+
+Also for the two alternative models we can calculate the Brier score and LOOIC in the same way:
 
 ```{r}
 os_fixed_surv2 <- SurvivalQuantities(
@@ -490,41 +596,59 @@ os_fixed_surv2 <- SurvivalQuantities(
     grid = GridFixed(times = time_grid),
     type = "surv"
 )
-
-# Current workaround if we have a logical event indicator:
-os_fixed_surv2@data@survival@data$os_event <- as.numeric(
-    os_fixed_surv2@data@survival@data$os_event
-)
-
 os_mod2_bs <- brierScore(os_fixed_surv2)
 os_mod2_looic <- mcmc_os_results2$loo(r_eff = FALSE)
+
+os_fixed_surv3 <- SurvivalQuantities(
+    object = os_results3,
+    grid = GridFixed(times = time_grid),
+    type = "surv"
+)
+os_mod3_bs <- brierScore(os_fixed_surv3)
+os_mod3_looic <- mcmc_os_results3$loo(r_eff = FALSE)
 ```
 
-Now we can compare the two models:
+Of course in a real application with many models we can easily write a little function that does this for us repeatedly instead of just copy/pasting the code as we do here.
+
+Now we can compare the three models. 
+
+Let's start with the LOOIC:
 
 ```{r}
 #| label: model_comparison
 os_mod1_looic
 os_mod2_looic
-loo_compare(os_mod1_looic, os_mod2_looic)
+os_mod3_looic
+loo_compare(os_mod1_looic, os_mod2_looic, os_mod3_looic)
 ```
 
-So we see that according to the LOOIC, the model with the `kg_est` covariate is slightly better than the model without it. However, the difference is small, and considering the difference in the expected log pointwise predictive density (ELPD) is small compared to the standard error, the improvement is not significant.
+So we see that according to the LOOIC, the first model with just the `log_kg_est` covariate is slightly better than the model with the additional `arm` covariate. If we omit the `log_kg_est` covariate altogether and only include the `arm` covariate, then the model is worse than both of the other two models.
 
 We can plot the Brier scores:
-
 
 ```{r}
 #| label: brier_scores_plot
 
 data.frame(
     time = time_grid,
-    brier_score_diff = os_mod1_bs - os_mod2_bs
+    `1 - 2` = os_mod1_bs - os_mod2_bs,
+    `1 - 3` = os_mod1_bs - os_mod3_bs,
+    `2 - 3` = os_mod2_bs - os_mod3_bs,
+    check.names = FALSE
 ) |>
-    ggplot(aes(x = time, y = brier_score_diff)) +
+    pivot_longer(
+        cols = c("1 - 2", "1 - 3", "2 - 3"),
+        names_to = "diff",
+        values_to = "brier_score_diff"
+    ) |>
+    ggplot(aes(x = time, y = brier_score_diff, color = diff, group = diff)) +
     geom_line() +
-    labs(y = "Brier score difference (1 - 2)") +
+    labs(y = "Brier score difference") +
     geom_hline(yintercept = 0, linetype = "dashed", color = "red")
 ```
 
-Also here we can see that the differences are very small, but for most time points the model with `kg_est` is slightly better than the one without (because lower numbers are better and we looked at the difference model 1 minus model 2 scores).
+When we look at the difference model 1 minus model 2, we see that this is slightly positive. Since lower numbers of the Brier score are better, this means that model 2 is slightly better here. 
+
+When we look at the difference model 1 minus model 3, we see that this is more clearly negative between times 0.25 and 1.75, meaning that model 1 is clearly better than model 3 there. Towards later times this reverses, and model 3 is better than model 1.
+
+The Brier score provides a more nuanced and time-dependent way of comparing the different OS models. Here we could either select model 1 due to its simplicity and almost same performance as model 2. 
