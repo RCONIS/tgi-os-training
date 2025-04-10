@@ -181,6 +181,21 @@ subj_log_kg_est <- log_growth_samples |>
 head(subj_log_kg_est)
 ```
 
+In the latest version of `jmpost` this process has now been simplified, and we can use the `LongitudinalRandomEffects()` function as follows:
+
+```{r}
+subj_log_kg_est_alt <- LongitudinalRandomEffects(tgi_results) |>
+    # We need to convert this to a data.frame to be able to do the log transformation.
+    as.data.frame() |>
+    filter(parameter == "g") |>
+    mutate(values = log(values)) |>
+    group_by(subject) |>
+    summarize(log_kg_est = mean(values))
+head(subj_log_kg_est_alt)
+```
+
+So this gives the same resulting log growth rates, which is reassuring.
+
 We now add the e.g. posterior mean estimate of the individual log growth rates to the OS data set, such that we will be able to use it below as a covariate in the OS model:
 
 ```{r}
