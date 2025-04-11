@@ -78,11 +78,12 @@ Next we prepare the `DataSurvival` object, where specify the covariates for the 
 
 surv_data <- DataSurvival(
     data = os_data,
-    formula = Surv(os_time, os_event) ~ arm + ecog + age + race + sex
+    formula = Surv(os_time, os_event) ~ ecog + age + race + sex
 )
 ```
 
-Note that we don't include the growth rate estimate `kg_est` here, because here we are fitting a joint model - the growth rate will be included later in the `JointModel` specification instead.
+Note that we don't include the log growth rate estimate `log_kg_est` here, because here we are fitting a joint model - the log growth rate will be included later in the `JointModel` specification instead.
+For now we also don't include the treatment `arm` covariate, because we assume Working Assumption (1) from the previous session, i.e. the treatment effect is fully captured by the mediator (or link).
 
 Now we can create the `JointData` object for the TGI model:
 
@@ -98,7 +99,7 @@ joint_data <- DataJoint(
 
 ## Model specification
 
-We specify the Stein-Fojo model for the TGI data, the Weibull model for the OS data, as well as the link, i.e. the growth rate from the TGI model which shall influence the hazard in the OS model:
+We specify the Stein-Fojo model for the TGI data, the Weibull model for the OS data, as well as the link, i.e. the log growth rate from the TGI model which shall influence the hazard in the OS model:
 
 ```{r}
 #| label: joint_mod_spec
@@ -125,6 +126,7 @@ joint_mod <- JointModel(
 ```
 
 Here we use a normal prior with mean 0 and standard deviation 20 for the link coefficient, which is a very uninformative prior. This corresponds to the same prior used for the regression coefficients of the "fixed" covariates in `SurvivalWeibullPH`.
+
 For the other parameters, we keep the same prior as in the previous sessions on separate TGI and OS models.
 
 ## Model fitting
@@ -165,7 +167,9 @@ if (file.exists(save_file)) {
 }
 ```
 
-Note that here we can get warnings at the beginning of the chains' sampling process ("The current Metropolis proposal is about to be rejected ..."). As long as this only happens in the beginning, and not during the sampling later, then this is not a cause for concern.
+As mentioned before, also here we can get warnings at the beginning of the chains' sampling process ("The current Metropolis proposal is about to be rejected ..."). As long as this only happens in the beginning, and not during the sampling later, then this is not a cause for concern.
+
+We note that the MCMC sampling process takes much longer here (about factor 10 more) compared to just fitting the TGI or the OS data separately. This is due to the more complex likelihood function calculations for the joint TGI-OS model.
 
 Let's check the convergence of the population parameters. If we don't remember their names, we can query them as follows:
 
@@ -208,12 +212,16 @@ In order to better see which of the survival model coefficients relate to which 
 ```{r}
 #| label: rename_os_cov_coefs
 
-surv_data_design <- as_stan_list(surv_data)$os_cov_design
-os_cov_names <- colnames(surv_data_design)
-old_coef_names <- glue::glue("beta_os_cov[{seq_along(os_cov_names)}]")
+os_cov_name_mapping <- function(surv_data) {
+    surv_data_design <- as_stan_list(surv_data)$os_cov_design
+    os_cov_names <- colnames(surv_data_design)
+    old_coef_names <- as.character(glue::glue("beta_os_cov[{seq_along(os_cov_names)}]"))
+    setNames(old_coef_names, os_cov_names)
+}
+os_cov_renaming <- os_cov_name_mapping(surv_data)
 draws_joint_results <- do.call(
     rename_variables,
-    c(list(draws_joint_results), setNames(old_coef_names, os_cov_names))
+    c(list(draws_joint_results), os_cov_renaming)
 )
 mcmc_dens_overlay(draws_joint_results) +
     geom_vline(xintercept = 0, linetype = "dashed", color = "red")
@@ -221,8 +229,7 @@ mcmc_dens_overlay(draws_joint_results) +
 
 If we compare this with the covariate effect estimates from the 2-stage OS model we did in the last session, then we can see:
  
-- the `arm` effect is less pronounced here (Atezo is still lowering the hazard but slightly less here)
-- the `kg_est` effect (see `link_growth` here) is stronger here
+- the `log_kg_est` effect (see `link_growth` here) is stronger here, but also with larger uncertainty
 - the `ecog` effect is similar (clearly higher risk with ECOG 1)
 - the `age` effect is similar (no effect)
 - the `race` effect is similar (almost no effect)
@@ -268,6 +275,7 @@ Another useful plot displays the model predicted survival function and overlays 
 
 The first step consists in generating the survival predictions at the group level with the `SurvivalQuantities()` function. 
 In order to do this, we use now the `GridGrouped()` function, which takes the time points at which the predictions should be made and the groups for which the predictions should be made (as a list containing the IDs in each element defining the group).
+This works the same way as in the previous session with the OS model.
 
 ```{r}
 #| label: os_surv_pred
@@ -293,7 +301,7 @@ Now we can use the `autoplot()` method:
 autoplot(os_surv_pred, add_km = TRUE, add_wrap = FALSE)
 ```
 
-We can see that the fit looks adequate, with the modelled survival functions closely following the Kaplan-Meier curves in each treatment group.
+We can see that the fit looks adequate, with the modelled survival functions closely following the Kaplan-Meier curves in each treatment group. Of note, this fit looks better than in the 2-stage TGI-OS model from the previous session.
 
 ## Hazard and hazard rate estimation
 
@@ -320,7 +328,7 @@ autoplot(os_hazard_pred, add_wrap = FALSE)
 We can already see here that this looks slightly different than the same plot from the 2-step TGI-OS model: 
 
 - The hazards are higher
-- The uncertainty is larger
+- The uncertainty is considerably larger
 
 Now let's look at the estimated hazard ratio:
 
@@ -341,10 +349,10 @@ os_hr_est <- os_hazard_pred |>
 summary(os_hr_est)
 ```
 
-Surprisingly, also here the hazard ratio is indeed constant over time, which was the same in the 2-step TGI-OS model.
-This is because the link between the longitudinal and the survival model is here the growth rate of the Stein-Fojo model, which is constant over time. For other link functions that are time-varying, e.g. the derivative of the longitudinal model, the hazard ratio could change over time.
+Also here the hazard ratio is indeed constant over time, which was the same in the 2-step TGI-OS model.
+This is because the link between the longitudinal and the survival model is here the log growth rate of the Stein-Fojo model, which is constant over time. For other link functions that are time-varying, e.g. the derivative of the longitudinal model, the hazard ratio could change over time.
 
-So here the estimated hazard ratio is `r round(os_hr_est$mean[1], 2)` with a 90% credible interval of `r round(os_hr_est$lower[1], 2)` to `r round(os_hr_est$upper[1], 2)`. We can see that this estimate is slightly closer to 1, and that the 90% CI now actually includes 1, in contrast to the 2-step TGI-OS model.
+So here the estimated hazard ratio is `r round(os_hr_est$mean[1], 2)` with a 90% credible interval of `r round(os_hr_est$lower[1], 2)` to `r round(os_hr_est$upper[1], 2)`. We can see that this hazard ratio estimate is slightly lower, representing a slightly stronger effect estimate. Due to the larger uncertainty, which is due to the propagation of the log growth rate uncertainty to the OS model, the 90% CI now actually includes 1, in contrast to the 2-step TGI-OS model.
 
 ## Alternative time-varying link
 
@@ -380,6 +388,8 @@ Let's check the initial values again:
 
 ```{r}
 #| label: joint_mod_dsld_initial_values
+
+options("jmpost.prior_shrinkage" = 0.999)
 
 initialValues(joint_mod_dsld, n_chains = CHAINS)
 ```
@@ -525,3 +535,5 @@ data.frame(
 ```
 
 As expected, we see that especially for the times between 0.5 and 2 years the first model with the growth link performs better than the second model with the derivative link.
+
+Currently, the LOOIC does not work here yet, because the `log_lik` is not included in the samples.
