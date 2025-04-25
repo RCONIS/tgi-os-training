@@ -1,0 +1,23 @@
+---
+title: "0. Setup and data preparation"
+author:
+  - Francois Mercier
+  - Daniel Sabanés Bové
+date: last-modified
+editor_options: 
+  chunk_output_type: inline
+  
+format:
+  html:
+    code-fold: show
+---
+
+## Setup
+
+{{< include _setup.qmd >}}
+
+## Data preparation
+
+We prepare now the same dataset as before in the OS session.
+
+{{< include _load_data.qmd >}}
