@@ -536,4 +536,4 @@ data.frame(
 
 As expected, we see that especially for the times between 0.5 and 2 years the first model with the growth link performs better than the second model with the derivative link.
 
-Currently, the LOOIC does not work here yet, because the `log_lik` is not included in the samples.
+Currently, the LOOIC does not work here yet, because the `log_lik` is not included in the samples. There is an ongoing discussion on [GitHub](https://github.com/Genentech/jmpost/issues/446) about this topic.

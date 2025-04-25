@@ -9,6 +9,10 @@ format:
     toc: true
     toc_float: true
 listing:
+  - id: session-jm
+    contents: session-jm
+    type: table
+    sort: title
   - id: session-os
     contents: session-os
     type: table
@@ -20,6 +24,11 @@ listing:
 execute:
   cache: true
 ---
+
+## Session 3: TGI-OS
+
+::: {#session-jm}
+:::
 
 ## Session 2: OS
 
