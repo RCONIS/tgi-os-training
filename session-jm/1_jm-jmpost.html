@@ -1,0 +1,2311 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.43">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Daniel Sabanés Bové">
+<meta name="author" content="Francois Mercier">
+<meta name="dcterms.date" content="2025-04-25">
+
+<title>1. TGI-OS joint model minimal workflow with jmpost – TGI-OS Training</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-d4d76bf8491c20bad77d141916dc28e1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-45204b72a2a947c2139097db84dadf54.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../session-jm/0_setup.html">Session 3: TGI-OS</a></li><li class="breadcrumb-item"><a href="../session-jm/1_jm-jmpost.html">1. TGI-OS joint model minimal workflow with <code>jmpost</code></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">TGI-OS Training</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://rconis.github.io/tgi-os-training/" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Contents</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 3: TGI-OS</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../session-jm/0_setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0. Setup and data preparation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../session-jm/1_jm-jmpost.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">1. TGI-OS joint model minimal workflow with <code>jmpost</code></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 2: OS</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../session-os/0_setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0. Setup and data preparation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../session-os/1_os_weibull_jmpost.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. OS model minimal workflow with <code>jmpost</code></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../session-os/2_os_weibull_brms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2. OS model minimal workflow with <code>brms</code></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 1: TGI</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../session-tgi/0_setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0. Setup</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../session-tgi/1_tgi_sf_brms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. TGI model minimal workflow with <code>brms</code></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../session-tgi/2_tgi_sf_jmpost.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2. TGI model minimal workflow with <code>jmpost</code></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../session-tgi/3_tgi_gsf_brms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3. Generalized Stein-Fojo model</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../session-tgi/4_tgi_cb_brms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4. Claret-Bruno model</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#setup-and-load-data" id="toc-setup-and-load-data" class="nav-link active" data-scroll-target="#setup-and-load-data">Setup and load data</a></li>
+  <li><a href="#data-object-preparation" id="toc-data-object-preparation" class="nav-link" data-scroll-target="#data-object-preparation">Data object preparation</a></li>
+  <li><a href="#model-specification" id="toc-model-specification" class="nav-link" data-scroll-target="#model-specification">Model specification</a></li>
+  <li><a href="#model-fitting" id="toc-model-fitting" class="nav-link" data-scroll-target="#model-fitting">Model fitting</a></li>
+  <li><a href="#interpret-covariate-effects" id="toc-interpret-covariate-effects" class="nav-link" data-scroll-target="#interpret-covariate-effects">Interpret covariate effects</a></li>
+  <li><a href="#sld-vs-longitudinal-model-fit" id="toc-sld-vs-longitudinal-model-fit" class="nav-link" data-scroll-target="#sld-vs-longitudinal-model-fit">SLD vs longitudinal model fit</a></li>
+  <li><a href="#kaplan-meier-vs-survival-model-fit" id="toc-kaplan-meier-vs-survival-model-fit" class="nav-link" data-scroll-target="#kaplan-meier-vs-survival-model-fit">Kaplan-Meier vs survival model fit</a></li>
+  <li><a href="#hazard-and-hazard-rate-estimation" id="toc-hazard-and-hazard-rate-estimation" class="nav-link" data-scroll-target="#hazard-and-hazard-rate-estimation">Hazard and hazard rate estimation</a></li>
+  <li><a href="#alternative-time-varying-link" id="toc-alternative-time-varying-link" class="nav-link" data-scroll-target="#alternative-time-varying-link">Alternative time-varying link</a></li>
+  <li><a href="#model-comparison" id="toc-model-comparison" class="nav-link" data-scroll-target="#model-comparison">Model comparison</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/RCONIS/tgi-os-training/edit/main/session-jm/1_jm-jmpost.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/RCONIS/tgi-os-training/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../session-jm/0_setup.html">Session 3: TGI-OS</a></li><li class="breadcrumb-item"><a href="../session-jm/1_jm-jmpost.html">1. TGI-OS joint model minimal workflow with <code>jmpost</code></a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">1. TGI-OS joint model minimal workflow with <code>jmpost</code></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Authors</div>
+    <div class="quarto-title-meta-contents">
+             <p>Daniel Sabanés Bové </p>
+             <p>Francois Mercier </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">2025-04-25</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>The purpose of this document is to show a minimal workflow for fitting a joint Stein-Fojo TGI + Weibull OS model using the <code>jmpost</code> package.</p>
+<section id="setup-and-load-data" class="level2">
+<h2 class="anchored" data-anchor-id="setup-and-load-data">Setup and load data</h2>
+<p>Here we execute the R code from the setup and data preparation chapter, see the <a href="../session-jm/0_setup.html">full code here</a>.</p>
+</section>
+<section id="data-object-preparation" class="level2">
+<h2 class="anchored" data-anchor-id="data-object-preparation">Data object preparation</h2>
+<p>First we again prepare the data objects, starting with the subject level data:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>subj_df <span class="ot">&lt;-</span> os_data <span class="sc">|&gt;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">study =</span> <span class="st">"OAK"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(study, id, arm)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>subj_data <span class="ot">&lt;-</span> <span class="fu">DataSubject</span>(</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> subj_df,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">subject =</span> <span class="st">"id"</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">arm =</span> <span class="st">"arm"</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">study =</span> <span class="st">"study"</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Next we prepare the longitudinal data object.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>long_df <span class="ot">&lt;-</span> tumor_data <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(id, year, sld)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>long_data <span class="ot">&lt;-</span> <span class="fu">DataLongitudinal</span>(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> long_df,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">formula =</span> sld <span class="sc">~</span> year</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Next we prepare the <code>DataSurvival</code> object, where specify the covariates for the survival model:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>surv_data <span class="ot">&lt;-</span> <span class="fu">DataSurvival</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> os_data,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">formula =</span> <span class="fu">Surv</span>(os_time, os_event) <span class="sc">~</span> ecog <span class="sc">+</span> age <span class="sc">+</span> race <span class="sc">+</span> sex</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Note that we don’t include the log growth rate estimate <code>log_kg_est</code> here, because here we are fitting a joint model - the log growth rate will be included later in the <code>JointModel</code> specification instead. For now we also don’t include the treatment <code>arm</code> covariate, because we assume Working Assumption (1) from the previous session, i.e.&nbsp;the treatment effect is fully captured by the mediator (or link).</p>
+<p>Now we can create the <code>JointData</code> object for the TGI model:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>joint_data <span class="ot">&lt;-</span> <span class="fu">DataJoint</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">subject =</span> subj_data,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">longitudinal =</span> long_data,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">survival =</span> surv_data</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="model-specification" class="level2">
+<h2 class="anchored" data-anchor-id="model-specification">Model specification</h2>
+<p>We specify the Stein-Fojo model for the TGI data, the Weibull model for the OS data, as well as the link, i.e.&nbsp;the log growth rate from the TGI model which shall influence the hazard in the OS model:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>joint_mod <span class="ot">&lt;-</span> <span class="fu">JointModel</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">longitudinal =</span> <span class="fu">LongitudinalSteinFojo</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_bsld =</span> <span class="fu">prior_normal</span>(<span class="fu">log</span>(<span class="dv">65</span>), <span class="dv">1</span>),</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_ks =</span> <span class="fu">prior_normal</span>(<span class="fu">log</span>(<span class="fl">0.52</span>), <span class="dv">1</span>),</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_kg =</span> <span class="fu">prior_normal</span>(<span class="fu">log</span>(<span class="fl">1.04</span>), <span class="dv">1</span>),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_bsld =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="fu">set_limits</span>(<span class="dv">0</span>, <span class="cn">Inf</span>),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_ks =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="fu">set_limits</span>(<span class="dv">0</span>, <span class="cn">Inf</span>),</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_kg =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="fu">set_limits</span>(<span class="dv">0</span>, <span class="cn">Inf</span>),</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">sigma =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="fu">set_limits</span>(<span class="dv">0</span>, <span class="cn">Inf</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">survival =</span> <span class="fu">SurvivalWeibullPH</span>(</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">lambda =</span> <span class="fu">prior_gamma</span>(<span class="fl">0.7</span>, <span class="dv">1</span>),</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">gamma =</span> <span class="fu">prior_gamma</span>(<span class="fl">1.5</span>, <span class="dv">1</span>),</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">beta =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">20</span>)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">link =</span> <span class="fu">linkGrowth</span>(</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        <span class="at">prior =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">20</span>)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Here we use a normal prior with mean 0 and standard deviation 20 for the link coefficient, which is a very uninformative prior. This corresponds to the same prior used for the regression coefficients of the “fixed” covariates in <code>SurvivalWeibullPH</code>.</p>
+<p>For the other parameters, we keep the same prior as in the previous sessions on separate TGI and OS models.</p>
+</section>
+<section id="model-fitting" class="level2">
+<h2 class="anchored" data-anchor-id="model-fitting">Model fitting</h2>
+<p>Again we need to be careful with the automatic selection of initial values due to the large standard deviation on <code>beta</code> and the link coefficient. We therefore set the shrinkage option and check the initial values:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="st">"jmpost.prior_shrinkage"</span> <span class="ot">=</span> <span class="fl">0.99</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">initialValues</span>(joint_mod, <span class="at">n_chains =</span> CHAINS)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+[[1]]$lm_sf_mu_bsld
+[1] 4.190683
+
+[[1]]$lm_sf_mu_ks
+[1] -0.6764802
+
+[[1]]$lm_sf_mu_kg
+[1] 0.04019083
+
+[[1]]$lm_sf_omega_bsld
+[1] 0.03767692
+
+[[1]]$lm_sf_omega_ks
+[1] 0.01659297
+
+[[1]]$lm_sf_omega_kg
+[1] 0.03023506
+
+[[1]]$lm_sf_sigma
+[1] 0.03817435
+
+[[1]]$lm_sf_eta_tilde_bsld
+[1] -0.003555198
+
+[[1]]$lm_sf_eta_tilde_ks
+[1] 0.003437593
+
+[[1]]$lm_sf_eta_tilde_kg
+[1] 0.008313444
+
+[[1]]$sm_weibull_ph_lambda
+[1] 0.6938176
+
+[[1]]$sm_weibull_ph_gamma
+[1] 1.492405
+
+[[1]]$beta_os_cov
+[1] -0.1443219
+
+[[1]]$link_growth
+[1] 0.5079161
+
+
+[[2]]
+[[2]]$lm_sf_mu_bsld
+[1] 4.195899
+
+[[2]]$lm_sf_mu_ks
+[1] -0.646052
+
+[[2]]$lm_sf_mu_kg
+[1] 0.04764524
+
+[[2]]$lm_sf_omega_bsld
+[1] 0.006747676
+
+[[2]]$lm_sf_omega_ks
+[1] 0.08983769
+
+[[2]]$lm_sf_omega_kg
+[1] 0.007996091
+
+[[2]]$lm_sf_sigma
+[1] 0.01337338
+
+[[2]]$lm_sf_eta_tilde_bsld
+[1] 0.009621396
+
+[[2]]$lm_sf_eta_tilde_ks
+[1] -0.01154
+
+[[2]]$lm_sf_eta_tilde_kg
+[1] 0.01311587
+
+[[2]]$sm_weibull_ph_lambda
+[1] 0.7087345
+
+[[2]]$sm_weibull_ph_gamma
+[1] 1.495769
+
+[[2]]$beta_os_cov
+[1] 0.07456858
+
+[[2]]$link_growth
+[1] 0.2676126
+
+
+[[3]]
+[[3]]$lm_sf_mu_bsld
+[1] 4.181903
+
+[[3]]$lm_sf_mu_ks
+[1] -0.6468692
+
+[[3]]$lm_sf_mu_kg
+[1] 0.03254774
+
+[[3]]$lm_sf_omega_bsld
+[1] 0.03424254
+
+[[3]]$lm_sf_omega_ks
+[1] 0.005012131
+
+[[3]]$lm_sf_omega_kg
+[1] 0.02927809
+
+[[3]]$lm_sf_sigma
+[1] 0.01675105
+
+[[3]]$lm_sf_eta_tilde_bsld
+[1] 0.009024317
+
+[[3]]$lm_sf_eta_tilde_ks
+[1] 0.0001919709
+
+[[3]]$lm_sf_eta_tilde_kg
+[1] -0.00444224
+
+[[3]]$sm_weibull_ph_lambda
+[1] 0.6935522
+
+[[3]]$sm_weibull_ph_gamma
+[1] 1.490089
+
+[[3]]$beta_os_cov
+[1] 0.1357648
+
+[[3]]$link_growth
+[1] 0.1581846
+
+
+[[4]]
+[[4]]$lm_sf_mu_bsld
+[1] 4.162068
+
+[[4]]$lm_sf_mu_ks
+[1] -0.656091
+
+[[4]]$lm_sf_mu_kg
+[1] 0.03822785
+
+[[4]]$lm_sf_omega_bsld
+[1] 0.005422854
+
+[[4]]$lm_sf_omega_ks
+[1] 0.01572642
+
+[[4]]$lm_sf_omega_kg
+[1] 0.05578814
+
+[[4]]$lm_sf_sigma
+[1] 0.06019124
+
+[[4]]$lm_sf_eta_tilde_bsld
+[1] 0.001840076
+
+[[4]]$lm_sf_eta_tilde_ks
+[1] 0.003425483
+
+[[4]]$lm_sf_eta_tilde_kg
+[1] -0.004475294
+
+[[4]]$sm_weibull_ph_lambda
+[1] 0.6937767
+
+[[4]]$sm_weibull_ph_gamma
+[1] 1.487927
+
+[[4]]$beta_os_cov
+[1] 0.1364765
+
+[[4]]$link_growth
+[1] 0.131134</code></pre>
+</div>
+</div>
+<p>If we don’t do this, then it is very likely that some chains will diverge because of very unrealistic initial values for <code>beta</code> and/or the link coefficient.</p>
+<p>Now we can fit the model:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>save_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-jm/jm1.rds"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(save_file)) {</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    joint_results <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_file)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    joint_results <span class="ot">&lt;-</span> <span class="fu">sampleStanModel</span>(</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        joint_mod,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">data =</span> joint_data,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">iter_sampling =</span> ITER,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">iter_warmup =</span> WARMUP,</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">chains =</span> CHAINS,</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">parallel_chains =</span> CHAINS,</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">thin =</span> CHAINS,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">seed =</span> BAYES.SEED,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">refresh =</span> REFRESH</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">saveObject</span>(joint_results, <span class="at">file =</span> save_file)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>As mentioned before, also here we can get warnings at the beginning of the chains’ sampling process (“The current Metropolis proposal is about to be rejected …”). As long as this only happens in the beginning, and not during the sampling later, then this is not a cause for concern.</p>
+<p>We note that the MCMC sampling process takes much longer here (about factor 10 more) compared to just fitting the TGI or the OS data separately. This is due to the more complex likelihood function calculations for the joint TGI-OS model.</p>
+<p>Let’s check the convergence of the population parameters. If we don’t remember their names, we can query them as follows:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>joint_results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+   JointModelSamples Object with:
+  
+      # of samples per chain = 1000
+      # of chains            = 4
+  
+      Variables:
+          beta_os_cov[5]
+          link_coefficients
+          link_function_inputs[203, 3]
+          link_growth
+          lm_sf_eta_tilde_bsld[203]
+          lm_sf_eta_tilde_kg[203]
+          lm_sf_eta_tilde_ks[203]
+          lm_sf_mu_bsld
+          lm_sf_mu_kg[2]
+          lm_sf_mu_ks[2]
+          lm_sf_omega_bsld
+          lm_sf_omega_kg[2]
+          lm_sf_omega_ks[2]
+          lm_sf_psi_bsld[203]
+          lm_sf_psi_kg[203]
+          lm_sf_psi_ks[203]
+          lm_sf_sigma
+          log_surv_fit_at_obs_times[203]
+          long_obvs_log_lik[1093]
+          lp__
+          os_cov_contribution[203]
+          os_subj_log_lik[203]
+          pars_os[2]
+          sm_weibull_ph_gamma
+          sm_weibull_ph_lambda
+          Ypred[1093] </code></pre>
+</div>
+</div>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_mu_bsld"</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_mu_ks"</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_mu_kg"</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_sigma"</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_omega_bsld"</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_omega_ks"</span>,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_omega_kg"</span>,</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"beta_os_cov"</span>,</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"sm_weibull_ph_gamma"</span>,</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"sm_weibull_ph_lambda"</span>,</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"link_growth"</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>mcmc_joint_results <span class="ot">&lt;-</span> cmdstanr<span class="sc">::</span><span class="fu">as.CmdStanMCMC</span>(joint_results)</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>mcmc_joint_results<span class="sc">$</span><span class="fu">summary</span>(vars)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 19 × 10
+   variable         mean   median      sd     mad      q5     q95  rhat ess_bulk
+   &lt;chr&gt;           &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+ 1 lm_sf_mu_bs…  3.76     3.76    0.0371  0.0355   3.69    3.82   1.02      192.
+ 2 lm_sf_mu_ks… -0.0188   0.00943 0.235   0.228   -0.445   0.339  1.00      462.
+ 3 lm_sf_mu_ks… -1.06    -1.03    0.330   0.314   -1.66   -0.591  1.01      559.
+ 4 lm_sf_mu_kg… -0.585   -0.576   0.139   0.146   -0.837  -0.375  0.999     500.
+ 5 lm_sf_mu_kg… -0.892   -0.890   0.139   0.138   -1.14   -0.656  1.00      552.
+ 6 lm_sf_sigma   0.129    0.129   0.00371 0.00366  0.123   0.135  1.00      840.
+ 7 lm_sf_omega…  0.530    0.529   0.0265  0.0256   0.488   0.576  1.01      340.
+ 8 lm_sf_omega…  0.936    0.913   0.178   0.169    0.680   1.27   1.01      409.
+ 9 lm_sf_omega…  1.36     1.33    0.252   0.247    0.989   1.81   1.00      566.
+10 lm_sf_omega…  0.684    0.677   0.0812  0.0744   0.561   0.831  1.00      781.
+11 lm_sf_omega…  0.956    0.952   0.0953  0.0973   0.810   1.12   1.01      585.
+12 beta_os_cov…  0.842    0.829   0.234   0.229    0.464   1.24   1.00      812.
+13 beta_os_cov…  0.00316  0.00296 0.00981 0.00996 -0.0128  0.0197 0.998     975.
+14 beta_os_cov…  0.658    0.656   0.431   0.428   -0.0678  1.36   1.00      901.
+15 beta_os_cov… -0.00443 -0.00251 0.237   0.247   -0.371   0.371  1.00      760.
+16 beta_os_cov…  0.313    0.305   0.215   0.217   -0.0363  0.677  1.00      735.
+17 sm_weibull_…  1.81     1.81    0.167   0.170    1.55    2.09   1.00      794.
+18 sm_weibull_…  0.261    0.213   0.176   0.132    0.0733  0.635  0.998     805.
+19 link_growth   0.880    0.861   0.235   0.242    0.525   1.29   1.00      571.
+# ℹ 1 more variable: ess_tail &lt;dbl&gt;</code></pre>
+</div>
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>draws_joint_results <span class="ot">&lt;-</span> mcmc_joint_results<span class="sc">$</span><span class="fu">draws</span>(vars)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_trace</span>(draws_joint_results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="1_jm-jmpost_files/figure-html/check_convergence-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>So this looks good.</p>
+</section>
+<section id="interpret-covariate-effects" class="level2">
+<h2 class="anchored" data-anchor-id="interpret-covariate-effects">Interpret covariate effects</h2>
+<p>In order to better see which of the survival model coefficients relate to which covariates, we can again rename them as follows:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>os_cov_name_mapping <span class="ot">&lt;-</span> <span class="cf">function</span>(surv_data) {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    surv_data_design <span class="ot">&lt;-</span> <span class="fu">as_stan_list</span>(surv_data)<span class="sc">$</span>os_cov_design</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    os_cov_names <span class="ot">&lt;-</span> <span class="fu">colnames</span>(surv_data_design)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    old_coef_names <span class="ot">&lt;-</span> <span class="fu">as.character</span>(glue<span class="sc">::</span><span class="fu">glue</span>(<span class="st">"beta_os_cov[{seq_along(os_cov_names)}]"</span>))</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setNames</span>(old_coef_names, os_cov_names)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>os_cov_renaming <span class="ot">&lt;-</span> <span class="fu">os_cov_name_mapping</span>(surv_data)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>draws_joint_results <span class="ot">&lt;-</span> <span class="fu">do.call</span>(</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    rename_variables,</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="fu">list</span>(draws_joint_results), os_cov_renaming)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_dens_overlay</span>(draws_joint_results) <span class="sc">+</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="1_jm-jmpost_files/figure-html/rename_os_cov_coefs-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>If we compare this with the covariate effect estimates from the 2-stage OS model we did in the last session, then we can see:</p>
+<ul>
+<li>the <code>log_kg_est</code> effect (see <code>link_growth</code> here) is stronger here, but also with larger uncertainty</li>
+<li>the <code>ecog</code> effect is similar (clearly higher risk with ECOG 1)</li>
+<li>the <code>age</code> effect is similar (no effect)</li>
+<li>the <code>race</code> effect is similar (almost no effect)</li>
+<li>the <code>sex</code> effect is similar (higher risk for males)</li>
+</ul>
+<p>It is also interesting to look at the shrinkage and growth rate estimates from the SF model part: We see e.g.&nbsp;0 shrinkage in arm 1, which is the control arm, while we see a strong shrinkage in arm 2, which is the Atezo arm.</p>
+</section>
+<section id="sld-vs-longitudinal-model-fit" class="level2">
+<h2 class="anchored" data-anchor-id="sld-vs-longitudinal-model-fit">SLD vs longitudinal model fit</h2>
+<p>Let’s first check the fit of the Stein-Fojo model to the SLD data.</p>
+<p>The first step is to generate the predictions at the subject level. We can do this using the <code>LongitudinalQuantities()</code> function, which takes the MCMC results and the grid at which the predictions should be made. Here we use the <code>GridObserved()</code> function, which takes the IDs of the subjects for which the predictions should be made. Since each patient has its own plot, we sample a small subset of patient IDs here as an example only. In a real application we could write a simple loop that then processes batches of patients in sequence.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">521</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>pt_subset <span class="ot">&lt;-</span> <span class="fu">as.character</span>(<span class="fu">sample</span>(subj_df<span class="sc">$</span>id, <span class="dv">20</span>))</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>tgi_fit_pred <span class="ot">&lt;-</span> <span class="fu">LongitudinalQuantities</span>(</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    joint_results,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> <span class="fu">GridObserved</span>(<span class="at">subjects =</span> pt_subset)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Note that here again a Stan program needs to be compiled, which can take some time (but only the first time, because the executable is cached). This is because we pass the posterior samples to a Stan program which then generates the quantities of interest, here the Stein-Fojo model fit for each patient at the observed time points.</p>
+<p>Now we can plot the predictions:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(tgi_fit_pred) <span class="sc">+</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Time (years)"</span>, <span class="at">y =</span> <span class="st">"SLD (mm)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="1_jm-jmpost_files/figure-html/tgi_fit_plot-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can see that the model fits the data well, with the estimates Stein-Fojo model curves closely following the observed values.</p>
+</section>
+<section id="kaplan-meier-vs-survival-model-fit" class="level2">
+<h2 class="anchored" data-anchor-id="kaplan-meier-vs-survival-model-fit">Kaplan-Meier vs survival model fit</h2>
+<p>Another useful plot displays the model predicted survival function and overlays the non-parametric Kaplan-Meier plot to it.</p>
+<p>The first step consists in generating the survival predictions at the group level with the <code>SurvivalQuantities()</code> function. In order to do this, we use now the <code>GridGrouped()</code> function, which takes the time points at which the predictions should be made and the groups for which the predictions should be made (as a list containing the IDs in each element defining the group). This works the same way as in the previous session with the OS model.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>time_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="fu">max</span>(os_data<span class="sc">$</span>os_time), <span class="at">length =</span> <span class="dv">100</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>os_surv_group_grid <span class="ot">&lt;-</span> <span class="fu">GridGrouped</span>(</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">times =</span> time_grid,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">groups =</span> <span class="fu">with</span>(</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>        subj_df,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        <span class="fu">split</span>(<span class="fu">as.character</span>(id), arm)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>os_surv_pred <span class="ot">&lt;-</span> <span class="fu">SurvivalQuantities</span>(</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> joint_results,</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> os_surv_group_grid,</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"surv"</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Now we can use the <code>autoplot()</code> method:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(os_surv_pred, <span class="at">add_km =</span> <span class="cn">TRUE</span>, <span class="at">add_wrap =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="1_jm-jmpost_files/figure-html/os_surv_plot-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can see that the fit looks adequate, with the modelled survival functions closely following the Kaplan-Meier curves in each treatment group. Of note, this fit looks better than in the 2-stage TGI-OS model from the previous session.</p>
+</section>
+<section id="hazard-and-hazard-rate-estimation" class="level2">
+<h2 class="anchored" data-anchor-id="hazard-and-hazard-rate-estimation">Hazard and hazard rate estimation</h2>
+<p>Similarly to the survival function estimation, we can also estimate the hazard function by treatment group.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>os_hazard_pred <span class="ot">&lt;-</span> <span class="fu">SurvivalQuantities</span>(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> joint_results,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> os_surv_group_grid,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"haz"</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Also this can be plotted using the <code>autoplot()</code> method:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(os_hazard_pred, <span class="at">add_wrap =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="1_jm-jmpost_files/figure-html/os_hazard_plot-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can already see here that this looks slightly different than the same plot from the 2-step TGI-OS model:</p>
+<ul>
+<li>The hazards are higher</li>
+<li>The uncertainty is considerably larger</li>
+</ul>
+<p>Now let’s look at the estimated hazard ratio:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>os_hr_est <span class="ot">&lt;-</span> os_hazard_pred <span class="sc">|&gt;</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(group, time) <span class="sc">|&gt;</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">sample =</span> <span class="fu">row_number</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> group, <span class="at">values_from =</span> values) <span class="sc">|&gt;</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">hr =</span> MPDL3280A <span class="sc">/</span> Docetaxel) <span class="sc">|&gt;</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(time) <span class="sc">|&gt;</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">mean =</span> <span class="fu">mean</span>(hr, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">lower =</span> <span class="fu">quantile</span>(hr, <span class="fl">0.05</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">upper =</span> <span class="fu">quantile</span>(hr, <span class="fl">0.95</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">na.omit</span>() <span class="co"># Omit the time = 0 which has NA</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(os_hr_est)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>      time              mean            lower            upper      
+ Min.   :0.02276   Min.   :0.8703   Min.   :0.6966   Min.   :1.063  
+ 1st Qu.:0.58038   1st Qu.:0.8703   1st Qu.:0.6966   1st Qu.:1.063  
+ Median :1.13801   Median :0.8703   Median :0.6966   Median :1.063  
+ Mean   :1.13801   Mean   :0.8703   Mean   :0.6966   Mean   :1.063  
+ 3rd Qu.:1.69563   3rd Qu.:0.8703   3rd Qu.:0.6966   3rd Qu.:1.063  
+ Max.   :2.25325   Max.   :0.8703   Max.   :0.6966   Max.   :1.063  </code></pre>
+</div>
+</div>
+<p>Also here the hazard ratio is indeed constant over time, which was the same in the 2-step TGI-OS model. This is because the link between the longitudinal and the survival model is here the log growth rate of the Stein-Fojo model, which is constant over time. For other link functions that are time-varying, e.g.&nbsp;the derivative of the longitudinal model, the hazard ratio could change over time.</p>
+<p>So here the estimated hazard ratio is 0.87 with a 90% credible interval of 0.7 to 1.06. We can see that this hazard ratio estimate is slightly lower, representing a slightly stronger effect estimate. Due to the larger uncertainty, which is due to the propagation of the log growth rate uncertainty to the OS model, the 90% CI now actually includes 1, in contrast to the 2-step TGI-OS model.</p>
+</section>
+<section id="alternative-time-varying-link" class="level2">
+<h2 class="anchored" data-anchor-id="alternative-time-varying-link">Alternative time-varying link</h2>
+<p>We would like to illustrate how the hazard ratio could change over time if we used a time-varying link function. For this we will use the derivative of the Stein-Fojo model as the link function, utilizing the <code>linkDLSD</code> class in <code>jmpost</code>.</p>
+<p>Note that at the moment, we can unfortunately not conveniently reuse the slots from the <code>JointModel</code> object (<code>joint_mod@longitudinal</code> and <code>joint_mod@survival</code>) to create a new model with a different link function, because during the object creation already Stan parameter names are created, which don’t fit then anymore here. So if needed, it would be better to save the object from <code>LongitudinalSteinFojo()</code> first and then use it in both models, and similarly for the <code>SurvivalWeibullPH()</code> object. Here we just copy/paste the model specification now.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>joint_mod_dsld <span class="ot">&lt;-</span> <span class="fu">JointModel</span>(</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">longitudinal =</span> <span class="fu">LongitudinalSteinFojo</span>(</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_bsld =</span> <span class="fu">prior_normal</span>(<span class="fu">log</span>(<span class="dv">65</span>), <span class="dv">1</span>),</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_ks =</span> <span class="fu">prior_normal</span>(<span class="fu">log</span>(<span class="fl">0.52</span>), <span class="dv">1</span>),</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_kg =</span> <span class="fu">prior_normal</span>(<span class="fu">log</span>(<span class="fl">1.04</span>), <span class="dv">1</span>),</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_bsld =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="fu">set_limits</span>(<span class="dv">0</span>, <span class="cn">Inf</span>),</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_ks =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="fu">set_limits</span>(<span class="dv">0</span>, <span class="cn">Inf</span>),</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_kg =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="fu">set_limits</span>(<span class="dv">0</span>, <span class="cn">Inf</span>),</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">sigma =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="fu">set_limits</span>(<span class="dv">0</span>, <span class="cn">Inf</span>)</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">survival =</span> <span class="fu">SurvivalWeibullPH</span>(</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">lambda =</span> <span class="fu">prior_gamma</span>(<span class="fl">0.7</span>, <span class="dv">1</span>),</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">gamma =</span> <span class="fu">prior_gamma</span>(<span class="fl">1.5</span>, <span class="dv">1</span>),</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">beta =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">20</span>)</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">link =</span> <span class="fu">linkDSLD</span>(</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>        <span class="at">prior =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">10</span>) <span class="co"># Reduce here a bit to help with convergence ...</span></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Let’s check the initial values again:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="st">"jmpost.prior_shrinkage"</span> <span class="ot">=</span> <span class="fl">0.999</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">initialValues</span>(joint_mod_dsld, <span class="at">n_chains =</span> CHAINS)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+[[1]]$lm_sf_mu_bsld
+[1] 4.174255
+
+[[1]]$lm_sf_mu_ks
+[1] -0.6523691
+
+[[1]]$lm_sf_mu_kg
+[1] 0.04036711
+
+[[1]]$lm_sf_omega_bsld
+[1] 0.003479839
+
+[[1]]$lm_sf_omega_ks
+[1] 3.26416e-05
+
+[[1]]$lm_sf_omega_kg
+[1] 0.002909853
+
+[[1]]$lm_sf_sigma
+[1] 0.002929252
+
+[[1]]$lm_sf_eta_tilde_bsld
+[1] 0.001106823
+
+[[1]]$lm_sf_eta_tilde_ks
+[1] -0.001331419
+
+[[1]]$lm_sf_eta_tilde_kg
+[1] 0.0003521617
+
+[[1]]$sm_weibull_ph_lambda
+[1] 0.6995336
+
+[[1]]$sm_weibull_ph_gamma
+[1] 1.498641
+
+[[1]]$beta_os_cov
+[1] 0.009185111
+
+[[1]]$link_dsld
+[1] -0.002447209
+
+
+[[2]]
+[[2]]$lm_sf_mu_bsld
+[1] 4.172685
+
+[[2]]$lm_sf_mu_ks
+[1] -0.6525602
+
+[[2]]$lm_sf_mu_kg
+[1] 0.04002759
+
+[[2]]$lm_sf_omega_bsld
+[1] 0.001985338
+
+[[2]]$lm_sf_omega_ks
+[1] 0.005169107
+
+[[2]]$lm_sf_omega_kg
+[1] 0.001121513
+
+[[2]]$lm_sf_sigma
+[1] 0.004110273
+
+[[2]]$lm_sf_eta_tilde_bsld
+[1] -0.0006774594
+
+[[2]]$lm_sf_eta_tilde_ks
+[1] -0.0008570452
+
+[[2]]$lm_sf_eta_tilde_kg
+[1] -0.0005290799
+
+[[2]]$sm_weibull_ph_lambda
+[1] 0.6993776
+
+[[2]]$sm_weibull_ph_gamma
+[1] 1.499257
+
+[[2]]$beta_os_cov
+[1] 0.001056433
+
+[[2]]$link_dsld
+[1] -0.01053035
+
+
+[[3]]
+[[3]]$lm_sf_mu_bsld
+[1] 4.173984
+
+[[3]]$lm_sf_mu_ks
+[1] -0.654667
+
+[[3]]$lm_sf_mu_kg
+[1] 0.03969482
+
+[[3]]$lm_sf_omega_bsld
+[1] 0.005543763
+
+[[3]]$lm_sf_omega_ks
+[1] 0.005430364
+
+[[3]]$lm_sf_omega_kg
+[1] 0.0001870963
+
+[[3]]$lm_sf_sigma
+[1] 0.0009273888
+
+[[3]]$lm_sf_eta_tilde_bsld
+[1] -0.0005258746
+
+[[3]]$lm_sf_eta_tilde_ks
+[1] 0.001356768
+
+[[3]]$lm_sf_eta_tilde_kg
+[1] 0.0001322014
+
+[[3]]$sm_weibull_ph_lambda
+[1] 0.7011391
+
+[[3]]$sm_weibull_ph_gamma
+[1] 1.499553
+
+[[3]]$beta_os_cov
+[1] -0.04009133
+
+[[3]]$link_dsld
+[1] 0.02460469
+
+
+[[4]]
+[[4]]$lm_sf_mu_bsld
+[1] 4.173544
+
+[[4]]$lm_sf_mu_ks
+[1] -0.6541084
+
+[[4]]$lm_sf_mu_kg
+[1] 0.03994846
+
+[[4]]$lm_sf_omega_bsld
+[1] 0.001749874
+
+[[4]]$lm_sf_omega_ks
+[1] 0.0004688517
+
+[[4]]$lm_sf_omega_kg
+[1] 0.002471432
+
+[[4]]$lm_sf_sigma
+[1] 0.0006564231
+
+[[4]]$lm_sf_eta_tilde_bsld
+[1] -0.00169486
+
+[[4]]$lm_sf_eta_tilde_ks
+[1] -5.820686e-05
+
+[[4]]$lm_sf_eta_tilde_kg
+[1] -0.0002779012
+
+[[4]]$sm_weibull_ph_lambda
+[1] 0.7002806
+
+[[4]]$sm_weibull_ph_gamma
+[1] 1.499579
+
+[[4]]$beta_os_cov
+[1] 0.02254746
+
+[[4]]$link_dsld
+[1] 0.00770938</code></pre>
+</div>
+</div>
+<p>Now we fit this model:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>save_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-jm/jm3.rds"</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(save_file)) {</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    joint_results_dsld <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_file)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    joint_results_dsld <span class="ot">&lt;-</span> <span class="fu">sampleStanModel</span>(</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>        joint_mod_dsld,</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">data =</span> joint_data,</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">iter_sampling =</span> ITER,</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">iter_warmup =</span> WARMUP,</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">chains =</span> CHAINS,</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">parallel_chains =</span> CHAINS,</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">thin =</span> CHAINS,</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">seed =</span> BAYES.SEED,</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">refresh =</span> REFRESH</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">saveObject</span>(joint_results_dsld, <span class="at">file =</span> save_file)</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Let’s check the convergence of the population parameters:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>vars_dsld <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"link_dsld"</span>, <span class="fu">setdiff</span>(vars, <span class="st">"link_growth"</span>))</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>mcmc_joint_results_dsld <span class="ot">&lt;-</span> cmdstanr<span class="sc">::</span><span class="fu">as.CmdStanMCMC</span>(joint_results_dsld)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>mcmc_joint_results_dsld<span class="sc">$</span><span class="fu">summary</span>(vars_dsld)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 19 × 10
+   variable        mean   median      sd     mad       q5     q95  rhat ess_bulk
+   &lt;chr&gt;          &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+ 1 link_dsld    0.00695  0.00669 0.00240 0.00212  0.00350  0.0111 1.00      932.
+ 2 lm_sf_mu_b…  3.76     3.76    0.0379  0.0360   3.69     3.82   1.02      329.
+ 3 lm_sf_mu_k… -0.0327  -0.00146 0.244   0.234   -0.488    0.319  1.00      638.
+ 4 lm_sf_mu_k… -1.31    -1.28    0.361   0.349   -1.90    -0.744  1.00      648.
+ 5 lm_sf_mu_k… -0.591   -0.581   0.142   0.138   -0.834   -0.385  1.00      633.
+ 6 lm_sf_mu_k… -1.01    -1.01    0.143   0.142   -1.24    -0.772  1.00      619.
+ 7 lm_sf_sigma  0.130    0.130   0.00365 0.00360  0.125    0.136  1.00      731.
+ 8 lm_sf_omeg…  0.529    0.529   0.0276  0.0283   0.488    0.577  1.00      568.
+ 9 lm_sf_omeg…  0.951    0.932   0.176   0.164    0.702    1.28   1.00      700.
+10 lm_sf_omeg…  1.54     1.51    0.279   0.270    1.12     2.02   1.00      709.
+11 lm_sf_omeg…  0.689    0.683   0.0803  0.0748   0.570    0.825  1.01      752.
+12 lm_sf_omeg…  0.964    0.956   0.107   0.106    0.803    1.15   1.00      630.
+13 beta_os_co…  0.810    0.812   0.239   0.243    0.422    1.21   0.998    1001.
+14 beta_os_co… -0.00132 -0.00149 0.0106  0.00989 -0.0183   0.0168 1.00     1121.
+15 beta_os_co…  0.589    0.613   0.436   0.434   -0.118    1.27   1.00      889.
+16 beta_os_co…  0.0833   0.0861  0.251   0.245   -0.350    0.507  1.00     1017.
+17 beta_os_co…  0.334    0.329   0.223   0.227   -0.0253   0.699  1.00     1109.
+18 sm_weibull…  1.53     1.52    0.144   0.144    1.30     1.78   1.00     1014.
+19 sm_weibull…  0.140    0.114   0.0996  0.0760   0.0359   0.334  1.00     1039.
+# ℹ 1 more variable: ess_tail &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>So that looks ok.</p>
+<p>Let’s now calculate the hazard function and hazard ratio for this model. Again we will need to wait for the compilation, because now it is a different model.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>os_hazard_dsld_pred <span class="ot">&lt;-</span> <span class="fu">SurvivalQuantities</span>(</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> joint_results_dsld,</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> os_surv_group_grid,</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"haz"</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>os_hr_est_dsld <span class="ot">&lt;-</span> os_hazard_dsld_pred <span class="sc">|&gt;</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(group, time) <span class="sc">|&gt;</span></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">sample =</span> <span class="fu">row_number</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">values =</span> <span class="fu">pmin</span>(values, <span class="dv">100</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> group, <span class="at">values_from =</span> values) <span class="sc">|&gt;</span></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">hr =</span> MPDL3280A <span class="sc">/</span> Docetaxel) <span class="sc">|&gt;</span></span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(time) <span class="sc">|&gt;</span></span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(</span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">mean =</span> <span class="fu">mean</span>(hr, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>        <span class="at">median =</span> <span class="fu">median</span>(hr, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">lower =</span> <span class="fu">quantile</span>(hr, <span class="fl">0.05</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">upper =</span> <span class="fu">quantile</span>(hr, <span class="fl">0.95</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">na.omit</span>() <span class="co"># Omit the time = 0 which has NA</span></span>
+<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(os_hr_est_dsld)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>      time              mean             median           lower       
+ Min.   :0.02276   Min.   :  1.100   Min.   :  1.00   Min.   : 1.000  
+ 1st Qu.:0.58038   1st Qu.:  1.713   1st Qu.:  1.00   1st Qu.: 1.000  
+ Median :1.13801   Median :  6.817   Median :  1.00   Median : 1.000  
+ Mean   :1.13801   Mean   : 41.550   Mean   : 36.39   Mean   : 1.621  
+ 3rd Qu.:1.69563   3rd Qu.: 56.551   3rd Qu.: 24.21   3rd Qu.: 1.087  
+ Max.   :2.25325   Max.   :207.570   Max.   :244.91   Max.   :10.414  
+     upper        
+ Min.   :  1.000  
+ 1st Qu.:  1.493  
+ Median : 41.445  
+ Mean   :100.978  
+ 3rd Qu.:180.477  
+ Max.   :402.655  </code></pre>
+</div>
+</div>
+<p>Here we truncate the hazard values at an upper bound of 100, because due to the time-varying link function, the hazard can become very large at some time points, which can lead to numerical issues.</p>
+<p>So now we can see that the estimated hazard ratio is no longer constant over time. Let’s try to plot it:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>os_hr_est_dsld <span class="sc">|&gt;</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> median)) <span class="sc">+</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> lower, <span class="at">ymax =</span> upper), <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">y =</span> <span class="st">"Hazard ratio (MPDL3280A / Docetaxel)"</span>,</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">"Time-varying hazard ratio"</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="1_jm-jmpost_files/figure-html/os_hr_plot_dsld-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Also here we see very large hazard ratio values between 0.25 and 1 year. So in this case this model would not be very useful in practice.</p>
+<p>Let’s still quickly have a look at the fitted survival functions if they look reasonable:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>os_surv_dsld_pred <span class="ot">&lt;-</span> <span class="fu">SurvivalQuantities</span>(</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> joint_results_dsld,</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> os_surv_group_grid,</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"surv"</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(os_surv_dsld_pred, <span class="at">add_km =</span> <span class="cn">TRUE</span>, <span class="at">add_wrap =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="1_jm-jmpost_files/figure-html/os_surv_plot_dsld-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>So this looks reasonable. So we might need to revisit the derivative calculation again for this model to see if there is something to improve in the <code>jmpost</code> code.</p>
+</section>
+<section id="model-comparison" class="level2">
+<h2 class="anchored" data-anchor-id="model-comparison">Model comparison</h2>
+<p>We can again use the <a href="https://en.wikipedia.org/wiki/Brier_score">Brier score</a> to compare the two different survival models as part of the joint models. The Brier score is a measure of the mean squared difference between the predicted survival probability and the actual survival status. The lower the Brier score, the better the model.</p>
+<p>To calculate it, we need to use the <code>GridFixed</code> input for <code>SurvivalQuantities()</code>. This is because the Brier score is calculated at fixed time points across all patients, and not at the observed time points of specific patients. Because we don’t specify patient IDs, the quantities are generated for all patients.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>os_surv_fixed <span class="ot">&lt;-</span> <span class="fu">SurvivalQuantities</span>(</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> joint_results,</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> <span class="fu">GridFixed</span>(<span class="at">times =</span> time_grid),</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"surv"</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>os_bs <span class="ot">&lt;-</span> <span class="fu">brierScore</span>(os_surv_fixed)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Now let’s compare this with the second model where we have the derivative link. We have a suspicion that the second model will perform worse, because of the hazard ratio results, but let’s have a look.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>os_surv_dsld_fixed <span class="ot">&lt;-</span> <span class="fu">SurvivalQuantities</span>(</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> joint_results_dsld,</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> <span class="fu">GridFixed</span>(<span class="at">times =</span> time_grid),</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"surv"</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>os_dsld_bs <span class="ot">&lt;-</span> <span class="fu">brierScore</span>(os_surv_dsld_fixed)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>We can plot the Brier scores to compare them visually:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">time =</span> time_grid,</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">brier_score_diff =</span> os_bs <span class="sc">-</span> os_dsld_bs</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> brier_score_diff)) <span class="sc">+</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Brier score difference (1 - 2)"</span>) <span class="sc">+</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="1_jm-jmpost_files/figure-html/brier_scores_plot-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>As expected, we see that especially for the times between 0.5 and 2 years the first model with the growth link performs better than the second model with the derivative link.</p>
+<p>Currently, the LOOIC does not work here yet, because the <code>log_lik</code> is not included in the samples.</p>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb36" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "1. TGI-OS joint model minimal workflow with `jmpost`"</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="co">  - Daniel Sabanés Bové</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="co">  - Francois Mercier</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> last-modified</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="co">  chunk_output_type: inline</span></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: show</span></span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a><span class="co">    html-math-method: mathjax</span></span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a><span class="an">cache:</span><span class="co"> true</span></span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a>The purpose of this document is to show a minimal workflow for fitting a joint Stein-Fojo TGI + Weibull OS model using the <span class="in">`jmpost`</span> package.</span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a><span class="fu">## Setup and load data</span></span>
+<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a>Here we execute the R code from the setup and data preparation chapter, see the <span class="co">[</span><span class="ot">full code here</span><span class="co">](0_setup.qmd)</span>.</span>
+<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-24"><a href="#cb36-24" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-25"><a href="#cb36-25" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup_and_load_data</span></span>
+<span id="cb36-26"><a href="#cb36-26" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb36-27"><a href="#cb36-27" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
+<span id="cb36-28"><a href="#cb36-28" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb36-29"><a href="#cb36-29" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">knitr.duplicate.label =</span> <span class="st">"allow"</span>)</span>
+<span id="cb36-30"><a href="#cb36-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-31"><a href="#cb36-31" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">purl</span>(</span>
+<span id="cb36-32"><a href="#cb36-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">here</span>(<span class="st">"session-jm/_setup.qmd"</span>),</span>
+<span id="cb36-33"><a href="#cb36-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">output =</span> <span class="fu">here</span>(<span class="st">"session-jm/_setup.R"</span>)</span>
+<span id="cb36-34"><a href="#cb36-34" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-35"><a href="#cb36-35" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"session-jm/_setup.R"</span>))</span>
+<span id="cb36-36"><a href="#cb36-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-37"><a href="#cb36-37" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">purl</span>(</span>
+<span id="cb36-38"><a href="#cb36-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">here</span>(<span class="st">"session-jm/_load_data.qmd"</span>),</span>
+<span id="cb36-39"><a href="#cb36-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">output =</span> <span class="fu">here</span>(<span class="st">"session-jm/_load_data.R"</span>)</span>
+<span id="cb36-40"><a href="#cb36-40" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-41"><a href="#cb36-41" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"session-jm/_load_data.R"</span>))</span>
+<span id="cb36-42"><a href="#cb36-42" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-43"><a href="#cb36-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-44"><a href="#cb36-44" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data object preparation</span></span>
+<span id="cb36-45"><a href="#cb36-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-46"><a href="#cb36-46" aria-hidden="true" tabindex="-1"></a>First we again prepare the data objects, starting with the subject level data:</span>
+<span id="cb36-47"><a href="#cb36-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-50"><a href="#cb36-50" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-51"><a href="#cb36-51" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: subj_df_prep</span></span>
+<span id="cb36-52"><a href="#cb36-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-53"><a href="#cb36-53" aria-hidden="true" tabindex="-1"></a>subj_df <span class="ot">&lt;-</span> os_data <span class="sc">|&gt;</span></span>
+<span id="cb36-54"><a href="#cb36-54" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">study =</span> <span class="st">"OAK"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb36-55"><a href="#cb36-55" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(study, id, arm)</span>
+<span id="cb36-56"><a href="#cb36-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-57"><a href="#cb36-57" aria-hidden="true" tabindex="-1"></a>subj_data <span class="ot">&lt;-</span> <span class="fu">DataSubject</span>(</span>
+<span id="cb36-58"><a href="#cb36-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> subj_df,</span>
+<span id="cb36-59"><a href="#cb36-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">subject =</span> <span class="st">"id"</span>,</span>
+<span id="cb36-60"><a href="#cb36-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">arm =</span> <span class="st">"arm"</span>,</span>
+<span id="cb36-61"><a href="#cb36-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">study =</span> <span class="st">"study"</span></span>
+<span id="cb36-62"><a href="#cb36-62" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-63"><a href="#cb36-63" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-64"><a href="#cb36-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-65"><a href="#cb36-65" aria-hidden="true" tabindex="-1"></a>Next we prepare the longitudinal data object.</span>
+<span id="cb36-66"><a href="#cb36-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-69"><a href="#cb36-69" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-70"><a href="#cb36-70" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: long_df_prep</span></span>
+<span id="cb36-71"><a href="#cb36-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-72"><a href="#cb36-72" aria-hidden="true" tabindex="-1"></a>long_df <span class="ot">&lt;-</span> tumor_data <span class="sc">|&gt;</span></span>
+<span id="cb36-73"><a href="#cb36-73" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(id, year, sld)</span>
+<span id="cb36-74"><a href="#cb36-74" aria-hidden="true" tabindex="-1"></a>long_data <span class="ot">&lt;-</span> <span class="fu">DataLongitudinal</span>(</span>
+<span id="cb36-75"><a href="#cb36-75" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> long_df,</span>
+<span id="cb36-76"><a href="#cb36-76" aria-hidden="true" tabindex="-1"></a>    <span class="at">formula =</span> sld <span class="sc">~</span> year</span>
+<span id="cb36-77"><a href="#cb36-77" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-78"><a href="#cb36-78" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-79"><a href="#cb36-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-80"><a href="#cb36-80" aria-hidden="true" tabindex="-1"></a>Next we prepare the <span class="in">`DataSurvival`</span> object, where specify the covariates for the survival model:</span>
+<span id="cb36-81"><a href="#cb36-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-84"><a href="#cb36-84" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-85"><a href="#cb36-85" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: surv_df_prep</span></span>
+<span id="cb36-86"><a href="#cb36-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-87"><a href="#cb36-87" aria-hidden="true" tabindex="-1"></a>surv_data <span class="ot">&lt;-</span> <span class="fu">DataSurvival</span>(</span>
+<span id="cb36-88"><a href="#cb36-88" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> os_data,</span>
+<span id="cb36-89"><a href="#cb36-89" aria-hidden="true" tabindex="-1"></a>    <span class="at">formula =</span> <span class="fu">Surv</span>(os_time, os_event) <span class="sc">~</span> ecog <span class="sc">+</span> age <span class="sc">+</span> race <span class="sc">+</span> sex</span>
+<span id="cb36-90"><a href="#cb36-90" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-91"><a href="#cb36-91" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-92"><a href="#cb36-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-93"><a href="#cb36-93" aria-hidden="true" tabindex="-1"></a>Note that we don't include the log growth rate estimate <span class="in">`log_kg_est`</span> here, because here we are fitting a joint model - the log growth rate will be included later in the <span class="in">`JointModel`</span> specification instead.</span>
+<span id="cb36-94"><a href="#cb36-94" aria-hidden="true" tabindex="-1"></a>For now we also don't include the treatment <span class="in">`arm`</span> covariate, because we assume Working Assumption (1) from the previous session, i.e. the treatment effect is fully captured by the mediator (or link).</span>
+<span id="cb36-95"><a href="#cb36-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-96"><a href="#cb36-96" aria-hidden="true" tabindex="-1"></a>Now we can create the <span class="in">`JointData`</span> object for the TGI model:</span>
+<span id="cb36-97"><a href="#cb36-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-100"><a href="#cb36-100" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-101"><a href="#cb36-101" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: jm_data_prep</span></span>
+<span id="cb36-102"><a href="#cb36-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-103"><a href="#cb36-103" aria-hidden="true" tabindex="-1"></a>joint_data <span class="ot">&lt;-</span> <span class="fu">DataJoint</span>(</span>
+<span id="cb36-104"><a href="#cb36-104" aria-hidden="true" tabindex="-1"></a>    <span class="at">subject =</span> subj_data,</span>
+<span id="cb36-105"><a href="#cb36-105" aria-hidden="true" tabindex="-1"></a>    <span class="at">longitudinal =</span> long_data,</span>
+<span id="cb36-106"><a href="#cb36-106" aria-hidden="true" tabindex="-1"></a>    <span class="at">survival =</span> surv_data</span>
+<span id="cb36-107"><a href="#cb36-107" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-108"><a href="#cb36-108" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-109"><a href="#cb36-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-110"><a href="#cb36-110" aria-hidden="true" tabindex="-1"></a><span class="fu">## Model specification</span></span>
+<span id="cb36-111"><a href="#cb36-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-112"><a href="#cb36-112" aria-hidden="true" tabindex="-1"></a>We specify the Stein-Fojo model for the TGI data, the Weibull model for the OS data, as well as the link, i.e. the log growth rate from the TGI model which shall influence the hazard in the OS model:</span>
+<span id="cb36-113"><a href="#cb36-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-116"><a href="#cb36-116" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-117"><a href="#cb36-117" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: joint_mod_spec</span></span>
+<span id="cb36-118"><a href="#cb36-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-119"><a href="#cb36-119" aria-hidden="true" tabindex="-1"></a>joint_mod <span class="ot">&lt;-</span> <span class="fu">JointModel</span>(</span>
+<span id="cb36-120"><a href="#cb36-120" aria-hidden="true" tabindex="-1"></a>    <span class="at">longitudinal =</span> <span class="fu">LongitudinalSteinFojo</span>(</span>
+<span id="cb36-121"><a href="#cb36-121" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_bsld =</span> <span class="fu">prior_normal</span>(<span class="fu">log</span>(<span class="dv">65</span>), <span class="dv">1</span>),</span>
+<span id="cb36-122"><a href="#cb36-122" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_ks =</span> <span class="fu">prior_normal</span>(<span class="fu">log</span>(<span class="fl">0.52</span>), <span class="dv">1</span>),</span>
+<span id="cb36-123"><a href="#cb36-123" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_kg =</span> <span class="fu">prior_normal</span>(<span class="fu">log</span>(<span class="fl">1.04</span>), <span class="dv">1</span>),</span>
+<span id="cb36-124"><a href="#cb36-124" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_bsld =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="fu">set_limits</span>(<span class="dv">0</span>, <span class="cn">Inf</span>),</span>
+<span id="cb36-125"><a href="#cb36-125" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_ks =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="fu">set_limits</span>(<span class="dv">0</span>, <span class="cn">Inf</span>),</span>
+<span id="cb36-126"><a href="#cb36-126" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_kg =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="fu">set_limits</span>(<span class="dv">0</span>, <span class="cn">Inf</span>),</span>
+<span id="cb36-127"><a href="#cb36-127" aria-hidden="true" tabindex="-1"></a>        <span class="at">sigma =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="fu">set_limits</span>(<span class="dv">0</span>, <span class="cn">Inf</span>)</span>
+<span id="cb36-128"><a href="#cb36-128" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb36-129"><a href="#cb36-129" aria-hidden="true" tabindex="-1"></a>    <span class="at">survival =</span> <span class="fu">SurvivalWeibullPH</span>(</span>
+<span id="cb36-130"><a href="#cb36-130" aria-hidden="true" tabindex="-1"></a>        <span class="at">lambda =</span> <span class="fu">prior_gamma</span>(<span class="fl">0.7</span>, <span class="dv">1</span>),</span>
+<span id="cb36-131"><a href="#cb36-131" aria-hidden="true" tabindex="-1"></a>        <span class="at">gamma =</span> <span class="fu">prior_gamma</span>(<span class="fl">1.5</span>, <span class="dv">1</span>),</span>
+<span id="cb36-132"><a href="#cb36-132" aria-hidden="true" tabindex="-1"></a>        <span class="at">beta =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">20</span>)</span>
+<span id="cb36-133"><a href="#cb36-133" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb36-134"><a href="#cb36-134" aria-hidden="true" tabindex="-1"></a>    <span class="at">link =</span> <span class="fu">linkGrowth</span>(</span>
+<span id="cb36-135"><a href="#cb36-135" aria-hidden="true" tabindex="-1"></a>        <span class="at">prior =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">20</span>)</span>
+<span id="cb36-136"><a href="#cb36-136" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb36-137"><a href="#cb36-137" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-138"><a href="#cb36-138" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-139"><a href="#cb36-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-140"><a href="#cb36-140" aria-hidden="true" tabindex="-1"></a>Here we use a normal prior with mean 0 and standard deviation 20 for the link coefficient, which is a very uninformative prior. This corresponds to the same prior used for the regression coefficients of the "fixed" covariates in <span class="in">`SurvivalWeibullPH`</span>.</span>
+<span id="cb36-141"><a href="#cb36-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-142"><a href="#cb36-142" aria-hidden="true" tabindex="-1"></a>For the other parameters, we keep the same prior as in the previous sessions on separate TGI and OS models.</span>
+<span id="cb36-143"><a href="#cb36-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-144"><a href="#cb36-144" aria-hidden="true" tabindex="-1"></a><span class="fu">## Model fitting</span></span>
+<span id="cb36-145"><a href="#cb36-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-146"><a href="#cb36-146" aria-hidden="true" tabindex="-1"></a>Again we need to be careful with the automatic selection of initial values due to the large standard deviation on <span class="in">`beta`</span> and the link coefficient. We therefore set the shrinkage option and check the initial values:</span>
+<span id="cb36-147"><a href="#cb36-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-150"><a href="#cb36-150" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-151"><a href="#cb36-151" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: joint_mod_initial_values</span></span>
+<span id="cb36-152"><a href="#cb36-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-153"><a href="#cb36-153" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="st">"jmpost.prior_shrinkage"</span> <span class="ot">=</span> <span class="fl">0.99</span>)</span>
+<span id="cb36-154"><a href="#cb36-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-155"><a href="#cb36-155" aria-hidden="true" tabindex="-1"></a><span class="fu">initialValues</span>(joint_mod, <span class="at">n_chains =</span> CHAINS)</span>
+<span id="cb36-156"><a href="#cb36-156" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-157"><a href="#cb36-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-158"><a href="#cb36-158" aria-hidden="true" tabindex="-1"></a>If we don't do this, then it is very likely that some chains will diverge because of very unrealistic initial values for <span class="in">`beta`</span> and/or the link coefficient.</span>
+<span id="cb36-159"><a href="#cb36-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-160"><a href="#cb36-160" aria-hidden="true" tabindex="-1"></a>Now we can fit the model:</span>
+<span id="cb36-161"><a href="#cb36-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-164"><a href="#cb36-164" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-165"><a href="#cb36-165" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: joint_model_fit</span></span>
+<span id="cb36-166"><a href="#cb36-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-167"><a href="#cb36-167" aria-hidden="true" tabindex="-1"></a>save_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-jm/jm1.rds"</span>)</span>
+<span id="cb36-168"><a href="#cb36-168" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(save_file)) {</span>
+<span id="cb36-169"><a href="#cb36-169" aria-hidden="true" tabindex="-1"></a>    joint_results <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_file)</span>
+<span id="cb36-170"><a href="#cb36-170" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb36-171"><a href="#cb36-171" aria-hidden="true" tabindex="-1"></a>    joint_results <span class="ot">&lt;-</span> <span class="fu">sampleStanModel</span>(</span>
+<span id="cb36-172"><a href="#cb36-172" aria-hidden="true" tabindex="-1"></a>        joint_mod,</span>
+<span id="cb36-173"><a href="#cb36-173" aria-hidden="true" tabindex="-1"></a>        <span class="at">data =</span> joint_data,</span>
+<span id="cb36-174"><a href="#cb36-174" aria-hidden="true" tabindex="-1"></a>        <span class="at">iter_sampling =</span> ITER,</span>
+<span id="cb36-175"><a href="#cb36-175" aria-hidden="true" tabindex="-1"></a>        <span class="at">iter_warmup =</span> WARMUP,</span>
+<span id="cb36-176"><a href="#cb36-176" aria-hidden="true" tabindex="-1"></a>        <span class="at">chains =</span> CHAINS,</span>
+<span id="cb36-177"><a href="#cb36-177" aria-hidden="true" tabindex="-1"></a>        <span class="at">parallel_chains =</span> CHAINS,</span>
+<span id="cb36-178"><a href="#cb36-178" aria-hidden="true" tabindex="-1"></a>        <span class="at">thin =</span> CHAINS,</span>
+<span id="cb36-179"><a href="#cb36-179" aria-hidden="true" tabindex="-1"></a>        <span class="at">seed =</span> BAYES.SEED,</span>
+<span id="cb36-180"><a href="#cb36-180" aria-hidden="true" tabindex="-1"></a>        <span class="at">refresh =</span> REFRESH</span>
+<span id="cb36-181"><a href="#cb36-181" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb36-182"><a href="#cb36-182" aria-hidden="true" tabindex="-1"></a>    <span class="fu">saveObject</span>(joint_results, <span class="at">file =</span> save_file)</span>
+<span id="cb36-183"><a href="#cb36-183" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb36-184"><a href="#cb36-184" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-185"><a href="#cb36-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-186"><a href="#cb36-186" aria-hidden="true" tabindex="-1"></a>As mentioned before, also here we can get warnings at the beginning of the chains' sampling process ("The current Metropolis proposal is about to be rejected ..."). As long as this only happens in the beginning, and not during the sampling later, then this is not a cause for concern.</span>
+<span id="cb36-187"><a href="#cb36-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-188"><a href="#cb36-188" aria-hidden="true" tabindex="-1"></a>We note that the MCMC sampling process takes much longer here (about factor 10 more) compared to just fitting the TGI or the OS data separately. This is due to the more complex likelihood function calculations for the joint TGI-OS model.</span>
+<span id="cb36-189"><a href="#cb36-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-190"><a href="#cb36-190" aria-hidden="true" tabindex="-1"></a>Let's check the convergence of the population parameters. If we don't remember their names, we can query them as follows:</span>
+<span id="cb36-191"><a href="#cb36-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-194"><a href="#cb36-194" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-195"><a href="#cb36-195" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: joint_mod_params</span></span>
+<span id="cb36-196"><a href="#cb36-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-197"><a href="#cb36-197" aria-hidden="true" tabindex="-1"></a>joint_results</span>
+<span id="cb36-198"><a href="#cb36-198" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-199"><a href="#cb36-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-202"><a href="#cb36-202" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-203"><a href="#cb36-203" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: check_convergence</span></span>
+<span id="cb36-204"><a href="#cb36-204" aria-hidden="true" tabindex="-1"></a><span class="co">#| dependson: joint_model_fit</span></span>
+<span id="cb36-205"><a href="#cb36-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-206"><a href="#cb36-206" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb36-207"><a href="#cb36-207" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_mu_bsld"</span>,</span>
+<span id="cb36-208"><a href="#cb36-208" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_mu_ks"</span>,</span>
+<span id="cb36-209"><a href="#cb36-209" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_mu_kg"</span>,</span>
+<span id="cb36-210"><a href="#cb36-210" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_sigma"</span>,</span>
+<span id="cb36-211"><a href="#cb36-211" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_omega_bsld"</span>,</span>
+<span id="cb36-212"><a href="#cb36-212" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_omega_ks"</span>,</span>
+<span id="cb36-213"><a href="#cb36-213" aria-hidden="true" tabindex="-1"></a>    <span class="st">"lm_sf_omega_kg"</span>,</span>
+<span id="cb36-214"><a href="#cb36-214" aria-hidden="true" tabindex="-1"></a>    <span class="st">"beta_os_cov"</span>,</span>
+<span id="cb36-215"><a href="#cb36-215" aria-hidden="true" tabindex="-1"></a>    <span class="st">"sm_weibull_ph_gamma"</span>,</span>
+<span id="cb36-216"><a href="#cb36-216" aria-hidden="true" tabindex="-1"></a>    <span class="st">"sm_weibull_ph_lambda"</span>,</span>
+<span id="cb36-217"><a href="#cb36-217" aria-hidden="true" tabindex="-1"></a>    <span class="st">"link_growth"</span></span>
+<span id="cb36-218"><a href="#cb36-218" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-219"><a href="#cb36-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-220"><a href="#cb36-220" aria-hidden="true" tabindex="-1"></a>mcmc_joint_results <span class="ot">&lt;-</span> cmdstanr<span class="sc">::</span><span class="fu">as.CmdStanMCMC</span>(joint_results)</span>
+<span id="cb36-221"><a href="#cb36-221" aria-hidden="true" tabindex="-1"></a>mcmc_joint_results<span class="sc">$</span><span class="fu">summary</span>(vars)</span>
+<span id="cb36-222"><a href="#cb36-222" aria-hidden="true" tabindex="-1"></a>draws_joint_results <span class="ot">&lt;-</span> mcmc_joint_results<span class="sc">$</span><span class="fu">draws</span>(vars)</span>
+<span id="cb36-223"><a href="#cb36-223" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_trace</span>(draws_joint_results)</span>
+<span id="cb36-224"><a href="#cb36-224" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-225"><a href="#cb36-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-226"><a href="#cb36-226" aria-hidden="true" tabindex="-1"></a>So this looks good.</span>
+<span id="cb36-227"><a href="#cb36-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-228"><a href="#cb36-228" aria-hidden="true" tabindex="-1"></a><span class="fu">## Interpret covariate effects</span></span>
+<span id="cb36-229"><a href="#cb36-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-230"><a href="#cb36-230" aria-hidden="true" tabindex="-1"></a>In order to better see which of the survival model coefficients relate to which covariates, we can again rename them as follows:</span>
+<span id="cb36-231"><a href="#cb36-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-234"><a href="#cb36-234" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-235"><a href="#cb36-235" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: rename_os_cov_coefs</span></span>
+<span id="cb36-236"><a href="#cb36-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-237"><a href="#cb36-237" aria-hidden="true" tabindex="-1"></a>os_cov_name_mapping <span class="ot">&lt;-</span> <span class="cf">function</span>(surv_data) {</span>
+<span id="cb36-238"><a href="#cb36-238" aria-hidden="true" tabindex="-1"></a>    surv_data_design <span class="ot">&lt;-</span> <span class="fu">as_stan_list</span>(surv_data)<span class="sc">$</span>os_cov_design</span>
+<span id="cb36-239"><a href="#cb36-239" aria-hidden="true" tabindex="-1"></a>    os_cov_names <span class="ot">&lt;-</span> <span class="fu">colnames</span>(surv_data_design)</span>
+<span id="cb36-240"><a href="#cb36-240" aria-hidden="true" tabindex="-1"></a>    old_coef_names <span class="ot">&lt;-</span> <span class="fu">as.character</span>(glue<span class="sc">::</span><span class="fu">glue</span>(<span class="st">"beta_os_cov[{seq_along(os_cov_names)}]"</span>))</span>
+<span id="cb36-241"><a href="#cb36-241" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setNames</span>(old_coef_names, os_cov_names)</span>
+<span id="cb36-242"><a href="#cb36-242" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb36-243"><a href="#cb36-243" aria-hidden="true" tabindex="-1"></a>os_cov_renaming <span class="ot">&lt;-</span> <span class="fu">os_cov_name_mapping</span>(surv_data)</span>
+<span id="cb36-244"><a href="#cb36-244" aria-hidden="true" tabindex="-1"></a>draws_joint_results <span class="ot">&lt;-</span> <span class="fu">do.call</span>(</span>
+<span id="cb36-245"><a href="#cb36-245" aria-hidden="true" tabindex="-1"></a>    rename_variables,</span>
+<span id="cb36-246"><a href="#cb36-246" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="fu">list</span>(draws_joint_results), os_cov_renaming)</span>
+<span id="cb36-247"><a href="#cb36-247" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-248"><a href="#cb36-248" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_dens_overlay</span>(draws_joint_results) <span class="sc">+</span></span>
+<span id="cb36-249"><a href="#cb36-249" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>)</span>
+<span id="cb36-250"><a href="#cb36-250" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-251"><a href="#cb36-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-252"><a href="#cb36-252" aria-hidden="true" tabindex="-1"></a>If we compare this with the covariate effect estimates from the 2-stage OS model we did in the last session, then we can see:</span>
+<span id="cb36-253"><a href="#cb36-253" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb36-254"><a href="#cb36-254" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>the <span class="in">`log_kg_est`</span> effect (see <span class="in">`link_growth`</span> here) is stronger here, but also with larger uncertainty</span>
+<span id="cb36-255"><a href="#cb36-255" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>the <span class="in">`ecog`</span> effect is similar (clearly higher risk with ECOG 1)</span>
+<span id="cb36-256"><a href="#cb36-256" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>the <span class="in">`age`</span> effect is similar (no effect)</span>
+<span id="cb36-257"><a href="#cb36-257" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>the <span class="in">`race`</span> effect is similar (almost no effect)</span>
+<span id="cb36-258"><a href="#cb36-258" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>the <span class="in">`sex`</span> effect is similar (higher risk for males)</span>
+<span id="cb36-259"><a href="#cb36-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-260"><a href="#cb36-260" aria-hidden="true" tabindex="-1"></a>It is also interesting to look at the shrinkage and growth rate estimates from the SF model part: We see e.g. 0 shrinkage in arm 1, which is the control arm, while we see a strong shrinkage in arm 2, which is the Atezo arm.</span>
+<span id="cb36-261"><a href="#cb36-261" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-262"><a href="#cb36-262" aria-hidden="true" tabindex="-1"></a><span class="fu">## SLD vs longitudinal model fit</span></span>
+<span id="cb36-263"><a href="#cb36-263" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-264"><a href="#cb36-264" aria-hidden="true" tabindex="-1"></a>Let's first check the fit of the Stein-Fojo model to the SLD data. </span>
+<span id="cb36-265"><a href="#cb36-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-266"><a href="#cb36-266" aria-hidden="true" tabindex="-1"></a>The first step is to generate the predictions at the subject level. We can do this using the <span class="in">`LongitudinalQuantities()`</span> function, which takes the MCMC results and the grid at which the predictions should be made. Here we use the <span class="in">`GridObserved()`</span> function, which takes the IDs of the subjects for which the predictions should be made. Since each patient has its own plot, we sample a small subset of patient IDs here as an example only. In a real application we could write a simple loop that then processes batches of patients in sequence.</span>
+<span id="cb36-267"><a href="#cb36-267" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-270"><a href="#cb36-270" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-271"><a href="#cb36-271" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tgi_fit_pred</span></span>
+<span id="cb36-272"><a href="#cb36-272" aria-hidden="true" tabindex="-1"></a><span class="co">#| dependson: joint_model_fit</span></span>
+<span id="cb36-273"><a href="#cb36-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-274"><a href="#cb36-274" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">521</span>)</span>
+<span id="cb36-275"><a href="#cb36-275" aria-hidden="true" tabindex="-1"></a>pt_subset <span class="ot">&lt;-</span> <span class="fu">as.character</span>(<span class="fu">sample</span>(subj_df<span class="sc">$</span>id, <span class="dv">20</span>))</span>
+<span id="cb36-276"><a href="#cb36-276" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-277"><a href="#cb36-277" aria-hidden="true" tabindex="-1"></a>tgi_fit_pred <span class="ot">&lt;-</span> <span class="fu">LongitudinalQuantities</span>(</span>
+<span id="cb36-278"><a href="#cb36-278" aria-hidden="true" tabindex="-1"></a>    joint_results,</span>
+<span id="cb36-279"><a href="#cb36-279" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> <span class="fu">GridObserved</span>(<span class="at">subjects =</span> pt_subset)</span>
+<span id="cb36-280"><a href="#cb36-280" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-281"><a href="#cb36-281" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-282"><a href="#cb36-282" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-283"><a href="#cb36-283" aria-hidden="true" tabindex="-1"></a>Note that here again a Stan program needs to be compiled, which can take some time (but only the first time, because the executable is cached). This is because we pass the posterior samples to a Stan program which then generates the quantities of interest, here the Stein-Fojo model fit for each patient at the observed time points.</span>
+<span id="cb36-284"><a href="#cb36-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-285"><a href="#cb36-285" aria-hidden="true" tabindex="-1"></a>Now we can plot the predictions:</span>
+<span id="cb36-286"><a href="#cb36-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-289"><a href="#cb36-289" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-290"><a href="#cb36-290" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tgi_fit_plot</span></span>
+<span id="cb36-291"><a href="#cb36-291" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-292"><a href="#cb36-292" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(tgi_fit_pred) <span class="sc">+</span></span>
+<span id="cb36-293"><a href="#cb36-293" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Time (years)"</span>, <span class="at">y =</span> <span class="st">"SLD (mm)"</span>)</span>
+<span id="cb36-294"><a href="#cb36-294" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-295"><a href="#cb36-295" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-296"><a href="#cb36-296" aria-hidden="true" tabindex="-1"></a>We can see that the model fits the data well, with the estimates Stein-Fojo model curves closely following the observed values.</span>
+<span id="cb36-297"><a href="#cb36-297" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-298"><a href="#cb36-298" aria-hidden="true" tabindex="-1"></a><span class="fu">## Kaplan-Meier vs survival model fit</span></span>
+<span id="cb36-299"><a href="#cb36-299" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-300"><a href="#cb36-300" aria-hidden="true" tabindex="-1"></a>Another useful plot displays the model predicted survival function and overlays the non-parametric Kaplan-Meier plot to it.</span>
+<span id="cb36-301"><a href="#cb36-301" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-302"><a href="#cb36-302" aria-hidden="true" tabindex="-1"></a>The first step consists in generating the survival predictions at the group level with the <span class="in">`SurvivalQuantities()`</span> function. </span>
+<span id="cb36-303"><a href="#cb36-303" aria-hidden="true" tabindex="-1"></a>In order to do this, we use now the <span class="in">`GridGrouped()`</span> function, which takes the time points at which the predictions should be made and the groups for which the predictions should be made (as a list containing the IDs in each element defining the group).</span>
+<span id="cb36-304"><a href="#cb36-304" aria-hidden="true" tabindex="-1"></a>This works the same way as in the previous session with the OS model.</span>
+<span id="cb36-305"><a href="#cb36-305" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-308"><a href="#cb36-308" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-309"><a href="#cb36-309" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_surv_pred</span></span>
+<span id="cb36-310"><a href="#cb36-310" aria-hidden="true" tabindex="-1"></a>time_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="fu">max</span>(os_data<span class="sc">$</span>os_time), <span class="at">length =</span> <span class="dv">100</span>)</span>
+<span id="cb36-311"><a href="#cb36-311" aria-hidden="true" tabindex="-1"></a>os_surv_group_grid <span class="ot">&lt;-</span> <span class="fu">GridGrouped</span>(</span>
+<span id="cb36-312"><a href="#cb36-312" aria-hidden="true" tabindex="-1"></a>    <span class="at">times =</span> time_grid,</span>
+<span id="cb36-313"><a href="#cb36-313" aria-hidden="true" tabindex="-1"></a>    <span class="at">groups =</span> <span class="fu">with</span>(</span>
+<span id="cb36-314"><a href="#cb36-314" aria-hidden="true" tabindex="-1"></a>        subj_df,</span>
+<span id="cb36-315"><a href="#cb36-315" aria-hidden="true" tabindex="-1"></a>        <span class="fu">split</span>(<span class="fu">as.character</span>(id), arm)</span>
+<span id="cb36-316"><a href="#cb36-316" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb36-317"><a href="#cb36-317" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-318"><a href="#cb36-318" aria-hidden="true" tabindex="-1"></a>os_surv_pred <span class="ot">&lt;-</span> <span class="fu">SurvivalQuantities</span>(</span>
+<span id="cb36-319"><a href="#cb36-319" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> joint_results,</span>
+<span id="cb36-320"><a href="#cb36-320" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> os_surv_group_grid,</span>
+<span id="cb36-321"><a href="#cb36-321" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"surv"</span></span>
+<span id="cb36-322"><a href="#cb36-322" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-323"><a href="#cb36-323" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-324"><a href="#cb36-324" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-325"><a href="#cb36-325" aria-hidden="true" tabindex="-1"></a>Now we can use the <span class="in">`autoplot()`</span> method:</span>
+<span id="cb36-326"><a href="#cb36-326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-329"><a href="#cb36-329" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-330"><a href="#cb36-330" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_surv_plot</span></span>
+<span id="cb36-331"><a href="#cb36-331" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(os_surv_pred, <span class="at">add_km =</span> <span class="cn">TRUE</span>, <span class="at">add_wrap =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb36-332"><a href="#cb36-332" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-333"><a href="#cb36-333" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-334"><a href="#cb36-334" aria-hidden="true" tabindex="-1"></a>We can see that the fit looks adequate, with the modelled survival functions closely following the Kaplan-Meier curves in each treatment group. Of note, this fit looks better than in the 2-stage TGI-OS model from the previous session.</span>
+<span id="cb36-335"><a href="#cb36-335" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-336"><a href="#cb36-336" aria-hidden="true" tabindex="-1"></a><span class="fu">## Hazard and hazard rate estimation</span></span>
+<span id="cb36-337"><a href="#cb36-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-338"><a href="#cb36-338" aria-hidden="true" tabindex="-1"></a>Similarly to the survival function estimation, we can also estimate the hazard function by treatment group.</span>
+<span id="cb36-339"><a href="#cb36-339" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-342"><a href="#cb36-342" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-343"><a href="#cb36-343" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_hazard_pred</span></span>
+<span id="cb36-344"><a href="#cb36-344" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-345"><a href="#cb36-345" aria-hidden="true" tabindex="-1"></a>os_hazard_pred <span class="ot">&lt;-</span> <span class="fu">SurvivalQuantities</span>(</span>
+<span id="cb36-346"><a href="#cb36-346" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> joint_results,</span>
+<span id="cb36-347"><a href="#cb36-347" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> os_surv_group_grid,</span>
+<span id="cb36-348"><a href="#cb36-348" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"haz"</span></span>
+<span id="cb36-349"><a href="#cb36-349" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-350"><a href="#cb36-350" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-351"><a href="#cb36-351" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-352"><a href="#cb36-352" aria-hidden="true" tabindex="-1"></a>Also this can be plotted using the <span class="in">`autoplot()`</span> method:</span>
+<span id="cb36-353"><a href="#cb36-353" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-356"><a href="#cb36-356" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-357"><a href="#cb36-357" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_hazard_plot</span></span>
+<span id="cb36-358"><a href="#cb36-358" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-359"><a href="#cb36-359" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(os_hazard_pred, <span class="at">add_wrap =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb36-360"><a href="#cb36-360" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-361"><a href="#cb36-361" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-362"><a href="#cb36-362" aria-hidden="true" tabindex="-1"></a>We can already see here that this looks slightly different than the same plot from the 2-step TGI-OS model: </span>
+<span id="cb36-363"><a href="#cb36-363" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-364"><a href="#cb36-364" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The hazards are higher</span>
+<span id="cb36-365"><a href="#cb36-365" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The uncertainty is considerably larger</span>
+<span id="cb36-366"><a href="#cb36-366" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-367"><a href="#cb36-367" aria-hidden="true" tabindex="-1"></a>Now let's look at the estimated hazard ratio:</span>
+<span id="cb36-368"><a href="#cb36-368" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-371"><a href="#cb36-371" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-372"><a href="#cb36-372" aria-hidden="true" tabindex="-1"></a>os_hr_est <span class="ot">&lt;-</span> os_hazard_pred <span class="sc">|&gt;</span></span>
+<span id="cb36-373"><a href="#cb36-373" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
+<span id="cb36-374"><a href="#cb36-374" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(group, time) <span class="sc">|&gt;</span></span>
+<span id="cb36-375"><a href="#cb36-375" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">sample =</span> <span class="fu">row_number</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb36-376"><a href="#cb36-376" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> group, <span class="at">values_from =</span> values) <span class="sc">|&gt;</span></span>
+<span id="cb36-377"><a href="#cb36-377" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">hr =</span> MPDL3280A <span class="sc">/</span> Docetaxel) <span class="sc">|&gt;</span></span>
+<span id="cb36-378"><a href="#cb36-378" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(time) <span class="sc">|&gt;</span></span>
+<span id="cb36-379"><a href="#cb36-379" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(</span>
+<span id="cb36-380"><a href="#cb36-380" aria-hidden="true" tabindex="-1"></a>        <span class="at">mean =</span> <span class="fu">mean</span>(hr, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb36-381"><a href="#cb36-381" aria-hidden="true" tabindex="-1"></a>        <span class="at">lower =</span> <span class="fu">quantile</span>(hr, <span class="fl">0.05</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb36-382"><a href="#cb36-382" aria-hidden="true" tabindex="-1"></a>        <span class="at">upper =</span> <span class="fu">quantile</span>(hr, <span class="fl">0.95</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb36-383"><a href="#cb36-383" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb36-384"><a href="#cb36-384" aria-hidden="true" tabindex="-1"></a>    <span class="fu">na.omit</span>() <span class="co"># Omit the time = 0 which has NA</span></span>
+<span id="cb36-385"><a href="#cb36-385" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(os_hr_est)</span>
+<span id="cb36-386"><a href="#cb36-386" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-387"><a href="#cb36-387" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-388"><a href="#cb36-388" aria-hidden="true" tabindex="-1"></a>Also here the hazard ratio is indeed constant over time, which was the same in the 2-step TGI-OS model.</span>
+<span id="cb36-389"><a href="#cb36-389" aria-hidden="true" tabindex="-1"></a>This is because the link between the longitudinal and the survival model is here the log growth rate of the Stein-Fojo model, which is constant over time. For other link functions that are time-varying, e.g. the derivative of the longitudinal model, the hazard ratio could change over time.</span>
+<span id="cb36-390"><a href="#cb36-390" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-391"><a href="#cb36-391" aria-hidden="true" tabindex="-1"></a>So here the estimated hazard ratio is <span class="in">`r round(os_hr_est$mean[1], 2)`</span> with a 90% credible interval of <span class="in">`r round(os_hr_est$lower[1], 2)`</span> to <span class="in">`r round(os_hr_est$upper[1], 2)`</span>. We can see that this hazard ratio estimate is slightly lower, representing a slightly stronger effect estimate. Due to the larger uncertainty, which is due to the propagation of the log growth rate uncertainty to the OS model, the 90% CI now actually includes 1, in contrast to the 2-step TGI-OS model.</span>
+<span id="cb36-392"><a href="#cb36-392" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-393"><a href="#cb36-393" aria-hidden="true" tabindex="-1"></a><span class="fu">## Alternative time-varying link</span></span>
+<span id="cb36-394"><a href="#cb36-394" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-395"><a href="#cb36-395" aria-hidden="true" tabindex="-1"></a>We would like to illustrate how the hazard ratio could change over time if we used a time-varying link function. For this we will use the derivative of the Stein-Fojo model as the link function, utilizing the <span class="in">`linkDLSD`</span> class in <span class="in">`jmpost`</span>. </span>
+<span id="cb36-396"><a href="#cb36-396" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-397"><a href="#cb36-397" aria-hidden="true" tabindex="-1"></a>Note that at the moment, we can unfortunately not conveniently reuse the slots from the <span class="in">`JointModel`</span> object (<span class="in">`joint_mod@longitudinal`</span> and <span class="in">`joint_mod@survival`</span>) to create a new model with a different link function, because during the object creation already Stan parameter names are created, which don't fit then anymore here. So if needed, it would be better to save the object from <span class="in">`LongitudinalSteinFojo()`</span> first and then use it in both models, and similarly for the <span class="in">`SurvivalWeibullPH()`</span> object. Here we just copy/paste the model specification now.</span>
+<span id="cb36-398"><a href="#cb36-398" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-401"><a href="#cb36-401" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-402"><a href="#cb36-402" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: joint_mod_dsld_spec</span></span>
+<span id="cb36-403"><a href="#cb36-403" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-404"><a href="#cb36-404" aria-hidden="true" tabindex="-1"></a>joint_mod_dsld <span class="ot">&lt;-</span> <span class="fu">JointModel</span>(</span>
+<span id="cb36-405"><a href="#cb36-405" aria-hidden="true" tabindex="-1"></a>    <span class="at">longitudinal =</span> <span class="fu">LongitudinalSteinFojo</span>(</span>
+<span id="cb36-406"><a href="#cb36-406" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_bsld =</span> <span class="fu">prior_normal</span>(<span class="fu">log</span>(<span class="dv">65</span>), <span class="dv">1</span>),</span>
+<span id="cb36-407"><a href="#cb36-407" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_ks =</span> <span class="fu">prior_normal</span>(<span class="fu">log</span>(<span class="fl">0.52</span>), <span class="dv">1</span>),</span>
+<span id="cb36-408"><a href="#cb36-408" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_kg =</span> <span class="fu">prior_normal</span>(<span class="fu">log</span>(<span class="fl">1.04</span>), <span class="dv">1</span>),</span>
+<span id="cb36-409"><a href="#cb36-409" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_bsld =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="fu">set_limits</span>(<span class="dv">0</span>, <span class="cn">Inf</span>),</span>
+<span id="cb36-410"><a href="#cb36-410" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_ks =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="fu">set_limits</span>(<span class="dv">0</span>, <span class="cn">Inf</span>),</span>
+<span id="cb36-411"><a href="#cb36-411" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_kg =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="fu">set_limits</span>(<span class="dv">0</span>, <span class="cn">Inf</span>),</span>
+<span id="cb36-412"><a href="#cb36-412" aria-hidden="true" tabindex="-1"></a>        <span class="at">sigma =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">3</span>) <span class="sc">|&gt;</span> <span class="fu">set_limits</span>(<span class="dv">0</span>, <span class="cn">Inf</span>)</span>
+<span id="cb36-413"><a href="#cb36-413" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb36-414"><a href="#cb36-414" aria-hidden="true" tabindex="-1"></a>    <span class="at">survival =</span> <span class="fu">SurvivalWeibullPH</span>(</span>
+<span id="cb36-415"><a href="#cb36-415" aria-hidden="true" tabindex="-1"></a>        <span class="at">lambda =</span> <span class="fu">prior_gamma</span>(<span class="fl">0.7</span>, <span class="dv">1</span>),</span>
+<span id="cb36-416"><a href="#cb36-416" aria-hidden="true" tabindex="-1"></a>        <span class="at">gamma =</span> <span class="fu">prior_gamma</span>(<span class="fl">1.5</span>, <span class="dv">1</span>),</span>
+<span id="cb36-417"><a href="#cb36-417" aria-hidden="true" tabindex="-1"></a>        <span class="at">beta =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">20</span>)</span>
+<span id="cb36-418"><a href="#cb36-418" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb36-419"><a href="#cb36-419" aria-hidden="true" tabindex="-1"></a>    <span class="at">link =</span> <span class="fu">linkDSLD</span>(</span>
+<span id="cb36-420"><a href="#cb36-420" aria-hidden="true" tabindex="-1"></a>        <span class="at">prior =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">10</span>) <span class="co"># Reduce here a bit to help with convergence ...</span></span>
+<span id="cb36-421"><a href="#cb36-421" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb36-422"><a href="#cb36-422" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-423"><a href="#cb36-423" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-424"><a href="#cb36-424" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-425"><a href="#cb36-425" aria-hidden="true" tabindex="-1"></a>Let's check the initial values again:</span>
+<span id="cb36-426"><a href="#cb36-426" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-429"><a href="#cb36-429" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-430"><a href="#cb36-430" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: joint_mod_dsld_initial_values</span></span>
+<span id="cb36-431"><a href="#cb36-431" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-432"><a href="#cb36-432" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="st">"jmpost.prior_shrinkage"</span> <span class="ot">=</span> <span class="fl">0.999</span>)</span>
+<span id="cb36-433"><a href="#cb36-433" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-434"><a href="#cb36-434" aria-hidden="true" tabindex="-1"></a><span class="fu">initialValues</span>(joint_mod_dsld, <span class="at">n_chains =</span> CHAINS)</span>
+<span id="cb36-435"><a href="#cb36-435" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-436"><a href="#cb36-436" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-437"><a href="#cb36-437" aria-hidden="true" tabindex="-1"></a>Now we fit this model:</span>
+<span id="cb36-438"><a href="#cb36-438" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-441"><a href="#cb36-441" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-442"><a href="#cb36-442" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: joint_model_dsld_fit</span></span>
+<span id="cb36-443"><a href="#cb36-443" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-444"><a href="#cb36-444" aria-hidden="true" tabindex="-1"></a>save_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-jm/jm3.rds"</span>)</span>
+<span id="cb36-445"><a href="#cb36-445" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(save_file)) {</span>
+<span id="cb36-446"><a href="#cb36-446" aria-hidden="true" tabindex="-1"></a>    joint_results_dsld <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_file)</span>
+<span id="cb36-447"><a href="#cb36-447" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb36-448"><a href="#cb36-448" aria-hidden="true" tabindex="-1"></a>    joint_results_dsld <span class="ot">&lt;-</span> <span class="fu">sampleStanModel</span>(</span>
+<span id="cb36-449"><a href="#cb36-449" aria-hidden="true" tabindex="-1"></a>        joint_mod_dsld,</span>
+<span id="cb36-450"><a href="#cb36-450" aria-hidden="true" tabindex="-1"></a>        <span class="at">data =</span> joint_data,</span>
+<span id="cb36-451"><a href="#cb36-451" aria-hidden="true" tabindex="-1"></a>        <span class="at">iter_sampling =</span> ITER,</span>
+<span id="cb36-452"><a href="#cb36-452" aria-hidden="true" tabindex="-1"></a>        <span class="at">iter_warmup =</span> WARMUP,</span>
+<span id="cb36-453"><a href="#cb36-453" aria-hidden="true" tabindex="-1"></a>        <span class="at">chains =</span> CHAINS,</span>
+<span id="cb36-454"><a href="#cb36-454" aria-hidden="true" tabindex="-1"></a>        <span class="at">parallel_chains =</span> CHAINS,</span>
+<span id="cb36-455"><a href="#cb36-455" aria-hidden="true" tabindex="-1"></a>        <span class="at">thin =</span> CHAINS,</span>
+<span id="cb36-456"><a href="#cb36-456" aria-hidden="true" tabindex="-1"></a>        <span class="at">seed =</span> BAYES.SEED,</span>
+<span id="cb36-457"><a href="#cb36-457" aria-hidden="true" tabindex="-1"></a>        <span class="at">refresh =</span> REFRESH</span>
+<span id="cb36-458"><a href="#cb36-458" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb36-459"><a href="#cb36-459" aria-hidden="true" tabindex="-1"></a>    <span class="fu">saveObject</span>(joint_results_dsld, <span class="at">file =</span> save_file)</span>
+<span id="cb36-460"><a href="#cb36-460" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb36-461"><a href="#cb36-461" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-462"><a href="#cb36-462" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-463"><a href="#cb36-463" aria-hidden="true" tabindex="-1"></a>Let's check the convergence of the population parameters:</span>
+<span id="cb36-464"><a href="#cb36-464" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-467"><a href="#cb36-467" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-468"><a href="#cb36-468" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: check_convergence_dsld</span></span>
+<span id="cb36-469"><a href="#cb36-469" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-470"><a href="#cb36-470" aria-hidden="true" tabindex="-1"></a>vars_dsld <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"link_dsld"</span>, <span class="fu">setdiff</span>(vars, <span class="st">"link_growth"</span>))</span>
+<span id="cb36-471"><a href="#cb36-471" aria-hidden="true" tabindex="-1"></a>mcmc_joint_results_dsld <span class="ot">&lt;-</span> cmdstanr<span class="sc">::</span><span class="fu">as.CmdStanMCMC</span>(joint_results_dsld)</span>
+<span id="cb36-472"><a href="#cb36-472" aria-hidden="true" tabindex="-1"></a>mcmc_joint_results_dsld<span class="sc">$</span><span class="fu">summary</span>(vars_dsld)</span>
+<span id="cb36-473"><a href="#cb36-473" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-474"><a href="#cb36-474" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-475"><a href="#cb36-475" aria-hidden="true" tabindex="-1"></a>So that looks ok.</span>
+<span id="cb36-476"><a href="#cb36-476" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-477"><a href="#cb36-477" aria-hidden="true" tabindex="-1"></a>Let's now calculate the hazard function and hazard ratio for this model. Again we will need to wait for the compilation, because now it is a different model.</span>
+<span id="cb36-478"><a href="#cb36-478" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-481"><a href="#cb36-481" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-482"><a href="#cb36-482" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_hazard_dsld_pred</span></span>
+<span id="cb36-483"><a href="#cb36-483" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-484"><a href="#cb36-484" aria-hidden="true" tabindex="-1"></a>os_hazard_dsld_pred <span class="ot">&lt;-</span> <span class="fu">SurvivalQuantities</span>(</span>
+<span id="cb36-485"><a href="#cb36-485" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> joint_results_dsld,</span>
+<span id="cb36-486"><a href="#cb36-486" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> os_surv_group_grid,</span>
+<span id="cb36-487"><a href="#cb36-487" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"haz"</span></span>
+<span id="cb36-488"><a href="#cb36-488" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-489"><a href="#cb36-489" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-490"><a href="#cb36-490" aria-hidden="true" tabindex="-1"></a>os_hr_est_dsld <span class="ot">&lt;-</span> os_hazard_dsld_pred <span class="sc">|&gt;</span></span>
+<span id="cb36-491"><a href="#cb36-491" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
+<span id="cb36-492"><a href="#cb36-492" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(group, time) <span class="sc">|&gt;</span></span>
+<span id="cb36-493"><a href="#cb36-493" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">sample =</span> <span class="fu">row_number</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb36-494"><a href="#cb36-494" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">values =</span> <span class="fu">pmin</span>(values, <span class="dv">100</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb36-495"><a href="#cb36-495" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> group, <span class="at">values_from =</span> values) <span class="sc">|&gt;</span></span>
+<span id="cb36-496"><a href="#cb36-496" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">hr =</span> MPDL3280A <span class="sc">/</span> Docetaxel) <span class="sc">|&gt;</span></span>
+<span id="cb36-497"><a href="#cb36-497" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(time) <span class="sc">|&gt;</span></span>
+<span id="cb36-498"><a href="#cb36-498" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(</span>
+<span id="cb36-499"><a href="#cb36-499" aria-hidden="true" tabindex="-1"></a>        <span class="at">mean =</span> <span class="fu">mean</span>(hr, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb36-500"><a href="#cb36-500" aria-hidden="true" tabindex="-1"></a>        <span class="at">median =</span> <span class="fu">median</span>(hr, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb36-501"><a href="#cb36-501" aria-hidden="true" tabindex="-1"></a>        <span class="at">lower =</span> <span class="fu">quantile</span>(hr, <span class="fl">0.05</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb36-502"><a href="#cb36-502" aria-hidden="true" tabindex="-1"></a>        <span class="at">upper =</span> <span class="fu">quantile</span>(hr, <span class="fl">0.95</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb36-503"><a href="#cb36-503" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb36-504"><a href="#cb36-504" aria-hidden="true" tabindex="-1"></a>    <span class="fu">na.omit</span>() <span class="co"># Omit the time = 0 which has NA</span></span>
+<span id="cb36-505"><a href="#cb36-505" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(os_hr_est_dsld)</span>
+<span id="cb36-506"><a href="#cb36-506" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-507"><a href="#cb36-507" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-508"><a href="#cb36-508" aria-hidden="true" tabindex="-1"></a>Here we truncate the hazard values at an upper bound of 100, because due to the time-varying link function, the hazard can become very large at some time points, which can lead to numerical issues.</span>
+<span id="cb36-509"><a href="#cb36-509" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-510"><a href="#cb36-510" aria-hidden="true" tabindex="-1"></a>So now we can see that the estimated hazard ratio is no longer constant over time. Let's try to plot it:</span>
+<span id="cb36-511"><a href="#cb36-511" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-514"><a href="#cb36-514" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-515"><a href="#cb36-515" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_hr_plot_dsld</span></span>
+<span id="cb36-516"><a href="#cb36-516" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-517"><a href="#cb36-517" aria-hidden="true" tabindex="-1"></a>os_hr_est_dsld <span class="sc">|&gt;</span></span>
+<span id="cb36-518"><a href="#cb36-518" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> median)) <span class="sc">+</span></span>
+<span id="cb36-519"><a href="#cb36-519" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb36-520"><a href="#cb36-520" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> lower, <span class="at">ymax =</span> upper), <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb36-521"><a href="#cb36-521" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb36-522"><a href="#cb36-522" aria-hidden="true" tabindex="-1"></a>        <span class="at">y =</span> <span class="st">"Hazard ratio (MPDL3280A / Docetaxel)"</span>,</span>
+<span id="cb36-523"><a href="#cb36-523" aria-hidden="true" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">"Time-varying hazard ratio"</span></span>
+<span id="cb36-524"><a href="#cb36-524" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb36-525"><a href="#cb36-525" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-526"><a href="#cb36-526" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-527"><a href="#cb36-527" aria-hidden="true" tabindex="-1"></a>Also here we see very large hazard ratio values between 0.25 and 1 year. So in this case this model would not be very useful in practice.</span>
+<span id="cb36-528"><a href="#cb36-528" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-529"><a href="#cb36-529" aria-hidden="true" tabindex="-1"></a>Let's still quickly have a look at the fitted survival functions if they look reasonable:</span>
+<span id="cb36-530"><a href="#cb36-530" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-533"><a href="#cb36-533" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-534"><a href="#cb36-534" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_surv_plot_dsld</span></span>
+<span id="cb36-535"><a href="#cb36-535" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-536"><a href="#cb36-536" aria-hidden="true" tabindex="-1"></a>os_surv_dsld_pred <span class="ot">&lt;-</span> <span class="fu">SurvivalQuantities</span>(</span>
+<span id="cb36-537"><a href="#cb36-537" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> joint_results_dsld,</span>
+<span id="cb36-538"><a href="#cb36-538" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> os_surv_group_grid,</span>
+<span id="cb36-539"><a href="#cb36-539" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"surv"</span></span>
+<span id="cb36-540"><a href="#cb36-540" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-541"><a href="#cb36-541" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(os_surv_dsld_pred, <span class="at">add_km =</span> <span class="cn">TRUE</span>, <span class="at">add_wrap =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb36-542"><a href="#cb36-542" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-543"><a href="#cb36-543" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-544"><a href="#cb36-544" aria-hidden="true" tabindex="-1"></a>So this looks reasonable. So we might need to revisit the derivative calculation again for this model to see if there is something to improve in the <span class="in">`jmpost`</span> code.</span>
+<span id="cb36-545"><a href="#cb36-545" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-546"><a href="#cb36-546" aria-hidden="true" tabindex="-1"></a><span class="fu">## Model comparison</span></span>
+<span id="cb36-547"><a href="#cb36-547" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-548"><a href="#cb36-548" aria-hidden="true" tabindex="-1"></a>We can again use the <span class="co">[</span><span class="ot">Brier score</span><span class="co">](https://en.wikipedia.org/wiki/Brier_score)</span> to compare the two different survival models as part of the joint models. The Brier score is a measure of the mean squared difference between the predicted survival probability and the actual survival status. The lower the Brier score, the better the model.</span>
+<span id="cb36-549"><a href="#cb36-549" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-550"><a href="#cb36-550" aria-hidden="true" tabindex="-1"></a>To calculate it, we need to use the <span class="in">`GridFixed`</span> input for <span class="in">`SurvivalQuantities()`</span>. This is because the Brier score is calculated at fixed time points across all patients, and not at the observed time points of specific patients. Because we don't specify patient IDs, the quantities are generated for all patients.</span>
+<span id="cb36-551"><a href="#cb36-551" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-554"><a href="#cb36-554" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-555"><a href="#cb36-555" aria-hidden="true" tabindex="-1"></a>os_surv_fixed <span class="ot">&lt;-</span> <span class="fu">SurvivalQuantities</span>(</span>
+<span id="cb36-556"><a href="#cb36-556" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> joint_results,</span>
+<span id="cb36-557"><a href="#cb36-557" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> <span class="fu">GridFixed</span>(<span class="at">times =</span> time_grid),</span>
+<span id="cb36-558"><a href="#cb36-558" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"surv"</span></span>
+<span id="cb36-559"><a href="#cb36-559" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-560"><a href="#cb36-560" aria-hidden="true" tabindex="-1"></a>os_bs <span class="ot">&lt;-</span> <span class="fu">brierScore</span>(os_surv_fixed)</span>
+<span id="cb36-561"><a href="#cb36-561" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-562"><a href="#cb36-562" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-563"><a href="#cb36-563" aria-hidden="true" tabindex="-1"></a>Now let's compare this with the second model where we have the derivative link. We have a suspicion that the second model will perform worse, because of the hazard ratio results, but let's have a look.</span>
+<span id="cb36-564"><a href="#cb36-564" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-567"><a href="#cb36-567" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-568"><a href="#cb36-568" aria-hidden="true" tabindex="-1"></a>os_surv_dsld_fixed <span class="ot">&lt;-</span> <span class="fu">SurvivalQuantities</span>(</span>
+<span id="cb36-569"><a href="#cb36-569" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> joint_results_dsld,</span>
+<span id="cb36-570"><a href="#cb36-570" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> <span class="fu">GridFixed</span>(<span class="at">times =</span> time_grid),</span>
+<span id="cb36-571"><a href="#cb36-571" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"surv"</span></span>
+<span id="cb36-572"><a href="#cb36-572" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-573"><a href="#cb36-573" aria-hidden="true" tabindex="-1"></a>os_dsld_bs <span class="ot">&lt;-</span> <span class="fu">brierScore</span>(os_surv_dsld_fixed)</span>
+<span id="cb36-574"><a href="#cb36-574" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-575"><a href="#cb36-575" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-576"><a href="#cb36-576" aria-hidden="true" tabindex="-1"></a>We can plot the Brier scores to compare them visually:</span>
+<span id="cb36-577"><a href="#cb36-577" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-580"><a href="#cb36-580" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb36-581"><a href="#cb36-581" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: brier_scores_plot</span></span>
+<span id="cb36-582"><a href="#cb36-582" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-583"><a href="#cb36-583" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb36-584"><a href="#cb36-584" aria-hidden="true" tabindex="-1"></a>    <span class="at">time =</span> time_grid,</span>
+<span id="cb36-585"><a href="#cb36-585" aria-hidden="true" tabindex="-1"></a>    <span class="at">brier_score_diff =</span> os_bs <span class="sc">-</span> os_dsld_bs</span>
+<span id="cb36-586"><a href="#cb36-586" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb36-587"><a href="#cb36-587" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> brier_score_diff)) <span class="sc">+</span></span>
+<span id="cb36-588"><a href="#cb36-588" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb36-589"><a href="#cb36-589" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Brier score difference (1 - 2)"</span>) <span class="sc">+</span></span>
+<span id="cb36-590"><a href="#cb36-590" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>)</span>
+<span id="cb36-591"><a href="#cb36-591" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb36-592"><a href="#cb36-592" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-593"><a href="#cb36-593" aria-hidden="true" tabindex="-1"></a>As expected, we see that especially for the times between 0.5 and 2 years the first model with the growth link performs better than the second model with the derivative link.</span>
+<span id="cb36-594"><a href="#cb36-594" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-595"><a href="#cb36-595" aria-hidden="true" tabindex="-1"></a>Currently, the LOOIC does not work here yet, because the <span class="in">`log_lik`</span> is not included in the samples.</span>
+</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/RCONIS/tgi-os-training/edit/main/session-jm/1_jm-jmpost.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/RCONIS/tgi-os-training/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

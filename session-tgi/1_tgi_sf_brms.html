@@ -8,7 +8,7 @@
 
 <meta name="author" content="Daniel Sabanés Bové">
 <meta name="author" content="Francois Mercier">
-<meta name="dcterms.date" content="2025-04-10">
+<meta name="dcterms.date" content="2025-04-25">
 
 <title>1. TGI model minimal workflow with brms – TGI-OS Training</title>
 <style>
@@ -75,7 +75,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-d4d76bf8491c20bad77d141916dc28e1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-f9c7e5d2d3782bd4f414016107dfc2cc.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-45204b72a2a947c2139097db84dadf54.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -182,12 +182,35 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Session 2: OS</span></a>
+ <span class="menu-text">Session 3: TGI-OS</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../session-jm/0_setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0. Setup and data preparation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../session-jm/1_jm-jmpost.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. TGI-OS joint model minimal workflow with <code>jmpost</code></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 2: OS</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../session-os/0_setup.html" class="sidebar-item-text sidebar-link">
@@ -210,13 +233,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
  <span class="menu-text">Session 1: TGI</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../session-tgi/0_setup.html" class="sidebar-item-text sidebar-link">
@@ -300,7 +323,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2025-04-10</p>
+      <p class="date">2025-04-25</p>
     </div>
   </div>
   
@@ -751,23 +774,23 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>post_sum</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="hsonbqqvlk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#hsonbqqvlk table {
+<div id="uqfemvmmrh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#uqfemvmmrh table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#hsonbqqvlk thead, #hsonbqqvlk tbody, #hsonbqqvlk tfoot, #hsonbqqvlk tr, #hsonbqqvlk td, #hsonbqqvlk th {
+#uqfemvmmrh thead, #uqfemvmmrh tbody, #uqfemvmmrh tfoot, #uqfemvmmrh tr, #uqfemvmmrh td, #uqfemvmmrh th {
   border-style: none;
 }
 
-#hsonbqqvlk p {
+#uqfemvmmrh p {
   margin: 0;
   padding: 0;
 }
 
-#hsonbqqvlk .gt_table {
+#uqfemvmmrh .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -793,12 +816,12 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#hsonbqqvlk .gt_caption {
+#uqfemvmmrh .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#hsonbqqvlk .gt_title {
+#uqfemvmmrh .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -810,7 +833,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-width: 0;
 }
 
-#hsonbqqvlk .gt_subtitle {
+#uqfemvmmrh .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -822,7 +845,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-top-width: 0;
 }
 
-#hsonbqqvlk .gt_heading {
+#uqfemvmmrh .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -834,13 +857,13 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#hsonbqqvlk .gt_bottom_border {
+#uqfemvmmrh .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#hsonbqqvlk .gt_col_headings {
+#uqfemvmmrh .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -855,7 +878,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#hsonbqqvlk .gt_col_heading {
+#uqfemvmmrh .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -875,7 +898,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   overflow-x: hidden;
 }
 
-#hsonbqqvlk .gt_column_spanner_outer {
+#uqfemvmmrh .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -887,15 +910,15 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 4px;
 }
 
-#hsonbqqvlk .gt_column_spanner_outer:first-child {
+#uqfemvmmrh .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#hsonbqqvlk .gt_column_spanner_outer:last-child {
+#uqfemvmmrh .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#hsonbqqvlk .gt_column_spanner {
+#uqfemvmmrh .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -907,11 +930,11 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   width: 100%;
 }
 
-#hsonbqqvlk .gt_spanner_row {
+#uqfemvmmrh .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#hsonbqqvlk .gt_group_heading {
+#uqfemvmmrh .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -937,7 +960,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   text-align: left;
 }
 
-#hsonbqqvlk .gt_empty_group_heading {
+#uqfemvmmrh .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -952,15 +975,15 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   vertical-align: middle;
 }
 
-#hsonbqqvlk .gt_from_md > :first-child {
+#uqfemvmmrh .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#hsonbqqvlk .gt_from_md > :last-child {
+#uqfemvmmrh .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#hsonbqqvlk .gt_row {
+#uqfemvmmrh .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -979,7 +1002,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   overflow-x: hidden;
 }
 
-#hsonbqqvlk .gt_stub {
+#uqfemvmmrh .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -992,7 +1015,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#hsonbqqvlk .gt_stub_row_group {
+#uqfemvmmrh .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1006,15 +1029,15 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   vertical-align: top;
 }
 
-#hsonbqqvlk .gt_row_group_first td {
+#uqfemvmmrh .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#hsonbqqvlk .gt_row_group_first th {
+#uqfemvmmrh .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#hsonbqqvlk .gt_summary_row {
+#uqfemvmmrh .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1024,16 +1047,16 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#hsonbqqvlk .gt_first_summary_row {
+#uqfemvmmrh .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#hsonbqqvlk .gt_first_summary_row.thick {
+#uqfemvmmrh .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#hsonbqqvlk .gt_last_summary_row {
+#uqfemvmmrh .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1043,7 +1066,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#hsonbqqvlk .gt_grand_summary_row {
+#uqfemvmmrh .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1053,7 +1076,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#hsonbqqvlk .gt_first_grand_summary_row {
+#uqfemvmmrh .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1063,7 +1086,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#hsonbqqvlk .gt_last_grand_summary_row_top {
+#uqfemvmmrh .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1073,11 +1096,11 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#hsonbqqvlk .gt_striped {
+#uqfemvmmrh .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#hsonbqqvlk .gt_table_body {
+#uqfemvmmrh .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1086,7 +1109,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#hsonbqqvlk .gt_footnotes {
+#uqfemvmmrh .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1100,7 +1123,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#hsonbqqvlk .gt_footnote {
+#uqfemvmmrh .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1109,7 +1132,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#hsonbqqvlk .gt_sourcenotes {
+#uqfemvmmrh .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1123,7 +1146,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#hsonbqqvlk .gt_sourcenote {
+#uqfemvmmrh .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1131,72 +1154,72 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#hsonbqqvlk .gt_left {
+#uqfemvmmrh .gt_left {
   text-align: left;
 }
 
-#hsonbqqvlk .gt_center {
+#uqfemvmmrh .gt_center {
   text-align: center;
 }
 
-#hsonbqqvlk .gt_right {
+#uqfemvmmrh .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#hsonbqqvlk .gt_font_normal {
+#uqfemvmmrh .gt_font_normal {
   font-weight: normal;
 }
 
-#hsonbqqvlk .gt_font_bold {
+#uqfemvmmrh .gt_font_bold {
   font-weight: bold;
 }
 
-#hsonbqqvlk .gt_font_italic {
+#uqfemvmmrh .gt_font_italic {
   font-style: italic;
 }
 
-#hsonbqqvlk .gt_super {
+#uqfemvmmrh .gt_super {
   font-size: 65%;
 }
 
-#hsonbqqvlk .gt_footnote_marks {
+#uqfemvmmrh .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#hsonbqqvlk .gt_asterisk {
+#uqfemvmmrh .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#hsonbqqvlk .gt_indent_1 {
+#uqfemvmmrh .gt_indent_1 {
   text-indent: 5px;
 }
 
-#hsonbqqvlk .gt_indent_2 {
+#uqfemvmmrh .gt_indent_2 {
   text-indent: 10px;
 }
 
-#hsonbqqvlk .gt_indent_3 {
+#uqfemvmmrh .gt_indent_3 {
   text-indent: 15px;
 }
 
-#hsonbqqvlk .gt_indent_4 {
+#uqfemvmmrh .gt_indent_4 {
   text-indent: 20px;
 }
 
-#hsonbqqvlk .gt_indent_5 {
+#uqfemvmmrh .gt_indent_5 {
   text-indent: 25px;
 }
 
-#hsonbqqvlk .katex-display {
+#uqfemvmmrh .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#hsonbqqvlk div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#uqfemvmmrh div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1391,23 +1414,23 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>post_sum_id1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="hbvcmosllp" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#hbvcmosllp table {
+<div id="lhowhscdvj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#lhowhscdvj table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#hbvcmosllp thead, #hbvcmosllp tbody, #hbvcmosllp tfoot, #hbvcmosllp tr, #hbvcmosllp td, #hbvcmosllp th {
+#lhowhscdvj thead, #lhowhscdvj tbody, #lhowhscdvj tfoot, #lhowhscdvj tr, #lhowhscdvj td, #lhowhscdvj th {
   border-style: none;
 }
 
-#hbvcmosllp p {
+#lhowhscdvj p {
   margin: 0;
   padding: 0;
 }
 
-#hbvcmosllp .gt_table {
+#lhowhscdvj .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1433,12 +1456,12 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#hbvcmosllp .gt_caption {
+#lhowhscdvj .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#hbvcmosllp .gt_title {
+#lhowhscdvj .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1450,7 +1473,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-width: 0;
 }
 
-#hbvcmosllp .gt_subtitle {
+#lhowhscdvj .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1462,7 +1485,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-top-width: 0;
 }
 
-#hbvcmosllp .gt_heading {
+#lhowhscdvj .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1474,13 +1497,13 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#hbvcmosllp .gt_bottom_border {
+#lhowhscdvj .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#hbvcmosllp .gt_col_headings {
+#lhowhscdvj .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1495,7 +1518,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#hbvcmosllp .gt_col_heading {
+#lhowhscdvj .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1515,7 +1538,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   overflow-x: hidden;
 }
 
-#hbvcmosllp .gt_column_spanner_outer {
+#lhowhscdvj .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1527,15 +1550,15 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 4px;
 }
 
-#hbvcmosllp .gt_column_spanner_outer:first-child {
+#lhowhscdvj .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#hbvcmosllp .gt_column_spanner_outer:last-child {
+#lhowhscdvj .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#hbvcmosllp .gt_column_spanner {
+#lhowhscdvj .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1547,11 +1570,11 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   width: 100%;
 }
 
-#hbvcmosllp .gt_spanner_row {
+#lhowhscdvj .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#hbvcmosllp .gt_group_heading {
+#lhowhscdvj .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1577,7 +1600,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   text-align: left;
 }
 
-#hbvcmosllp .gt_empty_group_heading {
+#lhowhscdvj .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1592,15 +1615,15 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   vertical-align: middle;
 }
 
-#hbvcmosllp .gt_from_md > :first-child {
+#lhowhscdvj .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#hbvcmosllp .gt_from_md > :last-child {
+#lhowhscdvj .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#hbvcmosllp .gt_row {
+#lhowhscdvj .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1619,7 +1642,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   overflow-x: hidden;
 }
 
-#hbvcmosllp .gt_stub {
+#lhowhscdvj .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1632,7 +1655,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#hbvcmosllp .gt_stub_row_group {
+#lhowhscdvj .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1646,15 +1669,15 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   vertical-align: top;
 }
 
-#hbvcmosllp .gt_row_group_first td {
+#lhowhscdvj .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#hbvcmosllp .gt_row_group_first th {
+#lhowhscdvj .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#hbvcmosllp .gt_summary_row {
+#lhowhscdvj .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1664,16 +1687,16 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#hbvcmosllp .gt_first_summary_row {
+#lhowhscdvj .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#hbvcmosllp .gt_first_summary_row.thick {
+#lhowhscdvj .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#hbvcmosllp .gt_last_summary_row {
+#lhowhscdvj .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1683,7 +1706,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#hbvcmosllp .gt_grand_summary_row {
+#lhowhscdvj .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1693,7 +1716,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#hbvcmosllp .gt_first_grand_summary_row {
+#lhowhscdvj .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1703,7 +1726,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#hbvcmosllp .gt_last_grand_summary_row_top {
+#lhowhscdvj .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1713,11 +1736,11 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#hbvcmosllp .gt_striped {
+#lhowhscdvj .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#hbvcmosllp .gt_table_body {
+#lhowhscdvj .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1726,7 +1749,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#hbvcmosllp .gt_footnotes {
+#lhowhscdvj .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1740,7 +1763,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#hbvcmosllp .gt_footnote {
+#lhowhscdvj .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1749,7 +1772,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#hbvcmosllp .gt_sourcenotes {
+#lhowhscdvj .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1763,7 +1786,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#hbvcmosllp .gt_sourcenote {
+#lhowhscdvj .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1771,72 +1794,72 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#hbvcmosllp .gt_left {
+#lhowhscdvj .gt_left {
   text-align: left;
 }
 
-#hbvcmosllp .gt_center {
+#lhowhscdvj .gt_center {
   text-align: center;
 }
 
-#hbvcmosllp .gt_right {
+#lhowhscdvj .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#hbvcmosllp .gt_font_normal {
+#lhowhscdvj .gt_font_normal {
   font-weight: normal;
 }
 
-#hbvcmosllp .gt_font_bold {
+#lhowhscdvj .gt_font_bold {
   font-weight: bold;
 }
 
-#hbvcmosllp .gt_font_italic {
+#lhowhscdvj .gt_font_italic {
   font-style: italic;
 }
 
-#hbvcmosllp .gt_super {
+#lhowhscdvj .gt_super {
   font-size: 65%;
 }
 
-#hbvcmosllp .gt_footnote_marks {
+#lhowhscdvj .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#hbvcmosllp .gt_asterisk {
+#lhowhscdvj .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#hbvcmosllp .gt_indent_1 {
+#lhowhscdvj .gt_indent_1 {
   text-indent: 5px;
 }
 
-#hbvcmosllp .gt_indent_2 {
+#lhowhscdvj .gt_indent_2 {
   text-indent: 10px;
 }
 
-#hbvcmosllp .gt_indent_3 {
+#lhowhscdvj .gt_indent_3 {
   text-indent: 15px;
 }
 
-#hbvcmosllp .gt_indent_4 {
+#lhowhscdvj .gt_indent_4 {
   text-indent: 20px;
 }
 
-#hbvcmosllp .gt_indent_5 {
+#lhowhscdvj .gt_indent_5 {
   text-indent: 25px;
 }
 
-#hbvcmosllp .katex-display {
+#lhowhscdvj .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#hbvcmosllp div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#lhowhscdvj div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1985,23 +2008,23 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>post_ind_stat_sum</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="vcjgskaxjx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#vcjgskaxjx table {
+<div id="refjdjphlm" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#refjdjphlm table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#vcjgskaxjx thead, #vcjgskaxjx tbody, #vcjgskaxjx tfoot, #vcjgskaxjx tr, #vcjgskaxjx td, #vcjgskaxjx th {
+#refjdjphlm thead, #refjdjphlm tbody, #refjdjphlm tfoot, #refjdjphlm tr, #refjdjphlm td, #refjdjphlm th {
   border-style: none;
 }
 
-#vcjgskaxjx p {
+#refjdjphlm p {
   margin: 0;
   padding: 0;
 }
 
-#vcjgskaxjx .gt_table {
+#refjdjphlm .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2027,12 +2050,12 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#vcjgskaxjx .gt_caption {
+#refjdjphlm .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#vcjgskaxjx .gt_title {
+#refjdjphlm .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2044,7 +2067,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-width: 0;
 }
 
-#vcjgskaxjx .gt_subtitle {
+#refjdjphlm .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2056,7 +2079,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-top-width: 0;
 }
 
-#vcjgskaxjx .gt_heading {
+#refjdjphlm .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2068,13 +2091,13 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#vcjgskaxjx .gt_bottom_border {
+#refjdjphlm .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#vcjgskaxjx .gt_col_headings {
+#refjdjphlm .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2089,7 +2112,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#vcjgskaxjx .gt_col_heading {
+#refjdjphlm .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2109,7 +2132,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   overflow-x: hidden;
 }
 
-#vcjgskaxjx .gt_column_spanner_outer {
+#refjdjphlm .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2121,15 +2144,15 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 4px;
 }
 
-#vcjgskaxjx .gt_column_spanner_outer:first-child {
+#refjdjphlm .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#vcjgskaxjx .gt_column_spanner_outer:last-child {
+#refjdjphlm .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#vcjgskaxjx .gt_column_spanner {
+#refjdjphlm .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2141,11 +2164,11 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   width: 100%;
 }
 
-#vcjgskaxjx .gt_spanner_row {
+#refjdjphlm .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#vcjgskaxjx .gt_group_heading {
+#refjdjphlm .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2171,7 +2194,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   text-align: left;
 }
 
-#vcjgskaxjx .gt_empty_group_heading {
+#refjdjphlm .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2186,15 +2209,15 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   vertical-align: middle;
 }
 
-#vcjgskaxjx .gt_from_md > :first-child {
+#refjdjphlm .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#vcjgskaxjx .gt_from_md > :last-child {
+#refjdjphlm .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#vcjgskaxjx .gt_row {
+#refjdjphlm .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2213,7 +2236,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   overflow-x: hidden;
 }
 
-#vcjgskaxjx .gt_stub {
+#refjdjphlm .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2226,7 +2249,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#vcjgskaxjx .gt_stub_row_group {
+#refjdjphlm .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2240,15 +2263,15 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   vertical-align: top;
 }
 
-#vcjgskaxjx .gt_row_group_first td {
+#refjdjphlm .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#vcjgskaxjx .gt_row_group_first th {
+#refjdjphlm .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#vcjgskaxjx .gt_summary_row {
+#refjdjphlm .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2258,16 +2281,16 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#vcjgskaxjx .gt_first_summary_row {
+#refjdjphlm .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#vcjgskaxjx .gt_first_summary_row.thick {
+#refjdjphlm .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#vcjgskaxjx .gt_last_summary_row {
+#refjdjphlm .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2277,7 +2300,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#vcjgskaxjx .gt_grand_summary_row {
+#refjdjphlm .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2287,7 +2310,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#vcjgskaxjx .gt_first_grand_summary_row {
+#refjdjphlm .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2297,7 +2320,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#vcjgskaxjx .gt_last_grand_summary_row_top {
+#refjdjphlm .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2307,11 +2330,11 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#vcjgskaxjx .gt_striped {
+#refjdjphlm .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#vcjgskaxjx .gt_table_body {
+#refjdjphlm .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2320,7 +2343,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#vcjgskaxjx .gt_footnotes {
+#refjdjphlm .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2334,7 +2357,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#vcjgskaxjx .gt_footnote {
+#refjdjphlm .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2343,7 +2366,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#vcjgskaxjx .gt_sourcenotes {
+#refjdjphlm .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2357,7 +2380,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#vcjgskaxjx .gt_sourcenote {
+#refjdjphlm .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2365,72 +2388,72 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#vcjgskaxjx .gt_left {
+#refjdjphlm .gt_left {
   text-align: left;
 }
 
-#vcjgskaxjx .gt_center {
+#refjdjphlm .gt_center {
   text-align: center;
 }
 
-#vcjgskaxjx .gt_right {
+#refjdjphlm .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#vcjgskaxjx .gt_font_normal {
+#refjdjphlm .gt_font_normal {
   font-weight: normal;
 }
 
-#vcjgskaxjx .gt_font_bold {
+#refjdjphlm .gt_font_bold {
   font-weight: bold;
 }
 
-#vcjgskaxjx .gt_font_italic {
+#refjdjphlm .gt_font_italic {
   font-style: italic;
 }
 
-#vcjgskaxjx .gt_super {
+#refjdjphlm .gt_super {
   font-size: 65%;
 }
 
-#vcjgskaxjx .gt_footnote_marks {
+#refjdjphlm .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#vcjgskaxjx .gt_asterisk {
+#refjdjphlm .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#vcjgskaxjx .gt_indent_1 {
+#refjdjphlm .gt_indent_1 {
   text-indent: 5px;
 }
 
-#vcjgskaxjx .gt_indent_2 {
+#refjdjphlm .gt_indent_2 {
   text-indent: 10px;
 }
 
-#vcjgskaxjx .gt_indent_3 {
+#refjdjphlm .gt_indent_3 {
   text-indent: 15px;
 }
 
-#vcjgskaxjx .gt_indent_4 {
+#refjdjphlm .gt_indent_4 {
   text-indent: 20px;
 }
 
-#vcjgskaxjx .gt_indent_5 {
+#refjdjphlm .gt_indent_5 {
   text-indent: 25px;
 }
 
-#vcjgskaxjx .katex-display {
+#refjdjphlm .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#vcjgskaxjx div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#refjdjphlm div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -2837,23 +2860,23 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>post_sum_by_arm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="xvopxgspii" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#xvopxgspii table {
+<div id="inxjhdsuyj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#inxjhdsuyj table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#xvopxgspii thead, #xvopxgspii tbody, #xvopxgspii tfoot, #xvopxgspii tr, #xvopxgspii td, #xvopxgspii th {
+#inxjhdsuyj thead, #inxjhdsuyj tbody, #inxjhdsuyj tfoot, #inxjhdsuyj tr, #inxjhdsuyj td, #inxjhdsuyj th {
   border-style: none;
 }
 
-#xvopxgspii p {
+#inxjhdsuyj p {
   margin: 0;
   padding: 0;
 }
 
-#xvopxgspii .gt_table {
+#inxjhdsuyj .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2879,12 +2902,12 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#xvopxgspii .gt_caption {
+#inxjhdsuyj .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#xvopxgspii .gt_title {
+#inxjhdsuyj .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2896,7 +2919,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-width: 0;
 }
 
-#xvopxgspii .gt_subtitle {
+#inxjhdsuyj .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2908,7 +2931,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-top-width: 0;
 }
 
-#xvopxgspii .gt_heading {
+#inxjhdsuyj .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2920,13 +2943,13 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#xvopxgspii .gt_bottom_border {
+#inxjhdsuyj .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#xvopxgspii .gt_col_headings {
+#inxjhdsuyj .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2941,7 +2964,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#xvopxgspii .gt_col_heading {
+#inxjhdsuyj .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2961,7 +2984,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   overflow-x: hidden;
 }
 
-#xvopxgspii .gt_column_spanner_outer {
+#inxjhdsuyj .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2973,15 +2996,15 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 4px;
 }
 
-#xvopxgspii .gt_column_spanner_outer:first-child {
+#inxjhdsuyj .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#xvopxgspii .gt_column_spanner_outer:last-child {
+#inxjhdsuyj .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#xvopxgspii .gt_column_spanner {
+#inxjhdsuyj .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2993,11 +3016,11 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   width: 100%;
 }
 
-#xvopxgspii .gt_spanner_row {
+#inxjhdsuyj .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#xvopxgspii .gt_group_heading {
+#inxjhdsuyj .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3023,7 +3046,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   text-align: left;
 }
 
-#xvopxgspii .gt_empty_group_heading {
+#inxjhdsuyj .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3038,15 +3061,15 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   vertical-align: middle;
 }
 
-#xvopxgspii .gt_from_md > :first-child {
+#inxjhdsuyj .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#xvopxgspii .gt_from_md > :last-child {
+#inxjhdsuyj .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#xvopxgspii .gt_row {
+#inxjhdsuyj .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3065,7 +3088,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   overflow-x: hidden;
 }
 
-#xvopxgspii .gt_stub {
+#inxjhdsuyj .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3078,7 +3101,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#xvopxgspii .gt_stub_row_group {
+#inxjhdsuyj .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3092,15 +3115,15 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   vertical-align: top;
 }
 
-#xvopxgspii .gt_row_group_first td {
+#inxjhdsuyj .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#xvopxgspii .gt_row_group_first th {
+#inxjhdsuyj .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#xvopxgspii .gt_summary_row {
+#inxjhdsuyj .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3110,16 +3133,16 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#xvopxgspii .gt_first_summary_row {
+#inxjhdsuyj .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#xvopxgspii .gt_first_summary_row.thick {
+#inxjhdsuyj .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#xvopxgspii .gt_last_summary_row {
+#inxjhdsuyj .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3129,7 +3152,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#xvopxgspii .gt_grand_summary_row {
+#inxjhdsuyj .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3139,7 +3162,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#xvopxgspii .gt_first_grand_summary_row {
+#inxjhdsuyj .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3149,7 +3172,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#xvopxgspii .gt_last_grand_summary_row_top {
+#inxjhdsuyj .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3159,11 +3182,11 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#xvopxgspii .gt_striped {
+#inxjhdsuyj .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#xvopxgspii .gt_table_body {
+#inxjhdsuyj .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3172,7 +3195,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#xvopxgspii .gt_footnotes {
+#inxjhdsuyj .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3186,7 +3209,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#xvopxgspii .gt_footnote {
+#inxjhdsuyj .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -3195,7 +3218,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#xvopxgspii .gt_sourcenotes {
+#inxjhdsuyj .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3209,7 +3232,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#xvopxgspii .gt_sourcenote {
+#inxjhdsuyj .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3217,72 +3240,72 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#xvopxgspii .gt_left {
+#inxjhdsuyj .gt_left {
   text-align: left;
 }
 
-#xvopxgspii .gt_center {
+#inxjhdsuyj .gt_center {
   text-align: center;
 }
 
-#xvopxgspii .gt_right {
+#inxjhdsuyj .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#xvopxgspii .gt_font_normal {
+#inxjhdsuyj .gt_font_normal {
   font-weight: normal;
 }
 
-#xvopxgspii .gt_font_bold {
+#inxjhdsuyj .gt_font_bold {
   font-weight: bold;
 }
 
-#xvopxgspii .gt_font_italic {
+#inxjhdsuyj .gt_font_italic {
   font-style: italic;
 }
 
-#xvopxgspii .gt_super {
+#inxjhdsuyj .gt_super {
   font-size: 65%;
 }
 
-#xvopxgspii .gt_footnote_marks {
+#inxjhdsuyj .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#xvopxgspii .gt_asterisk {
+#inxjhdsuyj .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#xvopxgspii .gt_indent_1 {
+#inxjhdsuyj .gt_indent_1 {
   text-indent: 5px;
 }
 
-#xvopxgspii .gt_indent_2 {
+#inxjhdsuyj .gt_indent_2 {
   text-indent: 10px;
 }
 
-#xvopxgspii .gt_indent_3 {
+#inxjhdsuyj .gt_indent_3 {
   text-indent: 15px;
 }
 
-#xvopxgspii .gt_indent_4 {
+#inxjhdsuyj .gt_indent_4 {
   text-indent: 20px;
 }
 
-#xvopxgspii .gt_indent_5 {
+#inxjhdsuyj .gt_indent_5 {
   text-indent: 25px;
 }
 
-#xvopxgspii .katex-display {
+#inxjhdsuyj .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#xvopxgspii div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#inxjhdsuyj div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
