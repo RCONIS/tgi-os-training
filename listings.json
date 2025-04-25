@@ -2,6 +2,8 @@
   {
     "listing": "/index.html",
     "items": [
+      "/session-jm/0_setup.html",
+      "/session-jm/1_jm-jmpost.html",
       "/session-os/0_setup.html",
       "/session-os/1_os_weibull_jmpost.html",
       "/session-os/2_os_weibull_brms.html",
