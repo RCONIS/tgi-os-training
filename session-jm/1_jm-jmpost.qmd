@@ -354,6 +354,59 @@ This is because the link between the longitudinal and the survival model is here
 
 So here the estimated hazard ratio is `r round(os_hr_est$mean[1], 2)` with a 90% credible interval of `r round(os_hr_est$lower[1], 2)` to `r round(os_hr_est$upper[1], 2)`. We can see that this hazard ratio estimate is slightly lower, representing a slightly stronger effect estimate. Due to the larger uncertainty, which is due to the propagation of the log growth rate uncertainty to the OS model, the 90% CI now actually includes 1, in contrast to the 2-step TGI-OS model.
 
+## Alternative covariate specification
+
+In the previous OS session we tried to include the treatment arm as a direct covariate. We can also try this here.
+
+```{r}
+#| label: joint_model_with_arm_fit
+
+surv_data_with_arm <- DataSurvival(
+    data = os_data,
+    # Here we add the arm covariate:
+    formula = update(surv_data@formula, . ~ . + arm)
+)
+joint_data_with_arm <- DataJoint(
+    subject = subj_data,
+    longitudinal = long_data,
+    survival = surv_data_with_arm
+)
+
+save_file <- here("session-jm/jm2.rds")
+if (file.exists(save_file)) {
+    joint_results_with_arm <- readRDS(save_file)
+} else {
+    joint_results_with_arm <- sampleStanModel(
+        joint_mod,
+        data = joint_data_with_arm,
+        iter_sampling = ITER,
+        iter_warmup = WARMUP,
+        chains = CHAINS,
+        parallel_chains = CHAINS,
+        thin = CHAINS,
+        seed = BAYES.SEED,
+        refresh = REFRESH
+    )
+    saveObject(joint_results_with_arm, file = save_file)
+}
+
+mcmc_joint_arm_results <- cmdstanr::as.CmdStanMCMC(joint_results_with_arm)
+mcmc_joint_arm_results$summary(vars)
+draws_joint_arm_results <- mcmc_joint_arm_results$draws(vars)
+mcmc_trace(draws_joint_arm_results)
+```
+
+We can easily plot the survival functions and compare them with the Kaplan-Meier curves of the treatment arms, because we can reuse the above `os_surv_group_grid`:
+
+```{r}
+joint_mod_with_arm_os_pred <- SurvivalQuantities(
+    object = joint_results_with_arm,
+    grid = os_surv_group_grid,
+    type = "surv"
+)
+autoplot(joint_mod_with_arm_os_pred, add_km = TRUE, add_wrap = FALSE)
+```
+
 ## Alternative time-varying link
 
 We would like to illustrate how the hazard ratio could change over time if we used a time-varying link function. For this we will use the derivative of the Stein-Fojo model as the link function, utilizing the `linkDLSD` class in `jmpost`. 
@@ -495,7 +548,7 @@ So this looks reasonable. So we might need to revisit the derivative calculation
 
 ## Model comparison
 
-We can again use the [Brier score](https://en.wikipedia.org/wiki/Brier_score) to compare the two different survival models as part of the joint models. The Brier score is a measure of the mean squared difference between the predicted survival probability and the actual survival status. The lower the Brier score, the better the model.
+We can again use the [Brier score](https://en.wikipedia.org/wiki/Brier_score) to compare the three different survival models as part of the joint models. The Brier score is a measure of the mean squared difference between the predicted survival probability and the actual survival status. The lower the Brier score, the better the model.
 
 To calculate it, we need to use the `GridFixed` input for `SurvivalQuantities()`. This is because the Brier score is calculated at fixed time points across all patients, and not at the observed time points of specific patients. Because we don't specify patient IDs, the quantities are generated for all patients.
 
@@ -508,7 +561,18 @@ os_surv_fixed <- SurvivalQuantities(
 os_bs <- brierScore(os_surv_fixed)
 ```
 
-Now let's compare this with the second model where we have the derivative link. We have a suspicion that the second model will perform worse, because of the hazard ratio results, but let's have a look.
+Let's first compare this with the second model, which includes the treatment arm as a direct covariate in the survival model:
+
+```{r}
+os_surv_with_arm_fixed <- SurvivalQuantities(
+    object = joint_results_with_arm,
+    grid = GridFixed(times = time_grid),
+    type = "surv"
+)
+os_with_arm_bs <- brierScore(os_surv_with_arm_fixed)
+```
+
+Now let's compare this with the third model where we have the derivative link. We have a suspicion that the third model will perform worse, because of the hazard ratio results, but let's have a look.
 
 ```{r}
 os_surv_dsld_fixed <- SurvivalQuantities(
@@ -519,21 +583,29 @@ os_surv_dsld_fixed <- SurvivalQuantities(
 os_dsld_bs <- brierScore(os_surv_dsld_fixed)
 ```
 
-We can plot the Brier scores to compare them visually:
+We can plot then all three Brier scores over time to compare them visually:
 
 ```{r}
 #| label: brier_scores_plot
 
 data.frame(
     time = time_grid,
-    brier_score_diff = os_bs - os_dsld_bs
+    `1 - 2` = os_bs - os_with_arm_bs,
+    `1 - 3` = os_bs - os_dsld_bs,
+    `2 - 3` = os_with_arm_bs - os_dsld_bs,
+    check.names = FALSE
 ) |>
-    ggplot(aes(x = time, y = brier_score_diff)) +
+    pivot_longer(
+        cols = c("1 - 2", "1 - 3", "2 - 3"),
+        names_to = "diff",
+        values_to = "brier_score_diff"
+    ) |>
+    ggplot(aes(x = time, y = brier_score_diff, color = diff, group = diff)) +
     geom_line() +
-    labs(y = "Brier score difference (1 - 2)") +
+    labs(y = "Brier score difference") +
     geom_hline(yintercept = 0, linetype = "dashed", color = "red")
 ```
 
-As expected, we see that especially for the times between 0.5 and 2 years the first model with the growth link performs better than the second model with the derivative link.
+As expected, we see that especially for the times between 0.5 and 2 years the first and second models with the growth link performs better than the third model with the derivative link. On the other hand, there is almost no difference between the first and second model, which includes the treatment arm covariate.
 
-Currently, the LOOIC does not work here yet, because the `log_lik` is not included in the samples. There is an ongoing discussion on [GitHub](https://github.com/Genentech/jmpost/issues/446) about this topic.
+Currently, the LOOIC does not work yet for joint models, because the `log_lik` is not included in the samples. There is an ongoing discussion on [GitHub](https://github.com/Genentech/jmpost/issues/446) about this topic.

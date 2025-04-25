@@ -436,7 +436,7 @@ So the model by treatment arm performs here better than the model without treatm
   #| eval: false
   #| label: show_stan_code
 
-  tmp <- tempfile()
+  tmp <- tempfile(fileext = ".stan") # file extension for syntax highlighting
   write_stan(tgi_mod, destination = tmp)
   file.edit(tmp) # opens the Stan file in the default editor
   ```
