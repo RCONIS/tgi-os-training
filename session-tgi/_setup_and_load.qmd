@@ -6,6 +6,20 @@ First we need to load the necessary packages and set some default options for th
 #| message: FALSE
 
 library(bayesplot)
+<<<<<<< HEAD
+library(modelr)
+library(here)
+library(tictoc)
+library(rlang)
+library(gt)
+library(readxl)
+library(janitor)
+library(posterior)
+library(jmpost)
+library(cmdstanr)
+library(truncnorm)
+=======
+>>>>>>> main
 library(brms)
 library(ggplot2)
 library(gt)
