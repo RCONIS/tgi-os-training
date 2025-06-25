@@ -14,3 +14,4 @@ session-tgi/cb1.RData
 session-tgi/cb2.RData
 backup/
 *.R
+*.html
