@@ -153,7 +153,11 @@ mcmc_trace(draws_tgi_results)
 
 So this looks good.
 
-Let's again tabulate the parameter estimates. Here we use a certain order and the median of the random effects parameters, in order to be able to compare with the NONMEM results (external):
+## NONMEM comparison
+
+Here we quickly compare the parameter estimates with the NONMEM results. Note that NONMEM is using maximum likelihood inference to estimate the parameters (typically First Order Conditional Estimation, FOCE, see [here](https://nmhelp.tingjieguo.com/VII/III)), instead of Bayesian inference. Therefore we do expect at least slightly different results.
+
+Let's first again tabulate the parameter estimates. Here we use a certain order and the median of the random effects parameters, in order to be able to compare with the NONMEM results:
 
 ```{r}
 #| label: par_estimates_arm
@@ -193,6 +197,13 @@ post_sum_by_arm <- post_samples_by_arm |>
     fmt_number(n_sigfig = 3)
 post_sum_by_arm
 ```
+
+Now we can compare these with the NONMEM results (thanks to Victor Poon for providing these!)
+
+![NONMEM results](nonmem-results.png)
+
+Here we need to look at the `estimate_yrs` column, because in our `jmpost` model we have been using the year scale.
+The results are different, but still quite consistent with the `jmpost` results.
 
 ## Extract individual growth rate estimates
 
