@@ -286,6 +286,7 @@ window.Quarto = {
   <ul>
   <li><a href="#setup-and-load-data" id="toc-setup-and-load-data" class="nav-link active" data-scroll-target="#setup-and-load-data">Setup and load data</a></li>
   <li><a href="#tgi-model-fitting" id="toc-tgi-model-fitting" class="nav-link" data-scroll-target="#tgi-model-fitting">TGI model fitting</a></li>
+  <li><a href="#nonmem-comparison" id="toc-nonmem-comparison" class="nav-link" data-scroll-target="#nonmem-comparison">NONMEM comparison</a></li>
   <li><a href="#extract-individual-growth-rate-estimates" id="toc-extract-individual-growth-rate-estimates" class="nav-link" data-scroll-target="#extract-individual-growth-rate-estimates">Extract individual growth rate estimates</a></li>
   <li><a href="#os-model-fitting" id="toc-os-model-fitting" class="nav-link" data-scroll-target="#os-model-fitting">OS model fitting</a></li>
   <li><a href="#interpret-covariate-effects" id="toc-interpret-covariate-effects" class="nav-link" data-scroll-target="#interpret-covariate-effects">Interpret covariate effects</a></li>
@@ -465,7 +466,11 @@ window.Quarto = {
 </div>
 </div>
 <p>So this looks good.</p>
-<p>Let’s again tabulate the parameter estimates. Here we use a certain order and the median of the random effects parameters, in order to be able to compare with the NONMEM results (external):</p>
+</section>
+<section id="nonmem-comparison" class="level2">
+<h2 class="anchored" data-anchor-id="nonmem-comparison">NONMEM comparison</h2>
+<p>Here we quickly compare the parameter estimates with the NONMEM results. Note that NONMEM is using maximum likelihood inference to estimate the parameters (typically First Order Conditional Estimation, FOCE, see <a href="https://nmhelp.tingjieguo.com/VII/III">here</a>), instead of Bayesian inference. Therefore we do expect at least slightly different results.</p>
+<p>Let’s first again tabulate the parameter estimates. Here we use a certain order and the median of the random effects parameters, in order to be able to compare with the NONMEM results:</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Show the code</summary>
@@ -510,23 +515,23 @@ window.Quarto = {
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>post_sum_by_arm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="gqgifbwudr" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#gqgifbwudr table {
+<div id="mznmohcdvr" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#mznmohcdvr table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#gqgifbwudr thead, #gqgifbwudr tbody, #gqgifbwudr tfoot, #gqgifbwudr tr, #gqgifbwudr td, #gqgifbwudr th {
+#mznmohcdvr thead, #mznmohcdvr tbody, #mznmohcdvr tfoot, #mznmohcdvr tr, #mznmohcdvr td, #mznmohcdvr th {
   border-style: none;
 }
 
-#gqgifbwudr p {
+#mznmohcdvr p {
   margin: 0;
   padding: 0;
 }
 
-#gqgifbwudr .gt_table {
+#mznmohcdvr .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -552,12 +557,12 @@ window.Quarto = {
   border-left-color: #D3D3D3;
 }
 
-#gqgifbwudr .gt_caption {
+#mznmohcdvr .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#gqgifbwudr .gt_title {
+#mznmohcdvr .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -569,7 +574,7 @@ window.Quarto = {
   border-bottom-width: 0;
 }
 
-#gqgifbwudr .gt_subtitle {
+#mznmohcdvr .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -581,7 +586,7 @@ window.Quarto = {
   border-top-width: 0;
 }
 
-#gqgifbwudr .gt_heading {
+#mznmohcdvr .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -593,13 +598,13 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#gqgifbwudr .gt_bottom_border {
+#mznmohcdvr .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#gqgifbwudr .gt_col_headings {
+#mznmohcdvr .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -614,7 +619,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#gqgifbwudr .gt_col_heading {
+#mznmohcdvr .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -634,7 +639,7 @@ window.Quarto = {
   overflow-x: hidden;
 }
 
-#gqgifbwudr .gt_column_spanner_outer {
+#mznmohcdvr .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -646,15 +651,15 @@ window.Quarto = {
   padding-right: 4px;
 }
 
-#gqgifbwudr .gt_column_spanner_outer:first-child {
+#mznmohcdvr .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#gqgifbwudr .gt_column_spanner_outer:last-child {
+#mznmohcdvr .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#gqgifbwudr .gt_column_spanner {
+#mznmohcdvr .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -666,11 +671,11 @@ window.Quarto = {
   width: 100%;
 }
 
-#gqgifbwudr .gt_spanner_row {
+#mznmohcdvr .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#gqgifbwudr .gt_group_heading {
+#mznmohcdvr .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -696,7 +701,7 @@ window.Quarto = {
   text-align: left;
 }
 
-#gqgifbwudr .gt_empty_group_heading {
+#mznmohcdvr .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -711,15 +716,15 @@ window.Quarto = {
   vertical-align: middle;
 }
 
-#gqgifbwudr .gt_from_md > :first-child {
+#mznmohcdvr .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#gqgifbwudr .gt_from_md > :last-child {
+#mznmohcdvr .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#gqgifbwudr .gt_row {
+#mznmohcdvr .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -738,7 +743,7 @@ window.Quarto = {
   overflow-x: hidden;
 }
 
-#gqgifbwudr .gt_stub {
+#mznmohcdvr .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -751,7 +756,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#gqgifbwudr .gt_stub_row_group {
+#mznmohcdvr .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -765,15 +770,15 @@ window.Quarto = {
   vertical-align: top;
 }
 
-#gqgifbwudr .gt_row_group_first td {
+#mznmohcdvr .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#gqgifbwudr .gt_row_group_first th {
+#mznmohcdvr .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#gqgifbwudr .gt_summary_row {
+#mznmohcdvr .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -783,16 +788,16 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#gqgifbwudr .gt_first_summary_row {
+#mznmohcdvr .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#gqgifbwudr .gt_first_summary_row.thick {
+#mznmohcdvr .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#gqgifbwudr .gt_last_summary_row {
+#mznmohcdvr .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -802,7 +807,7 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#gqgifbwudr .gt_grand_summary_row {
+#mznmohcdvr .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -812,7 +817,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#gqgifbwudr .gt_first_grand_summary_row {
+#mznmohcdvr .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -822,7 +827,7 @@ window.Quarto = {
   border-top-color: #D3D3D3;
 }
 
-#gqgifbwudr .gt_last_grand_summary_row_top {
+#mznmohcdvr .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -832,11 +837,11 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#gqgifbwudr .gt_striped {
+#mznmohcdvr .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#gqgifbwudr .gt_table_body {
+#mznmohcdvr .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -845,7 +850,7 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#gqgifbwudr .gt_footnotes {
+#mznmohcdvr .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -859,7 +864,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#gqgifbwudr .gt_footnote {
+#mznmohcdvr .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -868,7 +873,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#gqgifbwudr .gt_sourcenotes {
+#mznmohcdvr .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -882,7 +887,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#gqgifbwudr .gt_sourcenote {
+#mznmohcdvr .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -890,72 +895,72 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#gqgifbwudr .gt_left {
+#mznmohcdvr .gt_left {
   text-align: left;
 }
 
-#gqgifbwudr .gt_center {
+#mznmohcdvr .gt_center {
   text-align: center;
 }
 
-#gqgifbwudr .gt_right {
+#mznmohcdvr .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#gqgifbwudr .gt_font_normal {
+#mznmohcdvr .gt_font_normal {
   font-weight: normal;
 }
 
-#gqgifbwudr .gt_font_bold {
+#mznmohcdvr .gt_font_bold {
   font-weight: bold;
 }
 
-#gqgifbwudr .gt_font_italic {
+#mznmohcdvr .gt_font_italic {
   font-style: italic;
 }
 
-#gqgifbwudr .gt_super {
+#mznmohcdvr .gt_super {
   font-size: 65%;
 }
 
-#gqgifbwudr .gt_footnote_marks {
+#mznmohcdvr .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#gqgifbwudr .gt_asterisk {
+#mznmohcdvr .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#gqgifbwudr .gt_indent_1 {
+#mznmohcdvr .gt_indent_1 {
   text-indent: 5px;
 }
 
-#gqgifbwudr .gt_indent_2 {
+#mznmohcdvr .gt_indent_2 {
   text-indent: 10px;
 }
 
-#gqgifbwudr .gt_indent_3 {
+#mznmohcdvr .gt_indent_3 {
   text-indent: 15px;
 }
 
-#gqgifbwudr .gt_indent_4 {
+#mznmohcdvr .gt_indent_4 {
   text-indent: 20px;
 }
 
-#gqgifbwudr .gt_indent_5 {
+#mznmohcdvr .gt_indent_5 {
   text-indent: 25px;
 }
 
-#gqgifbwudr .katex-display {
+#mznmohcdvr .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#gqgifbwudr div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#mznmohcdvr div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1114,6 +1119,14 @@ window.Quarto = {
 </div>
 </div>
 </div>
+<p>Now we can compare these with the NONMEM results (thanks to Victor Poon for providing these!)</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="nonmem-results.png" class="img-fluid figure-img"></p>
+<figcaption>NONMEM results</figcaption>
+</figure>
+</div>
+<p>Here we need to look at the <code>estimate_yrs</code> column, because in our <code>jmpost</code> model we have been using the year scale. The results are different, but still quite consistent with the <code>jmpost</code> results.</p>
 </section>
 <section id="extract-individual-growth-rate-estimates" class="level2">
 <h2 class="anchored" data-anchor-id="extract-individual-growth-rate-estimates">Extract individual growth rate estimates</h2>
@@ -1313,46 +1326,46 @@ window.Quarto = {
 <div class="cell-output cell-output-stdout">
 <pre><code>[[1]]
 [[1]]$sm_weibull_ph_lambda
-[1] 0.6996748
+[1] 0.6994926
 
 [[1]]$sm_weibull_ph_gamma
-[1] 1.498811
+[1] 1.499912
 
 [[1]]$beta_os_cov
-[1] 0.007731997
+[1] -0.02782539
 
 
 [[2]]
 [[2]]$sm_weibull_ph_lambda
-[1] 0.6999617
+[1] 0.699475
 
 [[2]]$sm_weibull_ph_gamma
-[1] 1.500804
+[1] 1.500333
 
 [[2]]$beta_os_cov
-[1] -0.02451153
+[1] -0.01404562
 
 
 [[3]]
 [[3]]$sm_weibull_ph_lambda
-[1] 0.7013978
+[1] 0.6999869
 
 [[3]]$sm_weibull_ph_gamma
-[1] 1.49981
+[1] 1.498821
 
 [[3]]$beta_os_cov
-[1] -0.001585849
+[1] -0.01793375
 
 
 [[4]]
 [[4]]$sm_weibull_ph_lambda
-[1] 0.6999678
+[1] 0.7002168
 
 [[4]]$sm_weibull_ph_gamma
-[1] 1.499988
+[1] 1.501153
 
 [[4]]$beta_os_cov
-[1] 0.002986347</code></pre>
+[1] -0.02606953</code></pre>
 </div>
 </div>
 <p>So the values are now close to the means of the respective prior distributions. We can then see later if the chains were converging well. If not, we could as an alternative also manually set initial values, as explained <a href="https://genentech.github.io/jmpost/main/articles/quickstart.html#initial-values">here</a>.</p>
@@ -2476,566 +2489,577 @@ model3 -4.8       4.2   </code></pre>
 <span id="cb62-167"><a href="#cb62-167" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb62-168"><a href="#cb62-168" aria-hidden="true" tabindex="-1"></a>So this looks good.</span>
 <span id="cb62-169"><a href="#cb62-169" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-170"><a href="#cb62-170" aria-hidden="true" tabindex="-1"></a>Let's again tabulate the parameter estimates. Here we use a certain order and the median of the random effects parameters, in order to be able to compare with the NONMEM results (external):</span>
+<span id="cb62-170"><a href="#cb62-170" aria-hidden="true" tabindex="-1"></a><span class="fu">## NONMEM comparison</span></span>
 <span id="cb62-171"><a href="#cb62-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-174"><a href="#cb62-174" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-175"><a href="#cb62-175" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: par_estimates_arm</span></span>
-<span id="cb62-176"><a href="#cb62-176" aria-hidden="true" tabindex="-1"></a><span class="co">#| dependson: check_convergence_arm</span></span>
-<span id="cb62-177"><a href="#cb62-177" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-178"><a href="#cb62-178" aria-hidden="true" tabindex="-1"></a>post_samples_by_arm <span class="ot">&lt;-</span> <span class="fu">as_draws_df</span>(draws_tgi_results) <span class="sc">|&gt;</span></span>
-<span id="cb62-179"><a href="#cb62-179" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(</span>
-<span id="cb62-180"><a href="#cb62-180" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_bsld =</span> <span class="st">"lm_sf_mu_bsld[1]"</span>,</span>
-<span id="cb62-181"><a href="#cb62-181" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_ks1 =</span> <span class="st">"lm_sf_mu_ks[1]"</span>,</span>
-<span id="cb62-182"><a href="#cb62-182" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_ks2 =</span> <span class="st">"lm_sf_mu_ks[2]"</span>,</span>
-<span id="cb62-183"><a href="#cb62-183" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_kg1 =</span> <span class="st">"lm_sf_mu_kg[1]"</span>,</span>
-<span id="cb62-184"><a href="#cb62-184" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_kg2 =</span> <span class="st">"lm_sf_mu_kg[2]"</span>,</span>
-<span id="cb62-185"><a href="#cb62-185" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_bsld =</span> <span class="st">"lm_sf_omega_bsld[1]"</span>,</span>
-<span id="cb62-186"><a href="#cb62-186" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_ks1 =</span> <span class="st">"lm_sf_omega_ks[1]"</span>,</span>
-<span id="cb62-187"><a href="#cb62-187" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_ks2 =</span> <span class="st">"lm_sf_omega_ks[2]"</span>,</span>
-<span id="cb62-188"><a href="#cb62-188" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_kg1 =</span> <span class="st">"lm_sf_omega_kg[1]"</span>,</span>
-<span id="cb62-189"><a href="#cb62-189" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_kg2 =</span> <span class="st">"lm_sf_omega_kg[2]"</span>,</span>
-<span id="cb62-190"><a href="#cb62-190" aria-hidden="true" tabindex="-1"></a>        <span class="at">sigma =</span> lm_sf_sigma</span>
-<span id="cb62-191"><a href="#cb62-191" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
-<span id="cb62-192"><a href="#cb62-192" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb62-193"><a href="#cb62-193" aria-hidden="true" tabindex="-1"></a>        <span class="at">theta_b0 =</span> <span class="fu">exp</span>(mu_bsld),</span>
-<span id="cb62-194"><a href="#cb62-194" aria-hidden="true" tabindex="-1"></a>        <span class="at">theta_ks1 =</span> <span class="fu">exp</span>(mu_ks1),</span>
-<span id="cb62-195"><a href="#cb62-195" aria-hidden="true" tabindex="-1"></a>        <span class="at">theta_ks2 =</span> <span class="fu">exp</span>(mu_ks2),</span>
-<span id="cb62-196"><a href="#cb62-196" aria-hidden="true" tabindex="-1"></a>        <span class="at">theta_kg1 =</span> <span class="fu">exp</span>(mu_kg1),</span>
-<span id="cb62-197"><a href="#cb62-197" aria-hidden="true" tabindex="-1"></a>        <span class="at">theta_kg2 =</span> <span class="fu">exp</span>(mu_kg2)</span>
-<span id="cb62-198"><a href="#cb62-198" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb62-199"><a href="#cb62-199" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-200"><a href="#cb62-200" aria-hidden="true" tabindex="-1"></a>post_sum_by_arm <span class="ot">&lt;-</span> post_samples_by_arm <span class="sc">|&gt;</span></span>
-<span id="cb62-201"><a href="#cb62-201" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(</span>
-<span id="cb62-202"><a href="#cb62-202" aria-hidden="true" tabindex="-1"></a>        theta_kg1, theta_kg2, theta_ks1, theta_ks2,</span>
-<span id="cb62-203"><a href="#cb62-203" aria-hidden="true" tabindex="-1"></a>        theta_b0,</span>
-<span id="cb62-204"><a href="#cb62-204" aria-hidden="true" tabindex="-1"></a>        sigma,</span>
-<span id="cb62-205"><a href="#cb62-205" aria-hidden="true" tabindex="-1"></a>        omega_kg1, omega_kg2, omega_ks1, omega_ks2, omega_bsld</span>
-<span id="cb62-206"><a href="#cb62-206" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
-<span id="cb62-207"><a href="#cb62-207" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize_draws</span>() <span class="sc">|&gt;</span></span>
-<span id="cb62-208"><a href="#cb62-208" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
-<span id="cb62-209"><a href="#cb62-209" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt_number</span>(<span class="at">n_sigfig =</span> <span class="dv">3</span>)</span>
-<span id="cb62-210"><a href="#cb62-210" aria-hidden="true" tabindex="-1"></a>post_sum_by_arm</span>
-<span id="cb62-211"><a href="#cb62-211" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-212"><a href="#cb62-212" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-213"><a href="#cb62-213" aria-hidden="true" tabindex="-1"></a><span class="fu">## Extract individual growth rate estimates</span></span>
-<span id="cb62-214"><a href="#cb62-214" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-215"><a href="#cb62-215" aria-hidden="true" tabindex="-1"></a>We can now extract the individual growth rate estimates from the model. </span>
-<span id="cb62-216"><a href="#cb62-216" aria-hidden="true" tabindex="-1"></a>Later, in the joint model, we are going to use the log of the growth parameter as the link. Therefore we also here first log transform the sampled values of the growth rate estimates $\psi_{\text{kg}, i}$, and then take the mean.</span>
-<span id="cb62-217"><a href="#cb62-217" aria-hidden="true" tabindex="-1"></a>Since the relevant random effect parameter samples are already stored in the <span class="in">`mcmc_tgi_results`</span> object, we can work with that via the <span class="in">`rvars`</span> interface.</span>
+<span id="cb62-172"><a href="#cb62-172" aria-hidden="true" tabindex="-1"></a>Here we quickly compare the parameter estimates with the NONMEM results. Note that NONMEM is using maximum likelihood inference to estimate the parameters (typically First Order Conditional Estimation, FOCE, see <span class="co">[</span><span class="ot">here</span><span class="co">](https://nmhelp.tingjieguo.com/VII/III)</span>), instead of Bayesian inference. Therefore we do expect at least slightly different results.</span>
+<span id="cb62-173"><a href="#cb62-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-174"><a href="#cb62-174" aria-hidden="true" tabindex="-1"></a>Let's first again tabulate the parameter estimates. Here we use a certain order and the median of the random effects parameters, in order to be able to compare with the NONMEM results:</span>
+<span id="cb62-175"><a href="#cb62-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-178"><a href="#cb62-178" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-179"><a href="#cb62-179" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: par_estimates_arm</span></span>
+<span id="cb62-180"><a href="#cb62-180" aria-hidden="true" tabindex="-1"></a><span class="co">#| dependson: check_convergence_arm</span></span>
+<span id="cb62-181"><a href="#cb62-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-182"><a href="#cb62-182" aria-hidden="true" tabindex="-1"></a>post_samples_by_arm <span class="ot">&lt;-</span> <span class="fu">as_draws_df</span>(draws_tgi_results) <span class="sc">|&gt;</span></span>
+<span id="cb62-183"><a href="#cb62-183" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(</span>
+<span id="cb62-184"><a href="#cb62-184" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_bsld =</span> <span class="st">"lm_sf_mu_bsld[1]"</span>,</span>
+<span id="cb62-185"><a href="#cb62-185" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_ks1 =</span> <span class="st">"lm_sf_mu_ks[1]"</span>,</span>
+<span id="cb62-186"><a href="#cb62-186" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_ks2 =</span> <span class="st">"lm_sf_mu_ks[2]"</span>,</span>
+<span id="cb62-187"><a href="#cb62-187" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_kg1 =</span> <span class="st">"lm_sf_mu_kg[1]"</span>,</span>
+<span id="cb62-188"><a href="#cb62-188" aria-hidden="true" tabindex="-1"></a>        <span class="at">mu_kg2 =</span> <span class="st">"lm_sf_mu_kg[2]"</span>,</span>
+<span id="cb62-189"><a href="#cb62-189" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_bsld =</span> <span class="st">"lm_sf_omega_bsld[1]"</span>,</span>
+<span id="cb62-190"><a href="#cb62-190" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_ks1 =</span> <span class="st">"lm_sf_omega_ks[1]"</span>,</span>
+<span id="cb62-191"><a href="#cb62-191" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_ks2 =</span> <span class="st">"lm_sf_omega_ks[2]"</span>,</span>
+<span id="cb62-192"><a href="#cb62-192" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_kg1 =</span> <span class="st">"lm_sf_omega_kg[1]"</span>,</span>
+<span id="cb62-193"><a href="#cb62-193" aria-hidden="true" tabindex="-1"></a>        <span class="at">omega_kg2 =</span> <span class="st">"lm_sf_omega_kg[2]"</span>,</span>
+<span id="cb62-194"><a href="#cb62-194" aria-hidden="true" tabindex="-1"></a>        <span class="at">sigma =</span> lm_sf_sigma</span>
+<span id="cb62-195"><a href="#cb62-195" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb62-196"><a href="#cb62-196" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb62-197"><a href="#cb62-197" aria-hidden="true" tabindex="-1"></a>        <span class="at">theta_b0 =</span> <span class="fu">exp</span>(mu_bsld),</span>
+<span id="cb62-198"><a href="#cb62-198" aria-hidden="true" tabindex="-1"></a>        <span class="at">theta_ks1 =</span> <span class="fu">exp</span>(mu_ks1),</span>
+<span id="cb62-199"><a href="#cb62-199" aria-hidden="true" tabindex="-1"></a>        <span class="at">theta_ks2 =</span> <span class="fu">exp</span>(mu_ks2),</span>
+<span id="cb62-200"><a href="#cb62-200" aria-hidden="true" tabindex="-1"></a>        <span class="at">theta_kg1 =</span> <span class="fu">exp</span>(mu_kg1),</span>
+<span id="cb62-201"><a href="#cb62-201" aria-hidden="true" tabindex="-1"></a>        <span class="at">theta_kg2 =</span> <span class="fu">exp</span>(mu_kg2)</span>
+<span id="cb62-202"><a href="#cb62-202" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb62-203"><a href="#cb62-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-204"><a href="#cb62-204" aria-hidden="true" tabindex="-1"></a>post_sum_by_arm <span class="ot">&lt;-</span> post_samples_by_arm <span class="sc">|&gt;</span></span>
+<span id="cb62-205"><a href="#cb62-205" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(</span>
+<span id="cb62-206"><a href="#cb62-206" aria-hidden="true" tabindex="-1"></a>        theta_kg1, theta_kg2, theta_ks1, theta_ks2,</span>
+<span id="cb62-207"><a href="#cb62-207" aria-hidden="true" tabindex="-1"></a>        theta_b0,</span>
+<span id="cb62-208"><a href="#cb62-208" aria-hidden="true" tabindex="-1"></a>        sigma,</span>
+<span id="cb62-209"><a href="#cb62-209" aria-hidden="true" tabindex="-1"></a>        omega_kg1, omega_kg2, omega_ks1, omega_ks2, omega_bsld</span>
+<span id="cb62-210"><a href="#cb62-210" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb62-211"><a href="#cb62-211" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize_draws</span>() <span class="sc">|&gt;</span></span>
+<span id="cb62-212"><a href="#cb62-212" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb62-213"><a href="#cb62-213" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt_number</span>(<span class="at">n_sigfig =</span> <span class="dv">3</span>)</span>
+<span id="cb62-214"><a href="#cb62-214" aria-hidden="true" tabindex="-1"></a>post_sum_by_arm</span>
+<span id="cb62-215"><a href="#cb62-215" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-216"><a href="#cb62-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-217"><a href="#cb62-217" aria-hidden="true" tabindex="-1"></a>Now we can compare these with the NONMEM results (thanks to Victor Poon for providing these!)</span>
 <span id="cb62-218"><a href="#cb62-218" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-219"><a href="#cb62-219" aria-hidden="true" tabindex="-1"></a>The only tricky part is that we need to match the IDs of the patients manually, because <span class="in">`jmpost`</span> just numbers the patients in the order they appear in the data, which is then the index for all the random effects and individual growth parameters $\psi_{\text{kg}, i}$. </span>
+<span id="cb62-219"><a href="#cb62-219" aria-hidden="true" tabindex="-1"></a><span class="al">![NONMEM results](nonmem-results.png)</span></span>
 <span id="cb62-220"><a href="#cb62-220" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-221"><a href="#cb62-221" aria-hidden="true" tabindex="-1"></a>However, we need to be careful to extract the data order from the <span class="in">`tgi_joint_data`</span> object, because the subject data set is reordered by the sorted patient ID during the creation of the <span class="in">`DataJoint`</span> object. If we don't do this correctly, then we would permute the growth rates randomly between the patients and thereby destroy the link between the growth rates and the patients.</span>
-<span id="cb62-222"><a href="#cb62-222" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-225"><a href="#cb62-225" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-226"><a href="#cb62-226" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: extract_log_growth_rates</span></span>
-<span id="cb62-227"><a href="#cb62-227" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-228"><a href="#cb62-228" aria-hidden="true" tabindex="-1"></a>log_growth_samples <span class="ot">&lt;-</span> mcmc_tgi_results <span class="sc">|&gt;</span></span>
-<span id="cb62-229"><a href="#cb62-229" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We use here `rvars` because it allows to apply the</span></span>
-<span id="cb62-230"><a href="#cb62-230" aria-hidden="true" tabindex="-1"></a>    <span class="co"># mutation across all subjects at once.</span></span>
-<span id="cb62-231"><a href="#cb62-231" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as_draws_rvars</span>() <span class="sc">|&gt;</span></span>
-<span id="cb62-232"><a href="#cb62-232" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate_variables</span>(<span class="at">log_growth =</span> <span class="fu">log</span>(lm_sf_psi_kg))</span>
+<span id="cb62-221"><a href="#cb62-221" aria-hidden="true" tabindex="-1"></a>Here we need to look at the <span class="in">`estimate_yrs`</span> column, because in our <span class="in">`jmpost`</span> model we have been using the year scale.</span>
+<span id="cb62-222"><a href="#cb62-222" aria-hidden="true" tabindex="-1"></a>The results are different, but still quite consistent with the <span class="in">`jmpost`</span> results.</span>
+<span id="cb62-223"><a href="#cb62-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-224"><a href="#cb62-224" aria-hidden="true" tabindex="-1"></a><span class="fu">## Extract individual growth rate estimates</span></span>
+<span id="cb62-225"><a href="#cb62-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-226"><a href="#cb62-226" aria-hidden="true" tabindex="-1"></a>We can now extract the individual growth rate estimates from the model. </span>
+<span id="cb62-227"><a href="#cb62-227" aria-hidden="true" tabindex="-1"></a>Later, in the joint model, we are going to use the log of the growth parameter as the link. Therefore we also here first log transform the sampled values of the growth rate estimates $\psi_{\text{kg}, i}$, and then take the mean.</span>
+<span id="cb62-228"><a href="#cb62-228" aria-hidden="true" tabindex="-1"></a>Since the relevant random effect parameter samples are already stored in the <span class="in">`mcmc_tgi_results`</span> object, we can work with that via the <span class="in">`rvars`</span> interface.</span>
+<span id="cb62-229"><a href="#cb62-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-230"><a href="#cb62-230" aria-hidden="true" tabindex="-1"></a>The only tricky part is that we need to match the IDs of the patients manually, because <span class="in">`jmpost`</span> just numbers the patients in the order they appear in the data, which is then the index for all the random effects and individual growth parameters $\psi_{\text{kg}, i}$. </span>
+<span id="cb62-231"><a href="#cb62-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-232"><a href="#cb62-232" aria-hidden="true" tabindex="-1"></a>However, we need to be careful to extract the data order from the <span class="in">`tgi_joint_data`</span> object, because the subject data set is reordered by the sorted patient ID during the creation of the <span class="in">`DataJoint`</span> object. If we don't do this correctly, then we would permute the growth rates randomly between the patients and thereby destroy the link between the growth rates and the patients.</span>
 <span id="cb62-233"><a href="#cb62-233" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-234"><a href="#cb62-234" aria-hidden="true" tabindex="-1"></a>subj_log_kg_est <span class="ot">&lt;-</span> log_growth_samples <span class="sc">|&gt;</span></span>
-<span id="cb62-235"><a href="#cb62-235" aria-hidden="true" tabindex="-1"></a>    <span class="fu">subset_draws</span>(<span class="at">variable =</span> <span class="st">"log_growth"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb62-236"><a href="#cb62-236" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summary</span>() <span class="sc">|&gt;</span></span>
-<span id="cb62-237"><a href="#cb62-237" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Important: Take the IDs from `tgi_joint_data` and not from `subj_data` here!</span></span>
-<span id="cb62-238"><a href="#cb62-238" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">id =</span> tgi_joint_data<span class="sc">@</span>subject<span class="sc">@</span>data<span class="sc">$</span>id)</span>
-<span id="cb62-239"><a href="#cb62-239" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-240"><a href="#cb62-240" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(subj_log_kg_est)</span>
-<span id="cb62-241"><a href="#cb62-241" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-242"><a href="#cb62-242" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-243"><a href="#cb62-243" aria-hidden="true" tabindex="-1"></a>In the latest version of <span class="in">`jmpost`</span> this process has now been simplified, and we can use the <span class="in">`LongitudinalRandomEffects()`</span> function as follows:</span>
+<span id="cb62-236"><a href="#cb62-236" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-237"><a href="#cb62-237" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: extract_log_growth_rates</span></span>
+<span id="cb62-238"><a href="#cb62-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-239"><a href="#cb62-239" aria-hidden="true" tabindex="-1"></a>log_growth_samples <span class="ot">&lt;-</span> mcmc_tgi_results <span class="sc">|&gt;</span></span>
+<span id="cb62-240"><a href="#cb62-240" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We use here `rvars` because it allows to apply the</span></span>
+<span id="cb62-241"><a href="#cb62-241" aria-hidden="true" tabindex="-1"></a>    <span class="co"># mutation across all subjects at once.</span></span>
+<span id="cb62-242"><a href="#cb62-242" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as_draws_rvars</span>() <span class="sc">|&gt;</span></span>
+<span id="cb62-243"><a href="#cb62-243" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate_variables</span>(<span class="at">log_growth =</span> <span class="fu">log</span>(lm_sf_psi_kg))</span>
 <span id="cb62-244"><a href="#cb62-244" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-247"><a href="#cb62-247" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-248"><a href="#cb62-248" aria-hidden="true" tabindex="-1"></a>subj_log_kg_est_alt <span class="ot">&lt;-</span> <span class="fu">LongitudinalRandomEffects</span>(tgi_results) <span class="sc">|&gt;</span></span>
-<span id="cb62-249"><a href="#cb62-249" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We need to convert this to a data.frame to be able to do the log transformation.</span></span>
-<span id="cb62-250"><a href="#cb62-250" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
-<span id="cb62-251"><a href="#cb62-251" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(parameter <span class="sc">==</span> <span class="st">"g"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb62-252"><a href="#cb62-252" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">values =</span> <span class="fu">log</span>(values)) <span class="sc">|&gt;</span></span>
-<span id="cb62-253"><a href="#cb62-253" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(subject) <span class="sc">|&gt;</span></span>
-<span id="cb62-254"><a href="#cb62-254" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">log_kg_est =</span> <span class="fu">mean</span>(values))</span>
-<span id="cb62-255"><a href="#cb62-255" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(subj_log_kg_est_alt)</span>
-<span id="cb62-256"><a href="#cb62-256" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-257"><a href="#cb62-257" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-258"><a href="#cb62-258" aria-hidden="true" tabindex="-1"></a>So this gives the same resulting log growth rates, which is reassuring.</span>
-<span id="cb62-259"><a href="#cb62-259" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-260"><a href="#cb62-260" aria-hidden="true" tabindex="-1"></a>We now add the e.g. posterior mean estimate of the individual log growth rates to the OS data set, such that we will be able to use it below as a covariate in the OS model:</span>
-<span id="cb62-261"><a href="#cb62-261" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-264"><a href="#cb62-264" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-265"><a href="#cb62-265" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: add_log_kg_est_to_os_data</span></span>
-<span id="cb62-266"><a href="#cb62-266" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-267"><a href="#cb62-267" aria-hidden="true" tabindex="-1"></a>os_data_with_log_kg_est <span class="ot">&lt;-</span> os_data <span class="sc">|&gt;</span></span>
-<span id="cb62-268"><a href="#cb62-268" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(id, arm, ecog, age, race, sex, os_time, os_event) <span class="sc">|&gt;</span></span>
-<span id="cb62-269"><a href="#cb62-269" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(<span class="fu">select</span>(subj_log_kg_est, mean, id), <span class="at">by =</span> <span class="st">"id"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb62-270"><a href="#cb62-270" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">log_kg_est =</span> mean)</span>
-<span id="cb62-271"><a href="#cb62-271" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(os_data_with_log_kg_est)</span>
-<span id="cb62-272"><a href="#cb62-272" aria-hidden="true" tabindex="-1"></a>save_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-os/os_data_with_log_kg.rds"</span>)</span>
-<span id="cb62-273"><a href="#cb62-273" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(save_file)) {</span>
-<span id="cb62-274"><a href="#cb62-274" aria-hidden="true" tabindex="-1"></a>    <span class="fu">saveRDS</span>(os_data_with_log_kg_est, <span class="at">file =</span> save_file)</span>
-<span id="cb62-275"><a href="#cb62-275" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb62-276"><a href="#cb62-276" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-245"><a href="#cb62-245" aria-hidden="true" tabindex="-1"></a>subj_log_kg_est <span class="ot">&lt;-</span> log_growth_samples <span class="sc">|&gt;</span></span>
+<span id="cb62-246"><a href="#cb62-246" aria-hidden="true" tabindex="-1"></a>    <span class="fu">subset_draws</span>(<span class="at">variable =</span> <span class="st">"log_growth"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb62-247"><a href="#cb62-247" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summary</span>() <span class="sc">|&gt;</span></span>
+<span id="cb62-248"><a href="#cb62-248" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Important: Take the IDs from `tgi_joint_data` and not from `subj_data` here!</span></span>
+<span id="cb62-249"><a href="#cb62-249" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">id =</span> tgi_joint_data<span class="sc">@</span>subject<span class="sc">@</span>data<span class="sc">$</span>id)</span>
+<span id="cb62-250"><a href="#cb62-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-251"><a href="#cb62-251" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(subj_log_kg_est)</span>
+<span id="cb62-252"><a href="#cb62-252" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-253"><a href="#cb62-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-254"><a href="#cb62-254" aria-hidden="true" tabindex="-1"></a>In the latest version of <span class="in">`jmpost`</span> this process has now been simplified, and we can use the <span class="in">`LongitudinalRandomEffects()`</span> function as follows:</span>
+<span id="cb62-255"><a href="#cb62-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-258"><a href="#cb62-258" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-259"><a href="#cb62-259" aria-hidden="true" tabindex="-1"></a>subj_log_kg_est_alt <span class="ot">&lt;-</span> <span class="fu">LongitudinalRandomEffects</span>(tgi_results) <span class="sc">|&gt;</span></span>
+<span id="cb62-260"><a href="#cb62-260" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We need to convert this to a data.frame to be able to do the log transformation.</span></span>
+<span id="cb62-261"><a href="#cb62-261" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
+<span id="cb62-262"><a href="#cb62-262" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(parameter <span class="sc">==</span> <span class="st">"g"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb62-263"><a href="#cb62-263" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">values =</span> <span class="fu">log</span>(values)) <span class="sc">|&gt;</span></span>
+<span id="cb62-264"><a href="#cb62-264" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(subject) <span class="sc">|&gt;</span></span>
+<span id="cb62-265"><a href="#cb62-265" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">log_kg_est =</span> <span class="fu">mean</span>(values))</span>
+<span id="cb62-266"><a href="#cb62-266" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(subj_log_kg_est_alt)</span>
+<span id="cb62-267"><a href="#cb62-267" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-268"><a href="#cb62-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-269"><a href="#cb62-269" aria-hidden="true" tabindex="-1"></a>So this gives the same resulting log growth rates, which is reassuring.</span>
+<span id="cb62-270"><a href="#cb62-270" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-271"><a href="#cb62-271" aria-hidden="true" tabindex="-1"></a>We now add the e.g. posterior mean estimate of the individual log growth rates to the OS data set, such that we will be able to use it below as a covariate in the OS model:</span>
+<span id="cb62-272"><a href="#cb62-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-275"><a href="#cb62-275" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-276"><a href="#cb62-276" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: add_log_kg_est_to_os_data</span></span>
 <span id="cb62-277"><a href="#cb62-277" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-278"><a href="#cb62-278" aria-hidden="true" tabindex="-1"></a>As a sanity check to make sure we linked the growth rates correctly to the patients, let's compare the average log growth rates computed from the above data set with the average we would expect based on the log normal distribution. Remember from the TGI session that we have:</span>
-<span id="cb62-279"><a href="#cb62-279" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-280"><a href="#cb62-280" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb62-281"><a href="#cb62-281" aria-hidden="true" tabindex="-1"></a>\log(\psi_{k_{g}}) \sim \text{Normal}(\mu_{k_{g}}, \omega_{g})</span>
-<span id="cb62-282"><a href="#cb62-282" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb62-283"><a href="#cb62-283" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-284"><a href="#cb62-284" aria-hidden="true" tabindex="-1"></a>within each treatment arm.</span>
-<span id="cb62-285"><a href="#cb62-285" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-288"><a href="#cb62-288" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-289"><a href="#cb62-289" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: log_growth_sanity_check</span></span>
+<span id="cb62-278"><a href="#cb62-278" aria-hidden="true" tabindex="-1"></a>os_data_with_log_kg_est <span class="ot">&lt;-</span> os_data <span class="sc">|&gt;</span></span>
+<span id="cb62-279"><a href="#cb62-279" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(id, arm, ecog, age, race, sex, os_time, os_event) <span class="sc">|&gt;</span></span>
+<span id="cb62-280"><a href="#cb62-280" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(<span class="fu">select</span>(subj_log_kg_est, mean, id), <span class="at">by =</span> <span class="st">"id"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb62-281"><a href="#cb62-281" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">log_kg_est =</span> mean)</span>
+<span id="cb62-282"><a href="#cb62-282" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(os_data_with_log_kg_est)</span>
+<span id="cb62-283"><a href="#cb62-283" aria-hidden="true" tabindex="-1"></a>save_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-os/os_data_with_log_kg.rds"</span>)</span>
+<span id="cb62-284"><a href="#cb62-284" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(save_file)) {</span>
+<span id="cb62-285"><a href="#cb62-285" aria-hidden="true" tabindex="-1"></a>    <span class="fu">saveRDS</span>(os_data_with_log_kg_est, <span class="at">file =</span> save_file)</span>
+<span id="cb62-286"><a href="#cb62-286" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb62-287"><a href="#cb62-287" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-288"><a href="#cb62-288" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-289"><a href="#cb62-289" aria-hidden="true" tabindex="-1"></a>As a sanity check to make sure we linked the growth rates correctly to the patients, let's compare the average log growth rates computed from the above data set with the average we would expect based on the log normal distribution. Remember from the TGI session that we have:</span>
 <span id="cb62-290"><a href="#cb62-290" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-291"><a href="#cb62-291" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the mean using the individual estimates:</span></span>
-<span id="cb62-292"><a href="#cb62-292" aria-hidden="true" tabindex="-1"></a>log_growth_summary <span class="ot">&lt;-</span> os_data_with_log_kg_est <span class="sc">|&gt;</span></span>
-<span id="cb62-293"><a href="#cb62-293" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(arm) <span class="sc">|&gt;</span></span>
-<span id="cb62-294"><a href="#cb62-294" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(log_kg_est))</span>
-<span id="cb62-295"><a href="#cb62-295" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-296"><a href="#cb62-296" aria-hidden="true" tabindex="-1"></a><span class="co"># And now compute the mean from the original model parameter samples:</span></span>
-<span id="cb62-297"><a href="#cb62-297" aria-hidden="true" tabindex="-1"></a>log_growth_check <span class="ot">&lt;-</span> mcmc_tgi_results<span class="sc">$</span><span class="fu">summary</span>(<span class="st">"lm_sf_mu_kg"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb62-298"><a href="#cb62-298" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb62-299"><a href="#cb62-299" aria-hidden="true" tabindex="-1"></a>        <span class="at">arm =</span> <span class="fu">recode</span>(</span>
-<span id="cb62-300"><a href="#cb62-300" aria-hidden="true" tabindex="-1"></a>            variable,</span>
-<span id="cb62-301"><a href="#cb62-301" aria-hidden="true" tabindex="-1"></a>            <span class="co"># The order here is given by the order of the arm factor levels.</span></span>
-<span id="cb62-302"><a href="#cb62-302" aria-hidden="true" tabindex="-1"></a>            <span class="st">"lm_sf_mu_kg[1]"</span> <span class="ot">=</span> <span class="st">"Docetaxel"</span>,</span>
-<span id="cb62-303"><a href="#cb62-303" aria-hidden="true" tabindex="-1"></a>            <span class="st">"lm_sf_mu_kg[2]"</span> <span class="ot">=</span> <span class="st">"MPDL3280A"</span></span>
-<span id="cb62-304"><a href="#cb62-304" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb62-305"><a href="#cb62-305" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
-<span id="cb62-306"><a href="#cb62-306" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(arm, mean)</span>
-<span id="cb62-307"><a href="#cb62-307" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-308"><a href="#cb62-308" aria-hidden="true" tabindex="-1"></a><span class="co"># We can compare:</span></span>
-<span id="cb62-309"><a href="#cb62-309" aria-hidden="true" tabindex="-1"></a>log_growth_summary</span>
-<span id="cb62-310"><a href="#cb62-310" aria-hidden="true" tabindex="-1"></a>log_growth_check</span>
-<span id="cb62-311"><a href="#cb62-311" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-312"><a href="#cb62-312" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-313"><a href="#cb62-313" aria-hidden="true" tabindex="-1"></a>So this looks good, and we can continue with this data set.</span>
-<span id="cb62-314"><a href="#cb62-314" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-315"><a href="#cb62-315" aria-hidden="true" tabindex="-1"></a><span class="fu">## OS model fitting</span></span>
-<span id="cb62-316"><a href="#cb62-316" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-317"><a href="#cb62-317" aria-hidden="true" tabindex="-1"></a>Now we can fit the OS model. </span>
+<span id="cb62-291"><a href="#cb62-291" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb62-292"><a href="#cb62-292" aria-hidden="true" tabindex="-1"></a>\log(\psi_{k_{g}}) \sim \text{Normal}(\mu_{k_{g}}, \omega_{g})</span>
+<span id="cb62-293"><a href="#cb62-293" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb62-294"><a href="#cb62-294" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-295"><a href="#cb62-295" aria-hidden="true" tabindex="-1"></a>within each treatment arm.</span>
+<span id="cb62-296"><a href="#cb62-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-299"><a href="#cb62-299" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-300"><a href="#cb62-300" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: log_growth_sanity_check</span></span>
+<span id="cb62-301"><a href="#cb62-301" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-302"><a href="#cb62-302" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the mean using the individual estimates:</span></span>
+<span id="cb62-303"><a href="#cb62-303" aria-hidden="true" tabindex="-1"></a>log_growth_summary <span class="ot">&lt;-</span> os_data_with_log_kg_est <span class="sc">|&gt;</span></span>
+<span id="cb62-304"><a href="#cb62-304" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(arm) <span class="sc">|&gt;</span></span>
+<span id="cb62-305"><a href="#cb62-305" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(log_kg_est))</span>
+<span id="cb62-306"><a href="#cb62-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-307"><a href="#cb62-307" aria-hidden="true" tabindex="-1"></a><span class="co"># And now compute the mean from the original model parameter samples:</span></span>
+<span id="cb62-308"><a href="#cb62-308" aria-hidden="true" tabindex="-1"></a>log_growth_check <span class="ot">&lt;-</span> mcmc_tgi_results<span class="sc">$</span><span class="fu">summary</span>(<span class="st">"lm_sf_mu_kg"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb62-309"><a href="#cb62-309" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb62-310"><a href="#cb62-310" aria-hidden="true" tabindex="-1"></a>        <span class="at">arm =</span> <span class="fu">recode</span>(</span>
+<span id="cb62-311"><a href="#cb62-311" aria-hidden="true" tabindex="-1"></a>            variable,</span>
+<span id="cb62-312"><a href="#cb62-312" aria-hidden="true" tabindex="-1"></a>            <span class="co"># The order here is given by the order of the arm factor levels.</span></span>
+<span id="cb62-313"><a href="#cb62-313" aria-hidden="true" tabindex="-1"></a>            <span class="st">"lm_sf_mu_kg[1]"</span> <span class="ot">=</span> <span class="st">"Docetaxel"</span>,</span>
+<span id="cb62-314"><a href="#cb62-314" aria-hidden="true" tabindex="-1"></a>            <span class="st">"lm_sf_mu_kg[2]"</span> <span class="ot">=</span> <span class="st">"MPDL3280A"</span></span>
+<span id="cb62-315"><a href="#cb62-315" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb62-316"><a href="#cb62-316" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb62-317"><a href="#cb62-317" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(arm, mean)</span>
 <span id="cb62-318"><a href="#cb62-318" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-319"><a href="#cb62-319" aria-hidden="true" tabindex="-1"></a>We start by preparing the <span class="in">`DataSurvival`</span> object:</span>
-<span id="cb62-320"><a href="#cb62-320" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-323"><a href="#cb62-323" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-324"><a href="#cb62-324" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_df_prep</span></span>
+<span id="cb62-319"><a href="#cb62-319" aria-hidden="true" tabindex="-1"></a><span class="co"># We can compare:</span></span>
+<span id="cb62-320"><a href="#cb62-320" aria-hidden="true" tabindex="-1"></a>log_growth_summary</span>
+<span id="cb62-321"><a href="#cb62-321" aria-hidden="true" tabindex="-1"></a>log_growth_check</span>
+<span id="cb62-322"><a href="#cb62-322" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-323"><a href="#cb62-323" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-324"><a href="#cb62-324" aria-hidden="true" tabindex="-1"></a>So this looks good, and we can continue with this data set.</span>
 <span id="cb62-325"><a href="#cb62-325" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-326"><a href="#cb62-326" aria-hidden="true" tabindex="-1"></a>surv_data <span class="ot">&lt;-</span> <span class="fu">DataSurvival</span>(</span>
-<span id="cb62-327"><a href="#cb62-327" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> os_data_with_log_kg_est,</span>
-<span id="cb62-328"><a href="#cb62-328" aria-hidden="true" tabindex="-1"></a>    <span class="at">formula =</span> <span class="fu">Surv</span>(os_time, os_event) <span class="sc">~</span></span>
-<span id="cb62-329"><a href="#cb62-329" aria-hidden="true" tabindex="-1"></a>        ecog <span class="sc">+</span> age <span class="sc">+</span> race <span class="sc">+</span> sex <span class="sc">+</span> log_kg_est</span>
-<span id="cb62-330"><a href="#cb62-330" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-331"><a href="#cb62-331" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-332"><a href="#cb62-332" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-333"><a href="#cb62-333" aria-hidden="true" tabindex="-1"></a>Note that we are not including the treatment arm here, but only the log growth rate estimates. </span>
-<span id="cb62-334"><a href="#cb62-334" aria-hidden="true" tabindex="-1"></a>In addition, the covariates in the model include the ECOG score, age, race and sex. The idea is that the treatment effect is fully captured in the log growth rate estimates, which is referred to as "Working assumption (1)" in the slides.</span>
-<span id="cb62-335"><a href="#cb62-335" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-336"><a href="#cb62-336" aria-hidden="true" tabindex="-1"></a>Now we can create the <span class="in">`JointData`</span> object for the OS model:</span>
-<span id="cb62-337"><a href="#cb62-337" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-340"><a href="#cb62-340" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-341"><a href="#cb62-341" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_data_prep</span></span>
-<span id="cb62-342"><a href="#cb62-342" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-343"><a href="#cb62-343" aria-hidden="true" tabindex="-1"></a>os_joint_data <span class="ot">&lt;-</span> <span class="fu">DataJoint</span>(</span>
-<span id="cb62-344"><a href="#cb62-344" aria-hidden="true" tabindex="-1"></a>    <span class="at">subject =</span> subj_data,</span>
-<span id="cb62-345"><a href="#cb62-345" aria-hidden="true" tabindex="-1"></a>    <span class="at">survival =</span> surv_data</span>
-<span id="cb62-346"><a href="#cb62-346" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-347"><a href="#cb62-347" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-326"><a href="#cb62-326" aria-hidden="true" tabindex="-1"></a><span class="fu">## OS model fitting</span></span>
+<span id="cb62-327"><a href="#cb62-327" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-328"><a href="#cb62-328" aria-hidden="true" tabindex="-1"></a>Now we can fit the OS model. </span>
+<span id="cb62-329"><a href="#cb62-329" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-330"><a href="#cb62-330" aria-hidden="true" tabindex="-1"></a>We start by preparing the <span class="in">`DataSurvival`</span> object:</span>
+<span id="cb62-331"><a href="#cb62-331" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-334"><a href="#cb62-334" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-335"><a href="#cb62-335" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_df_prep</span></span>
+<span id="cb62-336"><a href="#cb62-336" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-337"><a href="#cb62-337" aria-hidden="true" tabindex="-1"></a>surv_data <span class="ot">&lt;-</span> <span class="fu">DataSurvival</span>(</span>
+<span id="cb62-338"><a href="#cb62-338" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> os_data_with_log_kg_est,</span>
+<span id="cb62-339"><a href="#cb62-339" aria-hidden="true" tabindex="-1"></a>    <span class="at">formula =</span> <span class="fu">Surv</span>(os_time, os_event) <span class="sc">~</span></span>
+<span id="cb62-340"><a href="#cb62-340" aria-hidden="true" tabindex="-1"></a>        ecog <span class="sc">+</span> age <span class="sc">+</span> race <span class="sc">+</span> sex <span class="sc">+</span> log_kg_est</span>
+<span id="cb62-341"><a href="#cb62-341" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-342"><a href="#cb62-342" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-343"><a href="#cb62-343" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-344"><a href="#cb62-344" aria-hidden="true" tabindex="-1"></a>Note that we are not including the treatment arm here, but only the log growth rate estimates. </span>
+<span id="cb62-345"><a href="#cb62-345" aria-hidden="true" tabindex="-1"></a>In addition, the covariates in the model include the ECOG score, age, race and sex. The idea is that the treatment effect is fully captured in the log growth rate estimates, which is referred to as "Working assumption (1)" in the slides.</span>
+<span id="cb62-346"><a href="#cb62-346" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-347"><a href="#cb62-347" aria-hidden="true" tabindex="-1"></a>Now we can create the <span class="in">`JointData`</span> object for the OS model:</span>
 <span id="cb62-348"><a href="#cb62-348" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-349"><a href="#cb62-349" aria-hidden="true" tabindex="-1"></a>We specify the Weibull model together with the priors for the model parameters. We take vague priors for the regression coefficients <span class="in">`beta`</span>. For <span class="in">`lambda`</span> and <span class="in">`gamma`</span>, we start from the scale of the survival data at hand: </span>
-<span id="cb62-350"><a href="#cb62-350" aria-hidden="true" tabindex="-1"></a>the average survival time is <span class="in">`r round(mean(os_data_with_log_kg_est$os_time), 1)`</span> years, just taking a crude average of all survival times. </span>
-<span id="cb62-351"><a href="#cb62-351" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-352"><a href="#cb62-352" aria-hidden="true" tabindex="-1"></a>We can quickly write the function that gives the mean of the Weibull distribution with fixed <span class="in">`lambda`</span> and <span class="in">`gamma`</span>:</span>
+<span id="cb62-351"><a href="#cb62-351" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-352"><a href="#cb62-352" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_data_prep</span></span>
 <span id="cb62-353"><a href="#cb62-353" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-356"><a href="#cb62-356" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-357"><a href="#cb62-357" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: weibull_mean</span></span>
-<span id="cb62-358"><a href="#cb62-358" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-359"><a href="#cb62-359" aria-hidden="true" tabindex="-1"></a>weibull_mean <span class="ot">&lt;-</span> <span class="cf">function</span>(lambda, gamma) {</span>
-<span id="cb62-360"><a href="#cb62-360" aria-hidden="true" tabindex="-1"></a>    base<span class="sc">::</span><span class="fu">gamma</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">/</span> gamma) <span class="sc">/</span> lambda</span>
-<span id="cb62-361"><a href="#cb62-361" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb62-362"><a href="#cb62-362" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-363"><a href="#cb62-363" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-364"><a href="#cb62-364" aria-hidden="true" tabindex="-1"></a>Therefore, playing around with this a bit, we can e.g. center the prior for <span class="in">`lambda`</span> around 0.7 and the prior for <span class="in">`gamma`</span> around 1.5, giving a mean survival time of <span class="in">`r round(weibull_mean(0.7, 1.5), 1)`</span> years.</span>
-<span id="cb62-365"><a href="#cb62-365" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-366"><a href="#cb62-366" aria-hidden="true" tabindex="-1"></a>If we want to use Gamma distributions e.g. for <span class="in">`lambda`</span> and <span class="in">`gamma`</span>, we can use the <span class="in">`prior_gamma`</span> function. The two parameters of this distribution are the shape and the rate. The mean is shape divided by the rate. So easiest is to keep a rate of 1 and just set the shape to the mean value we need:</span>
-<span id="cb62-367"><a href="#cb62-367" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-370"><a href="#cb62-370" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-371"><a href="#cb62-371" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_mod_spec</span></span>
-<span id="cb62-372"><a href="#cb62-372" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-373"><a href="#cb62-373" aria-hidden="true" tabindex="-1"></a>os_mod <span class="ot">&lt;-</span> <span class="fu">JointModel</span>(</span>
-<span id="cb62-374"><a href="#cb62-374" aria-hidden="true" tabindex="-1"></a>    <span class="at">survival =</span> <span class="fu">SurvivalWeibullPH</span>(</span>
-<span id="cb62-375"><a href="#cb62-375" aria-hidden="true" tabindex="-1"></a>        <span class="at">lambda =</span> <span class="fu">prior_gamma</span>(<span class="fl">0.7</span>, <span class="dv">1</span>),</span>
-<span id="cb62-376"><a href="#cb62-376" aria-hidden="true" tabindex="-1"></a>        <span class="at">gamma =</span> <span class="fu">prior_gamma</span>(<span class="fl">1.5</span>, <span class="dv">1</span>),</span>
-<span id="cb62-377"><a href="#cb62-377" aria-hidden="true" tabindex="-1"></a>        <span class="at">beta =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">20</span>)</span>
-<span id="cb62-378"><a href="#cb62-378" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb62-379"><a href="#cb62-379" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-380"><a href="#cb62-380" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-381"><a href="#cb62-381" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-382"><a href="#cb62-382" aria-hidden="true" tabindex="-1"></a>Because we use a large prior variance for <span class="in">`beta`</span>, we need to adjust the default initial value construction used in <span class="in">`jmpost`</span>. As explained <span class="co">[</span><span class="ot">here</span><span class="co">](https://genentech.github.io/jmpost/main/articles/model_fitting.html#initial-values)</span>, we can change the shrinkage of the initial values to the mean. We can then check what the initial values will be, to make sure that they are reasonable:</span>
+<span id="cb62-354"><a href="#cb62-354" aria-hidden="true" tabindex="-1"></a>os_joint_data <span class="ot">&lt;-</span> <span class="fu">DataJoint</span>(</span>
+<span id="cb62-355"><a href="#cb62-355" aria-hidden="true" tabindex="-1"></a>    <span class="at">subject =</span> subj_data,</span>
+<span id="cb62-356"><a href="#cb62-356" aria-hidden="true" tabindex="-1"></a>    <span class="at">survival =</span> surv_data</span>
+<span id="cb62-357"><a href="#cb62-357" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-358"><a href="#cb62-358" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-359"><a href="#cb62-359" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-360"><a href="#cb62-360" aria-hidden="true" tabindex="-1"></a>We specify the Weibull model together with the priors for the model parameters. We take vague priors for the regression coefficients <span class="in">`beta`</span>. For <span class="in">`lambda`</span> and <span class="in">`gamma`</span>, we start from the scale of the survival data at hand: </span>
+<span id="cb62-361"><a href="#cb62-361" aria-hidden="true" tabindex="-1"></a>the average survival time is <span class="in">`r round(mean(os_data_with_log_kg_est$os_time), 1)`</span> years, just taking a crude average of all survival times. </span>
+<span id="cb62-362"><a href="#cb62-362" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-363"><a href="#cb62-363" aria-hidden="true" tabindex="-1"></a>We can quickly write the function that gives the mean of the Weibull distribution with fixed <span class="in">`lambda`</span> and <span class="in">`gamma`</span>:</span>
+<span id="cb62-364"><a href="#cb62-364" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-367"><a href="#cb62-367" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-368"><a href="#cb62-368" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: weibull_mean</span></span>
+<span id="cb62-369"><a href="#cb62-369" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-370"><a href="#cb62-370" aria-hidden="true" tabindex="-1"></a>weibull_mean <span class="ot">&lt;-</span> <span class="cf">function</span>(lambda, gamma) {</span>
+<span id="cb62-371"><a href="#cb62-371" aria-hidden="true" tabindex="-1"></a>    base<span class="sc">::</span><span class="fu">gamma</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">/</span> gamma) <span class="sc">/</span> lambda</span>
+<span id="cb62-372"><a href="#cb62-372" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb62-373"><a href="#cb62-373" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-374"><a href="#cb62-374" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-375"><a href="#cb62-375" aria-hidden="true" tabindex="-1"></a>Therefore, playing around with this a bit, we can e.g. center the prior for <span class="in">`lambda`</span> around 0.7 and the prior for <span class="in">`gamma`</span> around 1.5, giving a mean survival time of <span class="in">`r round(weibull_mean(0.7, 1.5), 1)`</span> years.</span>
+<span id="cb62-376"><a href="#cb62-376" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-377"><a href="#cb62-377" aria-hidden="true" tabindex="-1"></a>If we want to use Gamma distributions e.g. for <span class="in">`lambda`</span> and <span class="in">`gamma`</span>, we can use the <span class="in">`prior_gamma`</span> function. The two parameters of this distribution are the shape and the rate. The mean is shape divided by the rate. So easiest is to keep a rate of 1 and just set the shape to the mean value we need:</span>
+<span id="cb62-378"><a href="#cb62-378" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-381"><a href="#cb62-381" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-382"><a href="#cb62-382" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_mod_spec</span></span>
 <span id="cb62-383"><a href="#cb62-383" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-386"><a href="#cb62-386" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-387"><a href="#cb62-387" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_mod_initial_values</span></span>
-<span id="cb62-388"><a href="#cb62-388" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-389"><a href="#cb62-389" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="st">"jmpost.prior_shrinkage"</span> <span class="ot">=</span> <span class="fl">0.999</span>)</span>
-<span id="cb62-390"><a href="#cb62-390" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-391"><a href="#cb62-391" aria-hidden="true" tabindex="-1"></a><span class="fu">initialValues</span>(os_mod, <span class="at">n_chains =</span> CHAINS)</span>
-<span id="cb62-392"><a href="#cb62-392" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-393"><a href="#cb62-393" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-394"><a href="#cb62-394" aria-hidden="true" tabindex="-1"></a>So the values are now close to the means of the respective prior distributions. We can then see later if the chains were converging well. If not, we could as an alternative also manually set initial values, as explained <span class="co">[</span><span class="ot">here</span><span class="co">](https://genentech.github.io/jmpost/main/articles/quickstart.html#initial-values)</span>.</span>
-<span id="cb62-395"><a href="#cb62-395" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-396"><a href="#cb62-396" aria-hidden="true" tabindex="-1"></a>Now we can fit the model:</span>
-<span id="cb62-397"><a href="#cb62-397" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-400"><a href="#cb62-400" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-401"><a href="#cb62-401" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_model_fit</span></span>
-<span id="cb62-402"><a href="#cb62-402" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-403"><a href="#cb62-403" aria-hidden="true" tabindex="-1"></a>save_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-os/os1.rds"</span>)</span>
-<span id="cb62-404"><a href="#cb62-404" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(save_file)) {</span>
-<span id="cb62-405"><a href="#cb62-405" aria-hidden="true" tabindex="-1"></a>    os_results <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_file)</span>
-<span id="cb62-406"><a href="#cb62-406" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb62-407"><a href="#cb62-407" aria-hidden="true" tabindex="-1"></a>    os_results <span class="ot">&lt;-</span> <span class="fu">sampleStanModel</span>(</span>
-<span id="cb62-408"><a href="#cb62-408" aria-hidden="true" tabindex="-1"></a>        os_mod,</span>
-<span id="cb62-409"><a href="#cb62-409" aria-hidden="true" tabindex="-1"></a>        <span class="at">data =</span> os_joint_data,</span>
-<span id="cb62-410"><a href="#cb62-410" aria-hidden="true" tabindex="-1"></a>        <span class="at">iter_sampling =</span> ITER,</span>
-<span id="cb62-411"><a href="#cb62-411" aria-hidden="true" tabindex="-1"></a>        <span class="at">iter_warmup =</span> WARMUP,</span>
-<span id="cb62-412"><a href="#cb62-412" aria-hidden="true" tabindex="-1"></a>        <span class="at">chains =</span> CHAINS,</span>
-<span id="cb62-413"><a href="#cb62-413" aria-hidden="true" tabindex="-1"></a>        <span class="at">parallel_chains =</span> CHAINS,</span>
-<span id="cb62-414"><a href="#cb62-414" aria-hidden="true" tabindex="-1"></a>        <span class="at">thin =</span> CHAINS,</span>
-<span id="cb62-415"><a href="#cb62-415" aria-hidden="true" tabindex="-1"></a>        <span class="at">seed =</span> BAYES.SEED,</span>
-<span id="cb62-416"><a href="#cb62-416" aria-hidden="true" tabindex="-1"></a>        <span class="at">refresh =</span> REFRESH</span>
-<span id="cb62-417"><a href="#cb62-417" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb62-418"><a href="#cb62-418" aria-hidden="true" tabindex="-1"></a>    <span class="fu">saveObject</span>(os_results, <span class="at">file =</span> save_file)</span>
-<span id="cb62-419"><a href="#cb62-419" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb62-420"><a href="#cb62-420" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-421"><a href="#cb62-421" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-422"><a href="#cb62-422" aria-hidden="true" tabindex="-1"></a>Note that here we can get warnings at the beginning of the chains' sampling process ("The current Metropolis proposal is about to be rejected ..."). As long as this only happens in the beginning, and not during the sampling later, then this is not a cause for concern.</span>
-<span id="cb62-423"><a href="#cb62-423" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-424"><a href="#cb62-424" aria-hidden="true" tabindex="-1"></a>Let's check the convergence of the population parameters:</span>
-<span id="cb62-425"><a href="#cb62-425" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-428"><a href="#cb62-428" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-429"><a href="#cb62-429" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: check_convergence_os</span></span>
-<span id="cb62-430"><a href="#cb62-430" aria-hidden="true" tabindex="-1"></a><span class="co">#| dependson: os_model_fit</span></span>
-<span id="cb62-431"><a href="#cb62-431" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-432"><a href="#cb62-432" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb62-433"><a href="#cb62-433" aria-hidden="true" tabindex="-1"></a>    <span class="st">"beta_os_cov"</span>,</span>
-<span id="cb62-434"><a href="#cb62-434" aria-hidden="true" tabindex="-1"></a>    <span class="st">"sm_weibull_ph_gamma"</span>,</span>
-<span id="cb62-435"><a href="#cb62-435" aria-hidden="true" tabindex="-1"></a>    <span class="st">"sm_weibull_ph_lambda"</span></span>
-<span id="cb62-436"><a href="#cb62-436" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-437"><a href="#cb62-437" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-438"><a href="#cb62-438" aria-hidden="true" tabindex="-1"></a>mcmc_os_results <span class="ot">&lt;-</span> cmdstanr<span class="sc">::</span><span class="fu">as.CmdStanMCMC</span>(os_results)</span>
-<span id="cb62-439"><a href="#cb62-439" aria-hidden="true" tabindex="-1"></a>mcmc_os_results<span class="sc">$</span><span class="fu">summary</span>(vars)</span>
-<span id="cb62-440"><a href="#cb62-440" aria-hidden="true" tabindex="-1"></a>draws_os_results <span class="ot">&lt;-</span> mcmc_os_results<span class="sc">$</span><span class="fu">draws</span>(vars)</span>
-<span id="cb62-441"><a href="#cb62-441" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_trace</span>(draws_os_results)</span>
-<span id="cb62-442"><a href="#cb62-442" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-443"><a href="#cb62-443" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-444"><a href="#cb62-444" aria-hidden="true" tabindex="-1"></a><span class="fu">## Interpret covariate effects</span></span>
-<span id="cb62-445"><a href="#cb62-445" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-446"><a href="#cb62-446" aria-hidden="true" tabindex="-1"></a>In order to better see which of the coefficients relate to which covariates, we can rename them as follows:</span>
-<span id="cb62-447"><a href="#cb62-447" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-450"><a href="#cb62-450" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-451"><a href="#cb62-451" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: rename_os_cov_coefs</span></span>
-<span id="cb62-452"><a href="#cb62-452" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-453"><a href="#cb62-453" aria-hidden="true" tabindex="-1"></a>surv_data_design <span class="ot">&lt;-</span> <span class="fu">as_stan_list</span>(surv_data)<span class="sc">$</span>os_cov_design</span>
-<span id="cb62-454"><a href="#cb62-454" aria-hidden="true" tabindex="-1"></a>os_cov_names <span class="ot">&lt;-</span> <span class="fu">colnames</span>(surv_data_design)</span>
-<span id="cb62-455"><a href="#cb62-455" aria-hidden="true" tabindex="-1"></a>old_coef_names <span class="ot">&lt;-</span> glue<span class="sc">::</span><span class="fu">glue</span>(<span class="st">"beta_os_cov[{seq_along(os_cov_names)}]"</span>)</span>
-<span id="cb62-456"><a href="#cb62-456" aria-hidden="true" tabindex="-1"></a>draws_os_results <span class="ot">&lt;-</span> <span class="fu">do.call</span>(</span>
-<span id="cb62-457"><a href="#cb62-457" aria-hidden="true" tabindex="-1"></a>    rename_variables,</span>
-<span id="cb62-458"><a href="#cb62-458" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="fu">list</span>(draws_os_results), <span class="fu">setNames</span>(old_coef_names, os_cov_names))</span>
-<span id="cb62-459"><a href="#cb62-459" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-460"><a href="#cb62-460" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_dens_overlay</span>(draws_os_results) <span class="sc">+</span></span>
-<span id="cb62-461"><a href="#cb62-461" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>)</span>
-<span id="cb62-462"><a href="#cb62-462" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(draws_os_results)</span>
+<span id="cb62-384"><a href="#cb62-384" aria-hidden="true" tabindex="-1"></a>os_mod <span class="ot">&lt;-</span> <span class="fu">JointModel</span>(</span>
+<span id="cb62-385"><a href="#cb62-385" aria-hidden="true" tabindex="-1"></a>    <span class="at">survival =</span> <span class="fu">SurvivalWeibullPH</span>(</span>
+<span id="cb62-386"><a href="#cb62-386" aria-hidden="true" tabindex="-1"></a>        <span class="at">lambda =</span> <span class="fu">prior_gamma</span>(<span class="fl">0.7</span>, <span class="dv">1</span>),</span>
+<span id="cb62-387"><a href="#cb62-387" aria-hidden="true" tabindex="-1"></a>        <span class="at">gamma =</span> <span class="fu">prior_gamma</span>(<span class="fl">1.5</span>, <span class="dv">1</span>),</span>
+<span id="cb62-388"><a href="#cb62-388" aria-hidden="true" tabindex="-1"></a>        <span class="at">beta =</span> <span class="fu">prior_normal</span>(<span class="dv">0</span>, <span class="dv">20</span>)</span>
+<span id="cb62-389"><a href="#cb62-389" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb62-390"><a href="#cb62-390" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-391"><a href="#cb62-391" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-392"><a href="#cb62-392" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-393"><a href="#cb62-393" aria-hidden="true" tabindex="-1"></a>Because we use a large prior variance for <span class="in">`beta`</span>, we need to adjust the default initial value construction used in <span class="in">`jmpost`</span>. As explained <span class="co">[</span><span class="ot">here</span><span class="co">](https://genentech.github.io/jmpost/main/articles/model_fitting.html#initial-values)</span>, we can change the shrinkage of the initial values to the mean. We can then check what the initial values will be, to make sure that they are reasonable:</span>
+<span id="cb62-394"><a href="#cb62-394" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-397"><a href="#cb62-397" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-398"><a href="#cb62-398" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_mod_initial_values</span></span>
+<span id="cb62-399"><a href="#cb62-399" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-400"><a href="#cb62-400" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="st">"jmpost.prior_shrinkage"</span> <span class="ot">=</span> <span class="fl">0.999</span>)</span>
+<span id="cb62-401"><a href="#cb62-401" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-402"><a href="#cb62-402" aria-hidden="true" tabindex="-1"></a><span class="fu">initialValues</span>(os_mod, <span class="at">n_chains =</span> CHAINS)</span>
+<span id="cb62-403"><a href="#cb62-403" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-404"><a href="#cb62-404" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-405"><a href="#cb62-405" aria-hidden="true" tabindex="-1"></a>So the values are now close to the means of the respective prior distributions. We can then see later if the chains were converging well. If not, we could as an alternative also manually set initial values, as explained <span class="co">[</span><span class="ot">here</span><span class="co">](https://genentech.github.io/jmpost/main/articles/quickstart.html#initial-values)</span>.</span>
+<span id="cb62-406"><a href="#cb62-406" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-407"><a href="#cb62-407" aria-hidden="true" tabindex="-1"></a>Now we can fit the model:</span>
+<span id="cb62-408"><a href="#cb62-408" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-411"><a href="#cb62-411" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-412"><a href="#cb62-412" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_model_fit</span></span>
+<span id="cb62-413"><a href="#cb62-413" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-414"><a href="#cb62-414" aria-hidden="true" tabindex="-1"></a>save_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-os/os1.rds"</span>)</span>
+<span id="cb62-415"><a href="#cb62-415" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(save_file)) {</span>
+<span id="cb62-416"><a href="#cb62-416" aria-hidden="true" tabindex="-1"></a>    os_results <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_file)</span>
+<span id="cb62-417"><a href="#cb62-417" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb62-418"><a href="#cb62-418" aria-hidden="true" tabindex="-1"></a>    os_results <span class="ot">&lt;-</span> <span class="fu">sampleStanModel</span>(</span>
+<span id="cb62-419"><a href="#cb62-419" aria-hidden="true" tabindex="-1"></a>        os_mod,</span>
+<span id="cb62-420"><a href="#cb62-420" aria-hidden="true" tabindex="-1"></a>        <span class="at">data =</span> os_joint_data,</span>
+<span id="cb62-421"><a href="#cb62-421" aria-hidden="true" tabindex="-1"></a>        <span class="at">iter_sampling =</span> ITER,</span>
+<span id="cb62-422"><a href="#cb62-422" aria-hidden="true" tabindex="-1"></a>        <span class="at">iter_warmup =</span> WARMUP,</span>
+<span id="cb62-423"><a href="#cb62-423" aria-hidden="true" tabindex="-1"></a>        <span class="at">chains =</span> CHAINS,</span>
+<span id="cb62-424"><a href="#cb62-424" aria-hidden="true" tabindex="-1"></a>        <span class="at">parallel_chains =</span> CHAINS,</span>
+<span id="cb62-425"><a href="#cb62-425" aria-hidden="true" tabindex="-1"></a>        <span class="at">thin =</span> CHAINS,</span>
+<span id="cb62-426"><a href="#cb62-426" aria-hidden="true" tabindex="-1"></a>        <span class="at">seed =</span> BAYES.SEED,</span>
+<span id="cb62-427"><a href="#cb62-427" aria-hidden="true" tabindex="-1"></a>        <span class="at">refresh =</span> REFRESH</span>
+<span id="cb62-428"><a href="#cb62-428" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb62-429"><a href="#cb62-429" aria-hidden="true" tabindex="-1"></a>    <span class="fu">saveObject</span>(os_results, <span class="at">file =</span> save_file)</span>
+<span id="cb62-430"><a href="#cb62-430" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb62-431"><a href="#cb62-431" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-432"><a href="#cb62-432" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-433"><a href="#cb62-433" aria-hidden="true" tabindex="-1"></a>Note that here we can get warnings at the beginning of the chains' sampling process ("The current Metropolis proposal is about to be rejected ..."). As long as this only happens in the beginning, and not during the sampling later, then this is not a cause for concern.</span>
+<span id="cb62-434"><a href="#cb62-434" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-435"><a href="#cb62-435" aria-hidden="true" tabindex="-1"></a>Let's check the convergence of the population parameters:</span>
+<span id="cb62-436"><a href="#cb62-436" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-439"><a href="#cb62-439" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-440"><a href="#cb62-440" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: check_convergence_os</span></span>
+<span id="cb62-441"><a href="#cb62-441" aria-hidden="true" tabindex="-1"></a><span class="co">#| dependson: os_model_fit</span></span>
+<span id="cb62-442"><a href="#cb62-442" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-443"><a href="#cb62-443" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb62-444"><a href="#cb62-444" aria-hidden="true" tabindex="-1"></a>    <span class="st">"beta_os_cov"</span>,</span>
+<span id="cb62-445"><a href="#cb62-445" aria-hidden="true" tabindex="-1"></a>    <span class="st">"sm_weibull_ph_gamma"</span>,</span>
+<span id="cb62-446"><a href="#cb62-446" aria-hidden="true" tabindex="-1"></a>    <span class="st">"sm_weibull_ph_lambda"</span></span>
+<span id="cb62-447"><a href="#cb62-447" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-448"><a href="#cb62-448" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-449"><a href="#cb62-449" aria-hidden="true" tabindex="-1"></a>mcmc_os_results <span class="ot">&lt;-</span> cmdstanr<span class="sc">::</span><span class="fu">as.CmdStanMCMC</span>(os_results)</span>
+<span id="cb62-450"><a href="#cb62-450" aria-hidden="true" tabindex="-1"></a>mcmc_os_results<span class="sc">$</span><span class="fu">summary</span>(vars)</span>
+<span id="cb62-451"><a href="#cb62-451" aria-hidden="true" tabindex="-1"></a>draws_os_results <span class="ot">&lt;-</span> mcmc_os_results<span class="sc">$</span><span class="fu">draws</span>(vars)</span>
+<span id="cb62-452"><a href="#cb62-452" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_trace</span>(draws_os_results)</span>
+<span id="cb62-453"><a href="#cb62-453" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-454"><a href="#cb62-454" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-455"><a href="#cb62-455" aria-hidden="true" tabindex="-1"></a><span class="fu">## Interpret covariate effects</span></span>
+<span id="cb62-456"><a href="#cb62-456" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-457"><a href="#cb62-457" aria-hidden="true" tabindex="-1"></a>In order to better see which of the coefficients relate to which covariates, we can rename them as follows:</span>
+<span id="cb62-458"><a href="#cb62-458" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-461"><a href="#cb62-461" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-462"><a href="#cb62-462" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: rename_os_cov_coefs</span></span>
 <span id="cb62-463"><a href="#cb62-463" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-464"><a href="#cb62-464" aria-hidden="true" tabindex="-1"></a>save_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-os/os_draws.rds"</span>)</span>
-<span id="cb62-465"><a href="#cb62-465" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(save_file)) {</span>
-<span id="cb62-466"><a href="#cb62-466" aria-hidden="true" tabindex="-1"></a>    <span class="fu">saveRDS</span>(draws_os_results, <span class="at">file =</span> save_file)</span>
-<span id="cb62-467"><a href="#cb62-467" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb62-468"><a href="#cb62-468" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-469"><a href="#cb62-469" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-470"><a href="#cb62-470" aria-hidden="true" tabindex="-1"></a>So we can see that the 90% credible interval (CI) for the <span class="in">`log_kg_est`</span> and <span class="in">`ecog1`</span> covariate coefficients excludes 0, so both are "significant" predictors of the hazard rate. On the other hand, the <span class="in">`race`</span> dummy variables' and the <span class="in">`age`</span> variable's coefficient CIs clearly include 0. The situation is less clear for <span class="in">`sex`</span>: here the CI barely includes 0. </span>
-<span id="cb62-471"><a href="#cb62-471" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-472"><a href="#cb62-472" aria-hidden="true" tabindex="-1"></a>In addition, we can also look at the posterior probabilities to have a hazard ratio above 1:</span>
-<span id="cb62-473"><a href="#cb62-473" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-476"><a href="#cb62-476" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-477"><a href="#cb62-477" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_hazard_ratios</span></span>
-<span id="cb62-478"><a href="#cb62-478" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-479"><a href="#cb62-479" aria-hidden="true" tabindex="-1"></a>draws_os_results <span class="sc">|&gt;</span></span>
-<span id="cb62-480"><a href="#cb62-480" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as_draws_df</span>() <span class="sc">|&gt;</span></span>
-<span id="cb62-481"><a href="#cb62-481" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise_all</span>(<span class="sc">~</span> <span class="fu">mean</span>(. <span class="sc">&gt;</span> <span class="dv">0</span>))</span>
-<span id="cb62-482"><a href="#cb62-482" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-483"><a href="#cb62-483" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-484"><a href="#cb62-484" aria-hidden="true" tabindex="-1"></a>So we have a more than 90% posterior probability that male patients have a higher hazard than females, and we also see a similarly strong effect here for the <span class="in">`OTHER`</span> category of <span class="in">`race`</span>. As we saw from the CI already, the <span class="in">`age`</span> effect is not so strong.</span>
-<span id="cb62-485"><a href="#cb62-485" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-486"><a href="#cb62-486" aria-hidden="true" tabindex="-1"></a><span class="fu">## Observation vs model fit</span></span>
-<span id="cb62-487"><a href="#cb62-487" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-488"><a href="#cb62-488" aria-hidden="true" tabindex="-1"></a>A useful plot displays the model predicted survival function and overlays the non-parametric Kaplan-Meier plot to it. Such a plot is easily obtained using the <span class="in">`autoplot()`</span> function, as we will see below.</span>
+<span id="cb62-464"><a href="#cb62-464" aria-hidden="true" tabindex="-1"></a>surv_data_design <span class="ot">&lt;-</span> <span class="fu">as_stan_list</span>(surv_data)<span class="sc">$</span>os_cov_design</span>
+<span id="cb62-465"><a href="#cb62-465" aria-hidden="true" tabindex="-1"></a>os_cov_names <span class="ot">&lt;-</span> <span class="fu">colnames</span>(surv_data_design)</span>
+<span id="cb62-466"><a href="#cb62-466" aria-hidden="true" tabindex="-1"></a>old_coef_names <span class="ot">&lt;-</span> glue<span class="sc">::</span><span class="fu">glue</span>(<span class="st">"beta_os_cov[{seq_along(os_cov_names)}]"</span>)</span>
+<span id="cb62-467"><a href="#cb62-467" aria-hidden="true" tabindex="-1"></a>draws_os_results <span class="ot">&lt;-</span> <span class="fu">do.call</span>(</span>
+<span id="cb62-468"><a href="#cb62-468" aria-hidden="true" tabindex="-1"></a>    rename_variables,</span>
+<span id="cb62-469"><a href="#cb62-469" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="fu">list</span>(draws_os_results), <span class="fu">setNames</span>(old_coef_names, os_cov_names))</span>
+<span id="cb62-470"><a href="#cb62-470" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-471"><a href="#cb62-471" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_dens_overlay</span>(draws_os_results) <span class="sc">+</span></span>
+<span id="cb62-472"><a href="#cb62-472" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>)</span>
+<span id="cb62-473"><a href="#cb62-473" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(draws_os_results)</span>
+<span id="cb62-474"><a href="#cb62-474" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-475"><a href="#cb62-475" aria-hidden="true" tabindex="-1"></a>save_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-os/os_draws.rds"</span>)</span>
+<span id="cb62-476"><a href="#cb62-476" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(save_file)) {</span>
+<span id="cb62-477"><a href="#cb62-477" aria-hidden="true" tabindex="-1"></a>    <span class="fu">saveRDS</span>(draws_os_results, <span class="at">file =</span> save_file)</span>
+<span id="cb62-478"><a href="#cb62-478" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb62-479"><a href="#cb62-479" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-480"><a href="#cb62-480" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-481"><a href="#cb62-481" aria-hidden="true" tabindex="-1"></a>So we can see that the 90% credible interval (CI) for the <span class="in">`log_kg_est`</span> and <span class="in">`ecog1`</span> covariate coefficients excludes 0, so both are "significant" predictors of the hazard rate. On the other hand, the <span class="in">`race`</span> dummy variables' and the <span class="in">`age`</span> variable's coefficient CIs clearly include 0. The situation is less clear for <span class="in">`sex`</span>: here the CI barely includes 0. </span>
+<span id="cb62-482"><a href="#cb62-482" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-483"><a href="#cb62-483" aria-hidden="true" tabindex="-1"></a>In addition, we can also look at the posterior probabilities to have a hazard ratio above 1:</span>
+<span id="cb62-484"><a href="#cb62-484" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-487"><a href="#cb62-487" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-488"><a href="#cb62-488" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_hazard_ratios</span></span>
 <span id="cb62-489"><a href="#cb62-489" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-490"><a href="#cb62-490" aria-hidden="true" tabindex="-1"></a>The first step consists in generating the survival predictions at the group level with the <span class="in">`SurvivalQuantities()`</span> function. It is recommended to specify the sequence of time points at which the predictions should be made (using the argument <span class="in">`times`</span>):</span>
-<span id="cb62-491"><a href="#cb62-491" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-494"><a href="#cb62-494" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-495"><a href="#cb62-495" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_surv_pred</span></span>
-<span id="cb62-496"><a href="#cb62-496" aria-hidden="true" tabindex="-1"></a>time_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(</span>
-<span id="cb62-497"><a href="#cb62-497" aria-hidden="true" tabindex="-1"></a>    <span class="at">from =</span> <span class="dv">0</span>,</span>
-<span id="cb62-498"><a href="#cb62-498" aria-hidden="true" tabindex="-1"></a>    <span class="at">to =</span> <span class="fu">max</span>(os_data_with_log_kg_est<span class="sc">$</span>os_time),</span>
-<span id="cb62-499"><a href="#cb62-499" aria-hidden="true" tabindex="-1"></a>    <span class="at">length =</span> <span class="dv">100</span></span>
-<span id="cb62-500"><a href="#cb62-500" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-501"><a href="#cb62-501" aria-hidden="true" tabindex="-1"></a>os_surv_group_grid <span class="ot">&lt;-</span> <span class="fu">GridGrouped</span>(</span>
-<span id="cb62-502"><a href="#cb62-502" aria-hidden="true" tabindex="-1"></a>    <span class="at">times =</span> time_grid,</span>
-<span id="cb62-503"><a href="#cb62-503" aria-hidden="true" tabindex="-1"></a>    <span class="at">groups =</span> <span class="fu">with</span>(</span>
-<span id="cb62-504"><a href="#cb62-504" aria-hidden="true" tabindex="-1"></a>        subj_df,</span>
-<span id="cb62-505"><a href="#cb62-505" aria-hidden="true" tabindex="-1"></a>        <span class="fu">split</span>(<span class="fu">as.character</span>(id), arm)</span>
-<span id="cb62-506"><a href="#cb62-506" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb62-507"><a href="#cb62-507" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-508"><a href="#cb62-508" aria-hidden="true" tabindex="-1"></a>os_surv_pred <span class="ot">&lt;-</span> <span class="fu">SurvivalQuantities</span>(</span>
-<span id="cb62-509"><a href="#cb62-509" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> os_results,</span>
-<span id="cb62-510"><a href="#cb62-510" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> os_surv_group_grid,</span>
-<span id="cb62-511"><a href="#cb62-511" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"surv"</span></span>
-<span id="cb62-512"><a href="#cb62-512" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-513"><a href="#cb62-513" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-514"><a href="#cb62-514" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-515"><a href="#cb62-515" aria-hidden="true" tabindex="-1"></a>Now we can use the <span class="in">`autoplot()`</span> method:</span>
-<span id="cb62-516"><a href="#cb62-516" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-519"><a href="#cb62-519" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-520"><a href="#cb62-520" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_surv_plot</span></span>
-<span id="cb62-521"><a href="#cb62-521" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(os_surv_pred, <span class="at">add_km =</span> <span class="cn">TRUE</span>, <span class="at">add_wrap =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb62-522"><a href="#cb62-522" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-523"><a href="#cb62-523" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-524"><a href="#cb62-524" aria-hidden="true" tabindex="-1"></a>Here the fit seems ok but not perfect, especially for the Docetaxel arm it could be improved maybe. We will try below alternative models to see if we can improve the fit.</span>
+<span id="cb62-490"><a href="#cb62-490" aria-hidden="true" tabindex="-1"></a>draws_os_results <span class="sc">|&gt;</span></span>
+<span id="cb62-491"><a href="#cb62-491" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as_draws_df</span>() <span class="sc">|&gt;</span></span>
+<span id="cb62-492"><a href="#cb62-492" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise_all</span>(<span class="sc">~</span> <span class="fu">mean</span>(. <span class="sc">&gt;</span> <span class="dv">0</span>))</span>
+<span id="cb62-493"><a href="#cb62-493" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-494"><a href="#cb62-494" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-495"><a href="#cb62-495" aria-hidden="true" tabindex="-1"></a>So we have a more than 90% posterior probability that male patients have a higher hazard than females, and we also see a similarly strong effect here for the <span class="in">`OTHER`</span> category of <span class="in">`race`</span>. As we saw from the CI already, the <span class="in">`age`</span> effect is not so strong.</span>
+<span id="cb62-496"><a href="#cb62-496" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-497"><a href="#cb62-497" aria-hidden="true" tabindex="-1"></a><span class="fu">## Observation vs model fit</span></span>
+<span id="cb62-498"><a href="#cb62-498" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-499"><a href="#cb62-499" aria-hidden="true" tabindex="-1"></a>A useful plot displays the model predicted survival function and overlays the non-parametric Kaplan-Meier plot to it. Such a plot is easily obtained using the <span class="in">`autoplot()`</span> function, as we will see below.</span>
+<span id="cb62-500"><a href="#cb62-500" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-501"><a href="#cb62-501" aria-hidden="true" tabindex="-1"></a>The first step consists in generating the survival predictions at the group level with the <span class="in">`SurvivalQuantities()`</span> function. It is recommended to specify the sequence of time points at which the predictions should be made (using the argument <span class="in">`times`</span>):</span>
+<span id="cb62-502"><a href="#cb62-502" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-505"><a href="#cb62-505" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-506"><a href="#cb62-506" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_surv_pred</span></span>
+<span id="cb62-507"><a href="#cb62-507" aria-hidden="true" tabindex="-1"></a>time_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(</span>
+<span id="cb62-508"><a href="#cb62-508" aria-hidden="true" tabindex="-1"></a>    <span class="at">from =</span> <span class="dv">0</span>,</span>
+<span id="cb62-509"><a href="#cb62-509" aria-hidden="true" tabindex="-1"></a>    <span class="at">to =</span> <span class="fu">max</span>(os_data_with_log_kg_est<span class="sc">$</span>os_time),</span>
+<span id="cb62-510"><a href="#cb62-510" aria-hidden="true" tabindex="-1"></a>    <span class="at">length =</span> <span class="dv">100</span></span>
+<span id="cb62-511"><a href="#cb62-511" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-512"><a href="#cb62-512" aria-hidden="true" tabindex="-1"></a>os_surv_group_grid <span class="ot">&lt;-</span> <span class="fu">GridGrouped</span>(</span>
+<span id="cb62-513"><a href="#cb62-513" aria-hidden="true" tabindex="-1"></a>    <span class="at">times =</span> time_grid,</span>
+<span id="cb62-514"><a href="#cb62-514" aria-hidden="true" tabindex="-1"></a>    <span class="at">groups =</span> <span class="fu">with</span>(</span>
+<span id="cb62-515"><a href="#cb62-515" aria-hidden="true" tabindex="-1"></a>        subj_df,</span>
+<span id="cb62-516"><a href="#cb62-516" aria-hidden="true" tabindex="-1"></a>        <span class="fu">split</span>(<span class="fu">as.character</span>(id), arm)</span>
+<span id="cb62-517"><a href="#cb62-517" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb62-518"><a href="#cb62-518" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-519"><a href="#cb62-519" aria-hidden="true" tabindex="-1"></a>os_surv_pred <span class="ot">&lt;-</span> <span class="fu">SurvivalQuantities</span>(</span>
+<span id="cb62-520"><a href="#cb62-520" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> os_results,</span>
+<span id="cb62-521"><a href="#cb62-521" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> os_surv_group_grid,</span>
+<span id="cb62-522"><a href="#cb62-522" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"surv"</span></span>
+<span id="cb62-523"><a href="#cb62-523" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-524"><a href="#cb62-524" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb62-525"><a href="#cb62-525" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-526"><a href="#cb62-526" aria-hidden="true" tabindex="-1"></a><span class="fu">## Hazard and hazard rate estimation</span></span>
+<span id="cb62-526"><a href="#cb62-526" aria-hidden="true" tabindex="-1"></a>Now we can use the <span class="in">`autoplot()`</span> method:</span>
 <span id="cb62-527"><a href="#cb62-527" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-528"><a href="#cb62-528" aria-hidden="true" tabindex="-1"></a>Similarly to the survival function estimation, we can also estimate the hazard function by treatment group.</span>
-<span id="cb62-529"><a href="#cb62-529" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-532"><a href="#cb62-532" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-533"><a href="#cb62-533" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_hazard_pred</span></span>
+<span id="cb62-530"><a href="#cb62-530" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-531"><a href="#cb62-531" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_surv_plot</span></span>
+<span id="cb62-532"><a href="#cb62-532" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(os_surv_pred, <span class="at">add_km =</span> <span class="cn">TRUE</span>, <span class="at">add_wrap =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb62-533"><a href="#cb62-533" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb62-534"><a href="#cb62-534" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-535"><a href="#cb62-535" aria-hidden="true" tabindex="-1"></a>os_hazard_pred <span class="ot">&lt;-</span> <span class="fu">SurvivalQuantities</span>(</span>
-<span id="cb62-536"><a href="#cb62-536" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> os_results,</span>
-<span id="cb62-537"><a href="#cb62-537" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> os_surv_group_grid,</span>
-<span id="cb62-538"><a href="#cb62-538" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"haz"</span></span>
-<span id="cb62-539"><a href="#cb62-539" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-540"><a href="#cb62-540" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-541"><a href="#cb62-541" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-542"><a href="#cb62-542" aria-hidden="true" tabindex="-1"></a>Also this can be plotted using the <span class="in">`autoplot()`</span> method:</span>
-<span id="cb62-543"><a href="#cb62-543" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-546"><a href="#cb62-546" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-547"><a href="#cb62-547" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_hazard_plot</span></span>
-<span id="cb62-548"><a href="#cb62-548" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-549"><a href="#cb62-549" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(os_hazard_pred, <span class="at">add_wrap =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb62-550"><a href="#cb62-550" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-551"><a href="#cb62-551" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-552"><a href="#cb62-552" aria-hidden="true" tabindex="-1"></a>Finally, we can also estimate the hazard rate, which is constant over time here - because we use the Weibull proportional hazards model. We still show this more complicated code here because it will also work later for joint TGI-OS models, where the hazard rate may not be constant any longer.</span>
-<span id="cb62-553"><a href="#cb62-553" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-556"><a href="#cb62-556" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-557"><a href="#cb62-557" aria-hidden="true" tabindex="-1"></a>os_hr_est <span class="ot">&lt;-</span> os_hazard_pred <span class="sc">|&gt;</span></span>
-<span id="cb62-558"><a href="#cb62-558" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
-<span id="cb62-559"><a href="#cb62-559" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(group, time) <span class="sc">|&gt;</span></span>
-<span id="cb62-560"><a href="#cb62-560" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">sample =</span> <span class="fu">row_number</span>()) <span class="sc">|&gt;</span></span>
-<span id="cb62-561"><a href="#cb62-561" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> group, <span class="at">values_from =</span> values) <span class="sc">|&gt;</span></span>
-<span id="cb62-562"><a href="#cb62-562" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">hr =</span> MPDL3280A <span class="sc">/</span> Docetaxel) <span class="sc">|&gt;</span></span>
-<span id="cb62-563"><a href="#cb62-563" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(time) <span class="sc">|&gt;</span></span>
-<span id="cb62-564"><a href="#cb62-564" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(</span>
-<span id="cb62-565"><a href="#cb62-565" aria-hidden="true" tabindex="-1"></a>        <span class="at">mean =</span> <span class="fu">mean</span>(hr, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb62-566"><a href="#cb62-566" aria-hidden="true" tabindex="-1"></a>        <span class="at">lower =</span> <span class="fu">quantile</span>(hr, <span class="fl">0.05</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb62-567"><a href="#cb62-567" aria-hidden="true" tabindex="-1"></a>        <span class="at">upper =</span> <span class="fu">quantile</span>(hr, <span class="fl">0.95</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb62-568"><a href="#cb62-568" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
-<span id="cb62-569"><a href="#cb62-569" aria-hidden="true" tabindex="-1"></a>    <span class="fu">na.omit</span>() <span class="co"># Omit the time = 0 which has NA</span></span>
-<span id="cb62-570"><a href="#cb62-570" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(os_hr_est)</span>
-<span id="cb62-571"><a href="#cb62-571" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-572"><a href="#cb62-572" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-573"><a href="#cb62-573" aria-hidden="true" tabindex="-1"></a>Now we can plot this:</span>
-<span id="cb62-574"><a href="#cb62-574" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-577"><a href="#cb62-577" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-578"><a href="#cb62-578" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(os_hr_est, <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> mean, <span class="at">ymin =</span> lower, <span class="at">ymax =</span> upper)) <span class="sc">+</span></span>
-<span id="cb62-579"><a href="#cb62-579" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb62-580"><a href="#cb62-580" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_ribbon</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>)</span>
-<span id="cb62-581"><a href="#cb62-581" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-582"><a href="#cb62-582" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-583"><a href="#cb62-583" aria-hidden="true" tabindex="-1"></a><span class="fu">## Alternative models</span></span>
-<span id="cb62-584"><a href="#cb62-584" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-585"><a href="#cb62-585" aria-hidden="true" tabindex="-1"></a>Above we felt that maybe we could improve the fit of the model further. </span>
-<span id="cb62-586"><a href="#cb62-586" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-587"><a href="#cb62-587" aria-hidden="true" tabindex="-1"></a>One idea is to add also the direct effect of the treatment arm as a covariate:</span>
-<span id="cb62-588"><a href="#cb62-588" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-591"><a href="#cb62-591" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-592"><a href="#cb62-592" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_mod2_fit</span></span>
+<span id="cb62-535"><a href="#cb62-535" aria-hidden="true" tabindex="-1"></a>Here the fit seems ok but not perfect, especially for the Docetaxel arm it could be improved maybe. We will try below alternative models to see if we can improve the fit.</span>
+<span id="cb62-536"><a href="#cb62-536" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-537"><a href="#cb62-537" aria-hidden="true" tabindex="-1"></a><span class="fu">## Hazard and hazard rate estimation</span></span>
+<span id="cb62-538"><a href="#cb62-538" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-539"><a href="#cb62-539" aria-hidden="true" tabindex="-1"></a>Similarly to the survival function estimation, we can also estimate the hazard function by treatment group.</span>
+<span id="cb62-540"><a href="#cb62-540" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-543"><a href="#cb62-543" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-544"><a href="#cb62-544" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_hazard_pred</span></span>
+<span id="cb62-545"><a href="#cb62-545" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-546"><a href="#cb62-546" aria-hidden="true" tabindex="-1"></a>os_hazard_pred <span class="ot">&lt;-</span> <span class="fu">SurvivalQuantities</span>(</span>
+<span id="cb62-547"><a href="#cb62-547" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> os_results,</span>
+<span id="cb62-548"><a href="#cb62-548" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> os_surv_group_grid,</span>
+<span id="cb62-549"><a href="#cb62-549" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"haz"</span></span>
+<span id="cb62-550"><a href="#cb62-550" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-551"><a href="#cb62-551" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-552"><a href="#cb62-552" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-553"><a href="#cb62-553" aria-hidden="true" tabindex="-1"></a>Also this can be plotted using the <span class="in">`autoplot()`</span> method:</span>
+<span id="cb62-554"><a href="#cb62-554" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-557"><a href="#cb62-557" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-558"><a href="#cb62-558" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_hazard_plot</span></span>
+<span id="cb62-559"><a href="#cb62-559" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-560"><a href="#cb62-560" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(os_hazard_pred, <span class="at">add_wrap =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb62-561"><a href="#cb62-561" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-562"><a href="#cb62-562" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-563"><a href="#cb62-563" aria-hidden="true" tabindex="-1"></a>Finally, we can also estimate the hazard rate, which is constant over time here - because we use the Weibull proportional hazards model. We still show this more complicated code here because it will also work later for joint TGI-OS models, where the hazard rate may not be constant any longer.</span>
+<span id="cb62-564"><a href="#cb62-564" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-567"><a href="#cb62-567" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-568"><a href="#cb62-568" aria-hidden="true" tabindex="-1"></a>os_hr_est <span class="ot">&lt;-</span> os_hazard_pred <span class="sc">|&gt;</span></span>
+<span id="cb62-569"><a href="#cb62-569" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
+<span id="cb62-570"><a href="#cb62-570" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(group, time) <span class="sc">|&gt;</span></span>
+<span id="cb62-571"><a href="#cb62-571" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">sample =</span> <span class="fu">row_number</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb62-572"><a href="#cb62-572" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> group, <span class="at">values_from =</span> values) <span class="sc">|&gt;</span></span>
+<span id="cb62-573"><a href="#cb62-573" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">hr =</span> MPDL3280A <span class="sc">/</span> Docetaxel) <span class="sc">|&gt;</span></span>
+<span id="cb62-574"><a href="#cb62-574" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(time) <span class="sc">|&gt;</span></span>
+<span id="cb62-575"><a href="#cb62-575" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(</span>
+<span id="cb62-576"><a href="#cb62-576" aria-hidden="true" tabindex="-1"></a>        <span class="at">mean =</span> <span class="fu">mean</span>(hr, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb62-577"><a href="#cb62-577" aria-hidden="true" tabindex="-1"></a>        <span class="at">lower =</span> <span class="fu">quantile</span>(hr, <span class="fl">0.05</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb62-578"><a href="#cb62-578" aria-hidden="true" tabindex="-1"></a>        <span class="at">upper =</span> <span class="fu">quantile</span>(hr, <span class="fl">0.95</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb62-579"><a href="#cb62-579" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb62-580"><a href="#cb62-580" aria-hidden="true" tabindex="-1"></a>    <span class="fu">na.omit</span>() <span class="co"># Omit the time = 0 which has NA</span></span>
+<span id="cb62-581"><a href="#cb62-581" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(os_hr_est)</span>
+<span id="cb62-582"><a href="#cb62-582" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-583"><a href="#cb62-583" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-584"><a href="#cb62-584" aria-hidden="true" tabindex="-1"></a>Now we can plot this:</span>
+<span id="cb62-585"><a href="#cb62-585" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-588"><a href="#cb62-588" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-589"><a href="#cb62-589" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(os_hr_est, <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> mean, <span class="at">ymin =</span> lower, <span class="at">ymax =</span> upper)) <span class="sc">+</span></span>
+<span id="cb62-590"><a href="#cb62-590" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb62-591"><a href="#cb62-591" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_ribbon</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>)</span>
+<span id="cb62-592"><a href="#cb62-592" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb62-593"><a href="#cb62-593" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-594"><a href="#cb62-594" aria-hidden="true" tabindex="-1"></a>surv_data2 <span class="ot">&lt;-</span> <span class="fu">DataSurvival</span>(</span>
-<span id="cb62-595"><a href="#cb62-595" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> os_data_with_log_kg_est,</span>
-<span id="cb62-596"><a href="#cb62-596" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Here we add the arm covariate:</span></span>
-<span id="cb62-597"><a href="#cb62-597" aria-hidden="true" tabindex="-1"></a>    <span class="at">formula =</span> <span class="fu">update</span>(surv_data<span class="sc">@</span>formula, . <span class="sc">~</span> . <span class="sc">+</span> arm)</span>
-<span id="cb62-598"><a href="#cb62-598" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-599"><a href="#cb62-599" aria-hidden="true" tabindex="-1"></a>os_joint_data2 <span class="ot">&lt;-</span> <span class="fu">DataJoint</span>(</span>
-<span id="cb62-600"><a href="#cb62-600" aria-hidden="true" tabindex="-1"></a>    <span class="at">subject =</span> subj_data,</span>
-<span id="cb62-601"><a href="#cb62-601" aria-hidden="true" tabindex="-1"></a>    <span class="at">survival =</span> surv_data2</span>
-<span id="cb62-602"><a href="#cb62-602" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-603"><a href="#cb62-603" aria-hidden="true" tabindex="-1"></a>save_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-os/os2.rds"</span>)</span>
-<span id="cb62-604"><a href="#cb62-604" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(save_file)) {</span>
-<span id="cb62-605"><a href="#cb62-605" aria-hidden="true" tabindex="-1"></a>    os_results2 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_file)</span>
-<span id="cb62-606"><a href="#cb62-606" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb62-607"><a href="#cb62-607" aria-hidden="true" tabindex="-1"></a>    os_results2 <span class="ot">&lt;-</span> <span class="fu">sampleStanModel</span>(</span>
-<span id="cb62-608"><a href="#cb62-608" aria-hidden="true" tabindex="-1"></a>        os_mod,</span>
-<span id="cb62-609"><a href="#cb62-609" aria-hidden="true" tabindex="-1"></a>        <span class="at">data =</span> os_joint_data2,</span>
-<span id="cb62-610"><a href="#cb62-610" aria-hidden="true" tabindex="-1"></a>        <span class="at">iter_sampling =</span> ITER,</span>
-<span id="cb62-611"><a href="#cb62-611" aria-hidden="true" tabindex="-1"></a>        <span class="at">iter_warmup =</span> WARMUP,</span>
-<span id="cb62-612"><a href="#cb62-612" aria-hidden="true" tabindex="-1"></a>        <span class="at">chains =</span> CHAINS,</span>
-<span id="cb62-613"><a href="#cb62-613" aria-hidden="true" tabindex="-1"></a>        <span class="at">parallel_chains =</span> CHAINS,</span>
-<span id="cb62-614"><a href="#cb62-614" aria-hidden="true" tabindex="-1"></a>        <span class="at">thin =</span> CHAINS,</span>
-<span id="cb62-615"><a href="#cb62-615" aria-hidden="true" tabindex="-1"></a>        <span class="at">seed =</span> BAYES.SEED,</span>
-<span id="cb62-616"><a href="#cb62-616" aria-hidden="true" tabindex="-1"></a>        <span class="at">refresh =</span> REFRESH</span>
-<span id="cb62-617"><a href="#cb62-617" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb62-618"><a href="#cb62-618" aria-hidden="true" tabindex="-1"></a>    <span class="fu">saveObject</span>(os_results2, <span class="at">file =</span> save_file)</span>
-<span id="cb62-619"><a href="#cb62-619" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb62-620"><a href="#cb62-620" aria-hidden="true" tabindex="-1"></a>mcmc_os_results2 <span class="ot">&lt;-</span> cmdstanr<span class="sc">::</span><span class="fu">as.CmdStanMCMC</span>(os_results2)</span>
-<span id="cb62-621"><a href="#cb62-621" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-622"><a href="#cb62-622" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-623"><a href="#cb62-623" aria-hidden="true" tabindex="-1"></a>We can easily plot the survival functions and compare them with the Kaplan-Meier curves of the treatment arms, because we can reuse the above <span class="in">`os_surv_group_grid`</span>:</span>
-<span id="cb62-624"><a href="#cb62-624" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-627"><a href="#cb62-627" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-628"><a href="#cb62-628" aria-hidden="true" tabindex="-1"></a>os_surv_pred2 <span class="ot">&lt;-</span> <span class="fu">SurvivalQuantities</span>(</span>
-<span id="cb62-629"><a href="#cb62-629" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> os_results2,</span>
-<span id="cb62-630"><a href="#cb62-630" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> os_surv_group_grid,</span>
-<span id="cb62-631"><a href="#cb62-631" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"surv"</span></span>
-<span id="cb62-632"><a href="#cb62-632" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-633"><a href="#cb62-633" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(os_surv_pred2, <span class="at">add_km =</span> <span class="cn">TRUE</span>, <span class="at">add_wrap =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb62-634"><a href="#cb62-634" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-594"><a href="#cb62-594" aria-hidden="true" tabindex="-1"></a><span class="fu">## Alternative models</span></span>
+<span id="cb62-595"><a href="#cb62-595" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-596"><a href="#cb62-596" aria-hidden="true" tabindex="-1"></a>Above we felt that maybe we could improve the fit of the model further. </span>
+<span id="cb62-597"><a href="#cb62-597" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-598"><a href="#cb62-598" aria-hidden="true" tabindex="-1"></a>One idea is to add also the direct effect of the treatment arm as a covariate:</span>
+<span id="cb62-599"><a href="#cb62-599" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-602"><a href="#cb62-602" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-603"><a href="#cb62-603" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_mod2_fit</span></span>
+<span id="cb62-604"><a href="#cb62-604" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-605"><a href="#cb62-605" aria-hidden="true" tabindex="-1"></a>surv_data2 <span class="ot">&lt;-</span> <span class="fu">DataSurvival</span>(</span>
+<span id="cb62-606"><a href="#cb62-606" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> os_data_with_log_kg_est,</span>
+<span id="cb62-607"><a href="#cb62-607" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Here we add the arm covariate:</span></span>
+<span id="cb62-608"><a href="#cb62-608" aria-hidden="true" tabindex="-1"></a>    <span class="at">formula =</span> <span class="fu">update</span>(surv_data<span class="sc">@</span>formula, . <span class="sc">~</span> . <span class="sc">+</span> arm)</span>
+<span id="cb62-609"><a href="#cb62-609" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-610"><a href="#cb62-610" aria-hidden="true" tabindex="-1"></a>os_joint_data2 <span class="ot">&lt;-</span> <span class="fu">DataJoint</span>(</span>
+<span id="cb62-611"><a href="#cb62-611" aria-hidden="true" tabindex="-1"></a>    <span class="at">subject =</span> subj_data,</span>
+<span id="cb62-612"><a href="#cb62-612" aria-hidden="true" tabindex="-1"></a>    <span class="at">survival =</span> surv_data2</span>
+<span id="cb62-613"><a href="#cb62-613" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-614"><a href="#cb62-614" aria-hidden="true" tabindex="-1"></a>save_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-os/os2.rds"</span>)</span>
+<span id="cb62-615"><a href="#cb62-615" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(save_file)) {</span>
+<span id="cb62-616"><a href="#cb62-616" aria-hidden="true" tabindex="-1"></a>    os_results2 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_file)</span>
+<span id="cb62-617"><a href="#cb62-617" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb62-618"><a href="#cb62-618" aria-hidden="true" tabindex="-1"></a>    os_results2 <span class="ot">&lt;-</span> <span class="fu">sampleStanModel</span>(</span>
+<span id="cb62-619"><a href="#cb62-619" aria-hidden="true" tabindex="-1"></a>        os_mod,</span>
+<span id="cb62-620"><a href="#cb62-620" aria-hidden="true" tabindex="-1"></a>        <span class="at">data =</span> os_joint_data2,</span>
+<span id="cb62-621"><a href="#cb62-621" aria-hidden="true" tabindex="-1"></a>        <span class="at">iter_sampling =</span> ITER,</span>
+<span id="cb62-622"><a href="#cb62-622" aria-hidden="true" tabindex="-1"></a>        <span class="at">iter_warmup =</span> WARMUP,</span>
+<span id="cb62-623"><a href="#cb62-623" aria-hidden="true" tabindex="-1"></a>        <span class="at">chains =</span> CHAINS,</span>
+<span id="cb62-624"><a href="#cb62-624" aria-hidden="true" tabindex="-1"></a>        <span class="at">parallel_chains =</span> CHAINS,</span>
+<span id="cb62-625"><a href="#cb62-625" aria-hidden="true" tabindex="-1"></a>        <span class="at">thin =</span> CHAINS,</span>
+<span id="cb62-626"><a href="#cb62-626" aria-hidden="true" tabindex="-1"></a>        <span class="at">seed =</span> BAYES.SEED,</span>
+<span id="cb62-627"><a href="#cb62-627" aria-hidden="true" tabindex="-1"></a>        <span class="at">refresh =</span> REFRESH</span>
+<span id="cb62-628"><a href="#cb62-628" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb62-629"><a href="#cb62-629" aria-hidden="true" tabindex="-1"></a>    <span class="fu">saveObject</span>(os_results2, <span class="at">file =</span> save_file)</span>
+<span id="cb62-630"><a href="#cb62-630" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb62-631"><a href="#cb62-631" aria-hidden="true" tabindex="-1"></a>mcmc_os_results2 <span class="ot">&lt;-</span> cmdstanr<span class="sc">::</span><span class="fu">as.CmdStanMCMC</span>(os_results2)</span>
+<span id="cb62-632"><a href="#cb62-632" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-633"><a href="#cb62-633" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-634"><a href="#cb62-634" aria-hidden="true" tabindex="-1"></a>We can easily plot the survival functions and compare them with the Kaplan-Meier curves of the treatment arms, because we can reuse the above <span class="in">`os_surv_group_grid`</span>:</span>
 <span id="cb62-635"><a href="#cb62-635" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-636"><a href="#cb62-636" aria-hidden="true" tabindex="-1"></a>Here we see a bit better "coverage" of the Docetaxel Kaplan-Meier curve by the confidence intervals of the model.</span>
-<span id="cb62-637"><a href="#cb62-637" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-638"><a href="#cb62-638" aria-hidden="true" tabindex="-1"></a>We could also consider the model with only the direct treatment arm effect, without the log growth rate estimates:</span>
-<span id="cb62-639"><a href="#cb62-639" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-642"><a href="#cb62-642" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-643"><a href="#cb62-643" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_mod3_fit</span></span>
-<span id="cb62-644"><a href="#cb62-644" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-645"><a href="#cb62-645" aria-hidden="true" tabindex="-1"></a>surv_data3 <span class="ot">&lt;-</span> <span class="fu">DataSurvival</span>(</span>
-<span id="cb62-646"><a href="#cb62-646" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> os_data_with_log_kg_est,</span>
-<span id="cb62-647"><a href="#cb62-647" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Here we add the arm covariate:</span></span>
-<span id="cb62-648"><a href="#cb62-648" aria-hidden="true" tabindex="-1"></a>    <span class="at">formula =</span> <span class="fu">update</span>(surv_data2<span class="sc">@</span>formula, . <span class="sc">~</span> . <span class="sc">-</span> log_kg_est)</span>
-<span id="cb62-649"><a href="#cb62-649" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-650"><a href="#cb62-650" aria-hidden="true" tabindex="-1"></a>os_joint_data3 <span class="ot">&lt;-</span> <span class="fu">DataJoint</span>(</span>
-<span id="cb62-651"><a href="#cb62-651" aria-hidden="true" tabindex="-1"></a>    <span class="at">subject =</span> subj_data,</span>
-<span id="cb62-652"><a href="#cb62-652" aria-hidden="true" tabindex="-1"></a>    <span class="at">survival =</span> surv_data3</span>
-<span id="cb62-653"><a href="#cb62-653" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-654"><a href="#cb62-654" aria-hidden="true" tabindex="-1"></a>save_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-os/os3.rds"</span>)</span>
-<span id="cb62-655"><a href="#cb62-655" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(save_file)) {</span>
-<span id="cb62-656"><a href="#cb62-656" aria-hidden="true" tabindex="-1"></a>    os_results3 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_file)</span>
-<span id="cb62-657"><a href="#cb62-657" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb62-658"><a href="#cb62-658" aria-hidden="true" tabindex="-1"></a>    os_results3 <span class="ot">&lt;-</span> <span class="fu">sampleStanModel</span>(</span>
-<span id="cb62-659"><a href="#cb62-659" aria-hidden="true" tabindex="-1"></a>        os_mod,</span>
-<span id="cb62-660"><a href="#cb62-660" aria-hidden="true" tabindex="-1"></a>        <span class="at">data =</span> os_joint_data3,</span>
-<span id="cb62-661"><a href="#cb62-661" aria-hidden="true" tabindex="-1"></a>        <span class="at">iter_sampling =</span> ITER,</span>
-<span id="cb62-662"><a href="#cb62-662" aria-hidden="true" tabindex="-1"></a>        <span class="at">iter_warmup =</span> WARMUP,</span>
-<span id="cb62-663"><a href="#cb62-663" aria-hidden="true" tabindex="-1"></a>        <span class="at">chains =</span> CHAINS,</span>
-<span id="cb62-664"><a href="#cb62-664" aria-hidden="true" tabindex="-1"></a>        <span class="at">parallel_chains =</span> CHAINS,</span>
-<span id="cb62-665"><a href="#cb62-665" aria-hidden="true" tabindex="-1"></a>        <span class="at">thin =</span> CHAINS,</span>
-<span id="cb62-666"><a href="#cb62-666" aria-hidden="true" tabindex="-1"></a>        <span class="at">seed =</span> BAYES.SEED,</span>
-<span id="cb62-667"><a href="#cb62-667" aria-hidden="true" tabindex="-1"></a>        <span class="at">refresh =</span> REFRESH</span>
-<span id="cb62-668"><a href="#cb62-668" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb62-669"><a href="#cb62-669" aria-hidden="true" tabindex="-1"></a>    <span class="fu">saveObject</span>(os_results3, <span class="at">file =</span> save_file)</span>
-<span id="cb62-670"><a href="#cb62-670" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb62-671"><a href="#cb62-671" aria-hidden="true" tabindex="-1"></a>mcmc_os_results3 <span class="ot">&lt;-</span> cmdstanr<span class="sc">::</span><span class="fu">as.CmdStanMCMC</span>(os_results3)</span>
-<span id="cb62-672"><a href="#cb62-672" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-673"><a href="#cb62-673" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-674"><a href="#cb62-674" aria-hidden="true" tabindex="-1"></a>Let's plot again the survival functions:</span>
-<span id="cb62-675"><a href="#cb62-675" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-678"><a href="#cb62-678" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-679"><a href="#cb62-679" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_mod3_surv_pred</span></span>
-<span id="cb62-680"><a href="#cb62-680" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-681"><a href="#cb62-681" aria-hidden="true" tabindex="-1"></a>os_surv_pred3 <span class="ot">&lt;-</span> <span class="fu">SurvivalQuantities</span>(</span>
-<span id="cb62-682"><a href="#cb62-682" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> os_results3,</span>
-<span id="cb62-683"><a href="#cb62-683" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> os_surv_group_grid,</span>
-<span id="cb62-684"><a href="#cb62-684" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"surv"</span></span>
-<span id="cb62-685"><a href="#cb62-685" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-686"><a href="#cb62-686" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(os_surv_pred3, <span class="at">add_km =</span> <span class="cn">TRUE</span>, <span class="at">add_wrap =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb62-687"><a href="#cb62-687" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-688"><a href="#cb62-688" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-689"><a href="#cb62-689" aria-hidden="true" tabindex="-1"></a>This looks very similar to the previous model.</span>
-<span id="cb62-690"><a href="#cb62-690" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-691"><a href="#cb62-691" aria-hidden="true" tabindex="-1"></a><span class="fu">## Model comparison</span></span>
-<span id="cb62-692"><a href="#cb62-692" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-693"><a href="#cb62-693" aria-hidden="true" tabindex="-1"></a>For comparing models, we can use more formal tools, as we will see now.</span>
-<span id="cb62-694"><a href="#cb62-694" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-695"><a href="#cb62-695" aria-hidden="true" tabindex="-1"></a>We can use the <span class="co">[</span><span class="ot">Brier score</span><span class="co">](https://en.wikipedia.org/wiki/Brier_score)</span> to compare two different survival models. The Brier score is a measure of the mean squared difference between the predicted survival probability and the actual survival status. The lower the Brier score, the better the model.</span>
-<span id="cb62-696"><a href="#cb62-696" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-697"><a href="#cb62-697" aria-hidden="true" tabindex="-1"></a>To calculate it, we need to use the <span class="in">`GridFixed`</span> input for <span class="in">`SurvivalQuantities()`</span>:</span>
-<span id="cb62-698"><a href="#cb62-698" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-701"><a href="#cb62-701" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-702"><a href="#cb62-702" aria-hidden="true" tabindex="-1"></a>os_fixed_surv <span class="ot">&lt;-</span> <span class="fu">SurvivalQuantities</span>(</span>
-<span id="cb62-703"><a href="#cb62-703" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> os_results,</span>
-<span id="cb62-704"><a href="#cb62-704" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> <span class="fu">GridFixed</span>(<span class="at">times =</span> time_grid),</span>
-<span id="cb62-705"><a href="#cb62-705" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"surv"</span></span>
-<span id="cb62-706"><a href="#cb62-706" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-707"><a href="#cb62-707" aria-hidden="true" tabindex="-1"></a>os_mod1_bs <span class="ot">&lt;-</span> <span class="fu">brierScore</span>(os_fixed_surv)</span>
-<span id="cb62-708"><a href="#cb62-708" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-638"><a href="#cb62-638" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-639"><a href="#cb62-639" aria-hidden="true" tabindex="-1"></a>os_surv_pred2 <span class="ot">&lt;-</span> <span class="fu">SurvivalQuantities</span>(</span>
+<span id="cb62-640"><a href="#cb62-640" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> os_results2,</span>
+<span id="cb62-641"><a href="#cb62-641" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> os_surv_group_grid,</span>
+<span id="cb62-642"><a href="#cb62-642" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"surv"</span></span>
+<span id="cb62-643"><a href="#cb62-643" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-644"><a href="#cb62-644" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(os_surv_pred2, <span class="at">add_km =</span> <span class="cn">TRUE</span>, <span class="at">add_wrap =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb62-645"><a href="#cb62-645" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-646"><a href="#cb62-646" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-647"><a href="#cb62-647" aria-hidden="true" tabindex="-1"></a>Here we see a bit better "coverage" of the Docetaxel Kaplan-Meier curve by the confidence intervals of the model.</span>
+<span id="cb62-648"><a href="#cb62-648" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-649"><a href="#cb62-649" aria-hidden="true" tabindex="-1"></a>We could also consider the model with only the direct treatment arm effect, without the log growth rate estimates:</span>
+<span id="cb62-650"><a href="#cb62-650" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-653"><a href="#cb62-653" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-654"><a href="#cb62-654" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_mod3_fit</span></span>
+<span id="cb62-655"><a href="#cb62-655" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-656"><a href="#cb62-656" aria-hidden="true" tabindex="-1"></a>surv_data3 <span class="ot">&lt;-</span> <span class="fu">DataSurvival</span>(</span>
+<span id="cb62-657"><a href="#cb62-657" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> os_data_with_log_kg_est,</span>
+<span id="cb62-658"><a href="#cb62-658" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Here we add the arm covariate:</span></span>
+<span id="cb62-659"><a href="#cb62-659" aria-hidden="true" tabindex="-1"></a>    <span class="at">formula =</span> <span class="fu">update</span>(surv_data2<span class="sc">@</span>formula, . <span class="sc">~</span> . <span class="sc">-</span> log_kg_est)</span>
+<span id="cb62-660"><a href="#cb62-660" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-661"><a href="#cb62-661" aria-hidden="true" tabindex="-1"></a>os_joint_data3 <span class="ot">&lt;-</span> <span class="fu">DataJoint</span>(</span>
+<span id="cb62-662"><a href="#cb62-662" aria-hidden="true" tabindex="-1"></a>    <span class="at">subject =</span> subj_data,</span>
+<span id="cb62-663"><a href="#cb62-663" aria-hidden="true" tabindex="-1"></a>    <span class="at">survival =</span> surv_data3</span>
+<span id="cb62-664"><a href="#cb62-664" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-665"><a href="#cb62-665" aria-hidden="true" tabindex="-1"></a>save_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-os/os3.rds"</span>)</span>
+<span id="cb62-666"><a href="#cb62-666" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(save_file)) {</span>
+<span id="cb62-667"><a href="#cb62-667" aria-hidden="true" tabindex="-1"></a>    os_results3 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(save_file)</span>
+<span id="cb62-668"><a href="#cb62-668" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb62-669"><a href="#cb62-669" aria-hidden="true" tabindex="-1"></a>    os_results3 <span class="ot">&lt;-</span> <span class="fu">sampleStanModel</span>(</span>
+<span id="cb62-670"><a href="#cb62-670" aria-hidden="true" tabindex="-1"></a>        os_mod,</span>
+<span id="cb62-671"><a href="#cb62-671" aria-hidden="true" tabindex="-1"></a>        <span class="at">data =</span> os_joint_data3,</span>
+<span id="cb62-672"><a href="#cb62-672" aria-hidden="true" tabindex="-1"></a>        <span class="at">iter_sampling =</span> ITER,</span>
+<span id="cb62-673"><a href="#cb62-673" aria-hidden="true" tabindex="-1"></a>        <span class="at">iter_warmup =</span> WARMUP,</span>
+<span id="cb62-674"><a href="#cb62-674" aria-hidden="true" tabindex="-1"></a>        <span class="at">chains =</span> CHAINS,</span>
+<span id="cb62-675"><a href="#cb62-675" aria-hidden="true" tabindex="-1"></a>        <span class="at">parallel_chains =</span> CHAINS,</span>
+<span id="cb62-676"><a href="#cb62-676" aria-hidden="true" tabindex="-1"></a>        <span class="at">thin =</span> CHAINS,</span>
+<span id="cb62-677"><a href="#cb62-677" aria-hidden="true" tabindex="-1"></a>        <span class="at">seed =</span> BAYES.SEED,</span>
+<span id="cb62-678"><a href="#cb62-678" aria-hidden="true" tabindex="-1"></a>        <span class="at">refresh =</span> REFRESH</span>
+<span id="cb62-679"><a href="#cb62-679" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb62-680"><a href="#cb62-680" aria-hidden="true" tabindex="-1"></a>    <span class="fu">saveObject</span>(os_results3, <span class="at">file =</span> save_file)</span>
+<span id="cb62-681"><a href="#cb62-681" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb62-682"><a href="#cb62-682" aria-hidden="true" tabindex="-1"></a>mcmc_os_results3 <span class="ot">&lt;-</span> cmdstanr<span class="sc">::</span><span class="fu">as.CmdStanMCMC</span>(os_results3)</span>
+<span id="cb62-683"><a href="#cb62-683" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-684"><a href="#cb62-684" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-685"><a href="#cb62-685" aria-hidden="true" tabindex="-1"></a>Let's plot again the survival functions:</span>
+<span id="cb62-686"><a href="#cb62-686" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-689"><a href="#cb62-689" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-690"><a href="#cb62-690" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: os_mod3_surv_pred</span></span>
+<span id="cb62-691"><a href="#cb62-691" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-692"><a href="#cb62-692" aria-hidden="true" tabindex="-1"></a>os_surv_pred3 <span class="ot">&lt;-</span> <span class="fu">SurvivalQuantities</span>(</span>
+<span id="cb62-693"><a href="#cb62-693" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> os_results3,</span>
+<span id="cb62-694"><a href="#cb62-694" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> os_surv_group_grid,</span>
+<span id="cb62-695"><a href="#cb62-695" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"surv"</span></span>
+<span id="cb62-696"><a href="#cb62-696" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-697"><a href="#cb62-697" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(os_surv_pred3, <span class="at">add_km =</span> <span class="cn">TRUE</span>, <span class="at">add_wrap =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb62-698"><a href="#cb62-698" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-699"><a href="#cb62-699" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-700"><a href="#cb62-700" aria-hidden="true" tabindex="-1"></a>This looks very similar to the previous model.</span>
+<span id="cb62-701"><a href="#cb62-701" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-702"><a href="#cb62-702" aria-hidden="true" tabindex="-1"></a><span class="fu">## Model comparison</span></span>
+<span id="cb62-703"><a href="#cb62-703" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-704"><a href="#cb62-704" aria-hidden="true" tabindex="-1"></a>For comparing models, we can use more formal tools, as we will see now.</span>
+<span id="cb62-705"><a href="#cb62-705" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-706"><a href="#cb62-706" aria-hidden="true" tabindex="-1"></a>We can use the <span class="co">[</span><span class="ot">Brier score</span><span class="co">](https://en.wikipedia.org/wiki/Brier_score)</span> to compare two different survival models. The Brier score is a measure of the mean squared difference between the predicted survival probability and the actual survival status. The lower the Brier score, the better the model.</span>
+<span id="cb62-707"><a href="#cb62-707" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-708"><a href="#cb62-708" aria-hidden="true" tabindex="-1"></a>To calculate it, we need to use the <span class="in">`GridFixed`</span> input for <span class="in">`SurvivalQuantities()`</span>:</span>
 <span id="cb62-709"><a href="#cb62-709" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-710"><a href="#cb62-710" aria-hidden="true" tabindex="-1"></a>We can also look at the LOOIC. As for the TGI model, we can use the <span class="in">`loo()`</span> method in the <span class="in">`CmdStanMCMC`</span> object to calculate it:</span>
-<span id="cb62-711"><a href="#cb62-711" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-714"><a href="#cb62-714" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-715"><a href="#cb62-715" aria-hidden="true" tabindex="-1"></a>os_mod1_looic <span class="ot">&lt;-</span> mcmc_os_results<span class="sc">$</span><span class="fu">loo</span>(<span class="at">r_eff =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb62-716"><a href="#cb62-716" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-717"><a href="#cb62-717" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-718"><a href="#cb62-718" aria-hidden="true" tabindex="-1"></a>Also for the two alternative models we can calculate the Brier score and LOOIC in the same way:</span>
-<span id="cb62-719"><a href="#cb62-719" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-722"><a href="#cb62-722" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-723"><a href="#cb62-723" aria-hidden="true" tabindex="-1"></a>os_fixed_surv2 <span class="ot">&lt;-</span> <span class="fu">SurvivalQuantities</span>(</span>
-<span id="cb62-724"><a href="#cb62-724" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> os_results2,</span>
-<span id="cb62-725"><a href="#cb62-725" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> <span class="fu">GridFixed</span>(<span class="at">times =</span> time_grid),</span>
-<span id="cb62-726"><a href="#cb62-726" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"surv"</span></span>
-<span id="cb62-727"><a href="#cb62-727" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-728"><a href="#cb62-728" aria-hidden="true" tabindex="-1"></a>os_mod2_bs <span class="ot">&lt;-</span> <span class="fu">brierScore</span>(os_fixed_surv2)</span>
-<span id="cb62-729"><a href="#cb62-729" aria-hidden="true" tabindex="-1"></a>os_mod2_looic <span class="ot">&lt;-</span> mcmc_os_results2<span class="sc">$</span><span class="fu">loo</span>(<span class="at">r_eff =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb62-712"><a href="#cb62-712" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-713"><a href="#cb62-713" aria-hidden="true" tabindex="-1"></a>os_fixed_surv <span class="ot">&lt;-</span> <span class="fu">SurvivalQuantities</span>(</span>
+<span id="cb62-714"><a href="#cb62-714" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> os_results,</span>
+<span id="cb62-715"><a href="#cb62-715" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> <span class="fu">GridFixed</span>(<span class="at">times =</span> time_grid),</span>
+<span id="cb62-716"><a href="#cb62-716" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"surv"</span></span>
+<span id="cb62-717"><a href="#cb62-717" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-718"><a href="#cb62-718" aria-hidden="true" tabindex="-1"></a>os_mod1_bs <span class="ot">&lt;-</span> <span class="fu">brierScore</span>(os_fixed_surv)</span>
+<span id="cb62-719"><a href="#cb62-719" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-720"><a href="#cb62-720" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-721"><a href="#cb62-721" aria-hidden="true" tabindex="-1"></a>We can also look at the LOOIC. As for the TGI model, we can use the <span class="in">`loo()`</span> method in the <span class="in">`CmdStanMCMC`</span> object to calculate it:</span>
+<span id="cb62-722"><a href="#cb62-722" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-725"><a href="#cb62-725" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-726"><a href="#cb62-726" aria-hidden="true" tabindex="-1"></a>os_mod1_looic <span class="ot">&lt;-</span> mcmc_os_results<span class="sc">$</span><span class="fu">loo</span>(<span class="at">r_eff =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb62-727"><a href="#cb62-727" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-728"><a href="#cb62-728" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-729"><a href="#cb62-729" aria-hidden="true" tabindex="-1"></a>Also for the two alternative models we can calculate the Brier score and LOOIC in the same way:</span>
 <span id="cb62-730"><a href="#cb62-730" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-731"><a href="#cb62-731" aria-hidden="true" tabindex="-1"></a>os_fixed_surv3 <span class="ot">&lt;-</span> <span class="fu">SurvivalQuantities</span>(</span>
-<span id="cb62-732"><a href="#cb62-732" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> os_results3,</span>
-<span id="cb62-733"><a href="#cb62-733" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> <span class="fu">GridFixed</span>(<span class="at">times =</span> time_grid),</span>
-<span id="cb62-734"><a href="#cb62-734" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"surv"</span></span>
-<span id="cb62-735"><a href="#cb62-735" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb62-736"><a href="#cb62-736" aria-hidden="true" tabindex="-1"></a>os_mod3_bs <span class="ot">&lt;-</span> <span class="fu">brierScore</span>(os_fixed_surv3)</span>
-<span id="cb62-737"><a href="#cb62-737" aria-hidden="true" tabindex="-1"></a>os_mod3_looic <span class="ot">&lt;-</span> mcmc_os_results3<span class="sc">$</span><span class="fu">loo</span>(<span class="at">r_eff =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb62-738"><a href="#cb62-738" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-739"><a href="#cb62-739" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-740"><a href="#cb62-740" aria-hidden="true" tabindex="-1"></a>Of course in a real application with many models we can easily write a little function that does this for us repeatedly instead of just copy/pasting the code as we do here.</span>
+<span id="cb62-733"><a href="#cb62-733" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-734"><a href="#cb62-734" aria-hidden="true" tabindex="-1"></a>os_fixed_surv2 <span class="ot">&lt;-</span> <span class="fu">SurvivalQuantities</span>(</span>
+<span id="cb62-735"><a href="#cb62-735" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> os_results2,</span>
+<span id="cb62-736"><a href="#cb62-736" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> <span class="fu">GridFixed</span>(<span class="at">times =</span> time_grid),</span>
+<span id="cb62-737"><a href="#cb62-737" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"surv"</span></span>
+<span id="cb62-738"><a href="#cb62-738" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-739"><a href="#cb62-739" aria-hidden="true" tabindex="-1"></a>os_mod2_bs <span class="ot">&lt;-</span> <span class="fu">brierScore</span>(os_fixed_surv2)</span>
+<span id="cb62-740"><a href="#cb62-740" aria-hidden="true" tabindex="-1"></a>os_mod2_looic <span class="ot">&lt;-</span> mcmc_os_results2<span class="sc">$</span><span class="fu">loo</span>(<span class="at">r_eff =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb62-741"><a href="#cb62-741" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-742"><a href="#cb62-742" aria-hidden="true" tabindex="-1"></a>Now we can compare the three models. </span>
-<span id="cb62-743"><a href="#cb62-743" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-744"><a href="#cb62-744" aria-hidden="true" tabindex="-1"></a>Let's start with the LOOIC:</span>
-<span id="cb62-745"><a href="#cb62-745" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-748"><a href="#cb62-748" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-749"><a href="#cb62-749" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: model_comparison</span></span>
-<span id="cb62-750"><a href="#cb62-750" aria-hidden="true" tabindex="-1"></a>os_mod1_looic</span>
-<span id="cb62-751"><a href="#cb62-751" aria-hidden="true" tabindex="-1"></a>os_mod2_looic</span>
-<span id="cb62-752"><a href="#cb62-752" aria-hidden="true" tabindex="-1"></a>os_mod3_looic</span>
-<span id="cb62-753"><a href="#cb62-753" aria-hidden="true" tabindex="-1"></a><span class="fu">loo_compare</span>(os_mod1_looic, os_mod2_looic, os_mod3_looic)</span>
-<span id="cb62-754"><a href="#cb62-754" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-755"><a href="#cb62-755" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-756"><a href="#cb62-756" aria-hidden="true" tabindex="-1"></a>So we see that according to the LOOIC, the first model with just the <span class="in">`log_kg_est`</span> covariate is slightly better than the model with the additional <span class="in">`arm`</span> covariate. If we omit the <span class="in">`log_kg_est`</span> covariate altogether and only include the <span class="in">`arm`</span> covariate, then the model is worse than both of the other two models.</span>
-<span id="cb62-757"><a href="#cb62-757" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-758"><a href="#cb62-758" aria-hidden="true" tabindex="-1"></a>We can plot the Brier scores:</span>
-<span id="cb62-759"><a href="#cb62-759" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-762"><a href="#cb62-762" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb62-763"><a href="#cb62-763" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: brier_scores_plot</span></span>
-<span id="cb62-764"><a href="#cb62-764" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-765"><a href="#cb62-765" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
-<span id="cb62-766"><a href="#cb62-766" aria-hidden="true" tabindex="-1"></a>    <span class="at">time =</span> time_grid,</span>
-<span id="cb62-767"><a href="#cb62-767" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">1 - 2</span><span class="st">`</span> <span class="ot">=</span> os_mod1_bs <span class="sc">-</span> os_mod2_bs,</span>
-<span id="cb62-768"><a href="#cb62-768" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">1 - 3</span><span class="st">`</span> <span class="ot">=</span> os_mod1_bs <span class="sc">-</span> os_mod3_bs,</span>
-<span id="cb62-769"><a href="#cb62-769" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">2 - 3</span><span class="st">`</span> <span class="ot">=</span> os_mod2_bs <span class="sc">-</span> os_mod3_bs,</span>
-<span id="cb62-770"><a href="#cb62-770" aria-hidden="true" tabindex="-1"></a>    <span class="at">check.names =</span> <span class="cn">FALSE</span></span>
-<span id="cb62-771"><a href="#cb62-771" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb62-772"><a href="#cb62-772" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(</span>
-<span id="cb62-773"><a href="#cb62-773" aria-hidden="true" tabindex="-1"></a>        <span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"1 - 2"</span>, <span class="st">"1 - 3"</span>, <span class="st">"2 - 3"</span>),</span>
-<span id="cb62-774"><a href="#cb62-774" aria-hidden="true" tabindex="-1"></a>        <span class="at">names_to =</span> <span class="st">"diff"</span>,</span>
-<span id="cb62-775"><a href="#cb62-775" aria-hidden="true" tabindex="-1"></a>        <span class="at">values_to =</span> <span class="st">"brier_score_diff"</span></span>
-<span id="cb62-776"><a href="#cb62-776" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
-<span id="cb62-777"><a href="#cb62-777" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> brier_score_diff, <span class="at">color =</span> diff, <span class="at">group =</span> diff)) <span class="sc">+</span></span>
-<span id="cb62-778"><a href="#cb62-778" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb62-779"><a href="#cb62-779" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Brier score difference"</span>) <span class="sc">+</span></span>
-<span id="cb62-780"><a href="#cb62-780" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>)</span>
-<span id="cb62-781"><a href="#cb62-781" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb62-782"><a href="#cb62-782" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-783"><a href="#cb62-783" aria-hidden="true" tabindex="-1"></a>When we look at the difference model 1 minus model 2, we see that this is slightly positive. Since lower numbers of the Brier score are better, this means that model 2 is slightly better here. </span>
-<span id="cb62-784"><a href="#cb62-784" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-785"><a href="#cb62-785" aria-hidden="true" tabindex="-1"></a>When we look at the difference model 1 minus model 3, we see that this is more clearly negative between times 0.25 and 1.75, meaning that model 1 is clearly better than model 3 there. Towards later times this reverses, and model 3 is better than model 1.</span>
-<span id="cb62-786"><a href="#cb62-786" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-787"><a href="#cb62-787" aria-hidden="true" tabindex="-1"></a>The Brier score provides a more nuanced and time-dependent way of comparing the different OS models. Here we could either select model 1 due to its simplicity and almost same performance as model 2. </span>
+<span id="cb62-742"><a href="#cb62-742" aria-hidden="true" tabindex="-1"></a>os_fixed_surv3 <span class="ot">&lt;-</span> <span class="fu">SurvivalQuantities</span>(</span>
+<span id="cb62-743"><a href="#cb62-743" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> os_results3,</span>
+<span id="cb62-744"><a href="#cb62-744" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> <span class="fu">GridFixed</span>(<span class="at">times =</span> time_grid),</span>
+<span id="cb62-745"><a href="#cb62-745" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"surv"</span></span>
+<span id="cb62-746"><a href="#cb62-746" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-747"><a href="#cb62-747" aria-hidden="true" tabindex="-1"></a>os_mod3_bs <span class="ot">&lt;-</span> <span class="fu">brierScore</span>(os_fixed_surv3)</span>
+<span id="cb62-748"><a href="#cb62-748" aria-hidden="true" tabindex="-1"></a>os_mod3_looic <span class="ot">&lt;-</span> mcmc_os_results3<span class="sc">$</span><span class="fu">loo</span>(<span class="at">r_eff =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb62-749"><a href="#cb62-749" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-750"><a href="#cb62-750" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-751"><a href="#cb62-751" aria-hidden="true" tabindex="-1"></a>Of course in a real application with many models we can easily write a little function that does this for us repeatedly instead of just copy/pasting the code as we do here.</span>
+<span id="cb62-752"><a href="#cb62-752" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-753"><a href="#cb62-753" aria-hidden="true" tabindex="-1"></a>Now we can compare the three models. </span>
+<span id="cb62-754"><a href="#cb62-754" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-755"><a href="#cb62-755" aria-hidden="true" tabindex="-1"></a>Let's start with the LOOIC:</span>
+<span id="cb62-756"><a href="#cb62-756" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-759"><a href="#cb62-759" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-760"><a href="#cb62-760" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: model_comparison</span></span>
+<span id="cb62-761"><a href="#cb62-761" aria-hidden="true" tabindex="-1"></a>os_mod1_looic</span>
+<span id="cb62-762"><a href="#cb62-762" aria-hidden="true" tabindex="-1"></a>os_mod2_looic</span>
+<span id="cb62-763"><a href="#cb62-763" aria-hidden="true" tabindex="-1"></a>os_mod3_looic</span>
+<span id="cb62-764"><a href="#cb62-764" aria-hidden="true" tabindex="-1"></a><span class="fu">loo_compare</span>(os_mod1_looic, os_mod2_looic, os_mod3_looic)</span>
+<span id="cb62-765"><a href="#cb62-765" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-766"><a href="#cb62-766" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-767"><a href="#cb62-767" aria-hidden="true" tabindex="-1"></a>So we see that according to the LOOIC, the first model with just the <span class="in">`log_kg_est`</span> covariate is slightly better than the model with the additional <span class="in">`arm`</span> covariate. If we omit the <span class="in">`log_kg_est`</span> covariate altogether and only include the <span class="in">`arm`</span> covariate, then the model is worse than both of the other two models.</span>
+<span id="cb62-768"><a href="#cb62-768" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-769"><a href="#cb62-769" aria-hidden="true" tabindex="-1"></a>We can plot the Brier scores:</span>
+<span id="cb62-770"><a href="#cb62-770" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-773"><a href="#cb62-773" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb62-774"><a href="#cb62-774" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: brier_scores_plot</span></span>
+<span id="cb62-775"><a href="#cb62-775" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-776"><a href="#cb62-776" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb62-777"><a href="#cb62-777" aria-hidden="true" tabindex="-1"></a>    <span class="at">time =</span> time_grid,</span>
+<span id="cb62-778"><a href="#cb62-778" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">1 - 2</span><span class="st">`</span> <span class="ot">=</span> os_mod1_bs <span class="sc">-</span> os_mod2_bs,</span>
+<span id="cb62-779"><a href="#cb62-779" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">1 - 3</span><span class="st">`</span> <span class="ot">=</span> os_mod1_bs <span class="sc">-</span> os_mod3_bs,</span>
+<span id="cb62-780"><a href="#cb62-780" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">2 - 3</span><span class="st">`</span> <span class="ot">=</span> os_mod2_bs <span class="sc">-</span> os_mod3_bs,</span>
+<span id="cb62-781"><a href="#cb62-781" aria-hidden="true" tabindex="-1"></a>    <span class="at">check.names =</span> <span class="cn">FALSE</span></span>
+<span id="cb62-782"><a href="#cb62-782" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb62-783"><a href="#cb62-783" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(</span>
+<span id="cb62-784"><a href="#cb62-784" aria-hidden="true" tabindex="-1"></a>        <span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"1 - 2"</span>, <span class="st">"1 - 3"</span>, <span class="st">"2 - 3"</span>),</span>
+<span id="cb62-785"><a href="#cb62-785" aria-hidden="true" tabindex="-1"></a>        <span class="at">names_to =</span> <span class="st">"diff"</span>,</span>
+<span id="cb62-786"><a href="#cb62-786" aria-hidden="true" tabindex="-1"></a>        <span class="at">values_to =</span> <span class="st">"brier_score_diff"</span></span>
+<span id="cb62-787"><a href="#cb62-787" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb62-788"><a href="#cb62-788" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> brier_score_diff, <span class="at">color =</span> diff, <span class="at">group =</span> diff)) <span class="sc">+</span></span>
+<span id="cb62-789"><a href="#cb62-789" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb62-790"><a href="#cb62-790" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Brier score difference"</span>) <span class="sc">+</span></span>
+<span id="cb62-791"><a href="#cb62-791" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>)</span>
+<span id="cb62-792"><a href="#cb62-792" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb62-793"><a href="#cb62-793" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-794"><a href="#cb62-794" aria-hidden="true" tabindex="-1"></a>When we look at the difference model 1 minus model 2, we see that this is slightly positive. Since lower numbers of the Brier score are better, this means that model 2 is slightly better here. </span>
+<span id="cb62-795"><a href="#cb62-795" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-796"><a href="#cb62-796" aria-hidden="true" tabindex="-1"></a>When we look at the difference model 1 minus model 3, we see that this is more clearly negative between times 0.25 and 1.75, meaning that model 1 is clearly better than model 3 there. Towards later times this reverses, and model 3 is better than model 1.</span>
+<span id="cb62-797"><a href="#cb62-797" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-798"><a href="#cb62-798" aria-hidden="true" tabindex="-1"></a>The Brier score provides a more nuanced and time-dependent way of comparing the different OS models. Here we could either select model 1 due to its simplicity and almost same performance as model 2. </span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
