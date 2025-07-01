@@ -1,0 +1,206 @@
+---
+title: "1. Calculate Bayesian Predictive Power"
+author:
+  - Daniel Sabanés Bové
+  - Francois Mercier
+date: last-modified
+editor_options: 
+  chunk_output_type: inline
+format:
+  html:
+    code-fold: show
+    html-math-method: mathjax
+cache: true
+---
+
+The purpose of this document is to show how we can calculate the probability of success given interim data of a clinical trial, based on the TGI-OS joint model results.
+
+## Setup and load data
+
+Here we execute the R code from the setup and data preparation chapter, see the [full code here](0_setup.qmd).
+
+```{r}
+#| label: setup_and_load_data
+#| echo: false
+#| output: false
+library(here)
+options(knitr.duplicate.label = "allow")
+
+knitr::purl(
+    here("session-bpp/_setup.qmd"),
+    output = here("session-bpp/_setup.R")
+)
+source(here("session-jm/_setup.R"))
+
+knitr::purl(
+    here("session-bpp/_load_data.qmd"),
+    output = here("session-bpp/_load_data.R")
+)
+source(here("session-bpp/_load_data.R"))
+```
+
+## Fit our joint TGI-OS model
+
+Let's fit again the same joint TGI-OS model as in the previous session. Now we just put all the code together in a single chunk, and it is a good repetition to see all the steps in one place:
+
+```{r}
+#| label: fit_joint_model
+
+subj_df <- os_data |>
+    mutate(study = "OAK") |>
+    select(study, id, arm)
+subj_data <- DataSubject(
+    data = subj_df,
+    subject = "id",
+    arm = "arm",
+    study = "study"
+)
+long_df <- tumor_data |>
+    select(id, year, sld)
+long_data <- DataLongitudinal(
+    data = long_df,
+    formula = sld ~ year
+)
+surv_data <- DataSurvival(
+    data = os_data,
+    formula = Surv(os_time, os_event) ~ ecog + age + race + sex
+)
+joint_data <- DataJoint(
+    subject = subj_data,
+    longitudinal = long_data,
+    survival = surv_data
+)
+
+joint_mod <- JointModel(
+    longitudinal = LongitudinalSteinFojo(
+        mu_bsld = prior_normal(log(65), 1),
+        mu_ks = prior_normal(log(0.52), 1),
+        mu_kg = prior_normal(log(1.04), 1),
+        omega_bsld = prior_normal(0, 3) |> set_limits(0, Inf),
+        omega_ks = prior_normal(0, 3) |> set_limits(0, Inf),
+        omega_kg = prior_normal(0, 3) |> set_limits(0, Inf),
+        sigma = prior_normal(0, 3) |> set_limits(0, Inf)
+    ),
+    survival = SurvivalWeibullPH(
+        lambda = prior_gamma(0.7, 1),
+        gamma = prior_gamma(1.5, 1),
+        beta = prior_normal(0, 20)
+    ),
+    link = linkGrowth(
+        prior = prior_normal(0, 20)
+    )
+)
+
+options("jmpost.prior_shrinkage" = 0.99)
+initialValues(joint_mod, n_chains = CHAINS)
+
+save_file <- here("session-bpp/jm1.rds")
+if (file.exists(save_file)) {
+    joint_results <- readRDS(save_file)
+} else {
+    joint_results <- sampleStanModel(
+        joint_mod,
+        data = joint_data,
+        iter_sampling = ITER,
+        iter_warmup = WARMUP,
+        chains = CHAINS,
+        parallel_chains = CHAINS,
+        thin = CHAINS,
+        seed = BAYES.SEED,
+        refresh = REFRESH
+    )
+    saveObject(joint_results, file = save_file)
+}
+```
+
+## Marginal Hazard Ratio Estimation
+
+First, we will try to apply the methodology from [Oudenhoven et al (2020)](https://onlinelibrary.wiley.com/doi/10.1002/sim.8713) to estimate the marginal hazard ratio, using our joint model results.
+Thanks a lot to Isaac Gravestock for providing the initial code for this part!
+
+First, we need to extract log hazard samples for all patients and all of their time points:
+
+```{r}
+# Get the survival quantities at the observed longitudinal times
+# and survival event times for each patient:
+times_df <- rbind(
+    joint_results@data@longitudinal@data |> select(id, time = year),
+    joint_results@data@survival@data |> select(id, time = os_time) |> unique()
+) |>
+    filter(time > 0) # Otherwise we get an error from SurvivalQuantities() below.
+
+# Generate samples of the log hazard log h_i(t) for each patient i at these time points t.
+grid_spec <- split(times_df$time, times_df$id)
+loghaz_all_t <- SurvivalQuantities(joint_results, grid = GridManual(grid_spec), type = "loghaz")
+
+## Reformat as a wide data.frame.
+lhaz_i_t_n <- loghaz_all_t |>
+    as.data.frame() |>
+    rename(patient = group) |>
+    group_by(patient, time) |>
+    mutate(n = row_number()) |>
+    ungroup() |>
+    tidyr::pivot_wider(values_from = values, names_from = n)
+lhaz_i_t_n[1:6, 1:6]
+```
+
+So now we have one row for each patient and each time point, and the columns correspond to the log hazard MCMC samples.
+
+As a second step, we formulate the linear model to estimate the so called "marginal coefficients", with which we can estimate the marginal hazard ratio. 
+
+We start with the response, the log hazard samples. We reformat this as a matrix just for the log hazard samples, still each column is a sample.
+
+```{r}
+logH <- lhaz_i_t_n |>
+    select(-patient, -time) |>
+    as.matrix()
+logH[1:6, 1:6]
+dim(logH)
+```
+
+Next is the $W$ matrix, which has the baseline covariates (here only the 0/1 dummy treatment arm column):
+
+```{r}
+W <- lhaz_i_t_n |>
+    select(id = patient) |>
+    left_join(
+        joint_results@data@subject@data |>
+            select(id, arm) |>
+            mutate(arm = as.numeric(arm) - 1),
+        by = "id"
+    ) |>
+    ungroup() |>
+    select(-id) |>
+    as.matrix()
+summary(W)
+dim(W)
+```
+
+Next we construct a spline design matrix at the times above. We take 10 knots over the whole time scale.
+
+```{r}
+W0 <- splines::splineDesign(
+    knots = seq(0, max(lhaz_i_t_n$time |> unique()), len = 10),
+    x = lhaz_i_t_n$time,
+    ord = 4L,
+    outer.ok = TRUE
+)
+head(W0)
+dim(W0)
+```
+
+Now we combine the two matrices $W$ and $W_0$ into a single design matrix $X$, and we can calculate the least square coefficients accordingly:
+
+```{r}
+X <- cbind(W, W0)
+marg_coefs <- solve(crossprod(X), crossprod(X, logH))
+dim(marg_coefs)
+marg_coefs[1:6, 1:6]
+
+log_hr_samples <- marg_coefs["arm", ]
+hr_samples <- exp(log_hr_samples)
+hist(hr_samples)
+```
+
+So it kind of works, but then we see a HR estimate of around `r round(mean(hr_samples), 2)`, which seems very low.
+
