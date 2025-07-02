@@ -131,7 +131,11 @@ times_df <- rbind(
 
 # Generate samples of the log hazard log h_i(t) for each patient i at these time points t.
 grid_spec <- split(times_df$time, times_df$id)
-loghaz_all_t <- SurvivalQuantities(joint_results, grid = GridManual(grid_spec), type = "loghaz")
+loghaz_all_t <- SurvivalQuantities(
+    joint_results,
+    grid = GridManual(grid_spec),
+    type = "loghaz"
+)
 
 ## Reformat as a wide data.frame.
 lhaz_i_t_n <- loghaz_all_t |>
@@ -213,7 +217,133 @@ lm_all_samples <- lm.fit(
 )$coefficients
 lm_all_samples[1:6, 1:6]
 hr_est <- mean(exp(lm_all_samples["arm", ]))
+hr_est
 ```
 
 So this works better it seems, now we get a HR estimate of around `r round(hr_est, 2)`.
 
+Can also add covariates to the model, e.g. `ecog`, `age`, `race`, `sex`.
+Compare results - this is then conditional on those covariates so not full marginal any longer.
+
+## More automatic version
+
+```{r}
+# Extract the variable names used in the data
+long_time_var <- all.vars(delete.response(terms(
+    joint_results@data@longitudinal@formula
+)))
+subject_var <- joint_results@data@subject@subject
+arm_var <- joint_results@data@subject@arm
+surv_time_var <- all.vars(joint_results@data@survival@formula[[2]][[2]])
+surv_covs <- all.vars(delete.response(terms(
+    joint_results@data@survival@formula
+)))
+
+# This will be used to include terms in the model matrix for calculating the marginal hazard ratio
+# (in addition to arm and baseline_spline)
+additional_HR_terms <- attr(
+    terms(joint_results@data@survival@formula),
+    "term.labels"
+)
+additional_HR_terms
+baseline_spline <- "splines::bs(time, 10)"
+marginal_formula <- reformulate(
+    c(baseline_spline, "arm", additional_HR_terms),
+    intercept = FALSE
+)
+
+marginal_formula
+
+
+# Get the survival quantities at the observed longitudinal times
+# and survival event times for each patient:
+times_df <- rbind(
+    joint_results@data@longitudinal@data |>
+        select(subject = matches(subject_var), time = matches(long_time_var)),
+    joint_results@data@survival@data |>
+        select(subject = matches(subject_var), time = matches(surv_time_var))
+) |>
+    filter(time > 0) # Otherwise we get an error from SurvivalQuantities() below.
+
+# Generate samples of the log hazard log h_i(t) for each patient i at these time points t.
+grid_spec <- split(times_df$time, times_df$subject)
+loghaz_all_t <- SurvivalQuantities(
+    joint_results,
+    grid = GridManual(grid_spec),
+    type = "loghaz"
+)
+
+logH <- t(loghaz_all_t@quantities@quantities)
+logH[1:6, 1:6]
+dim(logH)
+```
+
+So now we have one row for each patient and each time point, and the columns correspond to the log hazard MCMC samples.
+
+As a second step, we formulate the linear model to estimate the so called "marginal coefficients", with which we can estimate the marginal hazard ratio. 
+
+Next is the $W$ matrix, which has the baseline covariates from the survival model plus arm:
+
+```{r}
+W_df <- times_df |>
+    select(subject, time) |>
+    left_join(
+        joint_results@data@subject@data |>
+            select(subject = matches(subject_var), arm = matches(arm_var)) |>
+            mutate(arm = as.numeric(arm) - 1),
+        by = "subject"
+    ) |>
+    left_join(
+        joint_results@data@survival@data |>
+            select(subject = matches(subject_var), matches(surv_covs)),
+        by = "subject"
+    )
+
+W_mat <- model.matrix(marginal_formula, W_df)
+```
+
+```{r}
+lm_all_samples <- lm.fit(x = W_mat, y = logH)$coefficients
+hr_arm_samples <- exp(lm_all_samples["arm", ])
+mean(hr_arm_samples)
+plot(density(hr_arm_samples)))
+```
+
+So in this model the HR is very close to 1.
+
+## Comparison with simple Cox PH results
+
+We can do a little sanity check by comparing this with a very simple Cox model:
+
+```{r}
+cox_mod <- survival::coxph(
+    update(joint_results@data@survival@formula, ~ . + arm),
+    data = joint_results@data@survival@data
+)
+summary(cox_mod)
+```
+
+Here we get a different HR estimate of around `r round(exp(coef(cox_mod)["armMPDL3280A"]), 2)`, which is lower than the one we got from the joint model. 
+We should expect different results because the joint model takes into account the TGI effect, while the Cox model does not.
+
+And if we just put the treatment arm into the Cox model we get:
+
+```{r}
+cox_mod_arm <- survival::coxph(
+    update(joint_results@data@survival@formula, . ~ arm),
+    data = joint_results@data@survival@data
+)
+cox_mod_arm
+```
+
+Here we get something that is close to the marginal HR estimate above (when we did not condition on the other covariates), which is interesting. It could be due to chance as well though ...
+
+## Individual Samples based Predictive Power
+
+- Sample events for the patients who did not have an event yet
+  - based on their conditional survival distribution estimated by the TGI-OS model
+- Determine the cutoff time based on the total number of events
+- Plug this data set into e.g. log rank test and get test statistic
+- Doing this over all the samples, we get a distribution of the test statistic
+  - Maybe even do this 10 times for each sample because we have some uncertainty there too
+- Then can just look at the proportion of test statistic samples which are above our critical value and then this is our predictive power  
