@@ -204,3 +204,16 @@ hist(hr_samples)
 
 So it kind of works, but then we see a HR estimate of around `r round(mean(hr_samples), 2)`, which seems very low.
 
+As alternative, we can use this:
+
+```{r}
+lm_all_samples <- lm.fit(
+    x = cbind(W, splines::bs(lhaz_i_t_n$time, 10)),
+    y = logH
+)$coefficients
+lm_all_samples[1:6, 1:6]
+hr_est <- mean(exp(lm_all_samples["arm", ]))
+```
+
+So this works better it seems, now we get a HR estimate of around `r round(hr_est, 2)`.
+
