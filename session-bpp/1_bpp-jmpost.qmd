@@ -162,6 +162,14 @@ cox_mod_arm
 ```
 
 Here we get a HR of `r round(exp(coef(cox_mod_arm)["armMPDL3280A"]), 3)` that is close to the marginal HR estimate above (when we did not condition on the other covariates), which is reassuring.
+On the other hand, the 95% confidence interval is:
+
+```{r}
+exp(confint(cox_mod_arm)["armMPDL3280A", ])
+```
+
+so actually overlaps the null hypothesis of 1. So we see that the joint model helped us to obtain a more precise estimate of the marginal hazard ratio.
+
 
 
 
