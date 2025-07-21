@@ -119,10 +119,15 @@ First, we will try to apply the methodology from [Oudenhoven et al (2020)](https
 We use the new `jmpost` function called `populationHR()` for this:
 
 ```{r}
-pop_hr <- populationHR(
-    joint_results,
-    hr_formula = ~arm
-)
+save_file <- here("session-bpp/jm1hr.rds")
+if (file.exists(save_file)) {
+    pop_hr <- readRDS(save_file)
+} else {
+    pop_hr <- populationHR(
+        joint_results,
+        hr_formula = ~arm
+    )
+}
 pop_hr$summary
 ```
 
@@ -170,8 +175,111 @@ exp(confint(cox_mod_arm)["armMPDL3280A", ])
 
 so actually overlaps the null hypothesis of 1. So we see that the joint model helped us to obtain a more precise estimate of the marginal hazard ratio.
 
+## PTS based on frequentist HR properties
 
+From now on we pretend that the data we have analyzed so far is the interim data of the Oak trial, and we want to calculate the predictive power of the trial based on this interim data.
 
+Let's first try to use the log HR ($\delta$) frequentist distribution to calculate the predictive power of the trial. We have:
+
+$$
+\hat{\delta}_{\text{fin}} \vert \hat{\delta}_{\text{int}} 
+\sim
+\text{Normal}(\hat{\delta}_{\text{int}}, \sigma^2_{\text{int}}) 
+$$
+
+where the predictive variance is given by
+
+$$
+\sigma^2_{\text{int}} = \frac{1}{4\overline{p}r(1-r)} \frac{\overline{m}}{\overline{n} (\overline{n} + \overline{m})}
+$$
+
+On the other hand, assuming that we have observed the final data, then the variance estimate for the estimator $\hat{\delta}_{\text{fin}}$ is given by:
+
+$$
+\sigma^2_{\text{fin}} = \frac{1}{4\overline{p}r(1-r)} \frac{1}{\overline{n} + \overline{m}}
+$$
+
+So the $(1-\alpha)$-confidence interval for the final log HR is given by:
+
+$$
+\hat{\delta}_{\text{fin}} \pm z_{1 - \alpha/2} \sigma_{\text{fin}}
+$$
+
+and the null hypothesis is rejected if the upper bound of this confidence interval is below 0, i.e. if:
+
+$$
+\hat{\delta}_{\text{fin}} + z_{1 - \alpha/2} \sigma_{\text{fin}} < 0.
+$$
+
+Now let's again take the perspective that we are at the interim analysis and we want to calculate the predictive probability of this event, then:
+
+$$
+\begin{align*}
+\mathbb{P}(\hat{\delta}_{\text{fin}} + z_{1 - \alpha/2} \sigma_{\text{fin}} < 0)
+&= 
+\mathbb{P}(\hat{\delta}_{\text{fin}} < - z_{1 - \alpha/2} \sigma_{\text{fin}}) \\
+&= 
+\mathbb{P}\left(
+\frac{\hat{\delta}_{\text{fin}} - \hat{\delta}_{\text{int}}}{\sigma_{\text{int}}} <
+\frac{- z_{1 - \alpha/2} \sigma_{\text{fin}} - \hat{\delta}_{\text{int}}}{\sigma_{\text{int}}}
+\right) \\
+&= 
+\Phi\left(
+  \frac{- z_{1 - \alpha/2} \sigma_{\text{fin}} - \hat{\delta}_{\text{int}}}{\sigma_{\text{int}}}
+\right)
+\end{align*}
+$$
+
+because the left-hand side is a standard normal variable according to our formula above.
+Let's first write a little function to calculate this:
+
+```{r}
+pts_freq_hr <- function(delta_int, var_int, var_final, alpha = 0.05) {
+    z_alpha <- qnorm(1 - alpha / 2)
+    delta_final <- -z_alpha * sqrt(var_final)
+    pnorm((delta_final - delta_int) / sqrt(var_int))
+}
+```
+
+For $\hat{\delta}_{\text{int}}$ we are going to plug in our MCMC samples for the marginal log HR $\hat{\delta}_{\text{int}}$ to compute the PTS based on this:
+
+```{r}
+log_hr_samples <- pop_hr[[2]]["armMPDL3280A", ]
+```
+
+But first we also need the quantities that go into the variance formula:
+
+- $\overline{p}$: average event rate
+- $r$: proportion of patients in the treatment arm
+- $\overline{n}$: average arm size in interim data
+- $\overline{m}$: average arm size in follow up
+
+So let's calculate these and the resulting variances:
+
+```{r}
+avg_event_rate <- mean(os_data$os_event)
+prop_pts_treatment <- mean(os_data$arm == "MPDL3280A")
+avg_arm_size_interim <- mean(table(os_data$arm))
+total_size_final <- 850
+avg_arm_size_followup <- (total_size_final - 2 * avg_arm_size_interim) / 2
+var_int <- 1 / (4 * avg_event_rate * prop_pts_treatment * (1 - prop_pts_treatment)) *
+    avg_arm_size_followup / (avg_arm_size_interim * (avg_arm_size_interim + avg_arm_size_followup))
+var_final <- 1 / (4 * avg_event_rate * prop_pts_treatment * (1 - prop_pts_treatment)) *
+    1 / (avg_arm_size_interim + avg_arm_size_followup)
+```
+
+Now we can calculate the PTS based on the frequentist HR properties:
+
+```{r}
+pts_freq_hr_result <- mean(pts_freq_hr(
+    delta_int = log_hr_samples,
+    var_int = var_int,
+    var_final = var_final
+))
+pts_freq_hr_result
+```
+
+So we obtain a PTS of `r round(pts_freq_hr_result * 100, 1)`% here.
 
 ## Individual Samples based Predictive Power
 
