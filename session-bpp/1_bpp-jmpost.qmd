@@ -127,6 +127,7 @@ if (file.exists(save_file)) {
         joint_results,
         hr_formula = ~arm
     )
+    saveRDS(pop_hr, file = save_file)
 }
 pop_hr$summary
 ```
@@ -281,7 +282,140 @@ pts_freq_hr_result
 
 So we obtain a PTS of `r round(pts_freq_hr_result * 100, 1)`% here.
 
+## PTS based on frequentist log-rank test properties
+
+Now we want to leverage the `rpact` function [`getConditionalPower()`](https://rpact-com.github.io/rpact/reference/getConditionalPower.html) to calculate the predictive power of the trial based on the log-rank test statistic properties.
+
+Looking at the function's example, we first have to create a `DataSet` object with the interim data.
+Here it is important that we for `cumLogRanks` also the z scores from a Cox regression can be used, which means for our case that can insert here the z-scores defined as:
+
+$$
+z = \frac{\hat{\delta}_{\text{int}}}{\sigma_{\text{int}}}
+$$
+
+values.
+
+But let's first try this with a simple fixed $z$ value to see how it works:
+
+```{r}
+library(rpact)
+
+z <- log(0.9) / sqrt(var_int) # Instead of log(0.9) we put later the marginal log HR MCMC sample
+data <- getDataset(
+    cumEvents = sum(os_data$os_event),
+    cumLogRanks = z,
+    cumAllocationRatios = prop_pts_treatment
+)
+data
+```
+
+This is the data set from the first stage, i.e. our interim analysis.
+
+Now we need to define the design of the group sequential trial:
+
+```{r}
+events_final <- total_size_final * avg_event_rate
+design <- getDesignGroupSequential(
+    kMax = 2,
+    informationRates = c(sum(os_data$os_event) / events_final, 1),
+    alpha = 0.05
+)
+design
+```
+
+We see that the significance level is almost full for the final analysis, because by default the O'Brien & Fleming design is used, which only assigns a very small $\alpha$ to the interim analysis. This is kind of what we need here.
+
+Finally we put the `design` and `data` in a `StageResults` object, which is the input for the `getConditionalPower()` function:
+
+```{r}
+stageResults <- getStageResults(
+    design = design,
+    dataInput = data,
+    stage = 1,
+    directionUpper = FALSE
+)
+condPower <- getConditionalPower(
+    stageResults = stageResults,
+    thetaH1 = 0.9, # Here we put later the marginal hazard ratio MCMC sample
+    nPlanned = total_size_final,
+    allocationRatioPlanned = 1
+)
+summary(condPower)
+condPower$conditionalPower[2]
+```
+
+OK so now that we know how it works we wrap this in a little function again.
+
+```{r}
+pts_freq_hr2 <- function(delta_int, var_int, var_final, events_int, alloc_int, events_final, alpha = 0.05) {
+    data <- getDataset(
+        cumEvents = events_int,
+        cumLogRanks = delta_int / sqrt(var_int),
+        cumAllocationRatios = alloc_int
+    )
+    design <- getDesignGroupSequential(
+        kMax = 2,
+        informationRates = c(events_int / events_final, 1),
+        alpha = alpha
+    )
+    stageResults <- getStageResults(
+        design = design,
+        dataInput = data,
+        stage = 1,
+        directionUpper = FALSE
+    )
+    condPower <- getConditionalPower(
+        stageResults = stageResults,
+        thetaH1 = exp(delta_int),
+        nPlanned = total_size_final,
+        allocationRatioPlanned = 1
+    )
+    condPower$conditionalPower[2]
+}
+```
+
+Let's try it out with the same example first again:
+
+```{r}
+pts_freq_hr2(
+    delta_int = log(0.9),
+    var_int = var_int,
+    var_final = var_final,
+    events_int = sum(os_data$os_event),
+    alloc_int = prop_pts_treatment,
+    events_final = total_size_final * avg_event_rate
+)
+```
+
+OK so that gives the same result as before, which is good. Now we can plug in the MCMC samples for the marginal log HR:
+
+```{r}
+save_file <- here("session-bpp/jm1hr2.rds")
+if (file.exists(save_file)) {
+    pts_freq_hr2_result <- readRDS(save_file)
+} else {
+    pts_freq_hr2_samples <- sapply(
+        log_hr_samples,
+        pts_freq_hr2,
+        var_int = var_int,
+        var_final = var_final,
+        events_int = sum(os_data$os_event),
+        alloc_int = prop_pts_treatment,
+        events_final = total_size_final * avg_event_rate
+    )
+    saveRDS(pts_freq_hr2_samples, file = save_file)
+}
+pts_freq_hr2_result <- mean(pts_freq_hr2_samples)
+```
+
+So here we get a PTS of `r round(pts_freq_hr2_result * 100, 1)`%, which is higher than the one we got before.
+
 ## Individual Samples based Predictive Power
+
+This is a good motivation to try out the conditional sampling approach to calculate the predictive power, which is based on the individual samples of the joint model. It does not involved any frequentist assumptions to calculate the PTS.
+
+
+
 
 - Sample events for the patients who did not have an event yet
   - based on their conditional survival distribution estimated by the TGI-OS model
