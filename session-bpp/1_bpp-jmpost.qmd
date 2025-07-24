@@ -119,6 +119,7 @@ First, we will try to apply the methodology from [Oudenhoven et al (2020)](https
 We use the new `jmpost` function called `populationHR()` for this:
 
 ```{r}
+#| label: calculate_marginal_hr
 save_file <- here("session-bpp/jm1hr.rds")
 if (file.exists(save_file)) {
     pop_hr <- readRDS(save_file)
@@ -136,6 +137,7 @@ So here we have the marginal log hazard ratio estimates of the baseline spline c
 Therefore we can get the hazard ratio estimates by exponentiating the log hazard ratio estimates:
 
 ```{r}
+#| label: exponentiate_hr_estimates
 hr_est <- pop_hr$summary["armMPDL3280A", ] |>
     sapply(exp)
 ```
@@ -147,6 +149,7 @@ So we get a marginal hazard ratio estimate of around `r round(hr_est["mean"], 3)
 We can do a little sanity check by comparing this with a very simple Cox model:
 
 ```{r}
+#| label: cox_model_comparison
 cox_mod <- survival::coxph(
     update(joint_results@data@survival@formula, ~ . + arm),
     data = joint_results@data@survival@data
@@ -160,6 +163,7 @@ We should expect different results because the joint model takes into account th
 And if we just put the treatment arm into the Cox model we get:
 
 ```{r}
+#| label: cox_model_arm_only
 cox_mod_arm <- survival::coxph(
     update(joint_results@data@survival@formula, . ~ arm),
     data = joint_results@data@survival@data
@@ -171,6 +175,7 @@ Here we get a HR of `r round(exp(coef(cox_mod_arm)["armMPDL3280A"]), 3)` that is
 On the other hand, the 95% confidence interval is:
 
 ```{r}
+#| label: cox_confidence_interval
 exp(confint(cox_mod_arm)["armMPDL3280A", ])
 ```
 
@@ -235,6 +240,7 @@ because the left-hand side is a standard normal variable according to our formul
 Let's first write a little function to calculate this:
 
 ```{r}
+#| label: pts_freq_hr_function
 pts_freq_hr <- function(delta_int, var_int, var_final, alpha = 0.05) {
     z_alpha <- qnorm(1 - alpha / 2)
     delta_final <- -z_alpha * sqrt(var_final)
@@ -245,6 +251,7 @@ pts_freq_hr <- function(delta_int, var_int, var_final, alpha = 0.05) {
 For $\hat{\delta}_{\text{int}}$ we are going to plug in our MCMC samples for the marginal log HR $\hat{\delta}_{\text{int}}$ to compute the PTS based on this:
 
 ```{r}
+#| label: extract_log_hr_samples
 log_hr_samples <- pop_hr[[2]]["armMPDL3280A", ]
 ```
 
@@ -258,20 +265,26 @@ But first we also need the quantities that go into the variance formula:
 So let's calculate these and the resulting variances:
 
 ```{r}
+#| label: calculate_variance_quantities
 avg_event_rate <- mean(os_data$os_event)
 prop_pts_treatment <- mean(os_data$arm == "MPDL3280A")
 avg_arm_size_interim <- mean(table(os_data$arm))
 total_size_final <- 850
 avg_arm_size_followup <- (total_size_final - 2 * avg_arm_size_interim) / 2
-var_int <- 1 / (4 * avg_event_rate * prop_pts_treatment * (1 - prop_pts_treatment)) *
-    avg_arm_size_followup / (avg_arm_size_interim * (avg_arm_size_interim + avg_arm_size_followup))
-var_final <- 1 / (4 * avg_event_rate * prop_pts_treatment * (1 - prop_pts_treatment)) *
-    1 / (avg_arm_size_interim + avg_arm_size_followup)
+var_int <- 1 /
+    (4 * avg_event_rate * prop_pts_treatment * (1 - prop_pts_treatment)) *
+    avg_arm_size_followup /
+    (avg_arm_size_interim * (avg_arm_size_interim + avg_arm_size_followup))
+var_final <- 1 /
+    (4 * avg_event_rate * prop_pts_treatment * (1 - prop_pts_treatment)) *
+    1 /
+    (avg_arm_size_interim + avg_arm_size_followup)
 ```
 
 Now we can calculate the PTS based on the frequentist HR properties:
 
 ```{r}
+#| label: calculate_pts_freq_hr
 pts_freq_hr_result <- mean(pts_freq_hr(
     delta_int = log_hr_samples,
     var_int = var_int,
@@ -298,6 +311,7 @@ values.
 But let's first try this with a simple fixed $z$ value to see how it works:
 
 ```{r}
+#| label: rpact_dataset_example
 library(rpact)
 
 z <- log(0.9) / sqrt(var_int) # Instead of log(0.9) we put later the marginal log HR MCMC sample
@@ -314,6 +328,7 @@ This is the data set from the first stage, i.e. our interim analysis.
 Now we need to define the design of the group sequential trial:
 
 ```{r}
+#| label: define_group_sequential_design
 events_final <- total_size_final * avg_event_rate
 design <- getDesignGroupSequential(
     kMax = 2,
@@ -328,6 +343,7 @@ We see that the significance level is almost full for the final analysis, becaus
 Finally we put the `design` and `data` in a `StageResults` object, which is the input for the `getConditionalPower()` function:
 
 ```{r}
+#| label: calculate_conditional_power
 stageResults <- getStageResults(
     design = design,
     dataInput = data,
@@ -347,7 +363,16 @@ condPower$conditionalPower[2]
 OK so now that we know how it works we wrap this in a little function again.
 
 ```{r}
-pts_freq_hr2 <- function(delta_int, var_int, var_final, events_int, alloc_int, events_final, alpha = 0.05) {
+#| label: pts_freq_hr2_function
+pts_freq_hr2 <- function(
+    delta_int,
+    var_int,
+    var_final,
+    events_int,
+    alloc_int,
+    events_final,
+    alpha = 0.05
+) {
     data <- getDataset(
         cumEvents = events_int,
         cumLogRanks = delta_int / sqrt(var_int),
@@ -377,6 +402,7 @@ pts_freq_hr2 <- function(delta_int, var_int, var_final, events_int, alloc_int, e
 Let's try it out with the same example first again:
 
 ```{r}
+#| label: test_pts_freq_hr2
 pts_freq_hr2(
     delta_int = log(0.9),
     var_int = var_int,
@@ -390,9 +416,10 @@ pts_freq_hr2(
 OK so that gives the same result as before, which is good. Now we can plug in the MCMC samples for the marginal log HR:
 
 ```{r}
+#| label: calculate_pts_freq_hr2
 save_file <- here("session-bpp/jm1hr2.rds")
 if (file.exists(save_file)) {
-    pts_freq_hr2_result <- readRDS(save_file)
+    pts_freq_hr2_samples <- readRDS(save_file)
 } else {
     pts_freq_hr2_samples <- sapply(
         log_hr_samples,
@@ -406,6 +433,7 @@ if (file.exists(save_file)) {
     saveRDS(pts_freq_hr2_samples, file = save_file)
 }
 pts_freq_hr2_result <- mean(pts_freq_hr2_samples)
+pts_freq_hr2_result
 ```
 
 So here we get a PTS of `r round(pts_freq_hr2_result * 100, 1)`%, which is higher than the one we got before.
@@ -414,13 +442,270 @@ So here we get a PTS of `r round(pts_freq_hr2_result * 100, 1)`%, which is highe
 
 This is a good motivation to try out the conditional sampling approach to calculate the predictive power, which is based on the individual samples of the joint model. It does not involved any frequentist assumptions to calculate the PTS.
 
+We will perform the following steps in this algorithm:
 
+1. For each patient who is still being followed up for OS at IA (=does not have an event yet and did not drop out)
+   - Obtain individual survival distribution MCMC samples over a long enough time grid
+   - Condition on last observed censored OS time, sample once per MCMC sample from the conditional survival distribution
+1. Define "End of Study" time, e.g. based on number of events observed, calendar time, etc.
+1. Apply summary statistic of interest to the complete "End of Study" OS data set samples and aggregate appropriately
+   - For example, we can use the log-rank test statistic as summary statistic
+1. Calculate the proportion of samples that are above the critical value for the summary statistic, e.g. log-rank test statistic
 
+Note that for the first step, we need to add some random information to the data set, because unfortunately the real data does not differentiate between patients who are still being followed up and those who have dropped out.
 
-- Sample events for the patients who did not have an event yet
-  - based on their conditional survival distribution estimated by the TGI-OS model
-- Determine the cutoff time based on the total number of events
-- Plug this data set into e.g. log rank test and get test statistic
-- Doing this over all the samples, we get a distribution of the test statistic
-  - Maybe even do this 10 times for each sample because we have some uncertainty there too
-- Then can just look at the proportion of test statistic samples which are above our critical value and then this is our predictive power  
+### Generate random lost-to-follow-up flag
+
+Basically for those patients with a censored survival time, we randomly assign a lost-to-follow-up flag with a probability of 10%, so that we can simulate some patients who are still being followed up and some who are not.
+
+```{r}
+#| label: generate_lost_to_follow_up
+
+set.seed(689)
+lost_to_follow_up_flag <- sample(
+    c(TRUE, FALSE),
+    size = nrow(os_data),
+    replace = TRUE,
+    prob = c(0.1, 0.9)
+)
+os_data <- os_data |>
+    mutate(lost_to_follow_up = !os_event & lost_to_follow_up_flag)
+n_lost_to_follow_up <- sum(os_data$lost_to_follow_up)
+n_lost_to_follow_up
+n_censored <- sum(!os_data$os_event & !os_data$lost_to_follow_up)
+n_censored
+```
+
+So now we have `r n_lost_to_follow_up` patients who have been lost to follow-up and `r n_censored` patients who are still being followed up for OS. These `r n_censored` patients will be the ones we will perform the individual sampling for.
+
+### Individual Sampling of OS events
+
+Now we can perform the individual sampling of the OS events for the patients who are still being followed up. 
+Let's start with a single patient:
+
+```{r}
+#| label: individual_sampling_single_patient
+
+patient_id <- os_data |>
+    filter(!os_event & !lost_to_follow_up) |>
+    pull(id) |>
+    unique() |>
+    head(1)
+```
+
+So for this patient `r patient_id`, we can extract the individual survival distribution MCMC samples from the joint model results along a time grid that extrapolates long enough into the future, say 10 years after the last observed OS time:
+
+```{r}
+#| label: extract_individual_survival_samples
+
+length_time_grid <- 100
+time_grid_end <- round(max(os_data$os_time) + 10, 1)
+time_grid <- seq(0, time_grid_end, length = length_time_grid)
+
+os_surv_samples <- SurvivalQuantities(
+    object = joint_results,
+    grid = GridFixed(times = time_grid),
+    type = "surv"
+)
+os_surv_samples_df <- as.data.frame(os_surv_samples)
+os_surv_samples_patient <- os_surv_samples_df |>
+    filter(group == patient_id) |>
+    select(-group) |>
+    mutate(sample_id = rep(1:ITER, length_time_grid))
+head(os_surv_samples_patient)
+```
+
+Now let's zoom in on the first sampled survival curve of this patient, where we show also the last observed OS time as a vertical dashed line:
+
+```{r}
+#| label: plot_individual_survival_curve
+
+first_surv_sample <- os_surv_samples_patient |>
+    filter(sample_id == 1)
+patient_last_os_time <- os_data$os_time[os_data$id == patient_id]
+first_surv_sample_plot <- ggplot(first_surv_sample, aes(x = time, y = values)) +
+    geom_line() +
+    labs(
+        title = paste("Individual Survival Curve for Patient", patient_id),
+        x = "Time (years)",
+        y = "Survival Probability"
+    ) +
+    geom_vline(
+        xintercept = patient_last_os_time,
+        linetype = "dashed",
+        color = "red"
+    ) +
+    theme_minimal()
+first_surv_sample_plot
+```
+
+As described in the slides, we can now sample a survival time for this patient from the conditional survival distribution, given the last observed OS time, by:
+
+1. Drawing a standard uniform random number $p \sim U(0, 1)$
+1. Finding the time $t$ such that $(1-p)S(c) - S(t) = 0$ where $c = `r round(patient_last_os_time, 1)` is the last observed OS time
+
+```{r}
+#| label: sample_conditional_survival_time
+
+set.seed(123)
+p <- runif(1)
+
+# Linear approximation function for the survival function:
+surv_approx <- approxfun(
+    x = first_surv_sample$time,
+    y = first_surv_sample$values,
+    rule = 2 # extrapolation outside interval via closest data extreme
+)
+
+# Survival function value at the time of censoring:
+surv_at_censoring <- surv_approx(patient_last_os_time)
+
+# Find the time t such that (1-p) * S(c) - S(t) = 0:
+t <- uniroot(
+    function(t) (1 - p) * surv_at_censoring - surv_approx(t),
+    interval = c(0, time_grid_end)
+)$root
+t
+```
+
+We can plot the conditional survival function together with this sampled survival time:
+
+```{r}
+first_surv_sample <- first_surv_sample |>
+    mutate(
+        cond_values = ifelse(
+            time <= patient_last_os_time,
+            1,
+            values / surv_at_censoring
+        )
+    )
+
+first_cond_surv_sample_plot <- ggplot(
+    first_surv_sample,
+    aes(x = time, y = cond_values)
+) +
+    geom_line() +
+    labs(
+        title = paste(
+            "Individual Conditional Survival Curve for Patient",
+            patient_id
+        ),
+        x = "Time (years)",
+        y = "Survival Probability"
+    ) +
+    geom_vline(
+        xintercept = patient_last_os_time,
+        linetype = "dashed",
+        color = "red"
+    ) +
+    theme_minimal() +
+    geom_vline(
+        xintercept = t,
+        linetype = "dotted",
+        color = "blue"
+    ) +
+    geom_hline(
+        yintercept = 1 - p,
+        linetype = "dotted",
+        color = "blue"
+    ) +
+    geom_point(
+        data = data.frame(t = t, p = p),
+        aes(x = t, y = 1 - p),
+        color = "blue",
+        size = 5
+    )
+first_cond_surv_sample_plot
+```
+
+The challenge is now to do this efficiently for all patients who are still being followed up for OS, and for all of their MCMC samples.
+
+### Simplified Rcpp implementation for single patient/sample
+
+For now, let's create a simpler `Rcpp` function that handles a single patient's single MCMC sample:
+
+```{r}
+#| label: simple_rcpp_conditional_sampling
+
+library(Rcpp)
+
+# Use Rcpp function for single patient, single sample.
+sourceCpp(here("session-bpp/conditional_sampling.cpp"))
+
+# Test the function with a simple example.
+set.seed(3453)
+
+t_cpp_simple <- sample_single_conditional_survival_time(
+    time_grid = first_surv_sample$time,
+    surv_values = first_surv_sample$values,
+    censoring_time = patient_last_os_time
+)
+
+first_cond_surv_sample_plot +
+    geom_point(
+        data = data.frame(
+            t = t_cpp_simple$t_result,
+            p = t_cpp_simple$uniform_sample
+        ),
+        aes(x = t, y = 1 - p),
+        color = "blue",
+        size = 5
+    )
+```
+
+### Rcpp implementation for all patients and samples
+
+Let's use the second `Rcpp` function that handles all patients and all MCMC samples at once.
+We just need to prepare the data in the right format:
+
+- The first argument is the time grid, which we already have.
+- The second argument is a matrix of survival values, where each row is a sample/patient combination and each column is a time point.
+- The third argument is a vector of censoring times, where each element corresponds to a sample/patient combination.
+
+```{r}
+#| label: rcpp_conditional_sampling_all
+
+# First subset to the patients where we need to sample from the conditional survival distribution.
+pt_to_sample <- os_data |>
+    filter(!os_event & !lost_to_follow_up)
+pt_to_sample_ids <- pt_to_sample$id
+
+qs <- os_surv_samples@quantities
+include_qs <- qs@groups %in% pt_to_sample_ids
+
+qs_samples <- qs@quantities[, include_qs]
+qs_times <- qs@times[include_qs]
+qs_groups <- qs@groups[include_qs]
+
+surv_values_samples <- matrix(
+    qs_samples,
+    nrow = ITER * length(pt_to_sample_ids),
+    ncol = length_time_grid
+)
+dim(surv_values_samples)
+
+surv_values_pt_ids <- rep(
+    head(qs_groups, length(pt_to_sample_ids)),
+    each = ITER
+)
+
+censoring_times <- pt_to_sample$os_time[match(
+    surv_values_pt_ids,
+    pt_to_sample_ids
+)]
+length(censoring_times)
+
+test <- sample_conditional_survival_times(
+    time_grid = time_grid,
+    surv_values = surv_values_samples,
+    censoring_times = censoring_times
+)
+mean(test$beyond_max_time)
+summary(test$t_results)
+hist(test$uniform_samples)
+```
+
+So this function is very fast, and in this case we have less than 1% of the samples where we did not have a long enough time grid, which seems sufficient for our purposes.
+
+### Calculate log rank statistic for each sampled OS data set
+
