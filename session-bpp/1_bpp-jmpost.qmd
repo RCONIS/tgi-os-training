@@ -371,8 +371,7 @@ pts_freq_hr2 <- function(
     events_int,
     alloc_int,
     events_final,
-    alpha = 0.05
-) {
+    alpha = 0.05) {
     data <- getDataset(
         cumEvents = events_int,
         cumLogRanks = delta_int / sqrt(var_int),
@@ -444,6 +443,9 @@ This is a good motivation to try out the conditional sampling approach to calcul
 
 We will perform the following steps in this algorithm:
 
+1. We add as many new patients to the survival data set as we expect to still enter the trial.
+   - These patients have survival time 0 and are censored at that time, which means they are completely new patients.
+1. We refit the joint model with this augmented data set. This simplifies the subsequent sampling process.
 1. For each patient who is still being followed up for OS at IA (=does not have an event yet and did not drop out)
    - Obtain individual survival distribution MCMC samples over a long enough time grid
    - Condition on last observed censored OS time, sample once per MCMC sample from the conditional survival distribution
@@ -454,9 +456,9 @@ We will perform the following steps in this algorithm:
 
 Note that for the first step, we need to add some random information to the data set, because unfortunately the real data does not differentiate between patients who are still being followed up and those who have dropped out.
 
-### Generate random lost-to-follow-up flag
+### Add new patients and generate random lost-to-follow-up flag
 
-Basically for those patients with a censored survival time, we randomly assign a lost-to-follow-up flag with a probability of 10%, so that we can simulate some patients who are still being followed up and some who are not.
+Basically for those patients with a censored survival time, we randomly assign a lost-to-follow-up flag with a probability of 10%, so that we can simulate some patients who are still being followed up and some who are not. We sample the covariates from the distribution of the already observed patients.
 
 ```{r}
 #| label: generate_lost_to_follow_up
@@ -472,11 +474,93 @@ os_data <- os_data |>
     mutate(lost_to_follow_up = !os_event & lost_to_follow_up_flag)
 n_lost_to_follow_up <- sum(os_data$lost_to_follow_up)
 n_lost_to_follow_up
-n_censored <- sum(!os_data$os_event & !os_data$lost_to_follow_up)
+
+set.seed(359)
+n_new_patients <- 2 * avg_arm_size_followup
+os_data_new <- data.frame(
+    id = seq(from = max(as.integer(as.character(os_data$id))) + 1, length.out = n_new_patients),
+    arm = rep(c("Docetaxel", "MPDL3280A"), c(floor(avg_arm_size_followup), ceiling(avg_arm_size_followup))),
+    os_time = 0,
+    os_event = FALSE,
+    lost_to_follow_up = FALSE,
+    ecog = sample(os_data$ecog, n_new_patients, replace = TRUE),
+    age = sample(os_data$age, n_new_patients, replace = TRUE),
+    race = sample(os_data$race, n_new_patients, replace = TRUE),
+    sex = sample(os_data$sex, n_new_patients, replace = TRUE)
+)
+os_data_augmented <- os_data[, names(os_data_new)] |>
+    mutate(id = as.character(id)) |>
+    rbind(os_data_new) |>
+    mutate(id = factor(id))
+
+n_censored <- sum(!os_data_augmented$os_event & !os_data_augmented$lost_to_follow_up)
 n_censored
 ```
 
-So now we have `r n_lost_to_follow_up` patients who have been lost to follow-up and `r n_censored` patients who are still being followed up for OS. These `r n_censored` patients will be the ones we will perform the individual sampling for.
+So now we have `r n_lost_to_follow_up` patients who have been lost to follow-up and `r n_censored` patients who are still being followed up for OS (or who will still be entering the trial). These `r n_censored` patients will be the ones we will perform the individual sampling for.
+
+### Refit the joint model with augmented data
+
+First we need to refit the joint model to this augmented data set. That is the easiest way to also get survival curve samples for the patients who are yet to be enrolled in the trial.
+
+We notice that here we also need to add at least some random baseline samples to the longitudinal data set, otherwise it does not work.
+
+```{r}
+#| label: fit_joint_model
+
+subj_aug_df <- os_data_augmented |>
+    mutate(study = "OAK") |>
+    select(study, id, arm)
+subj_aug_data <- DataSubject(
+    data = subj_aug_df,
+    subject = "id",
+    arm = "arm",
+    study = "study"
+)
+long_df <- tumor_data |>
+    select(id, year, sld)
+new_long_df <- os_data_new |>
+    select(id, os_time) |>
+    rename(year = os_time) |>
+    mutate(sld = sample(tumor_data$sld, n_new_patients, replace = TRUE))
+long_aug_df <- long_df |>
+    mutate(id = as.character(id)) |>
+    rbind(new_long_df) |>
+    mutate(id = factor(id))
+stopifnot(identical(levels(long_aug_df$id), levels(subj_aug_df$id)))
+
+long_aug_data <- DataLongitudinal(
+    data = long_aug_df,
+    formula = sld ~ year
+)
+surv_aug_data <- DataSurvival(
+    data = os_data_augmented,
+    formula = Surv(os_time, os_event) ~ ecog + age + race + sex
+)
+joint_aug_data <- DataJoint(
+    subject = subj_aug_data,
+    longitudinal = long_aug_data,
+    survival = surv_aug_data
+)
+
+save_file <- here("session-bpp/jm2.rds")
+if (file.exists(save_file)) {
+    joint_aug_results <- readRDS(save_file)
+} else {
+    joint_aug_results <- sampleStanModel(
+        joint_mod,
+        data = joint_aug_data,
+        iter_sampling = ITER,
+        iter_warmup = WARMUP,
+        chains = CHAINS,
+        parallel_chains = CHAINS,
+        thin = CHAINS,
+        seed = BAYES.SEED,
+        refresh = REFRESH
+    )
+    saveObject(joint_aug_results, file = save_file)
+}
+```
 
 ### Individual Sampling of OS events
 
@@ -486,7 +570,7 @@ Let's start with a single patient:
 ```{r}
 #| label: individual_sampling_single_patient
 
-patient_id <- os_data |>
+patient_id <- os_data_augmented |>
     filter(!os_event & !lost_to_follow_up) |>
     pull(id) |>
     unique() |>
@@ -499,11 +583,11 @@ So for this patient `r patient_id`, we can extract the individual survival distr
 #| label: extract_individual_survival_samples
 
 length_time_grid <- 100
-time_grid_end <- round(max(os_data$os_time) + 10, 1)
+time_grid_end <- round(max(os_data_augmented$os_time) + 10, 1)
 time_grid <- seq(0, time_grid_end, length = length_time_grid)
 
 os_surv_samples <- SurvivalQuantities(
-    object = joint_results,
+    object = joint_aug_results,
     grid = GridFixed(times = time_grid),
     type = "surv"
 )
@@ -522,7 +606,7 @@ Now let's zoom in on the first sampled survival curve of this patient, where we 
 
 first_surv_sample <- os_surv_samples_patient |>
     filter(sample_id == 1)
-patient_last_os_time <- os_data$os_time[os_data$id == patient_id]
+patient_last_os_time <- os_data_augmented$os_time[os_data_augmented$id == patient_id]
 first_surv_sample_plot <- ggplot(first_surv_sample, aes(x = time, y = values)) +
     geom_line() +
     labs(
@@ -666,7 +750,7 @@ We just need to prepare the data in the right format:
 #| label: rcpp_conditional_sampling_all
 
 # First subset to the patients where we need to sample from the conditional survival distribution.
-pt_to_sample <- os_data |>
+pt_to_sample <- os_data_augmented |>
     filter(!os_event & !lost_to_follow_up)
 pt_to_sample_ids <- pt_to_sample$id
 
@@ -724,7 +808,7 @@ Now that we have the OS events for the patients who are still being followed up,
 # Where do we need to replace the OS times?
 os_rows_to_replace <- match(
     pt_to_sample_ids,
-    os_data$id
+    os_data_augmented$id
 )
 
 # From which column do we take the sampled OS times?
@@ -735,7 +819,7 @@ os_cond_samples_cols <- match(
 
 os_data_samples <- lapply(1:ITER, function(i) {
     # Create a copy of the original OS data
-    os_data_sample <- os_data[, c("id", "arm", "os_time", "os_event")]
+    os_data_sample <- os_data_augmented[, c("id", "arm", "os_time", "os_event", "race", "sex", "ecog", "age")]
 
     # Add the sampled OS times for the patients who are still being followed up.
     os_data_sample$os_time[os_rows_to_replace] <- os_cond_samples[
@@ -753,6 +837,7 @@ os_data_samples <- lapply(1:ITER, function(i) {
 ### Calculate log rank statistic for each sampled OS data set
 
 Now it is easy to calculate the log-rank test statistic for each sampled OS data set.
+Here we don't adjust for any covariates.
 
 ```{r}
 #| label: calculate_log_rank_statistic
@@ -768,7 +853,7 @@ log_rank_stats_fun <- function(df) {
 log_rank_stats <- sapply(os_data_samples, log_rank_stats_fun)
 hist(log_rank_stats)
 
-log_rank_at_ia <- log_rank_stats_fun(os_data)
+log_rank_at_ia <- log_rank_stats_fun(os_data_augmented)
 log_rank_at_ia
 abline(v = log_rank_at_ia, col = "red", lwd = 2)
 ```
@@ -784,7 +869,7 @@ pts_log_rank <- mean(log_rank_stats > critical_value)
 pts_log_rank
 ```
 
-So we see that this PTS with `r round(pts_log_rank * 100, 1)`% is much lower than the previous PTS estimates. Given that the log-rank test statistic at interim is only `r round(log_rank_at_ia, 2)`, and the critical value is `r round(critical_value, 2)`, it is not surprising that the PTS is low.
+So we see that this PTS with `r round(pts_log_rank * 100, 1)`% is a bit lower than the previous PTS estimates. 
 
 ### Hazard Ratio based PTS
 
@@ -795,7 +880,7 @@ We can also calculate the PTS in an analogous way using the hazard ratio estimat
 
 hr_pval_fun <- function(df) {
     cox_mod <- survival::coxph(
-        Surv(os_time, os_event) ~ arm,
+        Surv(os_time, os_event) ~ arm + ecog + age + race + sex,
         data = df
     )
     summary(cox_mod)$coefficients[1, 5]
@@ -807,7 +892,7 @@ pts_hr <- mean(hr_pvals < 0.05)
 pts_hr
 ```
 
-So this PTS estimate is in line with the above log-rank PTS estimate.
+In this PTS estimate we can adjust for the covariates. We see that the result of `r round(pts_hr * 100, 1)`% is in line with the frequentist based PTS estimate for the HR which we calculated earlier.
 
 ### Plot Kaplan-Meier curves predictions
 
@@ -843,7 +928,7 @@ km_curves <- lapply(os_data_samples, function(df) {
 km_control_samples <- sapply(km_curves, function(x) x$control)
 km_treatment_samples <- sapply(km_curves, function(x) x$treatment)
 
-survfit_ia <- survival::survfit(Surv(os_time, os_event) ~ arm, data = os_data)
+survfit_ia <- survival::survfit(Surv(os_time, os_event) ~ arm, data = os_data_augmented)
 
 plot(survfit_ia, col = c(1, 2), xlim = c(0, max(time_grid)))
 
@@ -872,5 +957,7 @@ polygon(
     col = adjustcolor(2, alpha.f = 0.2),
     border = NA
 )
-
 ```
+
+We can see that we assume a very long follow up of the data here.
+Obviously we could cut the data sets at a certain number of events or a specific time point easily.
