@@ -707,5 +707,7 @@ hist(test$uniform_samples)
 
 So this function is very fast, and in this case we have less than 1% of the samples where we did not have a long enough time grid, which seems sufficient for our purposes.
 
+### Plot Kaplan-Meier curves for each sampled OS data set
+
 ### Calculate log rank statistic for each sampled OS data set
 
