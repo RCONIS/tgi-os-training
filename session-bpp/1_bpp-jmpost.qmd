@@ -695,19 +695,182 @@ censoring_times <- pt_to_sample$os_time[match(
 )]
 length(censoring_times)
 
-test <- sample_conditional_survival_times(
+cond_surv_time_samples <- sample_conditional_survival_times(
     time_grid = time_grid,
     surv_values = surv_values_samples,
     censoring_times = censoring_times
 )
-mean(test$beyond_max_time)
-summary(test$t_results)
-hist(test$uniform_samples)
+mean(cond_surv_time_samples$beyond_max_time)
+summary(cond_surv_time_samples$t_results)
+hist(cond_surv_time_samples$uniform_samples)
+
+os_cond_samples <- matrix(
+    cond_surv_time_samples$t_results,
+    nrow = ITER,
+    ncol = length(pt_to_sample_ids),
+    dimnames = list(seq_len(ITER), head(qs_groups, length(pt_to_sample_ids)))
+)
 ```
 
 So this function is very fast, and in this case we have less than 1% of the samples where we did not have a long enough time grid, which seems sufficient for our purposes.
 
-### Plot Kaplan-Meier curves for each sampled OS data set
+### Generating OS data set samples
+
+Now that we have the OS events for the patients who are still being followed up, we can generate the complete OS data set samples for each MCMC sample.
+
+```{r}
+#| label: generate_os_data_samples
+
+# Where do we need to replace the OS times?
+os_rows_to_replace <- match(
+    pt_to_sample_ids,
+    os_data$id
+)
+
+# From which column do we take the sampled OS times?
+os_cond_samples_cols <- match(
+    pt_to_sample_ids,
+    colnames(os_cond_samples)
+)
+
+os_data_samples <- lapply(1:ITER, function(i) {
+    # Create a copy of the original OS data
+    os_data_sample <- os_data[, c("id", "arm", "os_time", "os_event")]
+
+    # Add the sampled OS times for the patients who are still being followed up.
+    os_data_sample$os_time[os_rows_to_replace] <- os_cond_samples[
+        i,
+        os_cond_samples_cols
+    ]
+
+    # Set the OS event to TRUE for those patients, because we assume they have an event now.
+    os_data_sample$os_event[os_rows_to_replace] <- TRUE
+
+    os_data_sample
+})
+```
 
 ### Calculate log rank statistic for each sampled OS data set
 
+Now it is easy to calculate the log-rank test statistic for each sampled OS data set.
+
+```{r}
+#| label: calculate_log_rank_statistic
+
+log_rank_stats_fun <- function(df) {
+    surv_diff <- survival::survdiff(
+        Surv(os_time, os_event) ~ arm,
+        data = df
+    )
+    surv_diff$chisq
+}
+
+log_rank_stats <- sapply(os_data_samples, log_rank_stats_fun)
+hist(log_rank_stats)
+
+log_rank_at_ia <- log_rank_stats_fun(os_data)
+log_rank_at_ia
+abline(v = log_rank_at_ia, col = "red", lwd = 2)
+```
+
+And using the critical value of the log-rank test statistic for a significance level of 0.05, we can calculate the PTS:
+
+```{r}
+#| label: calculate_pts_log_rank
+
+critical_value <- qchisq(0.95, df = 1)
+abline(v = critical_value, col = "blue", lwd = 2)
+pts_log_rank <- mean(log_rank_stats > critical_value)
+pts_log_rank
+```
+
+So we see that this PTS with `r round(pts_log_rank * 100, 1)`% is much lower than the previous PTS estimates. Given that the log-rank test statistic at interim is only `r round(log_rank_at_ia, 2)`, and the critical value is `r round(critical_value, 2)`, it is not surprising that the PTS is low.
+
+### Hazard Ratio based PTS
+
+We can also calculate the PTS in an analogous way using the hazard ratio estimates:
+
+```{r}
+#| label: calculate_pts_hr
+
+hr_pval_fun <- function(df) {
+    cox_mod <- survival::coxph(
+        Surv(os_time, os_event) ~ arm,
+        data = df
+    )
+    summary(cox_mod)$coefficients[1, 5]
+}
+
+hr_pvals <- sapply(os_data_samples, hr_pval_fun)
+
+pts_hr <- mean(hr_pvals < 0.05)
+pts_hr
+```
+
+So this PTS estimate is in line with the above log-rank PTS estimate.
+
+### Plot Kaplan-Meier curves predictions
+
+Similarly we can extract the Kaplan-Meier curves for each sampled OS data set and plot them:
+
+```{r}
+#| label: plot_kaplan_meier_curves
+
+km_curves <- lapply(os_data_samples, function(df) {
+    survfit_obj <- survival::survfit(Surv(os_time, os_event) ~ arm, data = df)
+    times <- survfit_obj$time
+    surv_probs <- survfit_obj$surv
+    strata <- survfit_obj$strata
+    n_control <- strata[1]
+    n_treatment <- strata[2]
+
+    control_fun <- stepfun(
+        times[1:n_control],
+        c(1, surv_probs[1:n_control]),
+        right = TRUE
+    )
+    treatment_fun <- stepfun(
+        times[(n_control + 1):length(times)],
+        c(1, surv_probs[(n_control + 1):length(surv_probs)]),
+        right = TRUE
+    )
+    control_vals <- control_fun(time_grid)
+    treatment_vals <- treatment_fun(time_grid)
+
+    list(control = control_vals, treatment = treatment_vals)
+})
+
+km_control_samples <- sapply(km_curves, function(x) x$control)
+km_treatment_samples <- sapply(km_curves, function(x) x$treatment)
+
+survfit_ia <- survival::survfit(Surv(os_time, os_event) ~ arm, data = os_data)
+
+plot(survfit_ia, col = c(1, 2), xlim = c(0, max(time_grid)))
+
+# Add the mean KM curves for each arm.
+lines(time_grid, rowMeans(km_control_samples), col = 1)
+lines(time_grid, rowMeans(km_treatment_samples), col = 2)
+
+# Add pointwise confidence intervals as shaded areas.
+km_control_ci <- apply(km_control_samples, 1, quantile, probs = c(0.025, 0.975))
+km_treatment_ci <- apply(
+    km_treatment_samples,
+    1,
+    quantile,
+    probs = c(0.025, 0.975)
+)
+
+polygon(
+    c(time_grid, rev(time_grid)),
+    c(km_control_ci[1, ], rev(km_control_ci[2, ])),
+    col = adjustcolor(1, alpha.f = 0.2),
+    border = NA
+)
+polygon(
+    c(time_grid, rev(time_grid)),
+    c(km_treatment_ci[1, ], rev(km_treatment_ci[2, ])),
+    col = adjustcolor(2, alpha.f = 0.2),
+    border = NA
+)
+
+```
