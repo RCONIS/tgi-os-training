@@ -30,7 +30,7 @@ knitr::purl(
     here("session-bpp/_setup.qmd"),
     output = here("session-bpp/_setup.R")
 )
-source(here("session-jm/_setup.R"))
+source(here("session-bpp/_setup.R"))
 
 knitr::purl(
     here("session-bpp/_load_data.qmd"),
@@ -506,7 +506,7 @@ First we need to refit the joint model to this augmented data set. That is the e
 We notice that here we also need to add at least some random baseline samples to the longitudinal data set, otherwise it does not work.
 
 ```{r}
-#| label: fit_joint_model
+#| label: refit_joint_model_augmented
 
 subj_aug_df <- os_data_augmented |>
     mutate(study = "OAK") |>
@@ -581,16 +581,24 @@ So for this patient `r patient_id`, we can extract the individual survival distr
 
 ```{r}
 #| label: extract_individual_survival_samples
+#| cache.lazy: false
 
 length_time_grid <- 100
 time_grid_end <- round(max(os_data_augmented$os_time) + 10, 1)
 time_grid <- seq(0, time_grid_end, length = length_time_grid)
 
-os_surv_samples <- SurvivalQuantities(
-    object = joint_aug_results,
-    grid = GridFixed(times = time_grid),
-    type = "surv"
-)
+save_file <- here("session-bpp/jm2_surv_samples.rds")
+if (file.exists(save_file)) {
+    os_surv_samples <- readRDS(save_file)
+} else {
+    os_surv_samples <- SurvivalQuantities(
+        object = joint_aug_results,
+        grid = GridFixed(times = time_grid),
+        type = "surv"
+    )
+    saveRDS(os_surv_samples, file = save_file)
+}
+
 os_surv_samples_df <- as.data.frame(os_surv_samples)
 os_surv_samples_patient <- os_surv_samples_df |>
     filter(group == patient_id) |>
@@ -856,15 +864,14 @@ hist(log_rank_stats)
 log_rank_at_ia <- log_rank_stats_fun(os_data_augmented)
 log_rank_at_ia
 abline(v = log_rank_at_ia, col = "red", lwd = 2)
+critical_value <- qchisq(0.95, df = 1)
+abline(v = critical_value, col = "blue", lwd = 2)
 ```
 
 And using the critical value of the log-rank test statistic for a significance level of 0.05, we can calculate the PTS:
 
 ```{r}
 #| label: calculate_pts_log_rank
-
-critical_value <- qchisq(0.95, df = 1)
-abline(v = critical_value, col = "blue", lwd = 2)
 pts_log_rank <- mean(log_rank_stats > critical_value)
 pts_log_rank
 ```
