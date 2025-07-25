@@ -92,7 +92,7 @@ joint_mod <- JointModel(
 )
 
 options("jmpost.prior_shrinkage" = 0.99)
-initialValues(joint_mod, n_chains = CHAINS)
+# initialValues(joint_mod, n_chains = CHAINS)
 
 save_file <- here("session-bpp/jm1.rds")
 if (file.exists(save_file)) {
@@ -582,6 +582,7 @@ So for this patient `r patient_id`, we can extract the individual survival distr
 ```{r}
 #| label: extract_individual_survival_samples
 #| cache.lazy: false
+#| output: false
 
 length_time_grid <- 100
 time_grid_end <- round(max(os_data_augmented$os_time) + 10, 1)
