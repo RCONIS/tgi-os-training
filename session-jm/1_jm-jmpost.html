@@ -8,7 +8,7 @@
 
 <meta name="author" content="Daniel Sabanés Bové">
 <meta name="author" content="Francois Mercier">
-<meta name="dcterms.date" content="2025-06-25">
+<meta name="dcterms.date" content="2025-09-03">
 
 <title>1. TGI-OS joint model minimal workflow with jmpost – TGI-OS Training</title>
 <style>
@@ -77,7 +77,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-b53b70f17309c2b98b3b5caf2d04ebd4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-1f38d0cbc9bb7ecef659a5fbf73fd458.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -155,12 +155,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Session 3: TGI-OS</span></a>
+ <span class="menu-text">Session 4: PTS</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../session-pts/0_setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0. Setup and data preparation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../session-pts/1_pts-jmpost.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. Calculate Bayesian Predictive Power</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 3: TGI-OS</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../session-jm/0_setup.html" class="sidebar-item-text sidebar-link">
@@ -177,13 +200,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
  <span class="menu-text">Session 2: OS</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../session-os/0_setup.html" class="sidebar-item-text sidebar-link">
@@ -206,13 +229,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
  <span class="menu-text">Session 1: TGI</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../session-tgi/0_setup.html" class="sidebar-item-text sidebar-link">
@@ -292,7 +315,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2025-06-25</p>
+      <p class="date">2025-09-03</p>
     </div>
   </div>
   
@@ -405,178 +428,178 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-stdout">
 <pre><code>[[1]]
 [[1]]$lm_sf_mu_bsld
-[1] 4.150467
+[1] 4.202474
 
 [[1]]$lm_sf_mu_ks
-[1] -0.6527837
+[1] -0.6606589
 
 [[1]]$lm_sf_mu_kg
-[1] 0.0296721
+[1] 0.0453431
 
 [[1]]$lm_sf_omega_bsld
-[1] 0.001132921
+[1] 0.001327787
 
 [[1]]$lm_sf_omega_ks
-[1] 0.01131233
+[1] 0.02869335
 
 [[1]]$lm_sf_omega_kg
-[1] 0.03935367
+[1] 0.04173119
 
 [[1]]$lm_sf_sigma
-[1] 0.006231285
+[1] 0.04420075
 
 [[1]]$lm_sf_eta_tilde_bsld
-[1] -0.01215586
+[1] -0.004353312
 
 [[1]]$lm_sf_eta_tilde_ks
-[1] -0.001196457
+[1] 0.01156377
 
 [[1]]$lm_sf_eta_tilde_kg
-[1] -8.78613e-05
+[1] 0.002906755
 
 [[1]]$sm_weibull_ph_lambda
-[1] 0.6964901
+[1] 0.6931962
 
 [[1]]$sm_weibull_ph_gamma
-[1] 1.494504
+[1] 1.51731
 
 [[1]]$beta_os_cov
-[1] -0.1833369
+[1] -0.07760773
 
 [[1]]$link_growth
-[1] 0.03838646
+[1] 0.09670577
 
 
 [[2]]
 [[2]]$lm_sf_mu_bsld
-[1] 4.176525
+[1] 4.173091
 
 [[2]]$lm_sf_mu_ks
-[1] -0.6589843
+[1] -0.6522061
 
 [[2]]$lm_sf_mu_kg
-[1] 0.04359252
+[1] 0.03139515
 
 [[2]]$lm_sf_omega_bsld
-[1] 0.006504328
+[1] 0.02581214
 
 [[2]]$lm_sf_omega_ks
-[1] 0.01123342
+[1] 0.01422254
 
 [[2]]$lm_sf_omega_kg
-[1] 0.002242244
+[1] 0.04334446
 
 [[2]]$lm_sf_sigma
-[1] 0.02596012
+[1] 0.003378404
 
 [[2]]$lm_sf_eta_tilde_bsld
-[1] 0.003312313
+[1] -0.001266951
 
 [[2]]$lm_sf_eta_tilde_ks
-[1] 0.03004617
+[1] 0.00406684
 
 [[2]]$lm_sf_eta_tilde_kg
-[1] 0.0009214603
+[1] 0.009969562
 
 [[2]]$sm_weibull_ph_lambda
-[1] 0.6934962
+[1] 0.6974883
 
 [[2]]$sm_weibull_ph_gamma
-[1] 1.495563
+[1] 1.487043
 
 [[2]]$beta_os_cov
-[1] -0.08520562
+[1] 0.1322214
 
 [[2]]$link_growth
-[1] 0.2842043
+[1] 0.264876
 
 
 [[3]]
 [[3]]$lm_sf_mu_bsld
-[1] 4.179447
+[1] 4.1688
 
 [[3]]$lm_sf_mu_ks
-[1] -0.6655289
+[1] -0.6459955
 
 [[3]]$lm_sf_mu_kg
-[1] 0.05239981
+[1] 0.03150861
 
 [[3]]$lm_sf_omega_bsld
-[1] 0.0142334
+[1] 0.02156724
 
 [[3]]$lm_sf_omega_ks
-[1] 0.06144598
+[1] 0.0600014
 
 [[3]]$lm_sf_omega_kg
-[1] 0.009828384
+[1] 0.03741417
 
 [[3]]$lm_sf_sigma
-[1] 0.03141703
+[1] 0.03981776
 
 [[3]]$lm_sf_eta_tilde_bsld
-[1] 0.007005259
+[1] 0.008312551
 
 [[3]]$lm_sf_eta_tilde_ks
-[1] 0.01321017
+[1] 0.007495872
 
 [[3]]$lm_sf_eta_tilde_kg
-[1] 0.01108995
+[1] -5.699076e-05
 
 [[3]]$sm_weibull_ph_lambda
-[1] 0.701657
+[1] 0.6969565
 
 [[3]]$sm_weibull_ph_gamma
-[1] 1.485266
+[1] 1.488494
 
 [[3]]$beta_os_cov
-[1] -0.3623778
+[1] 0.153909
 
 [[3]]$link_growth
-[1] -0.04616349
+[1] -0.03822394
 
 
 [[4]]
 [[4]]$lm_sf_mu_bsld
-[1] 4.182144
+[1] 4.168993
 
 [[4]]$lm_sf_mu_ks
-[1] -0.647393
+[1] -0.6638499
 
 [[4]]$lm_sf_mu_kg
-[1] 0.04806538
+[1] 0.04185856
 
 [[4]]$lm_sf_omega_bsld
-[1] 0.0006164391
+[1] 0.001849541
 
 [[4]]$lm_sf_omega_ks
-[1] 0.001151999
+[1] 0.03596689
 
 [[4]]$lm_sf_omega_kg
-[1] 0.02038285
+[1] 0.02667365
 
 [[4]]$lm_sf_sigma
-[1] 0.02773427
+[1] 0.03015965
 
 [[4]]$lm_sf_eta_tilde_bsld
-[1] 0.003735449
+[1] -0.003731329
 
 [[4]]$lm_sf_eta_tilde_ks
-[1] -0.008627102
+[1] 0.007046453
 
 [[4]]$lm_sf_eta_tilde_kg
-[1] -0.008762467
+[1] 0.01207478
 
 [[4]]$sm_weibull_ph_lambda
-[1] 0.7051286
+[1] 0.7038095
 
 [[4]]$sm_weibull_ph_gamma
-[1] 1.503295
+[1] 1.485957
 
 [[4]]$beta_os_cov
-[1] -0.1125564
+[1] 0.1929803
 
 [[4]]$link_growth
-[1] -0.1922085</code></pre>
+[1] -0.1017308</code></pre>
 </div>
 </div>
 <p>If we don’t do this, then it is very likely that some chains will diverge because of very unrealistic initial values for <code>beta</code> and/or the link coefficient.</p>
@@ -682,7 +705,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  9 lm_sf_omega…  1.36     1.33    0.252   0.247    0.989   1.81   1.00      566.
 10 lm_sf_omega…  0.684    0.677   0.0812  0.0744   0.561   0.831  1.00      781.
 11 lm_sf_omega…  0.956    0.952   0.0953  0.0973   0.810   1.12   1.01      585.
-12 beta_os_cov…  0.842    0.829   0.234   0.229    0.464   1.24   1.00      812.
+12 beta_os_cov…  0.842    0.829   0.234   0.229    0.464   1.24   1.000     812.
 13 beta_os_cov…  0.00316  0.00296 0.00981 0.00996 -0.0128  0.0197 0.998     975.
 14 beta_os_cov…  0.658    0.656   0.431   0.428   -0.0678  1.36   1.00      901.
 15 beta_os_cov… -0.00443 -0.00251 0.237   0.247   -0.371   0.371  1.00      760.
@@ -1229,7 +1252,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  1 link_dsld    0.00695  0.00669 0.00240 0.00212  0.00350  0.0111 1.00      932.
  2 lm_sf_mu_b…  3.76     3.76    0.0379  0.0360   3.69     3.82   1.02      329.
  3 lm_sf_mu_k… -0.0327  -0.00146 0.244   0.234   -0.488    0.319  1.00      638.
- 4 lm_sf_mu_k… -1.31    -1.28    0.361   0.349   -1.90    -0.744  1.00      648.
+ 4 lm_sf_mu_k… -1.31    -1.28    0.361   0.349   -1.90    -0.744  1.000     648.
  5 lm_sf_mu_k… -0.591   -0.581   0.142   0.138   -0.834   -0.385  1.00      633.
  6 lm_sf_mu_k… -1.01    -1.01    0.143   0.142   -1.24    -0.772  1.00      619.
  7 lm_sf_sigma  0.130    0.130   0.00365 0.00360  0.125    0.136  1.00      731.
