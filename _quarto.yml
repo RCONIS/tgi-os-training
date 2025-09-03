@@ -6,8 +6,8 @@ website:
   sidebar:
     contents:
       - index.qmd
-      - section: "Session 4: Bayesian Predictive Power"
-        contents: session-bpp/*
+      - section: "Session 4: PTS"
+        contents: session-pts/*
       - section: "Session 3: TGI-OS"
         contents: session-jm/*
       - section: "Session 2: OS"

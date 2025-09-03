@@ -42,7 +42,9 @@ jobs:
             "rstan",
             "sn",
             "fuzzyjoin",
-            "glue"
+            "glue",
+            "rpact",
+            "Rcpp"
           ), repos = "https://cloud.r-project.org")
         shell: Rscript {0}
 

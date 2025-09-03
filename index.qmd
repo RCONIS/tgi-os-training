@@ -9,8 +9,8 @@ format:
     toc: true
     toc_float: true
 listing:
-  - id: session-bpp
-    contents: session-bpp
+  - id: session-pts
+    contents: session-pts
     type: table
     sort: title
   - id: session-jm
@@ -29,9 +29,9 @@ execute:
   cache: true
 ---
 
-## Session 4: Bayesian Predictive Power
+## Session 4: PTS
 
-::: {#session-bpp}
+::: {#session-pts}
 :::
 
 ## Session 3: TGI-OS

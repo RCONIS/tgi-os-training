@@ -27,16 +27,16 @@ library(here)
 options(knitr.duplicate.label = "allow")
 
 knitr::purl(
-    here("session-bpp/_setup.qmd"),
-    output = here("session-bpp/_setup.R")
+    here("session-pts/_setup.qmd"),
+    output = here("session-pts/_setup.R")
 )
-source(here("session-bpp/_setup.R"))
+source(here("session-pts/_setup.R"))
 
 knitr::purl(
-    here("session-bpp/_load_data.qmd"),
-    output = here("session-bpp/_load_data.R")
+    here("session-pts/_load_data.qmd"),
+    output = here("session-pts/_load_data.R")
 )
-source(here("session-bpp/_load_data.R"))
+source(here("session-pts/_load_data.R"))
 ```
 
 ## Fit our joint TGI-OS model
@@ -94,7 +94,7 @@ joint_mod <- JointModel(
 options("jmpost.prior_shrinkage" = 0.99)
 # initialValues(joint_mod, n_chains = CHAINS)
 
-save_file <- here("session-bpp/jm1.rds")
+save_file <- here("session-pts/jm1.rds")
 if (file.exists(save_file)) {
     joint_results <- readRDS(save_file)
 } else {
@@ -120,7 +120,7 @@ We use the new `jmpost` function called `populationHR()` for this:
 
 ```{r}
 #| label: calculate_marginal_hr
-save_file <- here("session-bpp/jm1hr.rds")
+save_file <- here("session-pts/jm1hr.rds")
 if (file.exists(save_file)) {
     pop_hr <- readRDS(save_file)
 } else {
@@ -416,7 +416,7 @@ OK so that gives the same result as before, which is good. Now we can plug in th
 
 ```{r}
 #| label: calculate_pts_freq_hr2
-save_file <- here("session-bpp/jm1hr2.rds")
+save_file <- here("session-pts/jm1hr2.rds")
 if (file.exists(save_file)) {
     pts_freq_hr2_samples <- readRDS(save_file)
 } else {
@@ -543,7 +543,7 @@ joint_aug_data <- DataJoint(
     survival = surv_aug_data
 )
 
-save_file <- here("session-bpp/jm2.rds")
+save_file <- here("session-pts/jm2.rds")
 if (file.exists(save_file)) {
     joint_aug_results <- readRDS(save_file)
 } else {
@@ -588,7 +588,7 @@ length_time_grid <- 100
 time_grid_end <- round(max(os_data_augmented$os_time) + 10, 1)
 time_grid <- seq(0, time_grid_end, length = length_time_grid)
 
-save_file <- here("session-bpp/jm2_surv_samples.rds")
+save_file <- here("session-pts/jm2_surv_samples.rds")
 if (file.exists(save_file)) {
     os_surv_samples <- readRDS(save_file)
 } else {
@@ -723,7 +723,7 @@ For now, let's create a simpler `Rcpp` function that handles a single patient's 
 library(Rcpp)
 
 # Use Rcpp function for single patient, single sample.
-sourceCpp(here("session-bpp/conditional_sampling.cpp"))
+sourceCpp(here("session-pts/conditional_sampling.cpp"))
 
 # Test the function with a simple example.
 set.seed(3453)
