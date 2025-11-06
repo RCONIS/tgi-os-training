@@ -256,9 +256,11 @@ historical_ids <- os_data |>
 current_ids <- setdiff(os_data$id, historical_ids)
 
 historical_os_data <- os_data |>
-    filter(id %in% historical_ids)
+    filter(id %in% historical_ids) |>
+    mutate(study = "historical")
 current_os_data <- os_data |>
-    filter(id %in% current_ids)
+    filter(id %in% current_ids) |>
+    mutate(study = "current")
 
 historical_tumor_data <- tumor_data |>
     filter(id %in% historical_ids)
