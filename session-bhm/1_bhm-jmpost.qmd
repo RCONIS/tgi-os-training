@@ -1,0 +1,40 @@
+---
+title: "5. Bayesian Hierarchical Joint Modeling for Historical Data Borrowing"
+author:
+  - Daniel Sabanés Bové
+  - Francois Mercier
+date: last-modified
+editor_options: 
+  chunk_output_type: inline
+format:
+  html:
+    code-fold: show
+    html-math-method: mathjax
+cache: true
+---
+
+The purpose of this document is to show a minimal workflow for Bayesian hierarchical joint modeling for historical data borrowing using the `jmpost` package.
+
+## Setup and load data
+
+Here we execute the R code from the setup and data preparation chapter, see the [full code here](0_setup.qmd).
+
+```{r}
+#| label: setup_and_load_data
+#| echo: false
+#| output: false
+library(here)
+options(knitr.duplicate.label = "allow")
+
+knitr::purl(
+    here("session-bhm/_setup.qmd"),
+    output = here("session-bhm/_setup.R")
+)
+source(here("session-bhm/_setup.R"))
+
+knitr::purl(
+    here("session-bhm/_load_data.qmd"),
+    output = here("session-bhm/_load_data.R")
+)
+source(here("session-bhm/_load_data.R"))
+```

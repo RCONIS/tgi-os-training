@@ -9,6 +9,10 @@ format:
     toc: true
     toc_float: true
 listing:
+  - id: session-bhm
+    contents: session-bhm
+    type: table
+    sort: title
   - id: session-pts
     contents: session-pts
     type: table
@@ -28,6 +32,11 @@ listing:
 execute:
   cache: true
 ---
+
+## Session 5: BHM
+
+::: {#session-bhm}
+:::
 
 ## Session 4: PTS
 
