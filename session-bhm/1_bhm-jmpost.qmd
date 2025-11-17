@@ -387,7 +387,7 @@ length_time_grid <- 100
 time_grid_end <- round(max(pooled_os_data$os_time) + 10, 1)
 time_grid <- seq(0, time_grid_end, length = length_time_grid)
 
-save_file <- here("session-pts/bhm1_surv_samples.rds")
+save_file <- here("session-bhm/bhm1_surv_samples.rds")
 if (file.exists(save_file)) {
     os_surv_samples <- readRDS(save_file)
 } else {
