@@ -10,7 +10,7 @@ format:
   html:
     code-fold: show
     html-math-method: mathjax
-cache: true
+cache: false
 ---
 
 The purpose of this document is to show a minimal workflow for fitting a Weibull OS model using the `jmpost` package.
