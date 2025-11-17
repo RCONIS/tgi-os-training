@@ -6,6 +6,8 @@ website:
   sidebar:
     contents:
       - index.qmd
+      - section: "Session 5: BHM"
+        contents: session-bhm/*
       - section: "Session 4: PTS"
         contents: session-pts/*
       - section: "Session 3: TGI-OS"

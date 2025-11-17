@@ -15,3 +15,5 @@ session-tgi/cb2.RData
 backup/
 *.R
 *.html
+
+**/*.quarto_ipynb
