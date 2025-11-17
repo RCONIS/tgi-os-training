@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.32">
+<meta name="generator" content="quarto-1.8.25">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -69,14 +69,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-1f38d0cbc9bb7ecef659a5fbf73fd458.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-fe572088fed4c8b78605e513f5ffbe45.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -105,6 +106,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 <script>
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-session-bhm .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-date','listing-title','listing-author',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-title-sort'] }],
+      
+      searchColumns: ["listing-date","listing-title","listing-author"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-session-bhm'] = new List('listing-session-bhm', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  
 
   window.document.addEventListener("DOMContentLoaded", function (_event) {
     const listingTargetEl = window.document.querySelector('#listing-session-pts .list');
@@ -232,7 +261,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -273,12 +302,11 @@ window.Quarto = {
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
-    <div class="sidebar-title mb-0 py-0">
-      <a href="./">TGI-OS Training</a> 
-        <div class="sidebar-tools-main">
+      <a href="./index.html" class="sidebar-logo-link">
+      </a>
+      <div class="sidebar-tools-main">
     <a href="https://rconis.github.io/tgi-os-training/" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
 </div>
-    </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
@@ -296,12 +324,35 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Session 4: PTS</span></a>
+ <span class="menu-text">Session 5: BHM</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./session-bhm/0_setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">0. Setup and data preparation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./session-bhm/1_bhm-jmpost.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5. Bayesian Hierarchical Joint Modeling for Historical Data Borrowing</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 4: PTS</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./session-pts/0_setup.html" class="sidebar-item-text sidebar-link">
@@ -318,13 +369,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
  <span class="menu-text">Session 3: TGI-OS</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./session-jm/0_setup.html" class="sidebar-item-text sidebar-link">
@@ -341,13 +392,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
  <span class="menu-text">Session 2: OS</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./session-os/0_setup.html" class="sidebar-item-text sidebar-link">
@@ -370,13 +421,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
  <span class="menu-text">Session 1: TGI</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./session-tgi/0_setup.html" class="sidebar-item-text sidebar-link">
@@ -419,7 +470,8 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#session-4-pts" id="toc-session-4-pts" class="nav-link active" data-scroll-target="#session-4-pts">Session 4: PTS</a></li>
+  <li><a href="#session-5-bhm" id="toc-session-5-bhm" class="nav-link active" data-scroll-target="#session-5-bhm">Session 5: BHM</a></li>
+  <li><a href="#session-4-pts" id="toc-session-4-pts" class="nav-link" data-scroll-target="#session-4-pts">Session 4: PTS</a></li>
   <li><a href="#session-3-tgi-os" id="toc-session-3-tgi-os" class="nav-link" data-scroll-target="#session-3-tgi-os">Session 3: TGI-OS</a></li>
   <li><a href="#session-2-os" id="toc-session-2-os" class="nav-link" data-scroll-target="#session-2-os">Session 2: OS</a></li>
   <li><a href="#session-1-tgi" id="toc-session-1-tgi" class="nav-link" data-scroll-target="#session-1-tgi">Session 1: TGI</a></li>
@@ -450,6 +502,85 @@ window.Quarto = {
 </header>
 
 
+<section id="session-5-bhm" class="level2">
+<h2 class="anchored" data-anchor-id="session-5-bhm">Session 5: BHM</h2>
+<div id="listing-session-bhm" class="quarto-listing quarto-listing-container-table">
+<div class="listing-actions-group">
+   <div class="input-group input-group-sm quarto-listing-sort">
+    <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
+    <select id="listing-session-bhm-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-session-bhm'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
+      <option value="" disabled="" selected="" hidden="">Order By</option>
+      <option value="index" data-direction="asc">Default</option>
+      <option value="listing-date-sort" data-direction="asc">
+        Date - Oldest
+      </option>
+      <option value="listing-date-sort" data-direction="desc">
+        Date - Newest
+      </option>
+      <option value="listing-title-sort" data-direction="asc">
+        Title
+      </option>
+      <option value="listing-author" data-direction="asc">
+        Author
+      </option>
+    </select>
+  </div>
+    <div class="input-group input-group-sm quarto-listing-filter">
+      <span class="input-group-text"><i class="bi bi-search"></i></span>
+      <input type="text" class="search form-control" placeholder="Filter">
+    </div>
+</div>
+<table class="quarto-listing-table table">
+<thead>
+<tr>
+
+<th>
+<a class="sort" data-sort="listing-date-sort" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Date</a>
+</th>
+
+<th>
+<a class="sort" data-sort="listing-title-sort" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Title</a>
+</th>
+
+<th>
+<a class="sort" data-sort="listing-author" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Author</a>
+</th>
+
+</tr>
+</thead>
+<tbody class="list">
+
+<tr data-index="0" data-listing-date-sort="1763387208000" data-listing-file-modified-sort="1763387208743" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="45" data-listing-title-sort="0. Setup and data preparation" data-listing-filename-sort="0_setup.qmd">
+<td>
+<span class="listing-date">2025-11-17</span>
+</td>
+<td>
+<a href="./session-bhm/0_setup.html" class="title listing-title">0. Setup and data preparation</a>
+</td>
+<td>
+<span class="listing-author">Francois Mercier, Daniel Sabanés Bové</span>
+</td>
+
+</tr>
+
+<tr data-index="1" data-listing-date-sort="1763387208000" data-listing-file-modified-sort="1763387208743" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="11" data-listing-word-count-sort="2169" data-listing-title-sort="5. Bayesian Hierarchical Joint Modeling for Historical Data Borrowing" data-listing-filename-sort="1_bhm-jmpost.qmd">
+<td>
+<span class="listing-date">2025-11-17</span>
+</td>
+<td>
+<a href="./session-bhm/1_bhm-jmpost.html" class="title listing-title">5. Bayesian Hierarchical Joint Modeling for Historical Data Borrowing</a>
+</td>
+<td>
+<span class="listing-author">Daniel Sabanés Bové, Francois Mercier</span>
+</td>
+
+</tr>
+
+</tbody>
+</table>
+<div class="listing-no-matching d-none">No matching items</div>
+</div>
+</section>
 <section id="session-4-pts" class="level2">
 <h2 class="anchored" data-anchor-id="session-4-pts">Session 4: PTS</h2>
 <div id="listing-session-pts" class="quarto-listing quarto-listing-container-table">
@@ -498,9 +629,9 @@ window.Quarto = {
 </thead>
 <tbody class="list">
 
-<tr data-index="0" data-listing-date-sort="1756877394000" data-listing-file-modified-sort="1756877394753" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="21" data-listing-title-sort="0. Setup and data preparation" data-listing-filename-sort="0_setup.qmd">
+<tr data-index="0" data-listing-date-sort="1763387209000" data-listing-file-modified-sort="1763387209306" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="21" data-listing-title-sort="0. Setup and data preparation" data-listing-filename-sort="0_setup.qmd">
 <td>
-<span class="listing-date">2025-09-03</span>
+<span class="listing-date">2025-11-17</span>
 </td>
 <td>
 <a href="./session-pts/0_setup.html" class="title listing-title">0. Setup and data preparation</a>
@@ -511,9 +642,9 @@ window.Quarto = {
 
 </tr>
 
-<tr data-index="1" data-listing-date-sort="1756877394000" data-listing-file-modified-sort="1756877394753" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="25" data-listing-word-count-sort="4950" data-listing-title-sort="1. Calculate Bayesian Predictive Power" data-listing-filename-sort="1_pts-jmpost.qmd">
+<tr data-index="1" data-listing-date-sort="1763387209000" data-listing-file-modified-sort="1763387209306" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="25" data-listing-word-count-sort="4950" data-listing-title-sort="1. Calculate Bayesian Predictive Power" data-listing-filename-sort="1_pts-jmpost.qmd">
 <td>
-<span class="listing-date">2025-09-03</span>
+<span class="listing-date">2025-11-17</span>
 </td>
 <td>
 <a href="./session-pts/1_pts-jmpost.html" class="title listing-title">1. Calculate Bayesian Predictive Power</a>
@@ -577,9 +708,9 @@ window.Quarto = {
 </thead>
 <tbody class="list">
 
-<tr data-index="0" data-listing-date-sort="1756877394000" data-listing-file-modified-sort="1756877394477" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="20" data-listing-title-sort="0. Setup and data preparation" data-listing-filename-sort="0_setup.qmd">
+<tr data-index="0" data-listing-date-sort="1763387209000" data-listing-file-modified-sort="1763387209123" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="20" data-listing-title-sort="0. Setup and data preparation" data-listing-filename-sort="0_setup.qmd">
 <td>
-<span class="listing-date">2025-09-03</span>
+<span class="listing-date">2025-11-17</span>
 </td>
 <td>
 <a href="./session-jm/0_setup.html" class="title listing-title">0. Setup and data preparation</a>
@@ -590,9 +721,9 @@ window.Quarto = {
 
 </tr>
 
-<tr data-index="1" data-listing-date-sort="1756877394000" data-listing-file-modified-sort="1756877394478" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="18" data-listing-word-count-sort="3443" data-listing-title-sort="1. TGI-OS joint model minimal workflow with `jmpost`" data-listing-filename-sort="1_jm-jmpost.qmd">
+<tr data-index="1" data-listing-date-sort="1763387209000" data-listing-file-modified-sort="1763387209123" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="18" data-listing-word-count-sort="3443" data-listing-title-sort="1. TGI-OS joint model minimal workflow with `jmpost`" data-listing-filename-sort="1_jm-jmpost.qmd">
 <td>
-<span class="listing-date">2025-09-03</span>
+<span class="listing-date">2025-11-17</span>
 </td>
 <td>
 <a href="./session-jm/1_jm-jmpost.html" class="title listing-title">1. TGI-OS joint model minimal workflow with <code>jmpost</code></a>
@@ -656,9 +787,9 @@ window.Quarto = {
 </thead>
 <tbody class="list">
 
-<tr data-index="0" data-listing-date-sort="1756877394000" data-listing-file-modified-sort="1756877394660" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="31" data-listing-title-sort="0. Setup and data preparation" data-listing-filename-sort="0_setup.qmd">
+<tr data-index="0" data-listing-date-sort="1763387209000" data-listing-file-modified-sort="1763387209241" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="31" data-listing-title-sort="0. Setup and data preparation" data-listing-filename-sort="0_setup.qmd">
 <td>
-<span class="listing-date">2025-09-03</span>
+<span class="listing-date">2025-11-17</span>
 </td>
 <td>
 <a href="./session-os/0_setup.html" class="title listing-title">0. Setup and data preparation</a>
@@ -669,9 +800,9 @@ window.Quarto = {
 
 </tr>
 
-<tr data-index="1" data-listing-date-sort="1756877394000" data-listing-file-modified-sort="1756877394660" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="20" data-listing-word-count-sort="3850" data-listing-title-sort="1. OS model minimal workflow with `jmpost`" data-listing-filename-sort="1_os_weibull_jmpost.qmd">
+<tr data-index="1" data-listing-date-sort="1763387209000" data-listing-file-modified-sort="1763387209241" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="20" data-listing-word-count-sort="3850" data-listing-title-sort="1. OS model minimal workflow with `jmpost`" data-listing-filename-sort="1_os_weibull_jmpost.qmd">
 <td>
-<span class="listing-date">2025-09-03</span>
+<span class="listing-date">2025-11-17</span>
 </td>
 <td>
 <a href="./session-os/1_os_weibull_jmpost.html" class="title listing-title">1. OS model minimal workflow with <code>jmpost</code></a>
@@ -682,9 +813,9 @@ window.Quarto = {
 
 </tr>
 
-<tr data-index="2" data-listing-date-sort="1756877394000" data-listing-file-modified-sort="1756877394660" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="11" data-listing-word-count-sort="2149" data-listing-title-sort="2. OS model minimal workflow with `brms`" data-listing-filename-sort="2_os_weibull_brms.qmd">
+<tr data-index="2" data-listing-date-sort="1763387209000" data-listing-file-modified-sort="1763387209241" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="11" data-listing-word-count-sort="2149" data-listing-title-sort="2. OS model minimal workflow with `brms`" data-listing-filename-sort="2_os_weibull_brms.qmd">
 <td>
-<span class="listing-date">2025-09-03</span>
+<span class="listing-date">2025-11-17</span>
 </td>
 <td>
 <a href="./session-os/2_os_weibull_brms.html" class="title listing-title">2. OS model minimal workflow with <code>brms</code></a>
@@ -748,9 +879,9 @@ window.Quarto = {
 </thead>
 <tbody class="list">
 
-<tr data-index="0" data-listing-date-sort="1756877394000" data-listing-file-modified-sort="1756877394958" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="696" data-listing-title-sort="0. Setup" data-listing-filename-sort="0_setup.qmd">
+<tr data-index="0" data-listing-date-sort="1763387209000" data-listing-file-modified-sort="1763387209468" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="696" data-listing-title-sort="0. Setup" data-listing-filename-sort="0_setup.qmd">
 <td>
-<span class="listing-date">2025-09-03</span>
+<span class="listing-date">2025-11-17</span>
 </td>
 <td>
 <a href="./session-tgi/0_setup.html" class="title listing-title">0. Setup</a>
@@ -761,9 +892,9 @@ window.Quarto = {
 
 </tr>
 
-<tr data-index="1" data-listing-date-sort="1756877394000" data-listing-file-modified-sort="1756877394959" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="20" data-listing-word-count-sort="3859" data-listing-title-sort="1. TGI model minimal workflow with `brms`" data-listing-filename-sort="1_tgi_sf_brms.qmd">
+<tr data-index="1" data-listing-date-sort="1763387209000" data-listing-file-modified-sort="1763387209468" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="20" data-listing-word-count-sort="3859" data-listing-title-sort="1. TGI model minimal workflow with `brms`" data-listing-filename-sort="1_tgi_sf_brms.qmd">
 <td>
-<span class="listing-date">2025-09-03</span>
+<span class="listing-date">2025-11-17</span>
 </td>
 <td>
 <a href="./session-tgi/1_tgi_sf_brms.html" class="title listing-title">1. TGI model minimal workflow with <code>brms</code></a>
@@ -774,9 +905,9 @@ window.Quarto = {
 
 </tr>
 
-<tr data-index="2" data-listing-date-sort="1756877394000" data-listing-file-modified-sort="1756877394959" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10" data-listing-word-count-sort="1905" data-listing-title-sort="2. TGI model minimal workflow with `jmpost`" data-listing-filename-sort="2_tgi_sf_jmpost.qmd">
+<tr data-index="2" data-listing-date-sort="1763387209000" data-listing-file-modified-sort="1763387209468" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10" data-listing-word-count-sort="1905" data-listing-title-sort="2. TGI model minimal workflow with `jmpost`" data-listing-filename-sort="2_tgi_sf_jmpost.qmd">
 <td>
-<span class="listing-date">2025-09-03</span>
+<span class="listing-date">2025-11-17</span>
 </td>
 <td>
 <a href="./session-tgi/2_tgi_sf_jmpost.html" class="title listing-title">2. TGI model minimal workflow with <code>jmpost</code></a>
@@ -787,9 +918,9 @@ window.Quarto = {
 
 </tr>
 
-<tr data-index="3" data-listing-date-sort="1756877394000" data-listing-file-modified-sort="1756877394959" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1077" data-listing-title-sort="3. Generalized Stein-Fojo model" data-listing-filename-sort="3_tgi_gsf_brms.qmd">
+<tr data-index="3" data-listing-date-sort="1763387209000" data-listing-file-modified-sort="1763387209468" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1077" data-listing-title-sort="3. Generalized Stein-Fojo model" data-listing-filename-sort="3_tgi_gsf_brms.qmd">
 <td>
-<span class="listing-date">2025-09-03</span>
+<span class="listing-date">2025-11-17</span>
 </td>
 <td>
 <a href="./session-tgi/3_tgi_gsf_brms.html" class="title listing-title">3. Generalized Stein-Fojo model</a>
@@ -800,9 +931,9 @@ window.Quarto = {
 
 </tr>
 
-<tr data-index="4" data-listing-date-sort="1756877394000" data-listing-file-modified-sort="1756877394959" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1199" data-listing-title-sort="4. Claret-Bruno model" data-listing-filename-sort="4_tgi_cb_brms.qmd">
+<tr data-index="4" data-listing-date-sort="1763387209000" data-listing-file-modified-sort="1763387209468" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1199" data-listing-title-sort="4. Claret-Bruno model" data-listing-filename-sort="4_tgi_cb_brms.qmd">
 <td>
-<span class="listing-date">2025-09-03</span>
+<span class="listing-date">2025-11-17</span>
 </td>
 <td>
 <a href="./session-tgi/4_tgi_cb_brms.html" class="title listing-title">4. Claret-Bruno model</a>
@@ -884,13 +1015,14 @@ window.Quarto = {
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy
@@ -1283,7 +1415,7 @@ window.Quarto = {
     }
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Contents"</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
@@ -1294,54 +1426,63 @@ window.Quarto = {
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc_float: true</span></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="an">listing:</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">  - id: session-pts</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">    contents: session-pts</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">  - id: session-bhm</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">    contents: session-bhm</span></span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">    type: table</span></span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">    sort: title</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">  - id: session-jm</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">    contents: session-jm</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">  - id: session-pts</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">    contents: session-pts</span></span>
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co">    type: table</span></span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co">    sort: title</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co">  - id: session-os</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co">    contents: session-os</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co">  - id: session-jm</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co">    contents: session-jm</span></span>
 <span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co">    type: table</span></span>
 <span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co">    sort: title</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co">  - id: session-tgi</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co">    contents: session-tgi</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co">  - id: session-os</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co">    contents: session-os</span></span>
 <span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co">    type: table</span></span>
 <span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co">    sort: title</span></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co">  cache: true</span></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="fu">## Session 4: PTS</span></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>::: {#session-pts}</span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="fu">## Session 3: TGI-OS</span></span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>::: {#session-jm}</span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="fu">## Session 2: OS</span></span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>::: {#session-os}</span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="fu">## Session 1: TGI</span></span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>::: {#session-tgi}</span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="fu">## License</span></span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>The training material is licensed under a <span class="co">[</span><span class="ot">Creative Commons Attribution 4.0 International License</span><span class="co">](https://creativecommons.org/licenses/by/4.0/)</span>.</span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>If you wish to reuse any part of this material, please ensure proper attribution is given to the original authors as specified by the <span class="co">[</span><span class="ot">Creative Commons Attribution 4.0 International License</span><span class="co">](https://creativecommons.org/licenses/by/4.0/)</span>.</span>
-<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="fu">## Copyright</span></span>
-<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="dv">&amp;copy;</span> 2025 Genentech Inc. All rights reserved.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co">  - id: session-tgi</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co">    contents: session-tgi</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="co">    type: table</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co">    sort: title</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="co">  cache: true</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="fu">## Session 5: BHM</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>::: {#session-bhm}</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="fu">## Session 4: PTS</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>::: {#session-pts}</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="fu">## Session 3: TGI-OS</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>::: {#session-jm}</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="fu">## Session 2: OS</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>::: {#session-os}</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="fu">## Session 1: TGI</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>::: {#session-tgi}</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="fu">## License</span></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>The training material is licensed under a <span class="co">[</span><span class="ot">Creative Commons Attribution 4.0 International License</span><span class="co">](https://creativecommons.org/licenses/by/4.0/)</span>.</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>If you wish to reuse any part of this material, please ensure proper attribution is given to the original authors as specified by the <span class="co">[</span><span class="ot">Creative Commons Attribution 4.0 International License</span><span class="co">](https://creativecommons.org/licenses/by/4.0/)</span>.</span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="fu">## Copyright</span></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a><span class="dv">&amp;copy;</span> 2025 Genentech Inc. All rights reserved.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

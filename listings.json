@@ -2,6 +2,8 @@
   {
     "listing": "/index.html",
     "items": [
+      "/session-bhm/0_setup.html",
+      "/session-bhm/1_bhm-jmpost.html",
       "/session-pts/0_setup.html",
       "/session-pts/1_pts-jmpost.html",
       "/session-jm/0_setup.html",
