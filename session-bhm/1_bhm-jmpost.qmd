@@ -501,64 +501,54 @@ current_sequential_summary <-
 print(current_sequential_summary, n = 30)
 ```
 
-Finally, we compare uncertainty in the population parameters used for the current-study analysis under the two approaches. For the hierarchical fit we select the current-study component of the baseline parameters. In this model specification, the shrinkage and growth parameters are arm-specific and shared between studies, so they already have the same dimension in both fits.
+Finally, we compare uncertainty in parameters that were *not* fixed in the sequential fit. We focus on the survival covariate effects, the Weibull scale parameter, and the tumor-growth link parameter:
+
+- `beta_os_cov`: survival covariate effects
+- `sm_weibull_ph_lambda`: Weibull scale parameter
+- `link_growth`: association between tumor growth and survival
+
+For each parameter, we extract the posterior mean and standard deviation from both fits. The ratio in the final column is below 1 when the sequential fit has the smaller posterior standard deviation.
 
 ```{r}
 #| label: compare_sequential_bhjm_uncertainty
 
-current_study_index <- unname(
-    as_stan_list(pooled_subj_data)$study_to_index["current"]
-)
-baseline_vars <- c("lm_sf_mu_bsld", "lm_sf_omega_bsld")
-baseline_current_vars <- paste0(
-    baseline_vars,
-    "[",
-    current_study_index,
-    "]"
+comparison_vars <- c(
+    "beta_os_cov",
+    "sm_weibull_ph_lambda",
+    "link_growth"
 )
 
-bhjm_current_population_summary <- mcmc_pooled_joint_results$summary(c(
-    baseline_current_vars,
-    setdiff(population_vars, baseline_vars)
-))
-sequential_population_summary <-
-    mcmc_current_sequential_results$summary(population_vars)
+bhjm_parameter_summary <- mcmc_pooled_joint_results$summary(
+    comparison_vars
+) |>
+    transmute(
+        parameter = variable,
+        bhjm_mean = mean,
+        bhjm_sd = sd
+    )
 
-# Both baseline parameters have index 1 in the current-only fit. Give the
-# corresponding BHJM parameters the same labels before joining the summaries.
-bhjm_current_population_summary$parameter <-
-    bhjm_current_population_summary$variable
-baseline_rows <- match(
-    bhjm_current_population_summary$variable,
-    baseline_current_vars
-)
-replace_rows <- !is.na(baseline_rows)
-bhjm_current_population_summary$parameter[replace_rows] <- paste0(
-    baseline_vars[baseline_rows[replace_rows]],
-    "[1]"
-)
-
-population_uncertainty_comparison <- sequential_population_summary |>
+sequential_parameter_summary <- mcmc_current_sequential_results$summary(
+    comparison_vars
+) |>
     transmute(
         parameter = variable,
         sequential_mean = mean,
         sequential_sd = sd
-    ) |>
-    left_join(
-        bhjm_current_population_summary |>
-            transmute(
-                parameter,
-                bhjm_mean = mean,
-                bhjm_sd = sd
-            ),
-        by = "parameter"
-    ) |>
-    select(parameter, bhjm_mean, sequential_mean, bhjm_sd, sequential_sd)
+    )
 
-population_uncertainty_comparison
+parameter_uncertainty_comparison <- left_join(
+    bhjm_parameter_summary,
+    sequential_parameter_summary,
+    by = "parameter"
+) |>
+    mutate(
+        sequential_to_bhjm_sd = sequential_sd / bhjm_sd
+    )
+
+parameter_uncertainty_comparison
 ```
 
-The sequential estimates have posterior standard deviation zero by construction, and hence appear much more precise than the corresponding BHJM estimates. This is not additional information supplied by the current study: it is a direct consequence of treating estimates from the historical study as known with 100% certainty. The BHJM retains uncertainty about the population parameters used for the current-study analysis and therefore gives the more realistic assessment of precision.
+In this example, interestingly the sequential fit has larger posterior standard deviations for the non-fixed parameters shown above. The two fits also use different outcome data---the BHJM uses both studies, whereas the second-stage sequential model uses only the current study---so the direction and size of the difference can vary across parameters. The BHJM propagates uncertainty about the population parameters instead of treating their historical estimates as known with certainty.
 
 ## Goodness of fit
 
