@@ -329,7 +329,7 @@ As expected we don't see a big difference in the baseline SLD between the histor
 
 An alternative to fitting a Bayesian hierarchical joint model is to analyze the studies sequentially. We first fit a joint model to the historical study, as above, and use the posterior point estimates of its population-level parameters in the analysis of the current study. In the second fit these values are treated as known exactly: uncertainty from the historical analysis is not propagated to the current analysis, and the current data cannot update the fixed population-level parameters.
 
-Here we use the posterior means from the historical fit for the Stein--Fojo population means ($\mu$) and standard deviations ($\omega$). The baseline parameters have one value per study, whereas the shrinkage and growth parameters have one value per treatment arm.
+Here we use the posterior means from the historical fit for the Stein-Fojo population means ($\mu$) and standard deviations ($\omega$). The baseline parameters have one value per study, whereas the shrinkage and growth parameters have one value per treatment arm.
 
 ```{r}
 #| label: extract_historical_population_estimates
@@ -360,6 +360,7 @@ historical_population_estimates <- setNames(
     ),
     population_vars
 )
+historical_population_estimates
 
 historical_arm_names <- names(
     as_stan_list(historical_subj_data)$arm_to_index
@@ -370,7 +371,7 @@ historical_population_estimates_df <- bind_rows(Map(
         tibble(
             parameter = parameter,
             component = seq_along(estimate),
-            group = if (grepl("bsld$", parameter)) {
+            group = if (isTRUE(grepl("bsld", parameter))) {
                 "historical"
             } else {
                 historical_arm_names
