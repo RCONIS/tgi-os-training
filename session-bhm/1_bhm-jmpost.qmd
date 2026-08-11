@@ -325,6 +325,240 @@ summary(omega_diff)
 
 As expected we don't see a big difference in the baseline SLD between the historical and current study, neither in the mean nor in the standard deviation.
 
+## Sequential modeling approach
+
+An alternative to fitting a Bayesian hierarchical joint model is to analyze the studies sequentially. We first fit a joint model to the historical study, as above, and use the posterior point estimates of its population-level parameters in the analysis of the current study. In the second fit these values are treated as known exactly: uncertainty from the historical analysis is not propagated to the current analysis, and the current data cannot update the fixed population-level parameters.
+
+Here we use the posterior means from the historical fit for the Stein--Fojo population means ($\mu$) and standard deviations ($\omega$). The baseline parameters have one value per study, whereas the shrinkage and growth parameters have one value per treatment arm.
+
+```{r}
+#| label: extract_historical_population_estimates
+
+population_vars <- c(
+    "lm_sf_mu_bsld",
+    "lm_sf_mu_ks",
+    "lm_sf_mu_kg",
+    "lm_sf_omega_bsld",
+    "lm_sf_omega_ks",
+    "lm_sf_omega_kg"
+)
+
+historical_population_summary <-
+    mcmc_historical_joint_results$summary(population_vars)
+
+get_posterior_means <- function(variable, summary) {
+    rows <- summary$variable == variable |
+        startsWith(summary$variable, paste0(variable, "["))
+    summary$mean[rows]
+}
+
+historical_population_estimates <- setNames(
+    lapply(
+        population_vars,
+        get_posterior_means,
+        summary = historical_population_summary
+    ),
+    population_vars
+)
+
+historical_arm_names <- names(
+    as_stan_list(historical_subj_data)$arm_to_index
+)
+
+historical_population_estimates_df <- bind_rows(Map(
+    function(parameter, estimate) {
+        tibble(
+            parameter = parameter,
+            component = seq_along(estimate),
+            group = if (grepl("bsld$", parameter)) {
+                "historical"
+            } else {
+                historical_arm_names
+            },
+            estimate = estimate
+        )
+    },
+    names(historical_population_estimates),
+    historical_population_estimates
+))
+
+historical_population_estimates_df
+```
+
+Next we create the joint-model data object for the current study only.
+
+```{r}
+#| label: create_current_joint_data
+
+current_subj_df <- current_os_data |>
+    select(study, id, arm)
+current_subj_data <- DataSubject(
+    data = current_subj_df,
+    subject = "id",
+    arm = "arm",
+    study = "study"
+)
+current_arm_names <- names(
+    as_stan_list(current_subj_data)$arm_to_index
+)
+stopifnot(identical(current_arm_names, historical_arm_names))
+
+current_long_df <- current_tumor_data |>
+    select(id, year, sld)
+current_long_data <- DataLongitudinal(
+    data = current_long_df,
+    formula = sld ~ year
+)
+
+current_surv_data <- DataSurvival(
+    data = current_os_data,
+    formula = Surv(os_time, os_event) ~ ecog + age + race + sex
+)
+
+current_joint_data <- DataJoint(
+    subject = current_subj_data,
+    longitudinal = current_long_data,
+    survival = current_surv_data
+)
+```
+
+We then specify a constant (also called Dirac or point-mass) prior for each of the six historical population estimates. `prior_const()` supplies the single historical-study value for each baseline parameter; because the current data also contain one study, `jmpost` replicates that scalar to the parameter's study dimension. `prior_const_vector()` supplies the arm-specific shrinkage and growth parameters in the same arm order as shown above. The subject-level random effects and the remaining joint-model parameters are still estimated from the current data, conditional on these fixed population values.
+
+```{r}
+#| label: specify_sequential_current_model
+
+current_sequential_mod <- JointModel(
+    longitudinal = LongitudinalSteinFojo(
+        mu_bsld = prior_const(
+            historical_population_estimates$lm_sf_mu_bsld
+        ),
+        mu_ks = prior_const_vector(
+            historical_population_estimates$lm_sf_mu_ks
+        ),
+        mu_kg = prior_const_vector(
+            historical_population_estimates$lm_sf_mu_kg
+        ),
+        omega_bsld = prior_const(
+            historical_population_estimates$lm_sf_omega_bsld
+        ),
+        omega_ks = prior_const_vector(
+            historical_population_estimates$lm_sf_omega_ks
+        ),
+        omega_kg = prior_const_vector(
+            historical_population_estimates$lm_sf_omega_kg
+        ),
+        sigma = prior_normal(0, 3) |> set_limits(0, Inf)
+    ),
+    survival = SurvivalWeibullPH(
+        lambda = prior_gamma(0.7, 1),
+        gamma = prior_gamma(1.5, 1),
+        beta = prior_normal(0, 20)
+    ),
+    link = linkGrowth(
+        prior = prior_normal(0, 20)
+    )
+)
+```
+
+Now we fit this model to the current data only.
+
+```{r}
+#| label: fit_sequential_current_model
+
+save_file <- here("session-bhm/currentmod_sequential1.rds")
+if (file.exists(save_file)) {
+    current_sequential_results <- readRDS(save_file)
+} else {
+    current_sequential_results <- sampleStanModel(
+        current_sequential_mod,
+        data = current_joint_data,
+        iter_sampling = ITER,
+        iter_warmup = WARMUP,
+        chains = CHAINS,
+        parallel_chains = CHAINS,
+        thin = CHAINS,
+        seed = BAYES.SEED,
+        refresh = REFRESH
+    )
+    saveObject(current_sequential_results, file = save_file)
+}
+```
+
+### Investigating the current-data parameter estimates
+
+As before, we inspect the posterior summary of the fitted model. An `NA` value for `rhat` is expected for a fixed parameter: all its draws are identical, so the between- and within-chain variances needed for this diagnostic are both zero.
+
+```{r}
+#| label: summarize_sequential_current_model
+
+mcmc_current_sequential_results <-
+    cmdstanr::as.CmdStanMCMC(current_sequential_results)
+
+current_sequential_summary <-
+    mcmc_current_sequential_results$summary(vars)
+
+print(current_sequential_summary, n = 30)
+```
+
+Finally, we compare uncertainty in the population parameters used for the current-study analysis under the two approaches. For the hierarchical fit we select the current-study component of the baseline parameters. In this model specification, the shrinkage and growth parameters are arm-specific and shared between studies, so they already have the same dimension in both fits.
+
+```{r}
+#| label: compare_sequential_bhjm_uncertainty
+
+current_study_index <- unname(
+    as_stan_list(pooled_subj_data)$study_to_index["current"]
+)
+baseline_vars <- c("lm_sf_mu_bsld", "lm_sf_omega_bsld")
+baseline_current_vars <- paste0(
+    baseline_vars,
+    "[",
+    current_study_index,
+    "]"
+)
+
+bhjm_current_population_summary <- mcmc_pooled_joint_results$summary(c(
+    baseline_current_vars,
+    setdiff(population_vars, baseline_vars)
+))
+sequential_population_summary <-
+    mcmc_current_sequential_results$summary(population_vars)
+
+# Both baseline parameters have index 1 in the current-only fit. Give the
+# corresponding BHJM parameters the same labels before joining the summaries.
+bhjm_current_population_summary$parameter <-
+    bhjm_current_population_summary$variable
+baseline_rows <- match(
+    bhjm_current_population_summary$variable,
+    baseline_current_vars
+)
+replace_rows <- !is.na(baseline_rows)
+bhjm_current_population_summary$parameter[replace_rows] <- paste0(
+    baseline_vars[baseline_rows[replace_rows]],
+    "[1]"
+)
+
+population_uncertainty_comparison <- sequential_population_summary |>
+    transmute(
+        parameter = variable,
+        sequential_mean = mean,
+        sequential_sd = sd
+    ) |>
+    left_join(
+        bhjm_current_population_summary |>
+            transmute(
+                parameter,
+                bhjm_mean = mean,
+                bhjm_sd = sd
+            ),
+        by = "parameter"
+    ) |>
+    select(parameter, bhjm_mean, sequential_mean, bhjm_sd, sequential_sd)
+
+population_uncertainty_comparison
+```
+
+The sequential estimates have posterior standard deviation zero by construction, and hence appear much more precise than the corresponding BHJM estimates. This is not additional information supplied by the current study: it is a direct consequence of treating estimates from the historical study as known with 100% certainty. The BHJM retains uncertainty about the population parameters used for the current-study analysis and therefore gives the more realistic assessment of precision.
+
 ## Goodness of fit
 
 Let's check the goodness of fit to our current study data:
