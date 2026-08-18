@@ -366,22 +366,52 @@ historical_arm_names <- names(
     as_stan_list(historical_subj_data)$arm_to_index
 )
 
-historical_population_estimates_df <- bind_rows(Map(
-    function(parameter, estimate) {
-        tibble(
-            parameter = parameter,
-            component = seq_along(estimate),
-            group = if (isTRUE(grepl("bsld", parameter))) {
-                "historical"
-            } else {
-                historical_arm_names
-            },
-            estimate = estimate
-        )
-    },
-    names(historical_population_estimates),
-    historical_population_estimates
-))
+# The order in this table is the order required by prior_const_vector().
+historical_arm_order <- tibble(
+    arm_index = seq_along(historical_arm_names),
+    arm = historical_arm_names
+)
+
+historical_baseline_estimates <- tibble(
+    parameter = c("lm_sf_mu_bsld", "lm_sf_omega_bsld"),
+    arm_index = NA_integer_,
+    arm = "historical",
+    estimate = unlist(historical_population_estimates[c(
+        "lm_sf_mu_bsld", "lm_sf_omega_bsld"
+    )])
+)
+
+historical_mu_ks_estimates <- historical_arm_order |>
+    mutate(
+        parameter = "lm_sf_mu_ks",
+        estimate = historical_population_estimates$lm_sf_mu_ks
+    )
+
+historical_mu_kg_estimates <- historical_arm_order |>
+    mutate(
+        parameter = "lm_sf_mu_kg",
+        estimate = historical_population_estimates$lm_sf_mu_kg
+    )
+
+historical_omega_ks_estimates <- historical_arm_order |>
+    mutate(
+        parameter = "lm_sf_omega_ks",
+        estimate = historical_population_estimates$lm_sf_omega_ks
+    )
+
+historical_omega_kg_estimates <- historical_arm_order |>
+    mutate(
+        parameter = "lm_sf_omega_kg",
+        estimate = historical_population_estimates$lm_sf_omega_kg
+    )
+
+historical_population_estimates_df <- bind_rows(
+    historical_baseline_estimates,
+    historical_mu_ks_estimates,
+    historical_mu_kg_estimates,
+    historical_omega_ks_estimates,
+    historical_omega_kg_estimates
+)
 
 historical_population_estimates_df
 ```
@@ -423,7 +453,7 @@ current_joint_data <- DataJoint(
 )
 ```
 
-We then specify a constant (also called Dirac or point-mass) prior for each of the six historical population estimates. `prior_const()` supplies the single historical-study value for each baseline parameter; because the current data also contain one study, `jmpost` replicates that scalar to the parameter's study dimension. `prior_const_vector()` supplies the arm-specific shrinkage and growth parameters in the same arm order as shown above. The subject-level random effects and the remaining joint-model parameters are still estimated from the current data, conditional on these fixed population values.
+We then specify a constant (also called Dirac or point-mass) prior for each of the six historical population estimates. `prior_const()` supplies the single historical-study value for each baseline parameter; because the current data also contain one study, `jmpost` replicates that scalar to the parameter's study dimension. `prior_const_vector()` supplies the arm-specific shrinkage and growth parameters in the order shown by `historical_arm_order`: `arm_index = 1` is the first vector element, `arm_index = 2` is the second, and so on. We verify below that the current-study data use this same order. The subject-level random effects and the remaining joint-model parameters are still estimated from the current data, conditional on these fixed population values.
 
 ```{r}
 #| label: specify_sequential_current_model
