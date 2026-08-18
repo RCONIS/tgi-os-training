@@ -487,7 +487,7 @@ if (file.exists(save_file)) {
 
 ### Investigating the current-data parameter estimates
 
-As before, we inspect the posterior summary of the fitted model. An `NA` value for `rhat` is expected for a fixed parameter: all its draws are identical, so the between- and within-chain variances needed for this diagnostic are both zero.
+As before, we inspect the posterior summary of the fitted model. An `NA` value for `rhat` is expected for a fixed parameter: To see this, start from the fact that all its draws are identical, so the between- and within-chain variances $B$ and $W$, as well as $s_m^2$ for all chains $m$, defined in the Stan manual [here](https://mc-stan.org/docs/reference-manual/analysis.html#potential-scale-reduction) are all zero. Therefore the variance estimator $\widehat{\textrm{var}}^{+}$ defined in the Stan manual [here](https://mc-stan.org/docs/reference-manual/analysis.html#potential-scale-reduction) is also zero. Hence the $\hat{R}$ estimator, defined as the square root of $\widehat{\textrm{var}}^{+}$ and $W$, is undefined. Finally, the effective sample size defined in the Stan manual [here](https://mc-stan.org/docs/reference-manual/analysis.html#estimation-of-effective-sample-size) is undefined, because it depends on the autocorrelation estimates at lag $t$, $\hat{\rho}_{t}$, which are undefined because they are calculated as one minus a fraction, which is zero divided by zero in this case. 
 
 ```{r}
 #| label: summarize_sequential_current_model
