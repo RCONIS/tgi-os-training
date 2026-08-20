@@ -162,7 +162,7 @@ if (file.exists(post_df_file)) {
   load(post_df_file)
 } else {
   post_df <- as_draws_df(fit) |> 
-    subset_draws(iteration = (1:1000) * 2)
+    subset_draws(iteration = 1:1000)
   save(post_df, file = post_df_file)
 }
 head(names(post_df), 10)
