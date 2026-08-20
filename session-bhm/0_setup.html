@@ -2,20 +2,26 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.25">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Francois Mercier">
 <meta name="author" content="Daniel Sabanés Bové">
-<meta name="dcterms.date" content="2025-11-17">
+<meta name="dcterms.date" content="2026-08-20">
 
 <title>0. Setup and data preparation – TGI-OS Training</title>
 <style>
-code{white-space: pre-wrap;}
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -70,15 +76,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="../">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-fe572088fed4c8b78605e513f5ffbe45.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-df3a4ca9cfbbad302b87d6abdb3f87e5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -133,11 +138,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
-      <a href="../index.html" class="sidebar-logo-link">
-      </a>
-      <div class="sidebar-tools-main">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">TGI-OS Training</a> 
+        <div class="sidebar-tools-main">
     <a href="https://rconis.github.io/tgi-os-training/" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
 </div>
+    </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
@@ -330,7 +336,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2025-11-17</p>
+      <p class="date">2026-08-20</p>
     </div>
   </div>
   
@@ -415,11 +421,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">id =</span> <span class="fu">factor</span>(<span class="fu">as.character</span>(patient_anonmyized)),</span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">day =</span> <span class="fu">as.integer</span>(treatment_day),</span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">year =</span> day <span class="sc">/</span> <span class="fl">365.25</span>,</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">target_lesion_long_diam_mm =</span> <span class="fu">case_match</span>(</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">target_lesion_long_diam_mm =</span> <span class="fu">recode_values</span>(</span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>            target_lesion_long_diam_mm,</span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>            <span class="st">"TOO SMALL TO MEASURE"</span> <span class="sc">~</span> <span class="st">"2"</span>,</span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>            <span class="st">"NOT EVALUABLE"</span> <span class="sc">~</span> <span class="cn">NA_character_</span>,</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">.default =</span> target_lesion_long_diam_mm</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">default =</span> target_lesion_long_diam_mm</span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        ),</span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">sld =</span> <span class="fu">as.numeric</span>(target_lesion_long_diam_mm),</span>
 <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">sld =</span> <span class="fu">ifelse</span>(sld <span class="sc">==</span> <span class="dv">0</span>, <span class="dv">2</span>, sld),</span>
@@ -454,7 +460,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  -7900338178541499392:  15   Mean   : 0.3995   Mean   : 38.16  
  4878279915140903936 :  15   3rd Qu.: 0.5749   3rd Qu.: 51.00  
  9202154259772598272 :  15   Max.   : 2.0753   Max.   :228.00  
- (Other)             :4034                     NA's   :27      
+ (Other)             :4034                     NAs    :27      
         arm      
  Docetaxel:1658  
  MPDL3280A:2468  
@@ -562,14 +568,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  1004   :  1                           3rd Qu.:70.00                      
  1005   :  1                           Max.   :85.00                      
  (Other):844                                                              
-      sld         response      pfs_time        pfs_event      
- Min.   : 10.00   CR  :  7   Min.   :0.002738   Mode :logical  
- 1st Qu.: 41.00   PR  :108   1st Qu.:0.117728   FALSE:95       
- Median : 66.00   SD  :327   Median :0.240931   TRUE :755      
- Mean   : 76.69   PD  :304   Mean   :0.443174                  
- 3rd Qu.: 99.00   NE  : 24   3rd Qu.:0.580424                  
- Max.   :316.00   NA's: 80   Max.   :2.242300                  
- NA's   :1                                                     
+      sld         response     pfs_time        pfs_event      
+ Min.   : 10.00   CR :  7   Min.   :0.002738   Mode :logical  
+ 1st Qu.: 41.00   PR :108   1st Qu.:0.117728   FALSE:95       
+ Median : 66.00   SD :327   Median :0.240931   TRUE :755      
+ Mean   : 76.69   PD :304   Mean   :0.443174                  
+ 3rd Qu.: 99.00   NE : 24   3rd Qu.:0.580424                  
+ Max.   :316.00   NAs: 80   Max.   :2.242300                  
+ NAs    :1                                                    
     os_time          os_event      
  Min.   :0.002738   Mode :logical  
  1st Qu.:0.364134   FALSE:281      
@@ -909,16 +915,16 @@ Docetaxel MPDL3280A
     }
     function toggleCodeHandler(show) {
       return function(e) {
-        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
-        for (let i=0; i<detailsSrc.length; i++) {
-          const details = detailsSrc[i].parentElement;
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
           if (show) {
             details.open = true;
           } else {
             details.removeAttribute("open");
           }
         }
-        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
         const fromCls = show ? "hidden" : "unhidden";
         const toCls = show ? "unhidden" : "hidden";
         for (let i=0; i<cellCodeDivs.length; i++) {

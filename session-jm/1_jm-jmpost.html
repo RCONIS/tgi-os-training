@@ -2,20 +2,26 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.25">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Daniel Sabanés Bové">
 <meta name="author" content="Francois Mercier">
-<meta name="dcterms.date" content="2025-11-17">
+<meta name="dcterms.date" content="2026-08-20">
 
 <title>1. TGI-OS joint model minimal workflow with jmpost – TGI-OS Training</title>
 <style>
-code{white-space: pre-wrap;}
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -70,15 +76,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="../">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-fe572088fed4c8b78605e513f5ffbe45.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-df3a4ca9cfbbad302b87d6abdb3f87e5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -133,11 +138,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
-      <a href="../index.html" class="sidebar-logo-link">
-      </a>
-      <div class="sidebar-tools-main">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">TGI-OS Training</a> 
+        <div class="sidebar-tools-main">
     <a href="https://rconis.github.io/tgi-os-training/" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
 </div>
+    </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
@@ -338,7 +344,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2025-11-17</p>
+      <p class="date">2026-08-20</p>
     </div>
   </div>
   
@@ -451,178 +457,178 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-stdout">
 <pre><code>[[1]]
 [[1]]$lm_sf_mu_bsld
-[1] 4.157203
+[1] 4.175584
 
 [[1]]$lm_sf_mu_ks
-[1] -0.6579604
+[1] -0.6559524
 
 [[1]]$lm_sf_mu_kg
-[1] 0.03415485
+[1] 0.0224954
 
 [[1]]$lm_sf_omega_bsld
-[1] 0.002044919
+[1] 0.02874486
 
 [[1]]$lm_sf_omega_ks
-[1] 0.03111766
+[1] 0.02540897
 
 [[1]]$lm_sf_omega_kg
-[1] 0.0209051
+[1] 0.03808822
 
 [[1]]$lm_sf_sigma
-[1] 0.0102302
+[1] 0.01799442
 
 [[1]]$lm_sf_eta_tilde_bsld
-[1] -0.01038384
+[1] 0.005910225
 
 [[1]]$lm_sf_eta_tilde_ks
-[1] -0.001730094
+[1] -0.01485779
 
 [[1]]$lm_sf_eta_tilde_kg
-[1] 0.02059255
+[1] 0.001194436
 
 [[1]]$sm_weibull_ph_lambda
-[1] 0.7131117
+[1] 0.7121172
 
 [[1]]$sm_weibull_ph_gamma
-[1] 1.506059
+[1] 1.485249
 
 [[1]]$beta_os_cov
-[1] -0.2446979
+[1] 0.09203779
 
 [[1]]$link_growth
-[1] 0.2298841
+[1] 0.08385003
 
 
 [[2]]
 [[2]]$lm_sf_mu_bsld
-[1] 4.173138
+[1] 4.1712
 
 [[2]]$lm_sf_mu_ks
-[1] -0.6585566
+[1] -0.667902
 
 [[2]]$lm_sf_mu_kg
-[1] 0.04872803
+[1] 0.04891893
 
 [[2]]$lm_sf_omega_bsld
-[1] 0.01346968
+[1] 0.0003056338
 
 [[2]]$lm_sf_omega_ks
-[1] 0.006361799
+[1] 0.02395549
 
 [[2]]$lm_sf_omega_kg
-[1] 0.01327501
+[1] 0.07733113
 
 [[2]]$lm_sf_sigma
-[1] 0.02956665
+[1] 0.02519405
 
 [[2]]$lm_sf_eta_tilde_bsld
-[1] -0.009844828
+[1] 0.004061515
 
 [[2]]$lm_sf_eta_tilde_ks
-[1] 0.01913673
+[1] -0.003311608
 
 [[2]]$lm_sf_eta_tilde_kg
-[1] -0.01607885
+[1] 0.003243307
 
 [[2]]$sm_weibull_ph_lambda
-[1] 0.7241217
+[1] 0.693593
 
 [[2]]$sm_weibull_ph_gamma
-[1] 1.488126
+[1] 1.495613
 
 [[2]]$beta_os_cov
-[1] -0.09073135
+[1] -0.01569953
 
 [[2]]$link_growth
-[1] 0.2633718
+[1] -0.4137156
 
 
 [[3]]
 [[3]]$lm_sf_mu_bsld
-[1] 4.171129
+[1] 4.169603
 
 [[3]]$lm_sf_mu_ks
-[1] -0.6685807
+[1] -0.6473027
 
 [[3]]$lm_sf_mu_kg
-[1] 0.03684973
+[1] 0.02725796
 
 [[3]]$lm_sf_omega_bsld
-[1] 0.01554243
+[1] 0.0004999726
 
 [[3]]$lm_sf_omega_ks
-[1] 0.03065883
+[1] 0.05055721
 
 [[3]]$lm_sf_omega_kg
-[1] 0.01066517
+[1] 0.007837851
 
 [[3]]$lm_sf_sigma
-[1] 0.01692072
+[1] 0.03044242
 
 [[3]]$lm_sf_eta_tilde_bsld
-[1] 0.01490621
+[1] 0.002033463
 
 [[3]]$lm_sf_eta_tilde_ks
-[1] -0.009899221
+[1] -0.01310049
 
 [[3]]$lm_sf_eta_tilde_kg
-[1] -0.004205634
+[1] -0.004620231
 
 [[3]]$sm_weibull_ph_lambda
-[1] 0.6940136
+[1] 0.6930643
 
 [[3]]$sm_weibull_ph_gamma
-[1] 1.501824
+[1] 1.514811
 
 [[3]]$beta_os_cov
-[1] 0.1574799
+[1] -0.1856627
 
 [[3]]$link_growth
-[1] 0.1068381
+[1] -0.1857822
 
 
 [[4]]
 [[4]]$lm_sf_mu_bsld
-[1] 4.192595
+[1] 4.151475
 
 [[4]]$lm_sf_mu_ks
-[1] -0.6328787
+[1] -0.6506219
 
 [[4]]$lm_sf_mu_kg
-[1] 0.04234172
+[1] 0.03855033
 
 [[4]]$lm_sf_omega_bsld
-[1] 0.03064317
+[1] 0.03430408
 
 [[4]]$lm_sf_omega_ks
-[1] 0.01386948
+[1] 0.01016288
 
 [[4]]$lm_sf_omega_kg
-[1] 0.04374572
+[1] 0.003784565
 
 [[4]]$lm_sf_sigma
-[1] 0.009822975
+[1] 0.06961977
 
 [[4]]$lm_sf_eta_tilde_bsld
-[1] -0.002307086
+[1] 0.007869041
 
 [[4]]$lm_sf_eta_tilde_ks
-[1] -0.0006622517
+[1] 0.002745022
 
 [[4]]$lm_sf_eta_tilde_kg
-[1] -0.005195442
+[1] -0.001164899
 
 [[4]]$sm_weibull_ph_lambda
-[1] 0.695539
+[1] 0.7046422
 
 [[4]]$sm_weibull_ph_gamma
-[1] 1.491928
+[1] 1.491464
 
 [[4]]$beta_os_cov
-[1] 0.06720959
+[1] -0.2344807
 
 [[4]]$link_growth
-[1] 0.2533659</code></pre>
+[1] 0.2123758</code></pre>
 </div>
 </div>
 <p>If we don’t do this, then it is very likely that some chains will diverge because of very unrealistic initial values for <code>beta</code> and/or the link coefficient.</p>
@@ -717,25 +723,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code># A tibble: 19 × 10
    variable         mean   median      sd     mad      q5     q95  rhat ess_bulk
    &lt;chr&gt;           &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
- 1 lm_sf_mu_bs…  3.76     3.76    0.0371  0.0355   3.69    3.82   1.02      192.
- 2 lm_sf_mu_ks… -0.0188   0.00943 0.235   0.228   -0.445   0.339  1.00      462.
- 3 lm_sf_mu_ks… -1.06    -1.03    0.330   0.314   -1.66   -0.591  1.01      559.
- 4 lm_sf_mu_kg… -0.585   -0.576   0.139   0.146   -0.837  -0.375  0.999     500.
- 5 lm_sf_mu_kg… -0.892   -0.890   0.139   0.138   -1.14   -0.656  1.00      552.
- 6 lm_sf_sigma   0.129    0.129   0.00371 0.00366  0.123   0.135  1.00      840.
- 7 lm_sf_omega…  0.530    0.529   0.0265  0.0256   0.488   0.576  1.01      340.
- 8 lm_sf_omega…  0.936    0.913   0.178   0.169    0.680   1.27   1.01      409.
- 9 lm_sf_omega…  1.36     1.33    0.252   0.247    0.989   1.81   1.00      566.
-10 lm_sf_omega…  0.684    0.677   0.0812  0.0744   0.561   0.831  1.00      781.
-11 lm_sf_omega…  0.956    0.952   0.0953  0.0973   0.810   1.12   1.01      585.
-12 beta_os_cov…  0.842    0.829   0.234   0.229    0.464   1.24   1.000     812.
-13 beta_os_cov…  0.00316  0.00296 0.00981 0.00996 -0.0128  0.0197 0.998     975.
-14 beta_os_cov…  0.658    0.656   0.431   0.428   -0.0678  1.36   1.00      901.
-15 beta_os_cov… -0.00443 -0.00251 0.237   0.247   -0.371   0.371  1.00      760.
-16 beta_os_cov…  0.313    0.305   0.215   0.217   -0.0363  0.677  1.00      735.
-17 sm_weibull_…  1.81     1.81    0.167   0.170    1.55    2.09   1.00      794.
-18 sm_weibull_…  0.261    0.213   0.176   0.132    0.0733  0.635  0.998     805.
-19 link_growth   0.880    0.861   0.235   0.242    0.525   1.29   1.00      571.
+ 1 lm_sf_mu_bs…  3.76     3.76    0.0387  0.0370   3.70    3.82   1.03      142.
+ 2 lm_sf_mu_ks…  0.392    0.401   0.174   0.181    0.0868  0.651  1.00      562.
+ 3 lm_sf_mu_ks… -1.17    -1.16    0.339   0.326   -1.77   -0.683  1.00      674.
+ 4 lm_sf_mu_kg… -0.365   -0.358   0.123   0.118   -0.579  -0.173  1.01      400.
+ 5 lm_sf_mu_kg… -0.895   -0.893   0.144   0.145   -1.13   -0.661  1.00      639.
+ 6 lm_sf_sigma   4.25     4.25    0.133   0.133    4.03    4.48   1.00      585.
+ 7 lm_sf_omega…  0.530    0.529   0.0274  0.0272   0.488   0.574  1.00      400.
+ 8 lm_sf_omega…  0.856    0.845   0.132   0.124    0.666   1.10   1.00      646.
+ 9 lm_sf_omega…  1.51     1.48    0.267   0.246    1.13    2.00   1.00      565.
+10 lm_sf_omega…  0.734    0.727   0.0860  0.0819   0.610   0.894  1.00      786.
+11 lm_sf_omega…  0.960    0.956   0.104   0.101    0.796   1.14   1.00      751.
+12 beta_os_cov…  0.765    0.752   0.220   0.224    0.425   1.13   1.00      924.
+13 beta_os_cov…  0.00187  0.00154 0.00968 0.00985 -0.0141  0.0184 1.00      905.
+14 beta_os_cov…  0.653    0.661   0.437   0.437   -0.0514  1.35   1.00      945.
+15 beta_os_cov…  0.0227   0.0280  0.228   0.228   -0.354   0.392  1.00      966.
+16 beta_os_cov…  0.273    0.273   0.208   0.221   -0.0518  0.609  1.01     1005.
+17 sm_weibull_…  1.76     1.75    0.146   0.138    1.53    2.01   0.999    1053.
+18 sm_weibull_…  0.249    0.204   0.187   0.127    0.0710  0.570  1.00      958.
+19 link_growth   0.672    0.667   0.170   0.169    0.414   0.969  1.00      929.
 # ℹ 1 more variable: ess_tail &lt;dbl&gt;</code></pre>
 </div>
 <details open="" class="code-fold">
@@ -915,17 +921,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(os_hr_est)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>      time              mean            lower            upper      
- Min.   :0.02276   Min.   :0.8703   Min.   :0.6966   Min.   :1.063  
- 1st Qu.:0.58038   1st Qu.:0.8703   1st Qu.:0.6966   1st Qu.:1.063  
- Median :1.13801   Median :0.8703   Median :0.6966   Median :1.063  
- Mean   :1.13801   Mean   :0.8703   Mean   :0.6966   Mean   :1.063  
- 3rd Qu.:1.69563   3rd Qu.:0.8703   3rd Qu.:0.6966   3rd Qu.:1.063  
- Max.   :2.25325   Max.   :0.8703   Max.   :0.6966   Max.   :1.063  </code></pre>
+<pre><code>      time              mean            lower            upper       
+ Min.   :0.02276   Min.   :0.7271   Min.   :0.6099   Min.   :0.8377  
+ 1st Qu.:0.58038   1st Qu.:0.7271   1st Qu.:0.6099   1st Qu.:0.8377  
+ Median :1.13801   Median :0.7271   Median :0.6099   Median :0.8377  
+ Mean   :1.13801   Mean   :0.7271   Mean   :0.6099   Mean   :0.8377  
+ 3rd Qu.:1.69563   3rd Qu.:0.7271   3rd Qu.:0.6099   3rd Qu.:0.8377  
+ Max.   :2.25325   Max.   :0.7271   Max.   :0.6099   Max.   :0.8377  </code></pre>
 </div>
 </div>
 <p>Also here the hazard ratio is indeed constant over time, which was the same in the 2-step TGI-OS model. This is because the link between the longitudinal and the survival model is here the log growth rate of the Stein-Fojo model, which is constant over time. For other link functions that are time-varying, e.g.&nbsp;the derivative of the longitudinal model, the hazard ratio could change over time.</p>
-<p>So here the estimated hazard ratio is 0.87 with a 90% credible interval of 0.7 to 1.06. We can see that this hazard ratio estimate is slightly lower, representing a slightly stronger effect estimate. Due to the larger uncertainty, which is due to the propagation of the log growth rate uncertainty to the OS model, the 90% CI now actually includes 1, in contrast to the 2-step TGI-OS model.</p>
+<p>So here the estimated hazard ratio is 0.73 with a 90% credible interval of 0.61 to 0.84. We can see that this hazard ratio estimate is slightly lower, representing a slightly stronger effect estimate. Due to the larger uncertainty, which is due to the propagation of the log growth rate uncertainty to the OS model, the 90% CI now actually includes 1, in contrast to the 2-step TGI-OS model.</p>
 </section>
 <section id="alternative-covariate-specification" class="level2">
 <h2 class="anchored" data-anchor-id="alternative-covariate-specification">Alternative covariate specification</h2>
@@ -969,26 +975,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code># A tibble: 20 × 10
    variable         mean   median      sd     mad      q5     q95  rhat ess_bulk
    &lt;chr&gt;           &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
- 1 lm_sf_mu_bs…  3.75     3.76    0.0373  0.0377   3.69    3.82   1.02      196.
- 2 lm_sf_mu_ks… -0.120   -0.0763  0.274   0.269   -0.590   0.271  1.01      455.
- 3 lm_sf_mu_ks… -1.00    -0.972   0.328   0.315   -1.59   -0.525  1.00      538.
- 4 lm_sf_mu_kg… -0.643   -0.638   0.154   0.153   -0.908  -0.402  1.01      500.
- 5 lm_sf_mu_kg… -0.868   -0.862   0.146   0.146   -1.12   -0.640  1.01      522.
- 6 lm_sf_sigma   0.129    0.129   0.00356 0.00356  0.124   0.136  1.00      944.
- 7 lm_sf_omega…  0.531    0.530   0.0279  0.0268   0.489   0.583  1.01      342.
- 8 lm_sf_omega…  0.979    0.959   0.191   0.181    0.713   1.34   1.00      481.
- 9 lm_sf_omega…  1.32     1.29    0.240   0.232    0.972   1.74   1.00      580.
-10 lm_sf_omega…  0.687    0.680   0.0871  0.0896   0.560   0.844  1.00      911.
-11 lm_sf_omega…  0.957    0.951   0.0951  0.0898   0.820   1.13   1.00      647.
-12 beta_os_cov…  0.864    0.858   0.235   0.237    0.477   1.26   1.00     1028.
-13 beta_os_cov…  0.00372  0.00329 0.00996 0.0104  -0.0125  0.0197 0.999     964.
-14 beta_os_cov…  0.690    0.694   0.445   0.447   -0.0367  1.44   1.00      930.
-15 beta_os_cov…  0.0296   0.0232  0.248   0.239   -0.371   0.439  0.999     906.
-16 beta_os_cov…  0.310    0.307   0.216   0.218   -0.0299  0.681  0.999     958.
-17 beta_os_cov… -0.207   -0.204   0.239   0.229   -0.606   0.176  0.999     767.
-18 sm_weibull_…  1.82     1.81    0.163   0.160    1.56    2.10   1.01      836.
-19 sm_weibull_…  0.272    0.228   0.193   0.148    0.0755  0.608  0.999    1000.
-20 link_growth   0.870    0.862   0.239   0.239    0.499   1.27   1.01      617.
+ 1 lm_sf_mu_bs…  3.76     3.76    0.0361  0.0342   3.70    3.82   1.01      185.
+ 2 lm_sf_mu_ks…  0.378    0.396   0.182   0.182    0.0644  0.638  1.00      525.
+ 3 lm_sf_mu_ks… -1.19    -1.16    0.326   0.318   -1.79   -0.712  1.00      668.
+ 4 lm_sf_mu_kg… -0.372   -0.366   0.127   0.126   -0.592  -0.179  1.01      487.
+ 5 lm_sf_mu_kg… -0.895   -0.891   0.141   0.139   -1.14   -0.673  1.01      705.
+ 6 lm_sf_sigma   4.26     4.26    0.134   0.137    4.05    4.48   1.00      725.
+ 7 lm_sf_omega…  0.530    0.529   0.0274  0.0279   0.489   0.577  1.01      360.
+ 8 lm_sf_omega…  0.862    0.849   0.138   0.121    0.659   1.12   1.00      630.
+ 9 lm_sf_omega…  1.53     1.49    0.274   0.248    1.15    2.04   1.00      673.
+10 lm_sf_omega…  0.741    0.735   0.0843  0.0815   0.615   0.890  1.00      887.
+11 lm_sf_omega…  0.955    0.952   0.0968  0.0921   0.803   1.13   1.00      740.
+12 beta_os_cov…  0.757    0.764   0.228   0.213    0.373   1.13   0.999     916.
+13 beta_os_cov…  0.00228  0.00227 0.00920 0.00892 -0.0126  0.0177 1.00      992.
+14 beta_os_cov…  0.650    0.652   0.451   0.432   -0.127   1.37   1.00      964.
+15 beta_os_cov…  0.0139  -0.00506 0.240   0.233   -0.355   0.425  1.00      780.
+16 beta_os_cov…  0.276    0.279   0.201   0.198   -0.0604  0.598  1.00      945.
+17 beta_os_cov… -0.00303 -0.0106  0.229   0.233   -0.383   0.376  1.01      777.
+18 sm_weibull_…  1.76     1.75    0.151   0.152    1.53    2.03   1.00     1026.
+19 sm_weibull_…  0.235    0.206   0.152   0.115    0.0717  0.518  1.000    1128.
+20 link_growth   0.664    0.670   0.178   0.176    0.372   0.955  1.00      784.
 # ℹ 1 more variable: ess_tail &lt;dbl&gt;</code></pre>
 </div>
 <details open="" class="code-fold">
@@ -1063,178 +1069,178 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-stdout">
 <pre><code>[[1]]
 [[1]]$lm_sf_mu_bsld
-[1] 4.174281
+[1] 4.172642
 
 [[1]]$lm_sf_mu_ks
-[1] -0.6536928
+[1] -0.653001
 
 [[1]]$lm_sf_mu_kg
-[1] 0.0384735
+[1] 0.03843965
 
 [[1]]$lm_sf_omega_bsld
-[1] 0.002839366
+[1] 0.002749857
 
 [[1]]$lm_sf_omega_ks
-[1] 0.0001291699
+[1] 0.0004973376
 
 [[1]]$lm_sf_omega_kg
-[1] 0.0007976942
+[1] 0.002245512
 
 [[1]]$lm_sf_sigma
-[1] 0.005996095
+[1] 0.000464827
 
 [[1]]$lm_sf_eta_tilde_bsld
-[1] 0.000470039
+[1] -0.001107308
 
 [[1]]$lm_sf_eta_tilde_ks
-[1] -0.00154869
+[1] 0.0001842798
 
 [[1]]$lm_sf_eta_tilde_kg
-[1] 0.0008745867
+[1] -0.0006483865
 
 [[1]]$sm_weibull_ph_lambda
-[1] 0.6995336
+[1] 0.6993883
 
 [[1]]$sm_weibull_ph_gamma
-[1] 1.498641
+[1] 1.499531
 
 [[1]]$beta_os_cov
-[1] 0.009185111
+[1] -0.01562673
 
 [[1]]$link_dsld
-[1] -0.002447209
+[1] 0.004646954
 
 
 [[2]]
 [[2]]$lm_sf_mu_bsld
-[1] 4.172685
+[1] 4.17521
 
 [[2]]$lm_sf_mu_ks
-[1] -0.6525602
+[1] -0.6543339
 
 [[2]]$lm_sf_mu_kg
-[1] 0.04002759
+[1] 0.0400282
 
 [[2]]$lm_sf_omega_bsld
-[1] 0.001985338
+[1] 0.002676219
 
 [[2]]$lm_sf_omega_ks
-[1] 0.005169107
+[1] 0.003884743
 
 [[2]]$lm_sf_omega_kg
-[1] 0.001121513
+[1] 0.003296366
 
 [[2]]$lm_sf_sigma
-[1] 0.004110273
+[1] 0.005120477
 
 [[2]]$lm_sf_eta_tilde_bsld
-[1] -0.0006774594
+[1] 0.0003173341
 
 [[2]]$lm_sf_eta_tilde_ks
-[1] -0.0008570452
+[1] -0.0007022266
 
 [[2]]$lm_sf_eta_tilde_kg
-[1] -0.0005290799
+[1] 0.0002630172
 
 [[2]]$sm_weibull_ph_lambda
-[1] 0.6993776
+[1] 0.6994021
 
 [[2]]$sm_weibull_ph_gamma
-[1] 1.499257
+[1] 1.503196
 
 [[2]]$beta_os_cov
-[1] 0.001056433
+[1] -0.003976441
 
 [[2]]$link_dsld
-[1] -0.01053035
+[1] -0.01074492
 
 
 [[3]]
 [[3]]$lm_sf_mu_bsld
-[1] 4.173984
+[1] 4.174673
 
 [[3]]$lm_sf_mu_ks
-[1] -0.654667
+[1] -0.6536437
 
 [[3]]$lm_sf_mu_kg
-[1] 0.03969482
+[1] 0.03895939
 
 [[3]]$lm_sf_omega_bsld
-[1] 0.005543763
+[1] 0.002374264
 
 [[3]]$lm_sf_omega_ks
-[1] 0.005430364
+[1] 9.664072e-06
 
 [[3]]$lm_sf_omega_kg
-[1] 0.0001870963
+[1] 0.0007675691
 
 [[3]]$lm_sf_sigma
-[1] 0.0009273888
+[1] 0.0006927011
 
 [[3]]$lm_sf_eta_tilde_bsld
-[1] -0.0005258746
+[1] -1.607179e-05
 
 [[3]]$lm_sf_eta_tilde_ks
-[1] 0.001356768
+[1] 0.0002306475
 
 [[3]]$lm_sf_eta_tilde_kg
-[1] 0.0001322014
+[1] 0.0008992953
 
 [[3]]$sm_weibull_ph_lambda
-[1] 0.7011391
+[1] 0.6994344
 
 [[3]]$sm_weibull_ph_gamma
-[1] 1.499553
+[1] 1.498945
 
 [[3]]$beta_os_cov
-[1] -0.04009133
+[1] -0.01104221
 
 [[3]]$link_dsld
-[1] 0.02460469
+[1] 0.003893659
 
 
 [[4]]
 [[4]]$lm_sf_mu_bsld
-[1] 4.173544
+[1] 4.17589
 
 [[4]]$lm_sf_mu_ks
-[1] -0.6541084
+[1] -0.6534185
 
 [[4]]$lm_sf_mu_kg
-[1] 0.03994846
+[1] 0.03862119
 
 [[4]]$lm_sf_omega_bsld
-[1] 0.001749874
+[1] 0.0005370873
 
 [[4]]$lm_sf_omega_ks
-[1] 0.0004688517
+[1] 0.001901021
 
 [[4]]$lm_sf_omega_kg
-[1] 0.002471432
+[1] 0.002657365
 
 [[4]]$lm_sf_sigma
-[1] 0.0006564231
+[1] 0.00290249
 
 [[4]]$lm_sf_eta_tilde_bsld
-[1] -0.00169486
+[1] -0.001508351
 
 [[4]]$lm_sf_eta_tilde_ks
-[1] -5.820686e-05
+[1] -0.0001219973
 
 [[4]]$lm_sf_eta_tilde_kg
-[1] -0.0002779012
+[1] 0.001074627
 
 [[4]]$sm_weibull_ph_lambda
-[1] 0.7002806
+[1] 0.7003234
 
 [[4]]$sm_weibull_ph_gamma
-[1] 1.499579
+[1] 1.500794
 
 [[4]]$beta_os_cov
-[1] 0.02254746
+[1] -0.02443757
 
 [[4]]$link_dsld
-[1] 0.00770938</code></pre>
+[1] -0.003837087</code></pre>
 </div>
 </div>
 <p>Now we fit this model:</p>
@@ -1270,27 +1276,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 19 × 10
-   variable        mean   median      sd     mad       q5     q95  rhat ess_bulk
-   &lt;chr&gt;          &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
- 1 link_dsld    0.00695  0.00669 0.00240 0.00212  0.00350  0.0111 1.00      932.
- 2 lm_sf_mu_b…  3.76     3.76    0.0379  0.0360   3.69     3.82   1.02      329.
- 3 lm_sf_mu_k… -0.0327  -0.00146 0.244   0.234   -0.488    0.319  1.00      638.
- 4 lm_sf_mu_k… -1.31    -1.28    0.361   0.349   -1.90    -0.744  1.000     648.
- 5 lm_sf_mu_k… -0.591   -0.581   0.142   0.138   -0.834   -0.385  1.00      633.
- 6 lm_sf_mu_k… -1.01    -1.01    0.143   0.142   -1.24    -0.772  1.00      619.
- 7 lm_sf_sigma  0.130    0.130   0.00365 0.00360  0.125    0.136  1.00      731.
- 8 lm_sf_omeg…  0.529    0.529   0.0276  0.0283   0.488    0.577  1.00      568.
- 9 lm_sf_omeg…  0.951    0.932   0.176   0.164    0.702    1.28   1.00      700.
-10 lm_sf_omeg…  1.54     1.51    0.279   0.270    1.12     2.02   1.00      709.
-11 lm_sf_omeg…  0.689    0.683   0.0803  0.0748   0.570    0.825  1.01      752.
-12 lm_sf_omeg…  0.964    0.956   0.107   0.106    0.803    1.15   1.00      630.
-13 beta_os_co…  0.810    0.812   0.239   0.243    0.422    1.21   0.998    1001.
-14 beta_os_co… -0.00132 -0.00149 0.0106  0.00989 -0.0183   0.0168 1.00     1121.
-15 beta_os_co…  0.589    0.613   0.436   0.434   -0.118    1.27   1.00      889.
-16 beta_os_co…  0.0833   0.0861  0.251   0.245   -0.350    0.507  1.00     1017.
-17 beta_os_co…  0.334    0.329   0.223   0.227   -0.0253   0.699  1.00     1109.
-18 sm_weibull…  1.53     1.52    0.144   0.144    1.30     1.78   1.00     1014.
-19 sm_weibull…  0.140    0.114   0.0996  0.0760   0.0359   0.334  1.00     1039.
+   variable       mean   median      sd     mad       q5      q95  rhat ess_bulk
+   &lt;chr&gt;         &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+ 1 link_dsld   1.39e-4  1.35e-4 1.50e-4 1.00e-4 -5.94e-5  3.18e-4 1.000     933.
+ 2 lm_sf_mu_…  3.76e+0  3.77e+0 3.77e-2 3.74e-2  3.70e+0  3.83e+0 1.04      205.
+ 3 lm_sf_mu_…  3.73e-1  3.86e-1 1.82e-1 1.75e-1  6.35e-2  6.46e-1 1.00      599.
+ 4 lm_sf_mu_… -1.35e+0 -1.32e+0 3.62e-1 3.56e-1 -2.01e+0 -8.02e-1 1.01      762.
+ 5 lm_sf_mu_… -3.75e-1 -3.72e-1 1.24e-1 1.19e-1 -5.85e-1 -1.79e-1 1.00      683.
+ 6 lm_sf_mu_… -9.77e-1 -9.76e-1 1.56e-1 1.57e-1 -1.24e+0 -7.40e-1 1.00      763.
+ 7 lm_sf_sig…  4.23e+0  4.23e+0 1.37e-1 1.37e-1  4.01e+0  4.47e+0 1.01      567.
+ 8 lm_sf_ome…  5.30e-1  5.29e-1 2.88e-2 2.85e-2  4.82e-1  5.78e-1 1.01      297.
+ 9 lm_sf_ome…  8.82e-1  8.65e-1 1.43e-1 1.48e-1  6.88e-1  1.12e+0 1.00      683.
+10 lm_sf_ome…  1.63e+0  1.60e+0 2.80e-1 2.65e-1  1.23e+0  2.13e+0 1.00      704.
+11 lm_sf_ome…  7.37e-1  7.29e-1 8.48e-2 8.28e-2  6.13e-1  8.95e-1 1.00      826.
+12 lm_sf_ome…  9.94e-1  9.84e-1 1.07e-1 1.03e-1  8.31e-1  1.18e+0 1.00      993.
+13 beta_os_c…  5.71e-1  5.66e-1 2.06e-1 1.96e-1  2.35e-1  8.92e-1 1.00      946.
+14 beta_os_c…  1.55e-3  1.87e-3 9.72e-3 9.68e-3 -1.39e-2  1.80e-2 1.00      987.
+15 beta_os_c…  4.41e-1  4.57e-1 3.95e-1 4.05e-1 -2.11e-1  1.07e+0 0.999    1021.
+16 beta_os_c…  6.49e-2  6.03e-2 2.32e-1 2.40e-1 -3.16e-1  4.50e-1 1.00      994.
+17 beta_os_c…  3.21e-1  3.23e-1 2.02e-1 1.95e-1 -7.66e-3  6.56e-1 1.00      986.
+18 sm_weibul…  1.62e+0  1.62e+0 1.39e-1 1.38e-1  1.39e+0  1.86e+0 0.999     959.
+19 sm_weibul…  1.84e-1  1.54e-1 1.24e-1 8.99e-2  5.26e-2  4.12e-1 1.00     1009.
 # ℹ 1 more variable: ess_tail &lt;dbl&gt;</code></pre>
 </div>
 </div>
@@ -1323,20 +1329,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(os_hr_est_dsld)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>      time              mean             median           lower       
- Min.   :0.02276   Min.   :  1.100   Min.   :  1.00   Min.   : 1.000  
- 1st Qu.:0.58038   1st Qu.:  1.713   1st Qu.:  1.00   1st Qu.: 1.000  
- Median :1.13801   Median :  6.817   Median :  1.00   Median : 1.000  
- Mean   :1.13801   Mean   : 41.550   Mean   : 36.39   Mean   : 1.621  
- 3rd Qu.:1.69563   3rd Qu.: 56.551   3rd Qu.: 24.21   3rd Qu.: 1.087  
- Max.   :2.25325   Max.   :207.570   Max.   :244.91   Max.   :10.414  
-     upper        
- Min.   :  1.000  
- 1st Qu.:  1.493  
- Median : 41.445  
- Mean   :100.978  
- 3rd Qu.:180.477  
- Max.   :402.655  </code></pre>
+<pre><code>      time              mean            median           lower       
+ Min.   :0.02276   Min.   :0.8988   Min.   :0.9130   Min.   :0.7053  
+ 1st Qu.:0.58038   1st Qu.:0.9687   1st Qu.:0.9687   1st Qu.:0.8583  
+ Median :1.13801   Median :1.0057   Median :0.9942   Median :0.9367  
+ Mean   :1.13801   Mean   :1.0702   Mean   :0.9831   Mean   :0.9035  
+ 3rd Qu.:1.69563   3rd Qu.:1.1265   3rd Qu.:1.0046   3rd Qu.:0.9719  
+ Max.   :2.25325   Max.   :1.5211   Max.   :1.0103   Max.   :0.9770  
+     upper      
+ Min.   :1.029  
+ 1st Qu.:1.033  
+ Median :1.037  
+ Mean   :1.052  
+ 3rd Qu.:1.060  
+ Max.   :1.125  </code></pre>
 </div>
 </div>
 <p>Here we truncate the hazard values at an upper bound of 100, because due to the time-varying link function, the hazard can become very large at some time points, which can lead to numerical issues.</p>
@@ -1552,16 +1558,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
     function toggleCodeHandler(show) {
       return function(e) {
-        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
-        for (let i=0; i<detailsSrc.length; i++) {
-          const details = detailsSrc[i].parentElement;
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
           if (show) {
             details.open = true;
           } else {
             details.removeAttribute("open");
           }
         }
-        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
         const fromCls = show ? "hidden" : "unhidden";
         const toCls = show ? "unhidden" : "hidden";
         for (let i=0; i<cellCodeDivs.length; i++) {

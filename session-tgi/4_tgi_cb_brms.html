@@ -2,20 +2,26 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.25">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Daniel Sabanés Bové">
 <meta name="author" content="Francois Mercier">
-<meta name="dcterms.date" content="2025-11-17">
+<meta name="dcterms.date" content="2026-08-20">
 
 <title>4. Claret-Bruno model – TGI-OS Training</title>
 <style>
-code{white-space: pre-wrap;}
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -70,15 +76,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="../">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-fe572088fed4c8b78605e513f5ffbe45.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-df3a4ca9cfbbad302b87d6abdb3f87e5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -108,7 +113,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -162,11 +167,12 @@ window.Quarto = {
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
-      <a href="../index.html" class="sidebar-logo-link">
-      </a>
-      <div class="sidebar-tools-main">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">TGI-OS Training</a> 
+        <div class="sidebar-tools-main">
     <a href="https://rconis.github.io/tgi-os-training/" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
 </div>
+    </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
@@ -362,7 +368,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2025-11-17</p>
+      <p class="date">2026-08-20</p>
     </div>
   </div>
   
@@ -439,11 +445,11 @@ window.Quarto = {
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">id =</span> <span class="fu">factor</span>(<span class="fu">as.character</span>(patient_anonmyized)),</span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">day =</span> <span class="fu">as.integer</span>(treatment_day),</span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">year =</span> day <span class="sc">/</span> <span class="fl">365.25</span>,</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">target_lesion_long_diam_mm =</span> <span class="fu">case_match</span>(</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">target_lesion_long_diam_mm =</span> <span class="fu">recode_values</span>(</span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>            target_lesion_long_diam_mm,</span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>            <span class="st">"TOO SMALL TO MEASURE"</span> <span class="sc">~</span> <span class="st">"2"</span>,</span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>            <span class="st">"NOT EVALUABLE"</span> <span class="sc">~</span> <span class="cn">NA_character_</span>,</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>            <span class="at">.default =</span> target_lesion_long_diam_mm</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>            <span class="at">default =</span> target_lesion_long_diam_mm</span>
 <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        ),</span>
 <span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">sld =</span> <span class="fu">as.numeric</span>(target_lesion_long_diam_mm),</span>
 <span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        <span class="at">sld =</span> <span class="fu">ifelse</span>(sld <span class="sc">==</span> <span class="dv">0</span>, <span class="dv">2</span>, sld),</span>
@@ -482,7 +488,7 @@ window.Quarto = {
  7160320731596789760 :  16   Mean   : 0.3822   Mean   : 36.1   4:4126  
  -4159496062492130816:  15   3rd Qu.: 0.5722   3rd Qu.: 49.0   5: 835  
  -7900338178541499392:  15   Max.   : 2.0753   Max.   :228.0           
- (Other)             :8463   NA's   :1         NA's   :69              
+ (Other)             :8463   NAs    :1         NAs    :69              
  arm     
  1:3108  
  2:3715  
@@ -658,28 +664,28 @@ Formula: sld ~ ystar
          lp ~ 1 + (1 | id)
          lc ~ 1 + (1 | id)
    Data: df (Number of observations: 4099) 
-  Draws: 4 chains, each with iter = 4000; warmup = 2000; thin = 1;
-         total post-warmup draws = 8000
+  Draws: 4 chains, each with iter = 3000; warmup = 2000; thin = 1;
+         total post-warmup draws = 4000
 
 Multilevel Hyperparameters:
 ~id (Number of levels: 701) 
                   Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-sd(lb0_Intercept)     0.58      0.02     0.55     0.61 1.01      419     1044
-sd(lkg_Intercept)     1.04      0.06     0.92     1.17 1.01      696     1181
-sd(lp_Intercept)      1.58      0.11     1.39     1.80 1.01      443     1110
-sd(lc_Intercept)      1.57      0.15     1.28     1.87 1.01      657      935
+sd(lb0_Intercept)     0.58      0.02     0.55     0.61 1.01      240      538
+sd(lkg_Intercept)     1.05      0.06     0.92     1.18 1.00      554      815
+sd(lp_Intercept)      1.58      0.11     1.38     1.80 1.01      311      512
+sd(lc_Intercept)      1.55      0.14     1.28     1.82 1.01      554      784
 
 Regression Coefficients:
               Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-tau_Intercept     0.15      0.00     0.15     0.16 1.00     1345     3193
-lb0_Intercept     3.62      0.02     3.57     3.66 1.01      200      330
-lkg_Intercept    -1.00      0.07    -1.14    -0.86 1.01     1020     1906
-lp_Intercept     -0.82      0.14    -1.10    -0.57 1.01      643     1594
-lc_Intercept     -0.13      0.10    -0.34     0.07 1.00     1335     2478
+tau_Intercept     0.15      0.00     0.15     0.16 1.01      851     1519
+lb0_Intercept     3.62      0.02     3.57     3.67 1.02      117      223
+lkg_Intercept    -1.00      0.07    -1.14    -0.85 1.00      740     1275
+lp_Intercept     -0.83      0.14    -1.13    -0.57 1.01      480      815
+lc_Intercept     -0.13      0.11    -0.34     0.09 1.01      899     1321
 
-Draws were sampled using sample(hmc). Overall Rhat and ESS estimates
-are not informative for brm_multiple models and are hence not displayed.
-Please see ?brm_multiple for how to assess convergence of such models.</code></pre>
+Draws were sampled using sample(hmc). For each parameter, Bulk_ESS
+and Tail_ESS are effective sample size measures, and Rhat is the potential
+scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 </div>
 </div>
 <p>We did obtain here a warning about divergent transitions, see <a href="http://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup">stan documentation</a> for details:</p>
@@ -697,7 +703,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">load</span>(post_df_file)</span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  post_df <span class="ot">&lt;-</span> <span class="fu">as_draws_df</span>(fit) <span class="sc">|&gt;</span> </span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">subset_draws</span>(<span class="at">iteration =</span> (<span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>) <span class="sc">*</span> <span class="dv">2</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">subset_draws</span>(<span class="at">iteration =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>)</span>
 <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">save</span>(post_df, <span class="at">file =</span> post_df_file)</span>
 <span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">names</span>(post_df), <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -790,23 +796,23 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>post_sum</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<div id="qmpoqwwxzv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#qmpoqwwxzv table {
+<div id="zoxkqptdgl" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#zoxkqptdgl table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#qmpoqwwxzv thead, #qmpoqwwxzv tbody, #qmpoqwwxzv tfoot, #qmpoqwwxzv tr, #qmpoqwwxzv td, #qmpoqwwxzv th {
+#zoxkqptdgl thead, #zoxkqptdgl tbody, #zoxkqptdgl tfoot, #zoxkqptdgl tr, #zoxkqptdgl td, #zoxkqptdgl th {
   border-style: none;
 }
 
-#qmpoqwwxzv p {
+#zoxkqptdgl p {
   margin: 0;
   padding: 0;
 }
 
-#qmpoqwwxzv .gt_table {
+#zoxkqptdgl .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -832,12 +838,12 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   border-left-color: #D3D3D3;
 }
 
-#qmpoqwwxzv .gt_caption {
+#zoxkqptdgl .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#qmpoqwwxzv .gt_title {
+#zoxkqptdgl .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -849,7 +855,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   border-bottom-width: 0;
 }
 
-#qmpoqwwxzv .gt_subtitle {
+#zoxkqptdgl .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -861,7 +867,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   border-top-width: 0;
 }
 
-#qmpoqwwxzv .gt_heading {
+#zoxkqptdgl .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -873,13 +879,13 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   border-right-color: #D3D3D3;
 }
 
-#qmpoqwwxzv .gt_bottom_border {
+#zoxkqptdgl .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#qmpoqwwxzv .gt_col_headings {
+#zoxkqptdgl .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -894,7 +900,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   border-right-color: #D3D3D3;
 }
 
-#qmpoqwwxzv .gt_col_heading {
+#zoxkqptdgl .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -914,7 +920,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   overflow-x: hidden;
 }
 
-#qmpoqwwxzv .gt_column_spanner_outer {
+#zoxkqptdgl .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -926,15 +932,15 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   padding-right: 4px;
 }
 
-#qmpoqwwxzv .gt_column_spanner_outer:first-child {
+#zoxkqptdgl .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#qmpoqwwxzv .gt_column_spanner_outer:last-child {
+#zoxkqptdgl .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#qmpoqwwxzv .gt_column_spanner {
+#zoxkqptdgl .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -946,11 +952,11 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   width: 100%;
 }
 
-#qmpoqwwxzv .gt_spanner_row {
+#zoxkqptdgl .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#qmpoqwwxzv .gt_group_heading {
+#zoxkqptdgl .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -976,7 +982,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   text-align: left;
 }
 
-#qmpoqwwxzv .gt_empty_group_heading {
+#zoxkqptdgl .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -991,15 +997,15 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   vertical-align: middle;
 }
 
-#qmpoqwwxzv .gt_from_md > :first-child {
+#zoxkqptdgl .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#qmpoqwwxzv .gt_from_md > :last-child {
+#zoxkqptdgl .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#qmpoqwwxzv .gt_row {
+#zoxkqptdgl .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1018,7 +1024,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   overflow-x: hidden;
 }
 
-#qmpoqwwxzv .gt_stub {
+#zoxkqptdgl .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1031,7 +1037,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   padding-right: 5px;
 }
 
-#qmpoqwwxzv .gt_stub_row_group {
+#zoxkqptdgl .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1045,15 +1051,15 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   vertical-align: top;
 }
 
-#qmpoqwwxzv .gt_row_group_first td {
+#zoxkqptdgl .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#qmpoqwwxzv .gt_row_group_first th {
+#zoxkqptdgl .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#qmpoqwwxzv .gt_summary_row {
+#zoxkqptdgl .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1063,16 +1069,16 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   padding-right: 5px;
 }
 
-#qmpoqwwxzv .gt_first_summary_row {
+#zoxkqptdgl .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#qmpoqwwxzv .gt_first_summary_row.thick {
+#zoxkqptdgl .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#qmpoqwwxzv .gt_last_summary_row {
+#zoxkqptdgl .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1082,7 +1088,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   border-bottom-color: #D3D3D3;
 }
 
-#qmpoqwwxzv .gt_grand_summary_row {
+#zoxkqptdgl .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1092,7 +1098,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   padding-right: 5px;
 }
 
-#qmpoqwwxzv .gt_first_grand_summary_row {
+#zoxkqptdgl .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1102,7 +1108,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   border-top-color: #D3D3D3;
 }
 
-#qmpoqwwxzv .gt_last_grand_summary_row_top {
+#zoxkqptdgl .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1112,11 +1118,11 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   border-bottom-color: #D3D3D3;
 }
 
-#qmpoqwwxzv .gt_striped {
+#zoxkqptdgl .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#qmpoqwwxzv .gt_table_body {
+#zoxkqptdgl .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1125,7 +1131,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   border-bottom-color: #D3D3D3;
 }
 
-#qmpoqwwxzv .gt_footnotes {
+#zoxkqptdgl .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1139,7 +1145,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   border-right-color: #D3D3D3;
 }
 
-#qmpoqwwxzv .gt_footnote {
+#zoxkqptdgl .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1148,7 +1154,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   padding-right: 5px;
 }
 
-#qmpoqwwxzv .gt_sourcenotes {
+#zoxkqptdgl .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1162,7 +1168,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   border-right-color: #D3D3D3;
 }
 
-#qmpoqwwxzv .gt_sourcenote {
+#zoxkqptdgl .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1170,72 +1176,72 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
   padding-right: 5px;
 }
 
-#qmpoqwwxzv .gt_left {
+#zoxkqptdgl .gt_left {
   text-align: left;
 }
 
-#qmpoqwwxzv .gt_center {
+#zoxkqptdgl .gt_center {
   text-align: center;
 }
 
-#qmpoqwwxzv .gt_right {
+#zoxkqptdgl .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#qmpoqwwxzv .gt_font_normal {
+#zoxkqptdgl .gt_font_normal {
   font-weight: normal;
 }
 
-#qmpoqwwxzv .gt_font_bold {
+#zoxkqptdgl .gt_font_bold {
   font-weight: bold;
 }
 
-#qmpoqwwxzv .gt_font_italic {
+#zoxkqptdgl .gt_font_italic {
   font-style: italic;
 }
 
-#qmpoqwwxzv .gt_super {
+#zoxkqptdgl .gt_super {
   font-size: 65%;
 }
 
-#qmpoqwwxzv .gt_footnote_marks {
+#zoxkqptdgl .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#qmpoqwwxzv .gt_asterisk {
+#zoxkqptdgl .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#qmpoqwwxzv .gt_indent_1 {
+#zoxkqptdgl .gt_indent_1 {
   text-indent: 5px;
 }
 
-#qmpoqwwxzv .gt_indent_2 {
+#zoxkqptdgl .gt_indent_2 {
   text-indent: 10px;
 }
 
-#qmpoqwwxzv .gt_indent_3 {
+#zoxkqptdgl .gt_indent_3 {
   text-indent: 15px;
 }
 
-#qmpoqwwxzv .gt_indent_4 {
+#zoxkqptdgl .gt_indent_4 {
   text-indent: 20px;
 }
 
-#qmpoqwwxzv .gt_indent_5 {
+#zoxkqptdgl .gt_indent_5 {
   text-indent: 25px;
 }
 
-#qmpoqwwxzv .katex-display {
+#zoxkqptdgl .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#qmpoqwwxzv div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#zoxkqptdgl div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1258,147 +1264,147 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
 <tbody class="gt_table_body">
 <tr class="odd">
 <td class="gt_row gt_left" headers="variable">theta_b0</td>
-<td class="gt_row gt_right" headers="mean">44.142</td>
-<td class="gt_row gt_right" headers="median">44.118</td>
-<td class="gt_row gt_right" headers="sd">1.093</td>
-<td class="gt_row gt_right" headers="mad">1.090</td>
-<td class="gt_row gt_right" headers="q5">42.411</td>
-<td class="gt_row gt_right" headers="q95">45.949</td>
-<td class="gt_row gt_right" headers="rhat">1.003</td>
-<td class="gt_row gt_right" headers="ess_bulk">198.908</td>
-<td class="gt_row gt_right" headers="ess_tail">390.883</td>
+<td class="gt_row gt_right" headers="mean">44.280</td>
+<td class="gt_row gt_right" headers="median">44.244</td>
+<td class="gt_row gt_right" headers="sd">1.115</td>
+<td class="gt_row gt_right" headers="mad">1.107</td>
+<td class="gt_row gt_right" headers="q5">42.530</td>
+<td class="gt_row gt_right" headers="q95">46.166</td>
+<td class="gt_row gt_right" headers="rhat">1.001</td>
+<td class="gt_row gt_right" headers="ess_bulk">123.963</td>
+<td class="gt_row gt_right" headers="ess_tail">222.718</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="variable">theta_kg</td>
-<td class="gt_row gt_right" headers="mean">0.636</td>
-<td class="gt_row gt_right" headers="median">0.634</td>
+<td class="gt_row gt_right" headers="mean">0.641</td>
+<td class="gt_row gt_right" headers="median">0.639</td>
 <td class="gt_row gt_right" headers="sd">0.042</td>
-<td class="gt_row gt_right" headers="mad">0.041</td>
-<td class="gt_row gt_right" headers="q5">0.570</td>
-<td class="gt_row gt_right" headers="q95">0.711</td>
-<td class="gt_row gt_right" headers="rhat">1.000</td>
-<td class="gt_row gt_right" headers="ess_bulk">1,093.102</td>
-<td class="gt_row gt_right" headers="ess_tail">1,749.378</td>
+<td class="gt_row gt_right" headers="mad">0.042</td>
+<td class="gt_row gt_right" headers="q5">0.576</td>
+<td class="gt_row gt_right" headers="q95">0.714</td>
+<td class="gt_row gt_right" headers="rhat">1.002</td>
+<td class="gt_row gt_right" headers="ess_bulk">604.529</td>
+<td class="gt_row gt_right" headers="ess_tail">1,400.326</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="variable">theta_p</td>
-<td class="gt_row gt_right" headers="mean">1.539</td>
-<td class="gt_row gt_right" headers="median">1.515</td>
-<td class="gt_row gt_right" headers="sd">0.183</td>
-<td class="gt_row gt_right" headers="mad">0.179</td>
-<td class="gt_row gt_right" headers="q5">1.284</td>
-<td class="gt_row gt_right" headers="q95">1.871</td>
-<td class="gt_row gt_right" headers="rhat">1.002</td>
-<td class="gt_row gt_right" headers="ess_bulk">361.463</td>
-<td class="gt_row gt_right" headers="ess_tail">395.589</td>
+<td class="gt_row gt_right" headers="mean">1.536</td>
+<td class="gt_row gt_right" headers="median">1.517</td>
+<td class="gt_row gt_right" headers="sd">0.179</td>
+<td class="gt_row gt_right" headers="mad">0.172</td>
+<td class="gt_row gt_right" headers="q5">1.269</td>
+<td class="gt_row gt_right" headers="q95">1.858</td>
+<td class="gt_row gt_right" headers="rhat">1.001</td>
+<td class="gt_row gt_right" headers="ess_bulk">267.938</td>
+<td class="gt_row gt_right" headers="ess_tail">515.731</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="variable">theta_c</td>
-<td class="gt_row gt_right" headers="mean">3.098</td>
-<td class="gt_row gt_right" headers="median">2.984</td>
-<td class="gt_row gt_right" headers="sd">0.678</td>
-<td class="gt_row gt_right" headers="mad">0.607</td>
-<td class="gt_row gt_right" headers="q5">2.234</td>
-<td class="gt_row gt_right" headers="q95">4.366</td>
-<td class="gt_row gt_right" headers="rhat">1.001</td>
-<td class="gt_row gt_right" headers="ess_bulk">552.128</td>
-<td class="gt_row gt_right" headers="ess_tail">669.150</td>
+<td class="gt_row gt_right" headers="mean">3.004</td>
+<td class="gt_row gt_right" headers="median">2.915</td>
+<td class="gt_row gt_right" headers="sd">0.604</td>
+<td class="gt_row gt_right" headers="mad">0.587</td>
+<td class="gt_row gt_right" headers="q5">2.172</td>
+<td class="gt_row gt_right" headers="q95">4.080</td>
+<td class="gt_row gt_right" headers="rhat">1.000</td>
+<td class="gt_row gt_right" headers="ess_bulk">461.120</td>
+<td class="gt_row gt_right" headers="ess_tail">750.764</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="variable">omega_0</td>
-<td class="gt_row gt_right" headers="mean">0.581</td>
-<td class="gt_row gt_right" headers="median">0.581</td>
+<td class="gt_row gt_right" headers="mean">0.583</td>
+<td class="gt_row gt_right" headers="median">0.583</td>
 <td class="gt_row gt_right" headers="sd">0.016</td>
 <td class="gt_row gt_right" headers="mad">0.016</td>
-<td class="gt_row gt_right" headers="q5">0.556</td>
-<td class="gt_row gt_right" headers="q95">0.608</td>
-<td class="gt_row gt_right" headers="rhat">1.003</td>
-<td class="gt_row gt_right" headers="ess_bulk">429.108</td>
-<td class="gt_row gt_right" headers="ess_tail">1,002.446</td>
+<td class="gt_row gt_right" headers="q5">0.558</td>
+<td class="gt_row gt_right" headers="q95">0.610</td>
+<td class="gt_row gt_right" headers="rhat">1.001</td>
+<td class="gt_row gt_right" headers="ess_bulk">238.188</td>
+<td class="gt_row gt_right" headers="ess_tail">483.261</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="variable">omega_g</td>
-<td class="gt_row gt_right" headers="mean">1.043</td>
-<td class="gt_row gt_right" headers="median">1.040</td>
-<td class="gt_row gt_right" headers="sd">0.063</td>
-<td class="gt_row gt_right" headers="mad">0.062</td>
-<td class="gt_row gt_right" headers="q5">0.943</td>
-<td class="gt_row gt_right" headers="q95">1.149</td>
-<td class="gt_row gt_right" headers="rhat">1.004</td>
-<td class="gt_row gt_right" headers="ess_bulk">664.633</td>
-<td class="gt_row gt_right" headers="ess_tail">1,063.643</td>
+<td class="gt_row gt_right" headers="mean">1.046</td>
+<td class="gt_row gt_right" headers="median">1.045</td>
+<td class="gt_row gt_right" headers="sd">0.064</td>
+<td class="gt_row gt_right" headers="mad">0.063</td>
+<td class="gt_row gt_right" headers="q5">0.940</td>
+<td class="gt_row gt_right" headers="q95">1.152</td>
+<td class="gt_row gt_right" headers="rhat">1.003</td>
+<td class="gt_row gt_right" headers="ess_bulk">541.267</td>
+<td class="gt_row gt_right" headers="ess_tail">777.552</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="variable">omega_p</td>
-<td class="gt_row gt_right" headers="mean">1.576</td>
-<td class="gt_row gt_right" headers="median">1.570</td>
-<td class="gt_row gt_right" headers="sd">0.105</td>
-<td class="gt_row gt_right" headers="mad">0.104</td>
-<td class="gt_row gt_right" headers="q5">1.413</td>
-<td class="gt_row gt_right" headers="q95">1.757</td>
+<td class="gt_row gt_right" headers="mean">1.579</td>
+<td class="gt_row gt_right" headers="median">1.573</td>
+<td class="gt_row gt_right" headers="sd">0.108</td>
+<td class="gt_row gt_right" headers="mad">0.108</td>
+<td class="gt_row gt_right" headers="q5">1.403</td>
+<td class="gt_row gt_right" headers="q95">1.756</td>
 <td class="gt_row gt_right" headers="rhat">1.001</td>
-<td class="gt_row gt_right" headers="ess_bulk">434.576</td>
-<td class="gt_row gt_right" headers="ess_tail">976.113</td>
+<td class="gt_row gt_right" headers="ess_bulk">312.030</td>
+<td class="gt_row gt_right" headers="ess_tail">497.300</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="variable">omega_c</td>
-<td class="gt_row gt_right" headers="mean">1.569</td>
-<td class="gt_row gt_right" headers="median">1.565</td>
-<td class="gt_row gt_right" headers="sd">0.150</td>
-<td class="gt_row gt_right" headers="mad">0.153</td>
-<td class="gt_row gt_right" headers="q5">1.326</td>
-<td class="gt_row gt_right" headers="q95">1.822</td>
+<td class="gt_row gt_right" headers="mean">1.549</td>
+<td class="gt_row gt_right" headers="median">1.550</td>
+<td class="gt_row gt_right" headers="sd">0.141</td>
+<td class="gt_row gt_right" headers="mad">0.144</td>
+<td class="gt_row gt_right" headers="q5">1.318</td>
+<td class="gt_row gt_right" headers="q95">1.784</td>
 <td class="gt_row gt_right" headers="rhat">1.001</td>
-<td class="gt_row gt_right" headers="ess_bulk">638.934</td>
-<td class="gt_row gt_right" headers="ess_tail">941.209</td>
+<td class="gt_row gt_right" headers="ess_bulk">546.003</td>
+<td class="gt_row gt_right" headers="ess_tail">775.978</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="variable">cv_0</td>
-<td class="gt_row gt_right" headers="mean">0.634</td>
-<td class="gt_row gt_right" headers="median">0.634</td>
+<td class="gt_row gt_right" headers="mean">0.637</td>
+<td class="gt_row gt_right" headers="median">0.636</td>
 <td class="gt_row gt_right" headers="sd">0.020</td>
-<td class="gt_row gt_right" headers="mad">0.021</td>
-<td class="gt_row gt_right" headers="q5">0.602</td>
-<td class="gt_row gt_right" headers="q95">0.669</td>
-<td class="gt_row gt_right" headers="rhat">1.003</td>
-<td class="gt_row gt_right" headers="ess_bulk">429.108</td>
-<td class="gt_row gt_right" headers="ess_tail">1,002.446</td>
+<td class="gt_row gt_right" headers="mad">0.020</td>
+<td class="gt_row gt_right" headers="q5">0.605</td>
+<td class="gt_row gt_right" headers="q95">0.672</td>
+<td class="gt_row gt_right" headers="rhat">1.001</td>
+<td class="gt_row gt_right" headers="ess_bulk">238.188</td>
+<td class="gt_row gt_right" headers="ess_tail">483.261</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="variable">cv_g</td>
-<td class="gt_row gt_right" headers="mean">1.409</td>
-<td class="gt_row gt_right" headers="median">1.396</td>
-<td class="gt_row gt_right" headers="sd">0.140</td>
-<td class="gt_row gt_right" headers="mad">0.136</td>
-<td class="gt_row gt_right" headers="q5">1.197</td>
-<td class="gt_row gt_right" headers="q95">1.655</td>
-<td class="gt_row gt_right" headers="rhat">1.004</td>
-<td class="gt_row gt_right" headers="ess_bulk">664.633</td>
-<td class="gt_row gt_right" headers="ess_tail">1,063.643</td>
+<td class="gt_row gt_right" headers="mean">1.415</td>
+<td class="gt_row gt_right" headers="median">1.407</td>
+<td class="gt_row gt_right" headers="sd">0.144</td>
+<td class="gt_row gt_right" headers="mad">0.140</td>
+<td class="gt_row gt_right" headers="q5">1.191</td>
+<td class="gt_row gt_right" headers="q95">1.665</td>
+<td class="gt_row gt_right" headers="rhat">1.003</td>
+<td class="gt_row gt_right" headers="ess_bulk">541.267</td>
+<td class="gt_row gt_right" headers="ess_tail">777.552</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="variable">cv_p</td>
-<td class="gt_row gt_right" headers="mean">3.383</td>
-<td class="gt_row gt_right" headers="median">3.278</td>
-<td class="gt_row gt_right" headers="sd">0.645</td>
-<td class="gt_row gt_right" headers="mad">0.578</td>
-<td class="gt_row gt_right" headers="q5">2.521</td>
-<td class="gt_row gt_right" headers="q95">4.577</td>
+<td class="gt_row gt_right" headers="mean">3.403</td>
+<td class="gt_row gt_right" headers="median">3.300</td>
+<td class="gt_row gt_right" headers="sd">0.659</td>
+<td class="gt_row gt_right" headers="mad">0.610</td>
+<td class="gt_row gt_right" headers="q5">2.480</td>
+<td class="gt_row gt_right" headers="q95">4.565</td>
 <td class="gt_row gt_right" headers="rhat">1.001</td>
-<td class="gt_row gt_right" headers="ess_bulk">434.576</td>
-<td class="gt_row gt_right" headers="ess_tail">976.113</td>
+<td class="gt_row gt_right" headers="ess_bulk">312.030</td>
+<td class="gt_row gt_right" headers="ess_tail">497.300</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="variable">cv_c</td>
-<td class="gt_row gt_right" headers="mean">3.415</td>
-<td class="gt_row gt_right" headers="median">3.254</td>
-<td class="gt_row gt_right" headers="sd">0.930</td>
-<td class="gt_row gt_right" headers="mad">0.838</td>
-<td class="gt_row gt_right" headers="q5">2.192</td>
-<td class="gt_row gt_right" headers="q95">5.165</td>
+<td class="gt_row gt_right" headers="mean">3.277</td>
+<td class="gt_row gt_right" headers="median">3.172</td>
+<td class="gt_row gt_right" headers="sd">0.816</td>
+<td class="gt_row gt_right" headers="mad">0.776</td>
+<td class="gt_row gt_right" headers="q5">2.163</td>
+<td class="gt_row gt_right" headers="q95">4.805</td>
 <td class="gt_row gt_right" headers="rhat">1.001</td>
-<td class="gt_row gt_right" headers="ess_bulk">638.934</td>
-<td class="gt_row gt_right" headers="ess_tail">941.209</td>
+<td class="gt_row gt_right" headers="ess_bulk">546.003</td>
+<td class="gt_row gt_right" headers="ess_tail">775.978</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="variable">sigma</td>
@@ -1408,9 +1414,9 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
 <td class="gt_row gt_right" headers="mad">0.002</td>
 <td class="gt_row gt_right" headers="q5">0.150</td>
 <td class="gt_row gt_right" headers="q95">0.158</td>
-<td class="gt_row gt_right" headers="rhat">1.000</td>
-<td class="gt_row gt_right" headers="ess_bulk">1,258.184</td>
-<td class="gt_row gt_right" headers="ess_tail">2,273.384</td>
+<td class="gt_row gt_right" headers="rhat">1.001</td>
+<td class="gt_row gt_right" headers="ess_bulk">829.642</td>
+<td class="gt_row gt_right" headers="ess_tail">1,506.709</td>
 </tr>
 </tbody>
 </table>
@@ -1459,11 +1465,11 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
 <span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"CB model fit"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 26 rows containing missing values or values outside the scale range
+<pre><code>Warning: Removed 14 rows containing missing values or values outside the scale range
 (`geom_ribbon()`).</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 26 rows containing missing values or values outside the scale range
+<pre><code>Warning: Removed 14 rows containing missing values or values outside the scale range
 (`geom_line()`).</code></pre>
 </div>
 <div class="cell-output-display">
@@ -1579,16 +1585,16 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
     }
     function toggleCodeHandler(show) {
       return function(e) {
-        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
-        for (let i=0; i<detailsSrc.length; i++) {
-          const details = detailsSrc[i].parentElement;
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
           if (show) {
             details.open = true;
           } else {
             details.removeAttribute("open");
           }
         }
-        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
         const fromCls = show ? "hidden" : "unhidden";
         const toCls = show ? "unhidden" : "hidden";
         for (let i=0; i<cellCodeDivs.length; i++) {
@@ -2102,7 +2108,7 @@ There were 4489 divergent transitions after warmup. Increasing adapt_delta above
 <span id="cb24-166"><a href="#cb24-166" aria-hidden="true" tabindex="-1"></a>  <span class="fu">load</span>(post_df_file)</span>
 <span id="cb24-167"><a href="#cb24-167" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
 <span id="cb24-168"><a href="#cb24-168" aria-hidden="true" tabindex="-1"></a>  post_df <span class="ot">&lt;-</span> <span class="fu">as_draws_df</span>(fit) <span class="sc">|&gt;</span> </span>
-<span id="cb24-169"><a href="#cb24-169" aria-hidden="true" tabindex="-1"></a>    <span class="fu">subset_draws</span>(<span class="at">iteration =</span> (<span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>) <span class="sc">*</span> <span class="dv">2</span>)</span>
+<span id="cb24-169"><a href="#cb24-169" aria-hidden="true" tabindex="-1"></a>    <span class="fu">subset_draws</span>(<span class="at">iteration =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>)</span>
 <span id="cb24-170"><a href="#cb24-170" aria-hidden="true" tabindex="-1"></a>  <span class="fu">save</span>(post_df, <span class="at">file =</span> post_df_file)</span>
 <span id="cb24-171"><a href="#cb24-171" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb24-172"><a href="#cb24-172" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">names</span>(post_df), <span class="dv">10</span>)</span>

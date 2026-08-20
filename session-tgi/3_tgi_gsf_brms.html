@@ -2,20 +2,26 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.25">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Daniel Sabanés Bové">
 <meta name="author" content="Francois Mercier">
-<meta name="dcterms.date" content="2025-11-17">
+<meta name="dcterms.date" content="2026-08-20">
 
 <title>3. Generalized Stein-Fojo model – TGI-OS Training</title>
 <style>
-code{white-space: pre-wrap;}
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -70,15 +76,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="../">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-fe572088fed4c8b78605e513f5ffbe45.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-df3a4ca9cfbbad302b87d6abdb3f87e5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -108,7 +113,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -162,11 +167,12 @@ window.Quarto = {
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
-      <a href="../index.html" class="sidebar-logo-link">
-      </a>
-      <div class="sidebar-tools-main">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">TGI-OS Training</a> 
+        <div class="sidebar-tools-main">
     <a href="https://rconis.github.io/tgi-os-training/" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
 </div>
+    </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
@@ -362,7 +368,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2025-11-17</p>
+      <p class="date">2026-08-20</p>
     </div>
   </div>
   
@@ -439,11 +445,11 @@ window.Quarto = {
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">id =</span> <span class="fu">factor</span>(<span class="fu">as.character</span>(patient_anonmyized)),</span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">day =</span> <span class="fu">as.integer</span>(treatment_day),</span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">year =</span> day <span class="sc">/</span> <span class="fl">365.25</span>,</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">target_lesion_long_diam_mm =</span> <span class="fu">case_match</span>(</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">target_lesion_long_diam_mm =</span> <span class="fu">recode_values</span>(</span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>            target_lesion_long_diam_mm,</span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>            <span class="st">"TOO SMALL TO MEASURE"</span> <span class="sc">~</span> <span class="st">"2"</span>,</span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>            <span class="st">"NOT EVALUABLE"</span> <span class="sc">~</span> <span class="cn">NA_character_</span>,</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>            <span class="at">.default =</span> target_lesion_long_diam_mm</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>            <span class="at">default =</span> target_lesion_long_diam_mm</span>
 <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        ),</span>
 <span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">sld =</span> <span class="fu">as.numeric</span>(target_lesion_long_diam_mm),</span>
 <span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        <span class="at">sld =</span> <span class="fu">ifelse</span>(sld <span class="sc">==</span> <span class="dv">0</span>, <span class="dv">2</span>, sld),</span>
@@ -482,7 +488,7 @@ window.Quarto = {
  7160320731596789760 :  16   Mean   : 0.3822   Mean   : 36.1   4:4126  
  -4159496062492130816:  15   3rd Qu.: 0.5722   3rd Qu.: 49.0   5: 835  
  -7900338178541499392:  15   Max.   : 2.0753   Max.   :228.0           
- (Other)             :8463   NA's   :1         NA's   :69              
+ (Other)             :8463   NAs    :1         NAs    :69              
  arm     
  1:3108  
  2:3715  
@@ -634,16 +640,16 @@ y^{*}(t_{ij}) =
 <span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: There were 41 divergent transitions after warmup. Increasing
+<pre><code>Warning: There were 61 divergent transitions after warmup. Increasing
 adapt_delta above 0.8 may help. See
 http://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code> Family: gaussian 
   Links: mu = identity; sigma = log 
-Formula: sld ~ eta 
-         eta ~ int_step(year &gt; 0) * (b0 * (phi * exp(-ks * year) + (1 - phi) * exp(kg * year))) + int_step(year &lt;= 0) * (b0 * exp(kg * year))
-         sigma ~ log(tau) + log(eta)
+Formula: sld ~ ystar 
+         ystar ~ int_step(year &gt; 0) * (b0 * (phi * exp(-ks * year) + (1 - phi) * exp(kg * year))) + int_step(year &lt;= 0) * (b0 * exp(kg * year))
+         sigma ~ log(tau) + log(ystar)
          tau ~ 1
          b0 ~ exp(lb0)
          phi ~ inv_logit(tphi)
@@ -660,18 +666,18 @@ Formula: sld ~ eta
 Multilevel Hyperparameters:
 ~id (Number of levels: 701) 
                    Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-sd(lb0_Intercept)      0.58      0.02     0.55     0.61 1.01      382      606
-sd(tphi_Intercept)     2.12      0.18     1.78     2.49 1.01      611     1216
-sd(lks_Intercept)      2.16      0.14     1.90     2.46 1.00      520     1282
-sd(lkg_Intercept)      1.18      0.09     1.01     1.36 1.00      899     1766
+sd(lb0_Intercept)      0.58      0.02     0.55     0.61 1.01      552     1087
+sd(tphi_Intercept)     2.12      0.18     1.78     2.50 1.00      761     1226
+sd(lks_Intercept)      2.16      0.15     1.87     2.46 1.00      491     1263
+sd(lkg_Intercept)      1.18      0.09     1.01     1.36 1.00     1318     2054
 
 Regression Coefficients:
                Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-tau_Intercept      0.15      0.00     0.14     0.15 1.00     1611     2351
-lb0_Intercept      3.63      0.02     3.59     3.68 1.03      221      547
-tphi_Intercept    -0.14      0.22    -0.57     0.27 1.00      424      839
-lks_Intercept     -0.62      0.10    -0.81    -0.43 1.00     1170     1868
-lkg_Intercept     -1.15      0.14    -1.43    -0.89 1.00      699     1488
+tau_Intercept      0.15      0.00     0.14     0.15 1.00     1957     2584
+lb0_Intercept      3.63      0.02     3.58     3.68 1.01      282      709
+tphi_Intercept    -0.15      0.22    -0.59     0.26 1.00      597     1206
+lks_Intercept     -0.61      0.10    -0.81    -0.42 1.00     1746     2682
+lkg_Intercept     -1.15      0.14    -1.44    -0.89 1.00      757     1565
 
 Draws were sampled using sample(hmc). For each parameter, Bulk_ESS
 and Tail_ESS are effective sample size measures, and Rhat is the potential
@@ -762,23 +768,23 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>post_sum</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<div id="dhvvybrgbm" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#dhvvybrgbm table {
+<div id="nvftxsabqz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#nvftxsabqz table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#dhvvybrgbm thead, #dhvvybrgbm tbody, #dhvvybrgbm tfoot, #dhvvybrgbm tr, #dhvvybrgbm td, #dhvvybrgbm th {
+#nvftxsabqz thead, #nvftxsabqz tbody, #nvftxsabqz tfoot, #nvftxsabqz tr, #nvftxsabqz td, #nvftxsabqz th {
   border-style: none;
 }
 
-#dhvvybrgbm p {
+#nvftxsabqz p {
   margin: 0;
   padding: 0;
 }
 
-#dhvvybrgbm .gt_table {
+#nvftxsabqz .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -804,12 +810,12 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#dhvvybrgbm .gt_caption {
+#nvftxsabqz .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#dhvvybrgbm .gt_title {
+#nvftxsabqz .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -821,7 +827,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-width: 0;
 }
 
-#dhvvybrgbm .gt_subtitle {
+#nvftxsabqz .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -833,7 +839,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-top-width: 0;
 }
 
-#dhvvybrgbm .gt_heading {
+#nvftxsabqz .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -845,13 +851,13 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#dhvvybrgbm .gt_bottom_border {
+#nvftxsabqz .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#dhvvybrgbm .gt_col_headings {
+#nvftxsabqz .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -866,7 +872,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#dhvvybrgbm .gt_col_heading {
+#nvftxsabqz .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -886,7 +892,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   overflow-x: hidden;
 }
 
-#dhvvybrgbm .gt_column_spanner_outer {
+#nvftxsabqz .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -898,15 +904,15 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 4px;
 }
 
-#dhvvybrgbm .gt_column_spanner_outer:first-child {
+#nvftxsabqz .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#dhvvybrgbm .gt_column_spanner_outer:last-child {
+#nvftxsabqz .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#dhvvybrgbm .gt_column_spanner {
+#nvftxsabqz .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -918,11 +924,11 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   width: 100%;
 }
 
-#dhvvybrgbm .gt_spanner_row {
+#nvftxsabqz .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#dhvvybrgbm .gt_group_heading {
+#nvftxsabqz .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -948,7 +954,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   text-align: left;
 }
 
-#dhvvybrgbm .gt_empty_group_heading {
+#nvftxsabqz .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -963,15 +969,15 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   vertical-align: middle;
 }
 
-#dhvvybrgbm .gt_from_md > :first-child {
+#nvftxsabqz .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#dhvvybrgbm .gt_from_md > :last-child {
+#nvftxsabqz .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#dhvvybrgbm .gt_row {
+#nvftxsabqz .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -990,7 +996,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   overflow-x: hidden;
 }
 
-#dhvvybrgbm .gt_stub {
+#nvftxsabqz .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1003,7 +1009,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#dhvvybrgbm .gt_stub_row_group {
+#nvftxsabqz .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1017,15 +1023,15 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   vertical-align: top;
 }
 
-#dhvvybrgbm .gt_row_group_first td {
+#nvftxsabqz .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#dhvvybrgbm .gt_row_group_first th {
+#nvftxsabqz .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#dhvvybrgbm .gt_summary_row {
+#nvftxsabqz .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1035,16 +1041,16 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#dhvvybrgbm .gt_first_summary_row {
+#nvftxsabqz .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#dhvvybrgbm .gt_first_summary_row.thick {
+#nvftxsabqz .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#dhvvybrgbm .gt_last_summary_row {
+#nvftxsabqz .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1054,7 +1060,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#dhvvybrgbm .gt_grand_summary_row {
+#nvftxsabqz .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1064,7 +1070,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#dhvvybrgbm .gt_first_grand_summary_row {
+#nvftxsabqz .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1074,7 +1080,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#dhvvybrgbm .gt_last_grand_summary_row_top {
+#nvftxsabqz .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1084,11 +1090,11 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#dhvvybrgbm .gt_striped {
+#nvftxsabqz .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#dhvvybrgbm .gt_table_body {
+#nvftxsabqz .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1097,7 +1103,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#dhvvybrgbm .gt_footnotes {
+#nvftxsabqz .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1111,7 +1117,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#dhvvybrgbm .gt_footnote {
+#nvftxsabqz .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1120,7 +1126,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#dhvvybrgbm .gt_sourcenotes {
+#nvftxsabqz .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1134,7 +1140,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#dhvvybrgbm .gt_sourcenote {
+#nvftxsabqz .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1142,72 +1148,72 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
   padding-right: 5px;
 }
 
-#dhvvybrgbm .gt_left {
+#nvftxsabqz .gt_left {
   text-align: left;
 }
 
-#dhvvybrgbm .gt_center {
+#nvftxsabqz .gt_center {
   text-align: center;
 }
 
-#dhvvybrgbm .gt_right {
+#nvftxsabqz .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#dhvvybrgbm .gt_font_normal {
+#nvftxsabqz .gt_font_normal {
   font-weight: normal;
 }
 
-#dhvvybrgbm .gt_font_bold {
+#nvftxsabqz .gt_font_bold {
   font-weight: bold;
 }
 
-#dhvvybrgbm .gt_font_italic {
+#nvftxsabqz .gt_font_italic {
   font-style: italic;
 }
 
-#dhvvybrgbm .gt_super {
+#nvftxsabqz .gt_super {
   font-size: 65%;
 }
 
-#dhvvybrgbm .gt_footnote_marks {
+#nvftxsabqz .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#dhvvybrgbm .gt_asterisk {
+#nvftxsabqz .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#dhvvybrgbm .gt_indent_1 {
+#nvftxsabqz .gt_indent_1 {
   text-indent: 5px;
 }
 
-#dhvvybrgbm .gt_indent_2 {
+#nvftxsabqz .gt_indent_2 {
   text-indent: 10px;
 }
 
-#dhvvybrgbm .gt_indent_3 {
+#nvftxsabqz .gt_indent_3 {
   text-indent: 15px;
 }
 
-#dhvvybrgbm .gt_indent_4 {
+#nvftxsabqz .gt_indent_4 {
   text-indent: 20px;
 }
 
-#dhvvybrgbm .gt_indent_5 {
+#nvftxsabqz .gt_indent_5 {
   text-indent: 25px;
 }
 
-#dhvvybrgbm .katex-display {
+#nvftxsabqz .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#dhvvybrgbm div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#nvftxsabqz div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1230,99 +1236,99 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <tbody class="gt_table_body">
 <tr class="odd">
 <td class="gt_row gt_left" headers="variable">theta_b0</td>
-<td class="gt_row gt_right" headers="mean">44.766</td>
-<td class="gt_row gt_right" headers="median">44.746</td>
-<td class="gt_row gt_right" headers="sd">1.057</td>
-<td class="gt_row gt_right" headers="mad">1.073</td>
-<td class="gt_row gt_right" headers="q5">43.074</td>
-<td class="gt_row gt_right" headers="q95">46.528</td>
-<td class="gt_row gt_right" headers="rhat">1.007</td>
-<td class="gt_row gt_right" headers="ess_bulk">179.361</td>
-<td class="gt_row gt_right" headers="ess_tail">378.906</td>
+<td class="gt_row gt_right" headers="mean">44.643</td>
+<td class="gt_row gt_right" headers="median">44.640</td>
+<td class="gt_row gt_right" headers="sd">1.124</td>
+<td class="gt_row gt_right" headers="mad">1.083</td>
+<td class="gt_row gt_right" headers="q5">42.793</td>
+<td class="gt_row gt_right" headers="q95">46.520</td>
+<td class="gt_row gt_right" headers="rhat">1.000</td>
+<td class="gt_row gt_right" headers="ess_bulk">297.450</td>
+<td class="gt_row gt_right" headers="ess_tail">629.773</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="variable">theta_ks</td>
-<td class="gt_row gt_right" headers="mean">5.857</td>
-<td class="gt_row gt_right" headers="median">5.444</td>
-<td class="gt_row gt_right" headers="sd">1.924</td>
-<td class="gt_row gt_right" headers="mad">1.582</td>
-<td class="gt_row gt_right" headers="q5">3.589</td>
-<td class="gt_row gt_right" headers="q95">9.560</td>
-<td class="gt_row gt_right" headers="rhat">1.003</td>
-<td class="gt_row gt_right" headers="ess_bulk">384.622</td>
-<td class="gt_row gt_right" headers="ess_tail">905.388</td>
+<td class="gt_row gt_right" headers="mean">5.921</td>
+<td class="gt_row gt_right" headers="median">5.532</td>
+<td class="gt_row gt_right" headers="sd">2.027</td>
+<td class="gt_row gt_right" headers="mad">1.709</td>
+<td class="gt_row gt_right" headers="q5">3.500</td>
+<td class="gt_row gt_right" headers="q95">9.589</td>
+<td class="gt_row gt_right" headers="rhat">1.000</td>
+<td class="gt_row gt_right" headers="ess_bulk">400.600</td>
+<td class="gt_row gt_right" headers="ess_tail">816.723</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="variable">theta_kg</td>
-<td class="gt_row gt_right" headers="mean">0.640</td>
-<td class="gt_row gt_right" headers="median">0.637</td>
+<td class="gt_row gt_right" headers="mean">0.636</td>
+<td class="gt_row gt_right" headers="median">0.633</td>
 <td class="gt_row gt_right" headers="sd">0.061</td>
-<td class="gt_row gt_right" headers="mad">0.062</td>
-<td class="gt_row gt_right" headers="q5">0.541</td>
-<td class="gt_row gt_right" headers="q95">0.745</td>
-<td class="gt_row gt_right" headers="rhat">1.000</td>
-<td class="gt_row gt_right" headers="ess_bulk">685.379</td>
-<td class="gt_row gt_right" headers="ess_tail">1,885.264</td>
+<td class="gt_row gt_right" headers="mad">0.060</td>
+<td class="gt_row gt_right" headers="q5">0.542</td>
+<td class="gt_row gt_right" headers="q95">0.738</td>
+<td class="gt_row gt_right" headers="rhat">1.003</td>
+<td class="gt_row gt_right" headers="ess_bulk">882.500</td>
+<td class="gt_row gt_right" headers="ess_tail">1,349.882</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="variable">theta_phi</td>
-<td class="gt_row gt_right" headers="mean">0.467</td>
-<td class="gt_row gt_right" headers="median">0.466</td>
-<td class="gt_row gt_right" headers="sd">0.055</td>
-<td class="gt_row gt_right" headers="mad">0.058</td>
-<td class="gt_row gt_right" headers="q5">0.376</td>
-<td class="gt_row gt_right" headers="q95">0.555</td>
-<td class="gt_row gt_right" headers="rhat">1.003</td>
-<td class="gt_row gt_right" headers="ess_bulk">419.761</td>
-<td class="gt_row gt_right" headers="ess_tail">831.991</td>
+<td class="gt_row gt_right" headers="mean">0.462</td>
+<td class="gt_row gt_right" headers="median">0.463</td>
+<td class="gt_row gt_right" headers="sd">0.054</td>
+<td class="gt_row gt_right" headers="mad">0.055</td>
+<td class="gt_row gt_right" headers="q5">0.373</td>
+<td class="gt_row gt_right" headers="q95">0.549</td>
+<td class="gt_row gt_right" headers="rhat">1.004</td>
+<td class="gt_row gt_right" headers="ess_bulk">592.269</td>
+<td class="gt_row gt_right" headers="ess_tail">1,187.496</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="variable">omega_0</td>
-<td class="gt_row gt_right" headers="mean">0.578</td>
-<td class="gt_row gt_right" headers="median">0.578</td>
+<td class="gt_row gt_right" headers="mean">0.577</td>
+<td class="gt_row gt_right" headers="median">0.577</td>
 <td class="gt_row gt_right" headers="sd">0.016</td>
-<td class="gt_row gt_right" headers="mad">0.017</td>
-<td class="gt_row gt_right" headers="q5">0.553</td>
-<td class="gt_row gt_right" headers="q95">0.606</td>
-<td class="gt_row gt_right" headers="rhat">1.001</td>
-<td class="gt_row gt_right" headers="ess_bulk">376.483</td>
-<td class="gt_row gt_right" headers="ess_tail">628.807</td>
+<td class="gt_row gt_right" headers="mad">0.016</td>
+<td class="gt_row gt_right" headers="q5">0.551</td>
+<td class="gt_row gt_right" headers="q95">0.603</td>
+<td class="gt_row gt_right" headers="rhat">1.003</td>
+<td class="gt_row gt_right" headers="ess_bulk">550.236</td>
+<td class="gt_row gt_right" headers="ess_tail">1,078.502</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="variable">omega_s</td>
-<td class="gt_row gt_right" headers="mean">2.159</td>
+<td class="gt_row gt_right" headers="mean">2.158</td>
 <td class="gt_row gt_right" headers="median">2.155</td>
-<td class="gt_row gt_right" headers="sd">0.145</td>
-<td class="gt_row gt_right" headers="mad">0.145</td>
-<td class="gt_row gt_right" headers="q5">1.929</td>
-<td class="gt_row gt_right" headers="q95">2.412</td>
-<td class="gt_row gt_right" headers="rhat">1.002</td>
-<td class="gt_row gt_right" headers="ess_bulk">521.866</td>
-<td class="gt_row gt_right" headers="ess_tail">1,265.639</td>
+<td class="gt_row gt_right" headers="sd">0.151</td>
+<td class="gt_row gt_right" headers="mad">0.157</td>
+<td class="gt_row gt_right" headers="q5">1.913</td>
+<td class="gt_row gt_right" headers="q95">2.405</td>
+<td class="gt_row gt_right" headers="rhat">1.000</td>
+<td class="gt_row gt_right" headers="ess_bulk">503.085</td>
+<td class="gt_row gt_right" headers="ess_tail">1,238.959</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="variable">omega_g</td>
-<td class="gt_row gt_right" headers="mean">1.177</td>
-<td class="gt_row gt_right" headers="median">1.174</td>
-<td class="gt_row gt_right" headers="sd">0.090</td>
-<td class="gt_row gt_right" headers="mad">0.090</td>
-<td class="gt_row gt_right" headers="q5">1.037</td>
-<td class="gt_row gt_right" headers="q95">1.333</td>
-<td class="gt_row gt_right" headers="rhat">1.002</td>
-<td class="gt_row gt_right" headers="ess_bulk">868.075</td>
-<td class="gt_row gt_right" headers="ess_tail">1,746.640</td>
+<td class="gt_row gt_right" headers="mean">1.175</td>
+<td class="gt_row gt_right" headers="median">1.173</td>
+<td class="gt_row gt_right" headers="sd">0.089</td>
+<td class="gt_row gt_right" headers="mad">0.088</td>
+<td class="gt_row gt_right" headers="q5">1.036</td>
+<td class="gt_row gt_right" headers="q95">1.330</td>
+<td class="gt_row gt_right" headers="rhat">1.001</td>
+<td class="gt_row gt_right" headers="ess_bulk">1,274.562</td>
+<td class="gt_row gt_right" headers="ess_tail">2,034.850</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers="variable">omega_phi</td>
 <td class="gt_row gt_right" headers="mean">2.117</td>
-<td class="gt_row gt_right" headers="median">2.108</td>
-<td class="gt_row gt_right" headers="sd">0.182</td>
-<td class="gt_row gt_right" headers="mad">0.184</td>
-<td class="gt_row gt_right" headers="q5">1.833</td>
-<td class="gt_row gt_right" headers="q95">2.423</td>
-<td class="gt_row gt_right" headers="rhat">1.003</td>
-<td class="gt_row gt_right" headers="ess_bulk">603.806</td>
-<td class="gt_row gt_right" headers="ess_tail">1,215.066</td>
+<td class="gt_row gt_right" headers="median">2.109</td>
+<td class="gt_row gt_right" headers="sd">0.185</td>
+<td class="gt_row gt_right" headers="mad">0.179</td>
+<td class="gt_row gt_right" headers="q5">1.834</td>
+<td class="gt_row gt_right" headers="q95">2.429</td>
+<td class="gt_row gt_right" headers="rhat">1.001</td>
+<td class="gt_row gt_right" headers="ess_bulk">723.322</td>
+<td class="gt_row gt_right" headers="ess_tail">1,188.639</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers="variable">sigma</td>
@@ -1332,9 +1338,9 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <td class="gt_row gt_right" headers="mad">0.002</td>
 <td class="gt_row gt_right" headers="q5">0.143</td>
 <td class="gt_row gt_right" headers="q95">0.150</td>
-<td class="gt_row gt_right" headers="rhat">1.000</td>
-<td class="gt_row gt_right" headers="ess_bulk">1,575.916</td>
-<td class="gt_row gt_right" headers="ess_tail">2,168.010</td>
+<td class="gt_row gt_right" headers="rhat">1.001</td>
+<td class="gt_row gt_right" headers="ess_bulk">1,859.042</td>
+<td class="gt_row gt_right" headers="ess_tail">2,503.413</td>
 </tr>
 </tbody>
 </table>
@@ -1376,6 +1382,14 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Greys"</span>) <span class="sc">+</span></span>
 <span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"GSF model fit"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 2 rows containing missing values or values outside the scale range
+(`geom_ribbon()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 2 rows containing missing values or values outside the scale range
+(`geom_line()`).</code></pre>
+</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1489,16 +1503,16 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
     }
     function toggleCodeHandler(show) {
       return function(e) {
-        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
-        for (let i=0; i<detailsSrc.length; i++) {
-          const details = detailsSrc[i].parentElement;
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
           if (show) {
             details.open = true;
           } else {
             details.removeAttribute("open");
           }
         }
-        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
         const fromCls = show ? "hidden" : "unhidden";
         const toCls = show ? "unhidden" : "hidden";
         for (let i=0; i<cellCodeDivs.length; i++) {
@@ -1848,240 +1862,240 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
     }
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "3. Generalized Stein-Fojo model"</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co">  - Daniel Sabanés Bové</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co">  - Francois Mercier</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> last-modified</span></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co">  chunk_output_type: inline</span></span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: show</span></span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="co">    html-math-method: mathjax</span></span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="an">cache:</span><span class="co"> true</span></span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>This appendix shows how the generalized Stein-Fojo model can be implemented in a Bayesian framework using the <span class="in">`brms`</span> package in R.</span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a><span class="fu">## Setup and load data</span></span>
-<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>{{&lt; include _setup_and_load.qmd &gt;}}</span>
-<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>{{&lt; include _load_data.qmd &gt;}}</span>
-<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a><span class="fu">## Generalized Stein-Fojo model</span></span>
-<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>Here we have an additional parameter $\phi$, which is the weight for the shrinkage in the double exponential model. The model is then:</span>
-<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>y^{*}(t_{ij}) = \psi_{b_{0}i} <span class="sc">\{</span></span>
-<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>  \psi_{\phi i} \exp(- \psi_{k_{s}i} \cdot t_{ij}) +</span>
-<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>  (1 - \psi_{\phi i}) \exp(\psi_{k_{g}i} \cdot t_{ij}) </span>
-<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a><span class="sc">\}</span></span>
-<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a>for positive times $t_{ij}$. Again, if the time $t$ is negative, i.e. the treatment has not started yet, then it is reasonable to assume that the tumor cannot shrink yet. That is, we have then $\phi_i = 0$. Therefore, the final model for the mean SLD is:</span>
-<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a>y^{*}(t_{ij}) = </span>
-<span id="cb21-39"><a href="#cb21-39" aria-hidden="true" tabindex="-1"></a>\begin{cases} </span>
-<span id="cb21-40"><a href="#cb21-40" aria-hidden="true" tabindex="-1"></a>\psi_{b_{0}i} \exp(\psi_{k_{g}i} \cdot t_{ij}) &amp; \text{if } t_{ij} &lt; 0 <span class="sc">\\</span></span>
-<span id="cb21-41"><a href="#cb21-41" aria-hidden="true" tabindex="-1"></a>\psi_{b_{0}i} <span class="sc">\{</span></span>
-<span id="cb21-42"><a href="#cb21-42" aria-hidden="true" tabindex="-1"></a>  \psi_{\phi i} \exp(- \psi_{k_{s}i} \cdot t_{ij}) +</span>
-<span id="cb21-43"><a href="#cb21-43" aria-hidden="true" tabindex="-1"></a>  (1 - \psi_{\phi i}) \exp(\psi_{k_{g}i} \cdot t_{ij}) </span>
-<span id="cb21-44"><a href="#cb21-44" aria-hidden="true" tabindex="-1"></a><span class="sc">\}</span> &amp; \text{if } t_{ij} \geq 0 </span>
-<span id="cb21-45"><a href="#cb21-45" aria-hidden="true" tabindex="-1"></a>\end{cases}</span>
-<span id="cb21-46"><a href="#cb21-46" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb21-47"><a href="#cb21-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-48"><a href="#cb21-48" aria-hidden="true" tabindex="-1"></a>In terms of likelihood and priors, we can use the same assumptions as in the previous model. The only difference is that we have to model the $\phi$ parameter. We can use a logit-normal distribution for this parameter. This is a normal distribution on the logit scale, which is then transformed to the unit interval.</span>
-<span id="cb21-49"><a href="#cb21-49" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb21-50"><a href="#cb21-50" aria-hidden="true" tabindex="-1"></a>\psi_{\phi i} \sim \text{LogitNormal}(\text{logit}(0.5) = 0, 0.5)</span>
-<span id="cb21-51"><a href="#cb21-51" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb21-52"><a href="#cb21-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-53"><a href="#cb21-53" aria-hidden="true" tabindex="-1"></a><span class="fu">## Fit model</span></span>
-<span id="cb21-54"><a href="#cb21-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-55"><a href="#cb21-55" aria-hidden="true" tabindex="-1"></a>We can now fit the model using <span class="in">`brms`</span>. The structure is determined by the model formula:</span>
-<span id="cb21-56"><a href="#cb21-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-59"><a href="#cb21-59" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb21-60"><a href="#cb21-60" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: specify_gsf_model</span></span>
-<span id="cb21-61"><a href="#cb21-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-62"><a href="#cb21-62" aria-hidden="true" tabindex="-1"></a>formula <span class="ot">&lt;-</span> <span class="fu">bf</span>(sld <span class="sc">~</span> ystar, <span class="at">nl =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
-<span id="cb21-63"><a href="#cb21-63" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Define the mean for the likelihood</span></span>
-<span id="cb21-64"><a href="#cb21-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nlf</span>(</span>
-<span id="cb21-65"><a href="#cb21-65" aria-hidden="true" tabindex="-1"></a>    ystar <span class="sc">~</span> </span>
-<span id="cb21-66"><a href="#cb21-66" aria-hidden="true" tabindex="-1"></a>      <span class="fu">int_step</span>(year <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">*</span> </span>
-<span id="cb21-67"><a href="#cb21-67" aria-hidden="true" tabindex="-1"></a>        (b0 <span class="sc">*</span> (phi <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span>ks <span class="sc">*</span> year) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> phi) <span class="sc">*</span> <span class="fu">exp</span>(kg <span class="sc">*</span> year))) <span class="sc">+</span></span>
-<span id="cb21-68"><a href="#cb21-68" aria-hidden="true" tabindex="-1"></a>      <span class="fu">int_step</span>(year <span class="sc">&lt;=</span> <span class="dv">0</span>) <span class="sc">*</span> </span>
-<span id="cb21-69"><a href="#cb21-69" aria-hidden="true" tabindex="-1"></a>        (b0 <span class="sc">*</span> <span class="fu">exp</span>(kg <span class="sc">*</span> year))</span>
-<span id="cb21-70"><a href="#cb21-70" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb21-71"><a href="#cb21-71" aria-hidden="true" tabindex="-1"></a>  <span class="co"># As before:</span></span>
-<span id="cb21-72"><a href="#cb21-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nlf</span>(sigma <span class="sc">~</span> <span class="fu">log</span>(tau) <span class="sc">+</span> <span class="fu">log</span>(ystar)) <span class="sc">+</span></span>
-<span id="cb21-73"><a href="#cb21-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lf</span>(tau <span class="sc">~</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb21-74"><a href="#cb21-74" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Define nonlinear parameter transformations:</span></span>
-<span id="cb21-75"><a href="#cb21-75" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nlf</span>(b0 <span class="sc">~</span> <span class="fu">exp</span>(lb0)) <span class="sc">+</span></span>
-<span id="cb21-76"><a href="#cb21-76" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nlf</span>(phi <span class="sc">~</span> <span class="fu">inv_logit</span>(tphi)) <span class="sc">+</span></span>
-<span id="cb21-77"><a href="#cb21-77" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nlf</span>(ks <span class="sc">~</span> <span class="fu">exp</span>(lks)) <span class="sc">+</span></span>
-<span id="cb21-78"><a href="#cb21-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nlf</span>(kg <span class="sc">~</span> <span class="fu">exp</span>(lkg)) <span class="sc">+</span></span>
-<span id="cb21-79"><a href="#cb21-79" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Define random effect structure:</span></span>
-<span id="cb21-80"><a href="#cb21-80" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lf</span>(lb0 <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id)) <span class="sc">+</span> </span>
-<span id="cb21-81"><a href="#cb21-81" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lf</span>(tphi <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id)) <span class="sc">+</span> </span>
-<span id="cb21-82"><a href="#cb21-82" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lf</span>(lks <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id)) <span class="sc">+</span></span>
-<span id="cb21-83"><a href="#cb21-83" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lf</span>(lkg <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id))</span>
-<span id="cb21-84"><a href="#cb21-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-85"><a href="#cb21-85" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the priors</span></span>
-<span id="cb21-86"><a href="#cb21-86" aria-hidden="true" tabindex="-1"></a>priors <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb21-87"><a href="#cb21-87" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="fu">log</span>(<span class="dv">65</span>), <span class="dv">1</span>), <span class="at">nlpar =</span> <span class="st">"lb0"</span>),</span>
-<span id="cb21-88"><a href="#cb21-88" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="fu">log</span>(<span class="fl">0.52</span>), <span class="fl">0.1</span>), <span class="at">nlpar =</span> <span class="st">"lks"</span>),</span>
-<span id="cb21-89"><a href="#cb21-89" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="fu">log</span>(<span class="fl">1.04</span>), <span class="dv">1</span>), <span class="at">nlpar =</span> <span class="st">"lkg"</span>),</span>
-<span id="cb21-90"><a href="#cb21-90" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="fl">0.5</span>), <span class="at">nlpar =</span> <span class="st">"tphi"</span>),</span>
-<span id="cb21-91"><a href="#cb21-91" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="dv">3</span>), <span class="at">lb =</span> <span class="dv">0</span>, <span class="at">nlpar =</span> <span class="st">"lb0"</span>, <span class="at">class =</span> <span class="st">"sd"</span>),</span>
-<span id="cb21-92"><a href="#cb21-92" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="dv">3</span>), <span class="at">lb =</span> <span class="dv">0</span>, <span class="at">nlpar =</span> <span class="st">"lks"</span>, <span class="at">class =</span> <span class="st">"sd"</span>),</span>
-<span id="cb21-93"><a href="#cb21-93" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="dv">3</span>), <span class="at">lb =</span> <span class="dv">0</span>, <span class="at">nlpar =</span> <span class="st">"lkg"</span>, <span class="at">class =</span> <span class="st">"sd"</span>),</span>
-<span id="cb21-94"><a href="#cb21-94" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="fu">student_t</span>(<span class="dv">3</span>, <span class="dv">0</span>, <span class="fl">22.2</span>), <span class="at">lb =</span> <span class="dv">0</span>, <span class="at">nlpar =</span> <span class="st">"tphi"</span>, <span class="at">class =</span> <span class="st">"sd"</span>),</span>
-<span id="cb21-95"><a href="#cb21-95" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="dv">3</span>), <span class="at">lb =</span> <span class="dv">0</span>, <span class="at">nlpar =</span> <span class="st">"tau"</span>)</span>
-<span id="cb21-96"><a href="#cb21-96" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb21-97"><a href="#cb21-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-98"><a href="#cb21-98" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial values to avoid problems at the beginning</span></span>
-<span id="cb21-99"><a href="#cb21-99" aria-hidden="true" tabindex="-1"></a>n_patients <span class="ot">&lt;-</span> <span class="fu">nlevels</span>(df<span class="sc">$</span>id)</span>
-<span id="cb21-100"><a href="#cb21-100" aria-hidden="true" tabindex="-1"></a>inits <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb21-101"><a href="#cb21-101" aria-hidden="true" tabindex="-1"></a>  <span class="at">b_lb0 =</span> <span class="fu">array</span>(<span class="fl">3.61</span>),</span>
-<span id="cb21-102"><a href="#cb21-102" aria-hidden="true" tabindex="-1"></a>  <span class="at">b_lks =</span> <span class="fu">array</span>(<span class="sc">-</span><span class="fl">1.25</span>),</span>
-<span id="cb21-103"><a href="#cb21-103" aria-hidden="true" tabindex="-1"></a>  <span class="at">b_lkg =</span> <span class="fu">array</span>(<span class="sc">-</span><span class="fl">1.33</span>),</span>
-<span id="cb21-104"><a href="#cb21-104" aria-hidden="true" tabindex="-1"></a>  <span class="at">b_tphi =</span> <span class="fu">array</span>(<span class="dv">0</span>),</span>
-<span id="cb21-105"><a href="#cb21-105" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd_1 =</span> <span class="fu">array</span>(<span class="fl">0.58</span>),</span>
-<span id="cb21-106"><a href="#cb21-106" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd_2 =</span> <span class="fu">array</span>(<span class="fl">1.6</span>),</span>
-<span id="cb21-107"><a href="#cb21-107" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd_3 =</span> <span class="fu">array</span>(<span class="fl">0.994</span>),</span>
-<span id="cb21-108"><a href="#cb21-108" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd_4 =</span> <span class="fu">array</span>(<span class="fl">0.1</span>),</span>
-<span id="cb21-109"><a href="#cb21-109" aria-hidden="true" tabindex="-1"></a>  <span class="at">b_tau =</span> <span class="fu">array</span>(<span class="fl">0.161</span>),</span>
-<span id="cb21-110"><a href="#cb21-110" aria-hidden="true" tabindex="-1"></a>  <span class="at">z_1 =</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> <span class="dv">1</span>, <span class="at">ncol =</span> n_patients),</span>
-<span id="cb21-111"><a href="#cb21-111" aria-hidden="true" tabindex="-1"></a>  <span class="at">z_2 =</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> <span class="dv">1</span>, <span class="at">ncol =</span> n_patients),</span>
-<span id="cb21-112"><a href="#cb21-112" aria-hidden="true" tabindex="-1"></a>  <span class="at">z_3 =</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> <span class="dv">1</span>, <span class="at">ncol =</span> n_patients),</span>
-<span id="cb21-113"><a href="#cb21-113" aria-hidden="true" tabindex="-1"></a>  <span class="at">z_4 =</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> <span class="dv">1</span>, <span class="at">ncol =</span> n_patients)</span>
-<span id="cb21-114"><a href="#cb21-114" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb21-115"><a href="#cb21-115" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-116"><a href="#cb21-116" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the model</span></span>
-<span id="cb21-117"><a href="#cb21-117" aria-hidden="true" tabindex="-1"></a>save_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-tgi/gsf1.RData"</span>)</span>
-<span id="cb21-118"><a href="#cb21-118" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(save_file)) {</span>
-<span id="cb21-119"><a href="#cb21-119" aria-hidden="true" tabindex="-1"></a>  <span class="fu">load</span>(save_file)</span>
-<span id="cb21-120"><a href="#cb21-120" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb21-121"><a href="#cb21-121" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> <span class="fu">brm</span>(</span>
-<span id="cb21-122"><a href="#cb21-122" aria-hidden="true" tabindex="-1"></a>    <span class="at">formula =</span> formula,</span>
-<span id="cb21-123"><a href="#cb21-123" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> df,</span>
-<span id="cb21-124"><a href="#cb21-124" aria-hidden="true" tabindex="-1"></a>    <span class="at">prior =</span> priors,</span>
-<span id="cb21-125"><a href="#cb21-125" aria-hidden="true" tabindex="-1"></a>    <span class="at">family =</span> <span class="fu">gaussian</span>(),</span>
-<span id="cb21-126"><a href="#cb21-126" aria-hidden="true" tabindex="-1"></a>    <span class="at">init =</span> <span class="fu">rep</span>(<span class="fu">list</span>(inits), CHAINS),</span>
-<span id="cb21-127"><a href="#cb21-127" aria-hidden="true" tabindex="-1"></a>    <span class="at">chains =</span> CHAINS, </span>
-<span id="cb21-128"><a href="#cb21-128" aria-hidden="true" tabindex="-1"></a>    <span class="at">iter =</span> WARMUP <span class="sc">+</span> ITER, </span>
-<span id="cb21-129"><a href="#cb21-129" aria-hidden="true" tabindex="-1"></a>    <span class="at">warmup =</span> WARMUP, </span>
-<span id="cb21-130"><a href="#cb21-130" aria-hidden="true" tabindex="-1"></a>    <span class="at">seed =</span> BAYES.SEED,</span>
-<span id="cb21-131"><a href="#cb21-131" aria-hidden="true" tabindex="-1"></a>    <span class="at">refresh =</span> REFRESH</span>
-<span id="cb21-132"><a href="#cb21-132" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb21-133"><a href="#cb21-133" aria-hidden="true" tabindex="-1"></a>  <span class="fu">save</span>(fit, <span class="at">file =</span> save_file)</span>
-<span id="cb21-134"><a href="#cb21-134" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb21-135"><a href="#cb21-135" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-136"><a href="#cb21-136" aria-hidden="true" tabindex="-1"></a><span class="co"># Summarize the fit</span></span>
-<span id="cb21-137"><a href="#cb21-137" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span>
-<span id="cb21-138"><a href="#cb21-138" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb21-139"><a href="#cb21-139" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-140"><a href="#cb21-140" aria-hidden="true" tabindex="-1"></a>In total this took 76 minutes on my laptop. </span>
-<span id="cb21-141"><a href="#cb21-141" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-142"><a href="#cb21-142" aria-hidden="true" tabindex="-1"></a><span class="fu">## Parameter estimates</span></span>
-<span id="cb21-143"><a href="#cb21-143" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-146"><a href="#cb21-146" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb21-147"><a href="#cb21-147" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: gsf_post_processing</span></span>
-<span id="cb21-148"><a href="#cb21-148" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-149"><a href="#cb21-149" aria-hidden="true" tabindex="-1"></a>post_df <span class="ot">&lt;-</span> <span class="fu">as_draws_df</span>(fit)</span>
-<span id="cb21-150"><a href="#cb21-150" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">names</span>(post_df), <span class="dv">10</span>)</span>
-<span id="cb21-151"><a href="#cb21-151" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-152"><a href="#cb21-152" aria-hidden="true" tabindex="-1"></a>post_df <span class="ot">&lt;-</span> post_df <span class="sc">|&gt;</span></span>
-<span id="cb21-153"><a href="#cb21-153" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb21-154"><a href="#cb21-154" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_b0 =</span> <span class="fu">exp</span>(b_lb0_Intercept <span class="sc">+</span> sd_id__lb0_Intercept<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
-<span id="cb21-155"><a href="#cb21-155" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_ks =</span> <span class="fu">exp</span>(b_lks_Intercept <span class="sc">+</span> sd_id__lks_Intercept<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
-<span id="cb21-156"><a href="#cb21-156" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_kg =</span> <span class="fu">exp</span>(b_lkg_Intercept <span class="sc">+</span> sd_id__lkg_Intercept<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
-<span id="cb21-157"><a href="#cb21-157" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_phi =</span> <span class="fu">plogis</span>(b_tphi_Intercept),</span>
-<span id="cb21-158"><a href="#cb21-158" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_0 =</span> sd_id__lb0_Intercept,</span>
-<span id="cb21-159"><a href="#cb21-159" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_s =</span> sd_id__lks_Intercept,</span>
-<span id="cb21-160"><a href="#cb21-160" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_g =</span> sd_id__lkg_Intercept,</span>
-<span id="cb21-161"><a href="#cb21-161" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_phi =</span> sd_id__tphi_Intercept,</span>
-<span id="cb21-162"><a href="#cb21-162" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_0 =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(sd_id__lb0_Intercept<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
-<span id="cb21-163"><a href="#cb21-163" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_s =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(sd_id__lks_Intercept<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
-<span id="cb21-164"><a href="#cb21-164" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_g =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(sd_id__lkg_Intercept<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
-<span id="cb21-165"><a href="#cb21-165" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma =</span> b_tau_Intercept</span>
-<span id="cb21-166"><a href="#cb21-166" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb21-167"><a href="#cb21-167" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb21-168"><a href="#cb21-168" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-169"><a href="#cb21-169" aria-hidden="true" tabindex="-1"></a>Let's first look at the population level parameters:</span>
-<span id="cb21-170"><a href="#cb21-170" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-173"><a href="#cb21-173" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb21-174"><a href="#cb21-174" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: gsf_pop_params</span></span>
-<span id="cb21-175"><a href="#cb21-175" aria-hidden="true" tabindex="-1"></a>gsf_pop_params <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"theta_b0"</span>, <span class="st">"theta_ks"</span>, <span class="st">"theta_kg"</span>, <span class="st">"theta_phi"</span>, <span class="st">"sigma"</span>)</span>
-<span id="cb21-176"><a href="#cb21-176" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-177"><a href="#cb21-177" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_trace</span>(post_df, <span class="at">pars =</span> gsf_pop_params)</span>
-<span id="cb21-178"><a href="#cb21-178" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_pairs</span>(</span>
-<span id="cb21-179"><a href="#cb21-179" aria-hidden="true" tabindex="-1"></a>  post_df, </span>
-<span id="cb21-180"><a href="#cb21-180" aria-hidden="true" tabindex="-1"></a>  <span class="at">pars =</span> gsf_pop_params,</span>
-<span id="cb21-181"><a href="#cb21-181" aria-hidden="true" tabindex="-1"></a>  <span class="at">off_diag_args =</span> <span class="fu">list</span>(<span class="at">size =</span> <span class="dv">1</span>, <span class="at">alpha =</span> <span class="fl">0.1</span>)</span>
-<span id="cb21-182"><a href="#cb21-182" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb21-183"><a href="#cb21-183" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb21-184"><a href="#cb21-184" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-185"><a href="#cb21-185" aria-hidden="true" tabindex="-1"></a>The trace plots look good. The chains seem to have converged and the pairs plot shows no strong correlations between the parameters. Let's check the table:</span>
-<span id="cb21-186"><a href="#cb21-186" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-189"><a href="#cb21-189" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb21-190"><a href="#cb21-190" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: gsf_post_summary</span></span>
-<span id="cb21-191"><a href="#cb21-191" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-192"><a href="#cb21-192" aria-hidden="true" tabindex="-1"></a>post_sum <span class="ot">&lt;-</span> post_df <span class="sc">|&gt;</span></span>
-<span id="cb21-193"><a href="#cb21-193" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(theta_b0, theta_ks, theta_kg, theta_phi, omega_0, omega_s, omega_g, omega_phi, sigma) <span class="sc">|&gt;</span></span>
-<span id="cb21-194"><a href="#cb21-194" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize_draws</span>() <span class="sc">|&gt;</span></span>
-<span id="cb21-195"><a href="#cb21-195" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
-<span id="cb21-196"><a href="#cb21-196" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">decimals =</span> <span class="dv">3</span>)</span>
-<span id="cb21-197"><a href="#cb21-197" aria-hidden="true" tabindex="-1"></a>post_sum</span>
-<span id="cb21-198"><a href="#cb21-198" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb21-199"><a href="#cb21-199" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-200"><a href="#cb21-200" aria-hidden="true" tabindex="-1"></a>So $\theta_{\phi}$ is estimated around 0.5. The other parameters are similar to the previous Stein-Fojo model, but we see a larger $\theta_{k_s}$ e.g.</span>
-<span id="cb21-201"><a href="#cb21-201" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-202"><a href="#cb21-202" aria-hidden="true" tabindex="-1"></a><span class="fu">## Observation vs model fit</span></span>
-<span id="cb21-203"><a href="#cb21-203" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-204"><a href="#cb21-204" aria-hidden="true" tabindex="-1"></a>We can now compare the model fit to the observations. Let's do this for the first 20 patients again:</span>
-<span id="cb21-205"><a href="#cb21-205" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-208"><a href="#cb21-208" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb21-209"><a href="#cb21-209" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: gsf_model_fit</span></span>
-<span id="cb21-210"><a href="#cb21-210" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-211"><a href="#cb21-211" aria-hidden="true" tabindex="-1"></a>pt_subset <span class="ot">&lt;-</span> <span class="fu">as.character</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>)</span>
-<span id="cb21-212"><a href="#cb21-212" aria-hidden="true" tabindex="-1"></a>df_subset <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> </span>
-<span id="cb21-213"><a href="#cb21-213" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(id <span class="sc">%in%</span> pt_subset)</span>
-<span id="cb21-214"><a href="#cb21-214" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-215"><a href="#cb21-215" aria-hidden="true" tabindex="-1"></a>df_sim <span class="ot">&lt;-</span> df_subset <span class="sc">|&gt;</span> </span>
-<span id="cb21-216"><a href="#cb21-216" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data_grid</span>(</span>
-<span id="cb21-217"><a href="#cb21-217" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> pt_subset, </span>
-<span id="cb21-218"><a href="#cb21-218" aria-hidden="true" tabindex="-1"></a>    <span class="at">year =</span> <span class="fu">seq_range</span>(year, <span class="dv">101</span>)</span>
-<span id="cb21-219"><a href="#cb21-219" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb21-220"><a href="#cb21-220" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_epred_draws</span>(fit) <span class="sc">|&gt;</span></span>
-<span id="cb21-221"><a href="#cb21-221" aria-hidden="true" tabindex="-1"></a>  <span class="fu">median_qi</span>()</span>
-<span id="cb21-222"><a href="#cb21-222" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-223"><a href="#cb21-223" aria-hidden="true" tabindex="-1"></a>df_sim <span class="sc">|&gt;</span></span>
-<span id="cb21-224"><a href="#cb21-224" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> sld)) <span class="sc">+</span></span>
-<span id="cb21-225"><a href="#cb21-225" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> id) <span class="sc">+</span></span>
-<span id="cb21-226"><a href="#cb21-226" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(</span>
-<span id="cb21-227"><a href="#cb21-227" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">y =</span> .epred, <span class="at">ymin =</span> .lower, <span class="at">ymax =</span> .upper), </span>
-<span id="cb21-228"><a href="#cb21-228" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.3</span>, </span>
-<span id="cb21-229"><a href="#cb21-229" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"deepskyblue"</span></span>
-<span id="cb21-230"><a href="#cb21-230" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb21-231"><a href="#cb21-231" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .epred), <span class="at">color =</span> <span class="st">"deepskyblue"</span>) <span class="sc">+</span></span>
-<span id="cb21-232"><a href="#cb21-232" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> df_subset, <span class="at">color =</span> <span class="st">"tomato"</span>) <span class="sc">+</span></span>
-<span id="cb21-233"><a href="#cb21-233" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">range</span>(df_subset<span class="sc">$</span>sld)) <span class="sc">+</span></span>
-<span id="cb21-234"><a href="#cb21-234" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Greys"</span>) <span class="sc">+</span></span>
-<span id="cb21-235"><a href="#cb21-235" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"GSF model fit"</span>)</span>
-<span id="cb21-236"><a href="#cb21-236" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb21-237"><a href="#cb21-237" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-238"><a href="#cb21-238" aria-hidden="true" tabindex="-1"></a>This also looks good. The model seems to capture the data well.</span>
-<span id="cb21-239"><a href="#cb21-239" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-240"><a href="#cb21-240" aria-hidden="true" tabindex="-1"></a><span class="fu">## With `jmpost`</span></span>
-<span id="cb21-241"><a href="#cb21-241" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-242"><a href="#cb21-242" aria-hidden="true" tabindex="-1"></a>This model can also be fit with the <span class="in">`jmpost`</span> package. The corresponding function is <span class="in">`LongitudinalGSF`</span>. The statistical model is specified in the vignette <span class="co">[</span><span class="ot">here</span><span class="co">](https://genentech.github.io/jmpost/main/articles/statistical-specification.html#generalized-stein-fojo-gsf-model)</span>.</span>
-<span id="cb21-243"><a href="#cb21-243" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-244"><a href="#cb21-244" aria-hidden="true" tabindex="-1"></a>Homework: Implement the generalized Stein-Fojo model with <span class="in">`jmpost`</span> and compare the results with the <span class="in">`brms`</span> implementation.</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "3. Generalized Stein-Fojo model"</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co">  - Daniel Sabanés Bové</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co">  - Francois Mercier</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> last-modified</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="co">  chunk_output_type: inline</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: show</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="co">    html-math-method: mathjax</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="an">cache:</span><span class="co"> true</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>This appendix shows how the generalized Stein-Fojo model can be implemented in a Bayesian framework using the <span class="in">`brms`</span> package in R.</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a><span class="fu">## Setup and load data</span></span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>{{&lt; include _setup_and_load.qmd &gt;}}</span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>{{&lt; include _load_data.qmd &gt;}}</span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a><span class="fu">## Generalized Stein-Fojo model</span></span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a>Here we have an additional parameter $\phi$, which is the weight for the shrinkage in the double exponential model. The model is then:</span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a>y^{*}(t_{ij}) = \psi_{b_{0}i} <span class="sc">\{</span></span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a>  \psi_{\phi i} \exp(- \psi_{k_{s}i} \cdot t_{ij}) +</span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a>  (1 - \psi_{\phi i}) \exp(\psi_{k_{g}i} \cdot t_{ij}) </span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a><span class="sc">\}</span></span>
+<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a>for positive times $t_{ij}$. Again, if the time $t$ is negative, i.e. the treatment has not started yet, then it is reasonable to assume that the tumor cannot shrink yet. That is, we have then $\phi_i = 0$. Therefore, the final model for the mean SLD is:</span>
+<span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a>y^{*}(t_{ij}) = </span>
+<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a>\begin{cases} </span>
+<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a>\psi_{b_{0}i} \exp(\psi_{k_{g}i} \cdot t_{ij}) &amp; \text{if } t_{ij} &lt; 0 <span class="sc">\\</span></span>
+<span id="cb23-41"><a href="#cb23-41" aria-hidden="true" tabindex="-1"></a>\psi_{b_{0}i} <span class="sc">\{</span></span>
+<span id="cb23-42"><a href="#cb23-42" aria-hidden="true" tabindex="-1"></a>  \psi_{\phi i} \exp(- \psi_{k_{s}i} \cdot t_{ij}) +</span>
+<span id="cb23-43"><a href="#cb23-43" aria-hidden="true" tabindex="-1"></a>  (1 - \psi_{\phi i}) \exp(\psi_{k_{g}i} \cdot t_{ij}) </span>
+<span id="cb23-44"><a href="#cb23-44" aria-hidden="true" tabindex="-1"></a><span class="sc">\}</span> &amp; \text{if } t_{ij} \geq 0 </span>
+<span id="cb23-45"><a href="#cb23-45" aria-hidden="true" tabindex="-1"></a>\end{cases}</span>
+<span id="cb23-46"><a href="#cb23-46" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-47"><a href="#cb23-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-48"><a href="#cb23-48" aria-hidden="true" tabindex="-1"></a>In terms of likelihood and priors, we can use the same assumptions as in the previous model. The only difference is that we have to model the $\phi$ parameter. We can use a logit-normal distribution for this parameter. This is a normal distribution on the logit scale, which is then transformed to the unit interval.</span>
+<span id="cb23-49"><a href="#cb23-49" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-50"><a href="#cb23-50" aria-hidden="true" tabindex="-1"></a>\psi_{\phi i} \sim \text{LogitNormal}(\text{logit}(0.5) = 0, 0.5)</span>
+<span id="cb23-51"><a href="#cb23-51" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb23-52"><a href="#cb23-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-53"><a href="#cb23-53" aria-hidden="true" tabindex="-1"></a><span class="fu">## Fit model</span></span>
+<span id="cb23-54"><a href="#cb23-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-55"><a href="#cb23-55" aria-hidden="true" tabindex="-1"></a>We can now fit the model using <span class="in">`brms`</span>. The structure is determined by the model formula:</span>
+<span id="cb23-56"><a href="#cb23-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-59"><a href="#cb23-59" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-60"><a href="#cb23-60" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: specify_gsf_model</span></span>
+<span id="cb23-61"><a href="#cb23-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-62"><a href="#cb23-62" aria-hidden="true" tabindex="-1"></a>formula <span class="ot">&lt;-</span> <span class="fu">bf</span>(sld <span class="sc">~</span> ystar, <span class="at">nl =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb23-63"><a href="#cb23-63" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Define the mean for the likelihood</span></span>
+<span id="cb23-64"><a href="#cb23-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nlf</span>(</span>
+<span id="cb23-65"><a href="#cb23-65" aria-hidden="true" tabindex="-1"></a>    ystar <span class="sc">~</span> </span>
+<span id="cb23-66"><a href="#cb23-66" aria-hidden="true" tabindex="-1"></a>      <span class="fu">int_step</span>(year <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">*</span> </span>
+<span id="cb23-67"><a href="#cb23-67" aria-hidden="true" tabindex="-1"></a>        (b0 <span class="sc">*</span> (phi <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span>ks <span class="sc">*</span> year) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> phi) <span class="sc">*</span> <span class="fu">exp</span>(kg <span class="sc">*</span> year))) <span class="sc">+</span></span>
+<span id="cb23-68"><a href="#cb23-68" aria-hidden="true" tabindex="-1"></a>      <span class="fu">int_step</span>(year <span class="sc">&lt;=</span> <span class="dv">0</span>) <span class="sc">*</span> </span>
+<span id="cb23-69"><a href="#cb23-69" aria-hidden="true" tabindex="-1"></a>        (b0 <span class="sc">*</span> <span class="fu">exp</span>(kg <span class="sc">*</span> year))</span>
+<span id="cb23-70"><a href="#cb23-70" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb23-71"><a href="#cb23-71" aria-hidden="true" tabindex="-1"></a>  <span class="co"># As before:</span></span>
+<span id="cb23-72"><a href="#cb23-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nlf</span>(sigma <span class="sc">~</span> <span class="fu">log</span>(tau) <span class="sc">+</span> <span class="fu">log</span>(ystar)) <span class="sc">+</span></span>
+<span id="cb23-73"><a href="#cb23-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lf</span>(tau <span class="sc">~</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb23-74"><a href="#cb23-74" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Define nonlinear parameter transformations:</span></span>
+<span id="cb23-75"><a href="#cb23-75" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nlf</span>(b0 <span class="sc">~</span> <span class="fu">exp</span>(lb0)) <span class="sc">+</span></span>
+<span id="cb23-76"><a href="#cb23-76" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nlf</span>(phi <span class="sc">~</span> <span class="fu">inv_logit</span>(tphi)) <span class="sc">+</span></span>
+<span id="cb23-77"><a href="#cb23-77" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nlf</span>(ks <span class="sc">~</span> <span class="fu">exp</span>(lks)) <span class="sc">+</span></span>
+<span id="cb23-78"><a href="#cb23-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nlf</span>(kg <span class="sc">~</span> <span class="fu">exp</span>(lkg)) <span class="sc">+</span></span>
+<span id="cb23-79"><a href="#cb23-79" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Define random effect structure:</span></span>
+<span id="cb23-80"><a href="#cb23-80" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lf</span>(lb0 <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id)) <span class="sc">+</span> </span>
+<span id="cb23-81"><a href="#cb23-81" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lf</span>(tphi <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id)) <span class="sc">+</span> </span>
+<span id="cb23-82"><a href="#cb23-82" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lf</span>(lks <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id)) <span class="sc">+</span></span>
+<span id="cb23-83"><a href="#cb23-83" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lf</span>(lkg <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id))</span>
+<span id="cb23-84"><a href="#cb23-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-85"><a href="#cb23-85" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the priors</span></span>
+<span id="cb23-86"><a href="#cb23-86" aria-hidden="true" tabindex="-1"></a>priors <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb23-87"><a href="#cb23-87" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="fu">log</span>(<span class="dv">65</span>), <span class="dv">1</span>), <span class="at">nlpar =</span> <span class="st">"lb0"</span>),</span>
+<span id="cb23-88"><a href="#cb23-88" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="fu">log</span>(<span class="fl">0.52</span>), <span class="fl">0.1</span>), <span class="at">nlpar =</span> <span class="st">"lks"</span>),</span>
+<span id="cb23-89"><a href="#cb23-89" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="fu">log</span>(<span class="fl">1.04</span>), <span class="dv">1</span>), <span class="at">nlpar =</span> <span class="st">"lkg"</span>),</span>
+<span id="cb23-90"><a href="#cb23-90" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="fl">0.5</span>), <span class="at">nlpar =</span> <span class="st">"tphi"</span>),</span>
+<span id="cb23-91"><a href="#cb23-91" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="dv">3</span>), <span class="at">lb =</span> <span class="dv">0</span>, <span class="at">nlpar =</span> <span class="st">"lb0"</span>, <span class="at">class =</span> <span class="st">"sd"</span>),</span>
+<span id="cb23-92"><a href="#cb23-92" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="dv">3</span>), <span class="at">lb =</span> <span class="dv">0</span>, <span class="at">nlpar =</span> <span class="st">"lks"</span>, <span class="at">class =</span> <span class="st">"sd"</span>),</span>
+<span id="cb23-93"><a href="#cb23-93" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="dv">3</span>), <span class="at">lb =</span> <span class="dv">0</span>, <span class="at">nlpar =</span> <span class="st">"lkg"</span>, <span class="at">class =</span> <span class="st">"sd"</span>),</span>
+<span id="cb23-94"><a href="#cb23-94" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="fu">student_t</span>(<span class="dv">3</span>, <span class="dv">0</span>, <span class="fl">22.2</span>), <span class="at">lb =</span> <span class="dv">0</span>, <span class="at">nlpar =</span> <span class="st">"tphi"</span>, <span class="at">class =</span> <span class="st">"sd"</span>),</span>
+<span id="cb23-95"><a href="#cb23-95" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="dv">3</span>), <span class="at">lb =</span> <span class="dv">0</span>, <span class="at">nlpar =</span> <span class="st">"tau"</span>)</span>
+<span id="cb23-96"><a href="#cb23-96" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-97"><a href="#cb23-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-98"><a href="#cb23-98" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial values to avoid problems at the beginning</span></span>
+<span id="cb23-99"><a href="#cb23-99" aria-hidden="true" tabindex="-1"></a>n_patients <span class="ot">&lt;-</span> <span class="fu">nlevels</span>(df<span class="sc">$</span>id)</span>
+<span id="cb23-100"><a href="#cb23-100" aria-hidden="true" tabindex="-1"></a>inits <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb23-101"><a href="#cb23-101" aria-hidden="true" tabindex="-1"></a>  <span class="at">b_lb0 =</span> <span class="fu">array</span>(<span class="fl">3.61</span>),</span>
+<span id="cb23-102"><a href="#cb23-102" aria-hidden="true" tabindex="-1"></a>  <span class="at">b_lks =</span> <span class="fu">array</span>(<span class="sc">-</span><span class="fl">1.25</span>),</span>
+<span id="cb23-103"><a href="#cb23-103" aria-hidden="true" tabindex="-1"></a>  <span class="at">b_lkg =</span> <span class="fu">array</span>(<span class="sc">-</span><span class="fl">1.33</span>),</span>
+<span id="cb23-104"><a href="#cb23-104" aria-hidden="true" tabindex="-1"></a>  <span class="at">b_tphi =</span> <span class="fu">array</span>(<span class="dv">0</span>),</span>
+<span id="cb23-105"><a href="#cb23-105" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd_1 =</span> <span class="fu">array</span>(<span class="fl">0.58</span>),</span>
+<span id="cb23-106"><a href="#cb23-106" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd_2 =</span> <span class="fu">array</span>(<span class="fl">1.6</span>),</span>
+<span id="cb23-107"><a href="#cb23-107" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd_3 =</span> <span class="fu">array</span>(<span class="fl">0.994</span>),</span>
+<span id="cb23-108"><a href="#cb23-108" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd_4 =</span> <span class="fu">array</span>(<span class="fl">0.1</span>),</span>
+<span id="cb23-109"><a href="#cb23-109" aria-hidden="true" tabindex="-1"></a>  <span class="at">b_tau =</span> <span class="fu">array</span>(<span class="fl">0.161</span>),</span>
+<span id="cb23-110"><a href="#cb23-110" aria-hidden="true" tabindex="-1"></a>  <span class="at">z_1 =</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> <span class="dv">1</span>, <span class="at">ncol =</span> n_patients),</span>
+<span id="cb23-111"><a href="#cb23-111" aria-hidden="true" tabindex="-1"></a>  <span class="at">z_2 =</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> <span class="dv">1</span>, <span class="at">ncol =</span> n_patients),</span>
+<span id="cb23-112"><a href="#cb23-112" aria-hidden="true" tabindex="-1"></a>  <span class="at">z_3 =</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> <span class="dv">1</span>, <span class="at">ncol =</span> n_patients),</span>
+<span id="cb23-113"><a href="#cb23-113" aria-hidden="true" tabindex="-1"></a>  <span class="at">z_4 =</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> <span class="dv">1</span>, <span class="at">ncol =</span> n_patients)</span>
+<span id="cb23-114"><a href="#cb23-114" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-115"><a href="#cb23-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-116"><a href="#cb23-116" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the model</span></span>
+<span id="cb23-117"><a href="#cb23-117" aria-hidden="true" tabindex="-1"></a>save_file <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"session-tgi/gsf1.RData"</span>)</span>
+<span id="cb23-118"><a href="#cb23-118" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(save_file)) {</span>
+<span id="cb23-119"><a href="#cb23-119" aria-hidden="true" tabindex="-1"></a>  <span class="fu">load</span>(save_file)</span>
+<span id="cb23-120"><a href="#cb23-120" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb23-121"><a href="#cb23-121" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> <span class="fu">brm</span>(</span>
+<span id="cb23-122"><a href="#cb23-122" aria-hidden="true" tabindex="-1"></a>    <span class="at">formula =</span> formula,</span>
+<span id="cb23-123"><a href="#cb23-123" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> df,</span>
+<span id="cb23-124"><a href="#cb23-124" aria-hidden="true" tabindex="-1"></a>    <span class="at">prior =</span> priors,</span>
+<span id="cb23-125"><a href="#cb23-125" aria-hidden="true" tabindex="-1"></a>    <span class="at">family =</span> <span class="fu">gaussian</span>(),</span>
+<span id="cb23-126"><a href="#cb23-126" aria-hidden="true" tabindex="-1"></a>    <span class="at">init =</span> <span class="fu">rep</span>(<span class="fu">list</span>(inits), CHAINS),</span>
+<span id="cb23-127"><a href="#cb23-127" aria-hidden="true" tabindex="-1"></a>    <span class="at">chains =</span> CHAINS, </span>
+<span id="cb23-128"><a href="#cb23-128" aria-hidden="true" tabindex="-1"></a>    <span class="at">iter =</span> WARMUP <span class="sc">+</span> ITER, </span>
+<span id="cb23-129"><a href="#cb23-129" aria-hidden="true" tabindex="-1"></a>    <span class="at">warmup =</span> WARMUP, </span>
+<span id="cb23-130"><a href="#cb23-130" aria-hidden="true" tabindex="-1"></a>    <span class="at">seed =</span> BAYES.SEED,</span>
+<span id="cb23-131"><a href="#cb23-131" aria-hidden="true" tabindex="-1"></a>    <span class="at">refresh =</span> REFRESH</span>
+<span id="cb23-132"><a href="#cb23-132" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb23-133"><a href="#cb23-133" aria-hidden="true" tabindex="-1"></a>  <span class="fu">save</span>(fit, <span class="at">file =</span> save_file)</span>
+<span id="cb23-134"><a href="#cb23-134" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb23-135"><a href="#cb23-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-136"><a href="#cb23-136" aria-hidden="true" tabindex="-1"></a><span class="co"># Summarize the fit</span></span>
+<span id="cb23-137"><a href="#cb23-137" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span>
+<span id="cb23-138"><a href="#cb23-138" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-139"><a href="#cb23-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-140"><a href="#cb23-140" aria-hidden="true" tabindex="-1"></a>In total this took 76 minutes on my laptop. </span>
+<span id="cb23-141"><a href="#cb23-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-142"><a href="#cb23-142" aria-hidden="true" tabindex="-1"></a><span class="fu">## Parameter estimates</span></span>
+<span id="cb23-143"><a href="#cb23-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-146"><a href="#cb23-146" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-147"><a href="#cb23-147" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: gsf_post_processing</span></span>
+<span id="cb23-148"><a href="#cb23-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-149"><a href="#cb23-149" aria-hidden="true" tabindex="-1"></a>post_df <span class="ot">&lt;-</span> <span class="fu">as_draws_df</span>(fit)</span>
+<span id="cb23-150"><a href="#cb23-150" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">names</span>(post_df), <span class="dv">10</span>)</span>
+<span id="cb23-151"><a href="#cb23-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-152"><a href="#cb23-152" aria-hidden="true" tabindex="-1"></a>post_df <span class="ot">&lt;-</span> post_df <span class="sc">|&gt;</span></span>
+<span id="cb23-153"><a href="#cb23-153" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb23-154"><a href="#cb23-154" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_b0 =</span> <span class="fu">exp</span>(b_lb0_Intercept <span class="sc">+</span> sd_id__lb0_Intercept<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
+<span id="cb23-155"><a href="#cb23-155" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_ks =</span> <span class="fu">exp</span>(b_lks_Intercept <span class="sc">+</span> sd_id__lks_Intercept<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
+<span id="cb23-156"><a href="#cb23-156" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_kg =</span> <span class="fu">exp</span>(b_lkg_Intercept <span class="sc">+</span> sd_id__lkg_Intercept<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>),</span>
+<span id="cb23-157"><a href="#cb23-157" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_phi =</span> <span class="fu">plogis</span>(b_tphi_Intercept),</span>
+<span id="cb23-158"><a href="#cb23-158" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_0 =</span> sd_id__lb0_Intercept,</span>
+<span id="cb23-159"><a href="#cb23-159" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_s =</span> sd_id__lks_Intercept,</span>
+<span id="cb23-160"><a href="#cb23-160" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_g =</span> sd_id__lkg_Intercept,</span>
+<span id="cb23-161"><a href="#cb23-161" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega_phi =</span> sd_id__tphi_Intercept,</span>
+<span id="cb23-162"><a href="#cb23-162" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_0 =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(sd_id__lb0_Intercept<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
+<span id="cb23-163"><a href="#cb23-163" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_s =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(sd_id__lks_Intercept<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
+<span id="cb23-164"><a href="#cb23-164" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_g =</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(sd_id__lkg_Intercept<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
+<span id="cb23-165"><a href="#cb23-165" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma =</span> b_tau_Intercept</span>
+<span id="cb23-166"><a href="#cb23-166" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb23-167"><a href="#cb23-167" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-168"><a href="#cb23-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-169"><a href="#cb23-169" aria-hidden="true" tabindex="-1"></a>Let's first look at the population level parameters:</span>
+<span id="cb23-170"><a href="#cb23-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-173"><a href="#cb23-173" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-174"><a href="#cb23-174" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: gsf_pop_params</span></span>
+<span id="cb23-175"><a href="#cb23-175" aria-hidden="true" tabindex="-1"></a>gsf_pop_params <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"theta_b0"</span>, <span class="st">"theta_ks"</span>, <span class="st">"theta_kg"</span>, <span class="st">"theta_phi"</span>, <span class="st">"sigma"</span>)</span>
+<span id="cb23-176"><a href="#cb23-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-177"><a href="#cb23-177" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_trace</span>(post_df, <span class="at">pars =</span> gsf_pop_params)</span>
+<span id="cb23-178"><a href="#cb23-178" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_pairs</span>(</span>
+<span id="cb23-179"><a href="#cb23-179" aria-hidden="true" tabindex="-1"></a>  post_df, </span>
+<span id="cb23-180"><a href="#cb23-180" aria-hidden="true" tabindex="-1"></a>  <span class="at">pars =</span> gsf_pop_params,</span>
+<span id="cb23-181"><a href="#cb23-181" aria-hidden="true" tabindex="-1"></a>  <span class="at">off_diag_args =</span> <span class="fu">list</span>(<span class="at">size =</span> <span class="dv">1</span>, <span class="at">alpha =</span> <span class="fl">0.1</span>)</span>
+<span id="cb23-182"><a href="#cb23-182" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-183"><a href="#cb23-183" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-184"><a href="#cb23-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-185"><a href="#cb23-185" aria-hidden="true" tabindex="-1"></a>The trace plots look good. The chains seem to have converged and the pairs plot shows no strong correlations between the parameters. Let's check the table:</span>
+<span id="cb23-186"><a href="#cb23-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-189"><a href="#cb23-189" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-190"><a href="#cb23-190" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: gsf_post_summary</span></span>
+<span id="cb23-191"><a href="#cb23-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-192"><a href="#cb23-192" aria-hidden="true" tabindex="-1"></a>post_sum <span class="ot">&lt;-</span> post_df <span class="sc">|&gt;</span></span>
+<span id="cb23-193"><a href="#cb23-193" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(theta_b0, theta_ks, theta_kg, theta_phi, omega_0, omega_s, omega_g, omega_phi, sigma) <span class="sc">|&gt;</span></span>
+<span id="cb23-194"><a href="#cb23-194" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize_draws</span>() <span class="sc">|&gt;</span></span>
+<span id="cb23-195"><a href="#cb23-195" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb23-196"><a href="#cb23-196" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">decimals =</span> <span class="dv">3</span>)</span>
+<span id="cb23-197"><a href="#cb23-197" aria-hidden="true" tabindex="-1"></a>post_sum</span>
+<span id="cb23-198"><a href="#cb23-198" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-199"><a href="#cb23-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-200"><a href="#cb23-200" aria-hidden="true" tabindex="-1"></a>So $\theta_{\phi}$ is estimated around 0.5. The other parameters are similar to the previous Stein-Fojo model, but we see a larger $\theta_{k_s}$ e.g.</span>
+<span id="cb23-201"><a href="#cb23-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-202"><a href="#cb23-202" aria-hidden="true" tabindex="-1"></a><span class="fu">## Observation vs model fit</span></span>
+<span id="cb23-203"><a href="#cb23-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-204"><a href="#cb23-204" aria-hidden="true" tabindex="-1"></a>We can now compare the model fit to the observations. Let's do this for the first 20 patients again:</span>
+<span id="cb23-205"><a href="#cb23-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-208"><a href="#cb23-208" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb23-209"><a href="#cb23-209" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: gsf_model_fit</span></span>
+<span id="cb23-210"><a href="#cb23-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-211"><a href="#cb23-211" aria-hidden="true" tabindex="-1"></a>pt_subset <span class="ot">&lt;-</span> <span class="fu">as.character</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>)</span>
+<span id="cb23-212"><a href="#cb23-212" aria-hidden="true" tabindex="-1"></a>df_subset <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> </span>
+<span id="cb23-213"><a href="#cb23-213" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(id <span class="sc">%in%</span> pt_subset)</span>
+<span id="cb23-214"><a href="#cb23-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-215"><a href="#cb23-215" aria-hidden="true" tabindex="-1"></a>df_sim <span class="ot">&lt;-</span> df_subset <span class="sc">|&gt;</span> </span>
+<span id="cb23-216"><a href="#cb23-216" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data_grid</span>(</span>
+<span id="cb23-217"><a href="#cb23-217" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> pt_subset, </span>
+<span id="cb23-218"><a href="#cb23-218" aria-hidden="true" tabindex="-1"></a>    <span class="at">year =</span> <span class="fu">seq_range</span>(year, <span class="dv">101</span>)</span>
+<span id="cb23-219"><a href="#cb23-219" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb23-220"><a href="#cb23-220" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_epred_draws</span>(fit) <span class="sc">|&gt;</span></span>
+<span id="cb23-221"><a href="#cb23-221" aria-hidden="true" tabindex="-1"></a>  <span class="fu">median_qi</span>()</span>
+<span id="cb23-222"><a href="#cb23-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-223"><a href="#cb23-223" aria-hidden="true" tabindex="-1"></a>df_sim <span class="sc">|&gt;</span></span>
+<span id="cb23-224"><a href="#cb23-224" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> sld)) <span class="sc">+</span></span>
+<span id="cb23-225"><a href="#cb23-225" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> id) <span class="sc">+</span></span>
+<span id="cb23-226"><a href="#cb23-226" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(</span>
+<span id="cb23-227"><a href="#cb23-227" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">y =</span> .epred, <span class="at">ymin =</span> .lower, <span class="at">ymax =</span> .upper), </span>
+<span id="cb23-228"><a href="#cb23-228" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.3</span>, </span>
+<span id="cb23-229"><a href="#cb23-229" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"deepskyblue"</span></span>
+<span id="cb23-230"><a href="#cb23-230" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb23-231"><a href="#cb23-231" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .epred), <span class="at">color =</span> <span class="st">"deepskyblue"</span>) <span class="sc">+</span></span>
+<span id="cb23-232"><a href="#cb23-232" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> df_subset, <span class="at">color =</span> <span class="st">"tomato"</span>) <span class="sc">+</span></span>
+<span id="cb23-233"><a href="#cb23-233" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">range</span>(df_subset<span class="sc">$</span>sld)) <span class="sc">+</span></span>
+<span id="cb23-234"><a href="#cb23-234" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Greys"</span>) <span class="sc">+</span></span>
+<span id="cb23-235"><a href="#cb23-235" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"GSF model fit"</span>)</span>
+<span id="cb23-236"><a href="#cb23-236" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb23-237"><a href="#cb23-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-238"><a href="#cb23-238" aria-hidden="true" tabindex="-1"></a>This also looks good. The model seems to capture the data well.</span>
+<span id="cb23-239"><a href="#cb23-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-240"><a href="#cb23-240" aria-hidden="true" tabindex="-1"></a><span class="fu">## With `jmpost`</span></span>
+<span id="cb23-241"><a href="#cb23-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-242"><a href="#cb23-242" aria-hidden="true" tabindex="-1"></a>This model can also be fit with the <span class="in">`jmpost`</span> package. The corresponding function is <span class="in">`LongitudinalGSF`</span>. The statistical model is specified in the vignette <span class="co">[</span><span class="ot">here</span><span class="co">](https://genentech.github.io/jmpost/main/articles/statistical-specification.html#generalized-stein-fojo-gsf-model)</span>.</span>
+<span id="cb23-243"><a href="#cb23-243" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-244"><a href="#cb23-244" aria-hidden="true" tabindex="-1"></a>Homework: Implement the generalized Stein-Fojo model with <span class="in">`jmpost`</span> and compare the results with the <span class="in">`brms`</span> implementation.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

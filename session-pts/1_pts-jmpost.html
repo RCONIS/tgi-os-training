@@ -2,20 +2,26 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.25">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Daniel Sabanés Bové">
 <meta name="author" content="Francois Mercier">
-<meta name="dcterms.date" content="2025-11-17">
+<meta name="dcterms.date" content="2026-08-20">
 
 <title>1. Calculate Bayesian Predictive Power – TGI-OS Training</title>
 <style>
-code{white-space: pre-wrap;}
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -70,15 +76,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="../">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-fe572088fed4c8b78605e513f5ffbe45.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-df3a4ca9cfbbad302b87d6abdb3f87e5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -108,7 +113,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -162,11 +167,12 @@ window.Quarto = {
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
-      <a href="../index.html" class="sidebar-logo-link">
-      </a>
-      <div class="sidebar-tools-main">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">TGI-OS Training</a> 
+        <div class="sidebar-tools-main">
     <a href="https://rconis.github.io/tgi-os-training/" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
 </div>
+    </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
@@ -374,7 +380,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2025-11-17</p>
+      <p class="date">2026-08-20</p>
     </div>
   </div>
   
@@ -485,17 +491,17 @@ window.Quarto = {
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>                          mean     median      X2.5.      X97.5.
-bs(time, df = 10)1  -3.1898619 -3.1492166 -4.6595480 -1.94483471
-bs(time, df = 10)2  -2.1685007 -2.1557204 -2.9129270 -1.44921371
-bs(time, df = 10)3  -1.7541631 -1.7457712 -2.2606129 -1.27922919
-bs(time, df = 10)4  -1.7402008 -1.7351076 -2.1929390 -1.32483535
-bs(time, df = 10)5  -1.2832478 -1.2744974 -1.6118038 -0.99434352
-bs(time, df = 10)6  -1.3567217 -1.3465337 -1.7256844 -1.02999961
-bs(time, df = 10)7  -0.8752984 -0.8702259 -1.1870137 -0.60171732
-bs(time, df = 10)8  -1.2314025 -1.2226766 -1.8595341 -0.71176107
-bs(time, df = 10)9  -0.1212043 -0.1255963 -0.6237809  0.40773756
-bs(time, df = 10)10 -0.5070327 -0.4897161 -1.1333247  0.02179326
-armMPDL3280A        -0.2448721 -0.2361508 -0.5174069 -0.00558422</code></pre>
+bs(time, df = 10)1  -2.9925545 -2.9765954 -4.1448144 -1.73292691
+bs(time, df = 10)2  -2.0103802 -2.0247096 -2.6849890 -1.35815163
+bs(time, df = 10)3  -1.6407069 -1.6370245 -2.1009637 -1.18013689
+bs(time, df = 10)4  -1.6078962 -1.6052231 -2.0329900 -1.21537593
+bs(time, df = 10)5  -1.2311476 -1.2248892 -1.5452957 -0.94099838
+bs(time, df = 10)6  -1.2223255 -1.2100740 -1.5514165 -0.94382631
+bs(time, df = 10)7  -0.8373742 -0.8368250 -1.1030131 -0.59955038
+bs(time, df = 10)8  -0.9221129 -0.9035551 -1.4463905 -0.48082491
+bs(time, df = 10)9  -0.1536829 -0.1558677 -0.5838758  0.29303895
+bs(time, df = 10)10 -0.2836508 -0.2768867 -0.7976827  0.21474815
+armMPDL3280A        -0.3032293 -0.3001356 -0.5495817 -0.08734128</code></pre>
 </div>
 </div>
 <p>So here we have the marginal log hazard ratio estimates of the baseline spline components and the treatment arm. Therefore we can get the hazard ratio estimates by exponentiating the log hazard ratio estimates:</p>
@@ -506,7 +512,7 @@ armMPDL3280A        -0.2448721 -0.2361508 -0.5174069 -0.00558422</code></pre>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sapply</span>(exp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<p>So we get a marginal hazard ratio estimate of around 0.783 and a 95% credible interval of 0.6 - 0.99.</p>
+<p>So we get a marginal hazard ratio estimate of around 0.738 and a 95% credible interval of 0.58 - 0.92.</p>
 </section>
 <section id="comparison-with-simple-cox-ph-results" class="level2">
 <h2 class="anchored" data-anchor-id="comparison-with-simple-cox-ph-results">Comparison with simple Cox PH results</h2>
@@ -685,10 +691,10 @@ n= 203, number of events= 108 </code></pre>
 <span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>pts_freq_hr_result</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.7318325</code></pre>
+<pre><code>[1] 0.8511072</code></pre>
 </div>
 </div>
-<p>So we obtain a PTS of 73.2% here.</p>
+<p>So we obtain a PTS of 85.1% here.</p>
 </section>
 <section id="pts-based-on-frequentist-log-rank-test-properties" class="level2">
 <h2 class="anchored" data-anchor-id="pts-based-on-frequentist-log-rank-test-properties">PTS based on frequentist log-rank test properties</h2>
@@ -705,7 +711,7 @@ z = \frac{\hat{\delta}_{\text{int}}}{\sigma_{\text{int}}}
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpact)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stderr">
-<pre><code>Installation qualification for rpact 4.2.1 has not yet been performed.</code></pre>
+<pre><code>Installation qualification for rpact 4.4.0 has not yet been performed.</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Please run testPackage() before using the package in GxP relevant environments.</code></pre>
@@ -904,10 +910,10 @@ Conditional power results survival table:
 <span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>pts_freq_hr2_result</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.8415316</code></pre>
+<pre><code>[1] 0.9549602</code></pre>
 </div>
 </div>
-<p>So here we get a PTS of 84.2%, which is higher than the one we got before.</p>
+<p>So here we get a PTS of 95.5%, which is higher than the one we got before.</p>
 </section>
 <section id="individual-samples-based-predictive-power" class="level2">
 <h2 class="anchored" data-anchor-id="individual-samples-based-predictive-power">Individual Samples based Predictive Power</h2>
@@ -1144,7 +1150,7 @@ Conditional power results survival table:
 <span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>t</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 2.819322</code></pre>
+<pre><code>[1] 2.419912</code></pre>
 </div>
 </div>
 <p>We can plot the conditional survival function together with this sampled survival time:</p>
@@ -1306,7 +1312,7 @@ Conditional power results survival table:
 <span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(cond_surv_time_samples<span class="sc">$</span>beyond_max_time)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.003687158</code></pre>
+<pre><code>[1] 0.001911202</code></pre>
 </div>
 <details open="" class="code-fold">
 <summary>Show the code</summary>
@@ -1314,7 +1320,7 @@ Conditional power results survival table:
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-1.170e-05 9.700e-01 1.793e+00 2.221e+00 2.889e+00 1.230e+01 </code></pre>
+2.350e-05 9.785e-01 1.782e+00 2.152e+00 2.823e+00 1.230e+01 </code></pre>
 </div>
 <details open="" class="code-fold">
 <summary>Show the code</summary>
@@ -1420,10 +1426,10 @@ Conditional power results survival table:
 <span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>pts_log_rank</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.693</code></pre>
+<pre><code>[1] 0.858</code></pre>
 </div>
 </div>
-<p>So we see that this PTS with 69.3% is a bit lower than the previous PTS estimates.</p>
+<p>So we see that this PTS with 85.8% is a bit lower than the previous PTS estimates.</p>
 </section>
 <section id="hazard-ratio-based-pts" class="level3">
 <h3 class="anchored" data-anchor-id="hazard-ratio-based-pts">Hazard Ratio based PTS</h3>
@@ -1445,10 +1451,10 @@ Conditional power results survival table:
 <span id="cb58-12"><a href="#cb58-12" aria-hidden="true" tabindex="-1"></a>pts_hr</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.828</code></pre>
+<pre><code>[1] 0.944</code></pre>
 </div>
 </div>
-<p>In this PTS estimate we can adjust for the covariates. We see that the result of 82.8% is in line with the frequentist based PTS estimate for the HR which we calculated earlier.</p>
+<p>In this PTS estimate we can adjust for the covariates. We see that the result of 94.4% is in line with the frequentist based PTS estimate for the HR which we calculated earlier.</p>
 </section>
 <section id="plot-kaplan-meier-curves-predictions" class="level3">
 <h3 class="anchored" data-anchor-id="plot-kaplan-meier-curves-predictions">Plot Kaplan-Meier curves predictions</h3>
@@ -1622,16 +1628,16 @@ Conditional power results survival table:
     }
     function toggleCodeHandler(show) {
       return function(e) {
-        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
-        for (let i=0; i<detailsSrc.length; i++) {
-          const details = detailsSrc[i].parentElement;
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
           if (show) {
             details.open = true;
           } else {
             details.removeAttribute("open");
           }
         }
-        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
         const fromCls = show ? "hidden" : "unhidden";
         const toCls = show ? "unhidden" : "hidden";
         for (let i=0; i<cellCodeDivs.length; i++) {
